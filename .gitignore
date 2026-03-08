@@ -1,0 +1,16 @@
+.idea
+.phpcs-cache
+.phpunit.cache
+.vscode
+
+/testcoverage/
+/tmp/
+/vendor/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Trashes

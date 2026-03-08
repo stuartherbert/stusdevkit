@@ -1,0 +1,8 @@
+services:
+  test-container-85:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-85
+      target: devphp
+    volumes:
+      - .:/var/www/html

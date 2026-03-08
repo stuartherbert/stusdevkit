@@ -1,0 +1,30 @@
+ARG BASE_IMAGE=basephp
+
+FROM php:8.5-cli-alpine AS basephp
+
+RUN apk add \
+        linux-headers \
+        libpq-dev \
+        git \
+        zip \
+        libzip-dev \
+        icu-dev \
+        $PHPIZE_DEPS && \
+    docker-php-ext-install pcntl && \
+    pecl install && \
+    docker-php-ext-enable pcntl && \
+    rm -rf /var/cache/apk/*
+
+# Copy Composer from the official image
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+FROM ${BASE_IMAGE} AS devphp
+
+RUN apk add $PHP_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+COPY ./docker/php-dev.ini /usr/local/etc/php/php.ini

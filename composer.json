@@ -1,0 +1,43 @@
+{
+    "name": "stusdevkit/stusdevkit",
+    "description": "Type-safe collection, list and index classes",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "psr-4": {
+            "StusDevKit\\CollectionsKit\\": "kits/collectionskit/src/",
+            "StusDevKit\\DateTimeKit\\": "kits/datetimekit/src/",
+            "StusDevKit\\ExceptionsKit\\": "kits/exceptionskit/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "StusDevKit\\CollectionsKit\\Tests\\Unit\\": "kits/collectionskit/tests/unit/src",
+            "StusDevKit\\CollectionsKit\\Tests\\Fixtures\\": "kits/collectionskit/tests/fixtures/src",
+            "StusDevKit\\DateTimeKit\\Tests\\Unit\\": "kits/datetimekit/tests/unit/src",
+            "StusDevKit\\DateTimeKit\\TestFixtures\\": "kits/datetimekit/tests/fixtures/src",
+            "StusDevKit\\ExceptionsKit\\Tests\\Unit\\": "kits/exceptionskit/tests/unit/src",
+            "StusDevKit\\ExceptionsKit\\TestFixtures\\": "kits/exceptionskit/tests/fixtures/src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Stuart Herbert",
+            "email": "stuart@stuartherbert.com"
+        }
+    ],
+    "require": {
+        "ramsey/uuid": "^4.9"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^3.1",
+        "phpstan/phpstan": "^2.1.38",
+        "phpunit/phpunit": "^13.0",
+        "roave/security-advisories": "dev-latest"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

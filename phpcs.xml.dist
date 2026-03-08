@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="80"/>
+
+    <!-- Show progress -->
+    <arg value="ps"/>
+
+    <!-- Paths to check -->
+    <file>src</file>
+
+    <!-- Include all rules from the Laminas Coding Standard -->
+    <rule ref="LaminasCodingStandard">
+        <!-- Allow long lines -->
+        <exclude name="Generic.Files.LineLength.TooLong" />
+        <!-- Allow PHP standard functions to be called without importing -->
+        <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName"/>
+        <!-- Allow an arbitrary block of comments above a method that are unrelated to that specific method -->
+        <exclude name="Squiz.Commenting.FunctionComment.WrongStyle"/>
+        <!-- Allow the comment after @throws to start with a lower case letter so that it forms a readable sentence -->
+        <exclude name="Squiz.Commenting.FunctionComment.ThrowsNotCapital"/>
+        <!-- We don't have to prefix "Abstract" to abstract classes as PHPStan will catch improper use -->
+        <exclude name="WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix"/>
+        <!-- We don't have to add "Interface" to interface names as PHPStan will catch improper use -->
+        <exclude name="WebimpressCodingStandard.NamingConventions.Interface.Suffix"/>
+        <!-- We don't have to add "Trait" to trait names as PHPStan will catch improper use -->
+        <exclude name="WebimpressCodingStandard.NamingConventions.Trait.Suffix"/>
+    </rule>
+
+    <rule ref="Generic.Formatting.MultipleStatementAlignment">
+        <properties>
+            <property name="alignAtEnd" value="false" />
+            <property name="maxPadding" value="1" />
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.Classes.ClassFileName.NoMatch">
+        <exclude-pattern>src/ConfigProvider.*.php</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR12.Files.FileHeader.IncorrectOrder">
+        <exclude-pattern>config/pipeline.php</exclude-pattern>
+        <exclude-pattern>src/MezzioInstaller/Resources/config/routes-*.php</exclude-pattern>
+    </rule>
+</ruleset>

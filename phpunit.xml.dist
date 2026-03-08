@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.1/phpunit.xsd"
+         bootstrap="phpunit.bootstrap.php"
+         executionOrder="default"
+         beStrictAboutOutputDuringTests="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         beStrictAboutCoverageMetadata="true"
+         displayDetailsOnIncompleteTests="true"
+         displayDetailsOnSkippedTests="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnPhpunitDeprecations="true"
+         stopOnDefect="true"
+>
+    <testsuites>
+        <testsuite name="unit">
+            <directory suffix="Test.php">kits/collectionskit/tests/unit/src</directory>
+            <directory suffix="Test.php">kits/datetimekit/tests/unit/src</directory>
+            <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
+        </testsuite>
+        <testsuite name="unit-collectionskit">
+            <directory suffix="Test.php">kits/collectionskit/tests/unit/src</directory>
+        </testsuite>
+        <testsuite name="unit-datetimekit">
+            <directory suffix="Test.php">kits/datetimekit/tests/unit/src</directory>
+        </testsuite>
+        <testsuite name="unit-exceptionskit">
+            <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">kits/collectionskit/src</directory>
+            <directory suffix=".php">kits/datetimekit/src</directory>
+            <directory suffix=".php">kits/exceptionskit/src</directory>
+        </include>
+    </source>
+</phpunit>
