@@ -12,12 +12,16 @@
     <arg value="ps"/>
 
     <!-- Paths to check -->
-    <file>src</file>
+    <file>kits/collectionskit/src</file>
+    <file>kits/datetimekit/src</file>
+    <file>kits/exceptionskit/src</file>
 
     <!-- Include all rules from the Laminas Coding Standard -->
     <rule ref="LaminasCodingStandard">
         <!-- Allow long lines -->
         <exclude name="Generic.Files.LineLength.TooLong" />
+        <!-- PHP4 concerns do not apply to modern code -->
+        <exclude name="Generic.NamingConventions.ConstructorName.OldStyle" />
         <!-- Allow PHP standard functions to be called without importing -->
         <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName"/>
         <!-- Allow an arbitrary block of comments above a method that are unrelated to that specific method -->
@@ -39,16 +43,7 @@
         </properties>
     </rule>
 
-    <rule ref="Squiz.Classes.ClassFileName.NoMatch">
-        <exclude-pattern>src/ConfigProvider.*.php</exclude-pattern>
-    </rule>
-
     <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
         <exclude-pattern>tests/*</exclude-pattern>
-    </rule>
-
-    <rule ref="PSR12.Files.FileHeader.IncorrectOrder">
-        <exclude-pattern>config/pipeline.php</exclude-pattern>
-        <exclude-pattern>src/MezzioInstaller/Resources/config/routes-*.php</exclude-pattern>
     </rule>
 </ruleset>
