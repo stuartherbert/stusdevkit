@@ -62,6 +62,11 @@ To check which kits depend on other kits, search for cross-kit `use` statements 
 - **Read the kit's README.md first** to understand its scope and what belongs there
 - Check for inter-kit dependencies before adding cross-kit imports
 
+### Git Hooks
+- `.githooks/` - version-controlled git hooks directory (configured via `git config core.hooksPath .githooks`, set up by `make init`)
+- `commit-msg` - validates Conventional Commits format
+- `post-commit` - rebuilds CHANGELOG.md on main branch and amends the commit to include it (has re-entrancy guard)
+
 ### Directory Organization
 - `kits/*` - root directory for each PHP library
 - `kits/*/README.md` - Kit scope and purpose documentation
