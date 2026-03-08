@@ -37,6 +37,13 @@ The full mapping of Git commit messages is controlled by [.versionrc.json](.vers
 
 ## Upcoming Release
 
+### Features
+
+
+#### changelog-tool
+
+- added initial changelog-tool ([9ec9113](https://github.com/stuartherbert/stusdevkit/commit/9ec9113)) — Stuart Herbert <stuart@stuartherbert.com>
+
 ### Documentation
 
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
