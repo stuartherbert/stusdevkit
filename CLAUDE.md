@@ -78,6 +78,11 @@ To check which kits depend on other kits, search for cross-kit `use` statements 
 
 ## Working Practices
 
+### Discuss Before Making Large Changes
+- When a fix requires the same workaround in many places (e.g. adding `@var` annotations to 20+ test files), **stop and discuss** — this is a strong signal that the root cause is elsewhere.
+- Present the problem and possible approaches before editing files. Walk through one concrete example together.
+- Prefer fixing the source design over patching symptoms in consuming code.
+
 ### Before Writing Code
 1. **Always ask about file placement** - Don't assume directory structure
 2. **Ask about naming conventions** - Follow project patterns

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# commit-msg hook
+#
+# Validates that the commit message follows the Conventional
+# Commits v1.0.0 specification, using the types defined in
+# .versionrc.json.
+#
+# Format: <type>[optional scope][optional !]: <description>
+#
+# Examples of valid messages:
+#   feat: add new feature
+#   fix(parser): handle null input
+#   feat!: remove deprecated API
+#   feat(api)!: remove v1 endpoints
+#   chore: update dependencies
+#
+# Install:
+#   git config core.hooksPath .githooks
+#
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(head -n 1 "$COMMIT_MSG_FILE")
+
+# allow merge commits
+if echo "$COMMIT_MSG" | grep -qE '^Merge '; then
+    exit 0
+fi
+
+# allow revert commits
+if echo "$COMMIT_MSG" | grep -qE '^Revert "'; then
+    exit 0
+fi
+
+# build the list of allowed types from .versionrc.json
+REPO_ROOT=$(git rev-parse --show-toplevel)
+CONFIG_FILE="$REPO_ROOT/.versionrc.json"
+
+if [ -f "$CONFIG_FILE" ]; then
+    # extract type values from the JSON config
+    #
+    # uses grep + sed to avoid requiring jq as a
+    # dependency
+    TYPES=$(grep -o '"type"[[:space:]]*:[[:space:]]*"[^"]*"' "$CONFIG_FILE" \
+        | sed 's/"type"[[:space:]]*:[[:space:]]*"//;s/"//' \
+        | tr '\n' '|' \
+        | sed 's/|$//')
+else
+    # fallback to common conventional commit types
+    TYPES="feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert"
+fi
+
+# validate the first line against the conventional
+# commits pattern:
+#   <type>[(<scope>)][!]: <description>
+PATTERN="^($TYPES)(\([^)]+\))?\!?:\ .+"
+
+if ! echo "$COMMIT_MSG" | grep -qE "$PATTERN"; then
+    echo ""
+    echo "ERROR: Commit message does not follow the Conventional Commits format."
+    echo ""
+    echo "  Expected: <type>[(<scope>)][!]: <description>"
+    echo ""
+    echo "  Allowed types: $(echo "$TYPES" | tr '|' ', ')"
+    echo ""
+    echo "  Examples:"
+    echo "    feat: add new feature"
+    echo "    fix(parser): handle null input"
+    echo "    feat!: remove deprecated API"
+    echo ""
+    echo "  Your message:"
+    echo "    $COMMIT_MSG"
+    echo ""
+    echo "  See: https://www.conventionalcommits.org/en/v1.0.0/"
+    echo ""
+    exit 1
+fi
+
+# validate description is not empty after the colon
+DESCRIPTION=$(echo "$COMMIT_MSG" | sed -E "s/^($TYPES)(\([^)]+\))?\!?:[[:space:]]*//" )
+if [ -z "$DESCRIPTION" ]; then
+    echo ""
+    echo "ERROR: Commit message has an empty description after the type prefix."
+    echo ""
+    echo "  Your message:"
+    echo "    $COMMIT_MSG"
+    echo ""
+    exit 1
+fi

@@ -15,6 +15,7 @@
     <file>kits/collectionskit/src</file>
     <file>kits/datetimekit/src</file>
     <file>kits/exceptionskit/src</file>
+    <file>tools/ChangelogTool/src</file>
 
     <!-- Include all rules from the Laminas Coding Standard -->
     <rule ref="LaminasCodingStandard">

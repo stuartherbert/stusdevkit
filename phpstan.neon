@@ -6,3 +6,5 @@ parameters:
         - kits/collectionskit/tests
         - kits/datetimekit/src
         - kits/datetimekit/tests
+        - tools/ChangelogTool/src
+        - tools/ChangelogTool/tests

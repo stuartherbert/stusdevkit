@@ -22,7 +22,7 @@ LINK_CCK_SKILL=$(CLAUDECODEKIT)/bin/link-skill.sh
 list:
 	@grep -E '^[a-zA-Z%_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-init: docker-rebuild composer-install ## Initialize Docker dev environment
+init: configure-githooks docker-rebuild composer-install ## Initialize Docker dev environment
 
 claudecodekit: ## Link in Claude Code agents, skills, and hooks
 	@$(LINK_CCK_AGENT) $(CLAUDECODEKIT)/claude/php/agents/all-tests.md
@@ -61,6 +61,12 @@ clean: ## Remove all Docker containers, volumes, etc
 	docker compose down -v --rmi all --remove-orphans
 	rm -rf vendor
 
+changelog: ## Rebuild the CHANGELOG.md file
+	docker compose run --rm test-container-85 sh -c "php tools/ChangelogTool/bin/changelog-tool"
+
+configure-githooks: ## Configure git to use the project githooks
+	git config core.hooksPath .githooks
+
 shell: ## Open a shell on the test container
 	docker compose run --rm test-container-85 ash || true
 
@@ -78,7 +84,7 @@ phpstan: ## Run all static analysis checks
 	docker compose run --rm test-container-85 vendor/bin/phpstan $(PHPSTAN_XDEBUG) --memory-limit=-1 ${OPTS}
 
 syntax-check: ## Check all PHP files for syntax errors
-	@docker compose run --rm test-container-85 find kits/*/src kits/*/tests -name '*.php' | xargs php -l
+	@docker compose run --rm test-container-85 find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l
 
 test: unit ## Run all tests
 
@@ -93,6 +99,9 @@ unit-datetimekit: ## Run unit tests for the DateTimeKit
 
 unit-exceptionskit: ## Run unit tests for the ExceptionsKit
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-exceptionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+
+unit-changelogtool: ## Run unit tests for the ChangelogTool
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-changelogtool --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 coverage: ## run all test and report on code coverage
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) XDEBUG_MODE=coverage vendor/bin/phpunit --testsuite=unit ${OPTS} --coverage-html testcoverage "

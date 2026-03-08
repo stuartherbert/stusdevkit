@@ -5,6 +5,7 @@
     "license": "BSD-3-Clause",
     "autoload": {
         "psr-4": {
+            "StusDevKit\\ChangelogTool\\": "tools/ChangelogTool/src/",
             "StusDevKit\\CollectionsKit\\": "kits/collectionskit/src/",
             "StusDevKit\\DateTimeKit\\": "kits/datetimekit/src/",
             "StusDevKit\\ExceptionsKit\\": "kits/exceptionskit/src/"
@@ -12,6 +13,8 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "StusDevKit\\ChangelogTool\\Tests\\Unit\\": "tools/ChangelogTool/tests/unit/src",
+            "StusDevKit\\ChangelogTool\\Tests\\Fixtures\\": "tools/ChangelogTool/tests/fixtures/src",
             "StusDevKit\\CollectionsKit\\Tests\\Unit\\": "kits/collectionskit/tests/unit/src",
             "StusDevKit\\CollectionsKit\\Tests\\Fixtures\\": "kits/collectionskit/tests/fixtures/src",
             "StusDevKit\\DateTimeKit\\Tests\\Unit\\": "kits/datetimekit/tests/unit/src",
@@ -20,6 +23,7 @@
             "StusDevKit\\ExceptionsKit\\TestFixtures\\": "kits/exceptionskit/tests/fixtures/src"
         }
     },
+    "bin": ["tools/ChangelogTool/bin/changelog-tool"],
     "authors": [
         {
             "name": "Stuart Herbert",
