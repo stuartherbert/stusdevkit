@@ -44,6 +44,29 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
 /**
  * DictOfNumbers holds a collection of numbers.
  *
+ * PHPSTAN NOTE:
+ *
+ * This class has template parameters (TKey, TValue) so that
+ * subclasses can narrow the allowed types. When you create
+ * an empty instance (e.g. `new DictOfNumbers()`), PHPStan
+ * resolves these templates as `*NEVER*` because the empty
+ * array `[]` has no elements to infer types from. This
+ * causes false errors on subsequent method calls like
+ * `mergeArray()` or `get()`.
+ *
+ * To work around this, add a `@var` annotation when creating
+ * empty instances:
+ *
+ *     // @var DictOfNumbers<string, int|float> $unit
+ *     $unit = new DictOfNumbers();
+ *
+ * This is a known PHPStan limitation. There is no support
+ * for template default types yet.
+ *
+ * @see https://github.com/phpstan/phpstan/issues/5065
+ * @see https://github.com/phpstan/phpstan/issues/4801
+ * @see https://github.com/phpstan/phpstan/discussions/6731
+ *
  * @template TKey of array-key
  * @template TValue of int|float
  * @template-extends CollectionAsDict<TKey, TValue>

@@ -44,9 +44,7 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
 /**
  * DictOfIntegers holds a collection of integers.
  *
- * @template TKey of array-key
- * @template TValue of integer
- * @template-extends DictOfNumbers<TKey, TValue>
+ * @template-extends DictOfNumbers<array-key, int>
  */
 class DictOfIntegers extends DictOfNumbers
 {

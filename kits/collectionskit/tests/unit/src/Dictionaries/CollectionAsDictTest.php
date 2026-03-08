@@ -538,7 +538,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        new CollectionAsDict(['name' => null]);
+        new CollectionAsDict(['name' => null]); // @phpstan-ignore argument.type
     }
 
     // ================================================================
@@ -799,6 +799,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // dictup your test
 
+        /** @var CollectionAsDict<string, string> $unit */
         $unit = new CollectionAsDict();
         $unit->set(key: 'name', value: 'alpha');
 
@@ -1384,6 +1385,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // dictup your test
 
+        /** @var CollectionAsDict<string, string> $unit */
         $unit = new CollectionAsDict();
         $toMerge = ['first' => 'alpha', 'second' => 'bravo'];
 
@@ -2170,6 +2172,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // dictup your test
 
+        /** @var CollectionAsDict<string, string> $unit */
         $unit = new CollectionAsDict();
         $other = new CollectionAsDict(['fourth' => 'delta']);
 

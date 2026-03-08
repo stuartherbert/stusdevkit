@@ -542,7 +542,7 @@ class DictOfStringsTest extends TestCase
         // test the results
 
         $this->assertSame('', $actualResult);
-        $this->assertNotNull($actualResult);
+        $this->assertNotSame(null, $actualResult);
     }
 
     #[TestDox('maybeGet() returns null for missing key')]

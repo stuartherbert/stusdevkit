@@ -542,7 +542,7 @@ class DictOfBooleansTest extends TestCase
         // test the results
 
         $this->assertFalse($actualResult);
-        $this->assertNotNull($actualResult);
+        $this->assertNotSame(null, $actualResult);
     }
 
     #[TestDox('maybeGet() returns null for missing key')]
@@ -2101,6 +2101,7 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfBooleans<string> $unit */
         $unit = new DictOfBooleans();
         $other = new DictOfBooleans(['dry_run' => true]);
 

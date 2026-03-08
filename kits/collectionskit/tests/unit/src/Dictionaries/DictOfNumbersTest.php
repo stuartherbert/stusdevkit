@@ -382,6 +382,7 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['value' => 5]);
 
         // ----------------------------------------------------------------
@@ -1008,6 +1009,7 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int> $unit */
         $unit = new DictOfNumbers();
         $unit->set(key: 'count', value: 42);
 
@@ -1482,6 +1484,7 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['count' => 5]);
 
         // ----------------------------------------------------------------
@@ -1518,7 +1521,9 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['count' => 5]);
+        /** @var DictOfNumbers<string, int|float> $other */
         $other = new DictOfNumbers([
             'price' => 1.99,
             'quantity' => 10,
@@ -1561,6 +1566,7 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['count' => 5]);
 
         // ----------------------------------------------------------------
@@ -1597,6 +1603,7 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers();
 
         // ----------------------------------------------------------------
@@ -1682,6 +1689,7 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['count' => 5]);
 
         // ----------------------------------------------------------------
@@ -1713,7 +1721,9 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['count' => 5]);
+        /** @var DictOfNumbers<string, int|float> $other */
         $other = new DictOfNumbers([
             'price' => 1.99,
             'quantity' => 10,
@@ -1750,7 +1760,9 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers(['count' => 5]);
+        /** @var DictOfNumbers<string, int|float> $other */
         $other = new DictOfNumbers(['price' => 1.99]);
 
         // ----------------------------------------------------------------
@@ -1803,10 +1815,12 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers([
             'count' => 5,
             'price' => 1.99,
         ]);
+        /** @var DictOfNumbers<string, int|float> $other */
         $other = new DictOfNumbers([
             'price' => 2.50,
             'total' => 12.50,
@@ -2377,7 +2391,9 @@ class DictOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var DictOfNumbers<string, int|float> $unit */
         $unit = new DictOfNumbers();
+        /** @var DictOfNumbers<string, int|float> $other */
         $other = new DictOfNumbers(['total' => 9.95]);
 
         // ----------------------------------------------------------------

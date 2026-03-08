@@ -44,9 +44,7 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
 /**
  * DictOfFloats holds a collection of floats.
  *
- * @template TKey of array-key
- * @template TValue of float
- * @template-extends DictOfNumbers<TKey, TValue>
+ * @template-extends DictOfNumbers<array-key, float>
  */
 class DictOfFloats extends DictOfNumbers
 {

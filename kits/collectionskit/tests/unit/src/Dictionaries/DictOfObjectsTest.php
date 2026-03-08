@@ -803,6 +803,7 @@ class DictOfObjectsTest extends TestCase
         // setup your test
 
         $obj = new stdClass();
+        /** @var DictOfObjects<string, stdClass> $unit */
         $unit = new DictOfObjects();
         $unit->set(key: 'item', value: $obj);
 
@@ -1409,6 +1410,7 @@ class DictOfObjectsTest extends TestCase
 
         $obj1 = new stdClass();
         $obj2 = new stdClass();
+        /** @var DictOfObjects<string, stdClass> $unit */
         $unit = new DictOfObjects();
 
         // ----------------------------------------------------------------
@@ -2233,6 +2235,7 @@ class DictOfObjectsTest extends TestCase
         $obj1 = new stdClass();
         $obj2 = new stdClass();
         $obj3 = new stdClass();
+        /** @var DictOfObjects<string, stdClass> $unit */
         $unit = new DictOfObjects();
         $other = new DictOfObjects(['third' => $obj3]);
 
@@ -2430,6 +2433,7 @@ class DictOfObjectsTest extends TestCase
 
         $obj = new stdClass();
         $obj->value = 'original';
+        /** @var DictOfObjects<string, stdClass> $unit */
         $unit = new DictOfObjects();
         $other = new DictOfObjects(['item' => $obj]);
 

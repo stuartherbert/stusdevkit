@@ -1733,14 +1733,18 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         // perform the change
 
         $copy = $unit->copy();
-        $copy->get((string) $uuid)->name = 'Alice Mutated';
+        /** @var EntityWithUuidFixture $copyEntity */
+        $copyEntity = $copy->get((string) $uuid);
+        $copyEntity->name = 'Alice Mutated';
 
         // ----------------------------------------------------------------
         // test the results
 
+        /** @var EntityWithUuidFixture $originalEntity */
+        $originalEntity = $unit->get((string) $uuid);
         $this->assertSame(
             'Alice Mutated',
-            $unit->get((string) $uuid)->name,
+            $originalEntity->name,
         );
     }
 
@@ -1978,15 +1982,18 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
+        /** @var EntityWithUuidFixture $retrieved */
         $retrieved = $unit->get((string) $uuid);
         $retrieved->name = 'Alice Updated';
 
         // ----------------------------------------------------------------
         // test the results
 
+        /** @var EntityWithUuidFixture $updatedEntity */
+        $updatedEntity = $unit->get((string) $uuid);
         $this->assertSame(
             'Alice Updated',
-            $unit->get((string) $uuid)->name,
+            $updatedEntity->name,
         );
     }
 

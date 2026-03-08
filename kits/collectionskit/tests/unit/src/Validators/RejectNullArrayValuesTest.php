@@ -77,7 +77,8 @@ class RejectNullArrayValuesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(true);
+        // if we get here without an exception, the test passes
+        $this->expectNotToPerformAssertions();
     }
 
     #[TestDox('Accepts an array with no null values')]
@@ -115,7 +116,8 @@ class RejectNullArrayValuesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(true);
+        // if we get here without an exception, the test passes
+        $this->expectNotToPerformAssertions();
     }
 
     #[TestDox('Throws NullValueNotAllowed when array contains null')]

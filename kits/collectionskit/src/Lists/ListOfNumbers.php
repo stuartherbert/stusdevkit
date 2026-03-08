@@ -54,6 +54,29 @@ namespace StusDevKit\CollectionsKit\Lists;
  *     $numbers->add(4.0);
  *     $numbers->add(5);
  *
+ * PHPSTAN NOTE:
+ *
+ * This class has a template parameter (TValue) so that
+ * subclasses can narrow the allowed types. When you create
+ * an empty instance (e.g. `new ListOfNumbers()`), PHPStan
+ * resolves this template as `*NEVER*` because the empty
+ * array `[]` has no elements to infer types from. This
+ * causes false errors on subsequent method calls like
+ * `mergeArray()` or `mergeSelf()`.
+ *
+ * To work around this, add a `@var` annotation when creating
+ * empty instances:
+ *
+ *     // @var ListOfNumbers<int> $unit
+ *     $unit = new ListOfNumbers();
+ *
+ * This is a known PHPStan limitation. There is no support
+ * for template default types yet.
+ *
+ * @see https://github.com/phpstan/phpstan/issues/5065
+ * @see https://github.com/phpstan/phpstan/issues/4801
+ * @see https://github.com/phpstan/phpstan/discussions/6731
+ *
  * @template TValue of int|float
  * @template-extends CollectionAsList<TValue>
  */

@@ -54,9 +54,30 @@ use StusDevKit\CollectionsKit\Validators\RejectNullValue;
  * Use CollectionAsDict (or one of its child classes) if your data has
  * an identity (ie, it has a primary key).
  *
+ * PHPSTAN NOTE:
+ *
+ * This class has a template parameter (TValue). When you
+ * create an empty instance (e.g. `new CollectionAsList()`),
+ * PHPStan resolves this template as `*NEVER*` because the
+ * empty array `[]` has no elements to infer types from. This
+ * causes false errors on subsequent method calls like
+ * `mergeArray()` or `mergeSelf()`.
+ *
+ * To work around this, add a `@var` annotation when creating
+ * empty instances:
+ *
+ *     // @var CollectionAsList<string> $unit
+ *     $unit = new CollectionAsList();
+ *
+ * This is a known PHPStan limitation. There is no support for
+ * template default types yet.
+ *
+ * @see https://github.com/phpstan/phpstan/issues/5065
+ * @see https://github.com/phpstan/phpstan/issues/4801
+ * @see https://github.com/phpstan/phpstan/discussions/6731
+ *
  * @template TValue of array|bool|callable|float|int|object|string
  * @extends CollectionOfAnything<int, TValue>
- * @method toArray() list<TValue>
  */
 class CollectionAsList extends CollectionOfAnything
 {

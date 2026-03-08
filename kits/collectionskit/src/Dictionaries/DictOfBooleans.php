@@ -44,6 +44,29 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
 /**
  * DictOfBooleans holds a collection of named true|false flags.
  *
+ * PHPSTAN NOTE:
+ *
+ * This class has a template parameter (TKey) so that
+ * subclasses can narrow the allowed key types. When you
+ * create an empty instance (e.g. `new DictOfBooleans()`),
+ * PHPStan resolves this template as `*NEVER*` because the
+ * empty array `[]` has no elements to infer types from.
+ * This causes false errors on subsequent method calls like
+ * `mergeArray()` or `mergeSelf()`.
+ *
+ * To work around this, add a `@var` annotation when creating
+ * empty instances:
+ *
+ *     // @var DictOfBooleans<string> $unit
+ *     $unit = new DictOfBooleans();
+ *
+ * This is a known PHPStan limitation. There is no support
+ * for template default types yet.
+ *
+ * @see https://github.com/phpstan/phpstan/issues/5065
+ * @see https://github.com/phpstan/phpstan/issues/4801
+ * @see https://github.com/phpstan/phpstan/discussions/6731
+ *
  * @template TKey of array-key
  * @template-extends CollectionAsDict<TKey, bool>
  */

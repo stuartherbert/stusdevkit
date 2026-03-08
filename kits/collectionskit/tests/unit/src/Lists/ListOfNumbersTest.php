@@ -1573,6 +1573,7 @@ class ListOfNumbersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var ListOfNumbers<int> $unit */
         $unit = new ListOfNumbers();
         $other = new ListOfNumbers([40]);
 

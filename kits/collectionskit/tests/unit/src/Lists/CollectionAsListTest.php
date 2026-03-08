@@ -1518,6 +1518,7 @@ class CollectionAsListTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var CollectionAsList<string> $unit */
         $unit = new CollectionAsList();
         $other = new CollectionAsList(['delta']);
 

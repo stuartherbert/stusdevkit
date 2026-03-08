@@ -1704,14 +1704,18 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // perform the change
 
         $copy = $unit->copy();
-        $copy->get('user-001')->name = 'Alice Mutated';
+        /** @var EntityWithStringIdFixture $copyEntity */
+        $copyEntity = $copy->get('user-001');
+        $copyEntity->name = 'Alice Mutated';
 
         // ----------------------------------------------------------------
         // test the results
 
+        /** @var EntityWithStringIdFixture $originalEntity */
+        $originalEntity = $unit->get('user-001');
         $this->assertSame(
             'Alice Mutated',
-            $unit->get('user-001')->name,
+            $originalEntity->name,
         );
     }
 
@@ -1975,15 +1979,18 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
+        /** @var EntityWithStringIdFixture $retrieved */
         $retrieved = $unit->get('user-001');
         $retrieved->name = 'Alice Updated';
 
         // ----------------------------------------------------------------
         // test the results
 
+        /** @var EntityWithStringIdFixture $updatedEntity */
+        $updatedEntity = $unit->get('user-001');
         $this->assertSame(
             'Alice Updated',
-            $unit->get('user-001')->name,
+            $updatedEntity->name,
         );
     }
 

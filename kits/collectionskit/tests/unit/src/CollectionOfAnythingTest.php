@@ -508,6 +508,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
+        /** @var CollectionOfAnything<int, string> $unit */
         $unit = new CollectionOfAnything();
         $toMerge = ['alpha', 'bravo'];
 
@@ -1284,7 +1285,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        new CollectionOfAnything(['alpha', null, 'bravo']);
+        new CollectionOfAnything(['alpha', null, 'bravo']); // @phpstan-ignore argument.type
     }
 
     #[TestDox('mergeArray() rejects array containing null')]
@@ -1308,6 +1309,6 @@ class CollectionOfAnythingTest extends TestCase
 
         $this->expectException(NullValueNotAllowedException::class);
 
-        $unit->mergeArray(['bravo', null]);
+        $unit->mergeArray(['bravo', null]); // @phpstan-ignore argument.type
     }
 }

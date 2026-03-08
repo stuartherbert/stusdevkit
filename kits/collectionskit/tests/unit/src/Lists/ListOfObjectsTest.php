@@ -429,7 +429,7 @@ class ListOfObjectsTest extends TestCase
         // test the results
 
         $this->assertCount(1, $unit);
-        $this->assertSame('hello', $unit->first()->greet());
+        $this->assertSame('hello', $unit->first()->greet()); // @phpstan-ignore method.notFound
     }
 
     #[TestDox('add() accepts an ArrayObject')]
@@ -1783,7 +1783,7 @@ class ListOfObjectsTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('after', $unit->first()->value);
+        $this->assertSame('after', $unit->first()->value); // @phpstan-ignore property.notFound
     }
 
     #[TestDox('Can store objects of different classes')]

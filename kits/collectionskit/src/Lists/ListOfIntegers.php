@@ -53,8 +53,7 @@ namespace StusDevKit\CollectionsKit\Lists;
  *     $scores = new ListOfIntegers([10, 20, 30]);
  *     $scores->add(40);
  *
- * @template TValue of int
- * @template-extends ListOfNumbers<TValue>
+ * @template-extends ListOfNumbers<int>
  */
 class ListOfIntegers extends ListOfNumbers
 {

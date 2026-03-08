@@ -102,7 +102,7 @@ class RejectNullValueTest extends TestCase
         // test the results
 
         // if we get here without an exception, the test passes
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
     }
 
     #[TestDox('Throws NullValueNotAllowed for null value')]

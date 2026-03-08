@@ -53,8 +53,7 @@ namespace StusDevKit\CollectionsKit\Lists;
  *     $prices = new ListOfFloats([1.99, 2.50, 3.75]);
  *     $prices->add(4.25);
  *
- * @template TValue of float
- * @template-extends ListOfNumbers<TValue>
+ * @template-extends ListOfNumbers<float>
  */
 class ListOfFloats extends ListOfNumbers
 {
