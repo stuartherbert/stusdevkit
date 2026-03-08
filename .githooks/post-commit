@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# post-commit hook
+#
+# Automatically rebuilds CHANGELOG.md and amends the commit
+# to include it. Only runs on the main branch.
+#
+# Uses a re-entrancy guard to prevent the amend from
+# re-triggering this hook.
+#
+# Install:
+#   git config core.hooksPath .githooks
+#
+
+set -euo pipefail
+
+# re-entrancy guard: skip if we're already running
+if [ -n "${CHANGELOG_HOOK_RUNNING:-}" ]; then
+    exit 0
+fi
+
+branch=$(git branch --show-current)
+if [ "$branch" = "main" ]; then
+    export CHANGELOG_HOOK_RUNNING=1
+    make changelog
+    if ! git diff --quiet CHANGELOG.md 2>/dev/null; then
+        git add CHANGELOG.md
+        git commit --amend --no-edit
+    fi
+fi

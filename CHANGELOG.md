@@ -26,7 +26,7 @@ This CHANGELOG is automatically compiled.
 
 ### Documentation
 
-- move CHANGELOG preamble into separate files, to improve readability ([b9d5f04](https://github.com/stuartherbert/stusdevkit/commit/b9d5f04)) — Stuart Herbert <stuart@stuartherbert.com>
+- move CHANGELOG preamble into separate files, to improve readability ([53fdfb6](https://github.com/stuartherbert/stusdevkit/commit/53fdfb6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
