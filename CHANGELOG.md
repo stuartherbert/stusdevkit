@@ -46,6 +46,7 @@ The full mapping of Git commit messages is controlled by [.versionrc.json](.vers
 
 ### Documentation
 
+- added initial README.md ([3cae8b9](https://github.com/stuartherbert/stusdevkit/commit/3cae8b9)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
 ### Refactoring
