@@ -41,7 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\CollectionsKit\Validators;
 
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 /**
  * RejectNullValue checks that a single value is not null.
@@ -75,7 +75,7 @@ class RejectNullValue
     ): void {
         if ($value === null) {
             throw new NullValueNotAllowedException(
-                collectionType: $collectionType,
+                detail: $collectionType . ' does not accept null values',
             );
         }
     }

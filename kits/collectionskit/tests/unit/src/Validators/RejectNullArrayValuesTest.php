@@ -40,7 +40,7 @@ namespace StusDevKit\CollectionsKit\Tests\Unit\Validators;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
 
 #[TestDox('RejectNullArrayValues')]

@@ -43,7 +43,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 #[TestDox('CollectionAsDict')]
 class CollectionAsDictTest extends TestCase

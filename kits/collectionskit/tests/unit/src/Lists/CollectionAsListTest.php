@@ -42,7 +42,7 @@ use ArrayIterator;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 use StusDevKit\CollectionsKit\Lists\CollectionAsList;
 
 #[TestDox('CollectionAsList')]

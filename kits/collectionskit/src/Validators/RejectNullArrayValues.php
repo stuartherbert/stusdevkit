@@ -41,7 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\CollectionsKit\Validators;
 
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 /**
  * RejectNullArrayValues checks that no values in an array
@@ -77,7 +77,7 @@ class RejectNullArrayValues
     ): void {
         if (in_array(null, $data, strict: true)) {
             throw new NullValueNotAllowedException(
-                collectionType: $collectionType,
+                detail: $collectionType . ' does not accept null values',
             );
         }
     }

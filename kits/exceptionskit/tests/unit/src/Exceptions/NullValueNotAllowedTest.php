@@ -36,14 +36,14 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\CollectionsKit\Tests\Unit\Exceptions;
+namespace StusDevKit\ExceptionsKit\Tests\Unit\Exceptions;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 use StusDevKit\ExceptionsKit\Exceptions\Rfc9457ProblemDetailsException;
 
-#[TestDox('NullValueNotAllowed')]
+#[TestDox('NullValueNotAllowedException')]
 class NullValueNotAllowedTest extends TestCase
 {
     // ================================================================
@@ -52,15 +52,14 @@ class NullValueNotAllowedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate with a collection type')]
-    public function test_can_instantiate_with_collection_type(): void
+    #[TestDox('Can instantiate with a detail string')]
+    public function test_can_instantiate_with_detail(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that we can create a
-        // NullValueNotAllowed exception with a collection
-        // type string
+        // NullValueNotAllowedException with a detail string
 
         // ----------------------------------------------------------------
         // setup your test
@@ -71,7 +70,7 @@ class NullValueNotAllowedTest extends TestCase
         // perform the change
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'ListOfStrings',
+            detail: 'ListOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -86,8 +85,8 @@ class NullValueNotAllowedTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that NullValueNotAllowed is an
-        // Rfc9457ProblemDetailsException
+        // this test proves that NullValueNotAllowedException is
+        // an Rfc9457ProblemDetailsException
 
         // ----------------------------------------------------------------
         // setup your test
@@ -98,7 +97,7 @@ class NullValueNotAllowedTest extends TestCase
         // perform the change
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'ListOfStrings',
+            detail: 'ListOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -129,7 +128,7 @@ class NullValueNotAllowedTest extends TestCase
         // setup your test
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'ListOfStrings',
+            detail: 'ListOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -159,7 +158,7 @@ class NullValueNotAllowedTest extends TestCase
         // setup your test
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'ListOfStrings',
+            detail: 'ListOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -173,21 +172,20 @@ class NullValueNotAllowedTest extends TestCase
         $this->assertSame(422, $actualResult);
     }
 
-    #[TestDox('Title includes the collection type')]
-    public function test_title_includes_collection_type(): void
+    #[TestDox('Has fixed title')]
+    public function test_has_fixed_title(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that the exception title includes
-        // the collection type so the caller knows which
-        // collection rejected the value
+        // this test proves that the exception has a fixed title
+        // of 'Null value not allowed'
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'DictOfStrings',
+            detail: 'ListOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -199,25 +197,25 @@ class NullValueNotAllowedTest extends TestCase
         // test the results
 
         $this->assertSame(
-            'DictOfStrings does not accept null values',
+            'Null value not allowed',
             $actualResult,
         );
     }
 
-    #[TestDox('Detail includes the collection type')]
-    public function test_detail_includes_collection_type(): void
+    #[TestDox('Detail matches the provided string')]
+    public function test_detail_matches_provided_string(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that the exception detail includes
-        // the collection type
+        // this test proves that the exception detail matches
+        // the string passed to the constructor
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'DictOfStrings',
+            detail: 'DictOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -229,25 +227,25 @@ class NullValueNotAllowedTest extends TestCase
         // test the results
 
         $this->assertSame(
-            'DictOfStrings received a null value',
+            'DictOfStrings does not accept null values',
             $actualResult,
         );
     }
 
-    #[TestDox('Exception message matches the title')]
-    public function test_exception_message_matches_title(): void
+    #[TestDox('Exception message matches the detail')]
+    public function test_exception_message_matches_detail(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that the standard exception message
-        // matches the RFC 9457 title field
+        // matches the detail string passed to the constructor
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new NullValueNotAllowedException(
-            collectionType: 'ListOfStrings',
+            detail: 'ListOfStrings does not accept null values',
         );
 
         // ----------------------------------------------------------------
@@ -259,7 +257,7 @@ class NullValueNotAllowedTest extends TestCase
         // test the results
 
         $this->assertSame(
-            'ListOfStrings received a null value',
+            'ListOfStrings does not accept null values',
             $actualResult,
         );
     }

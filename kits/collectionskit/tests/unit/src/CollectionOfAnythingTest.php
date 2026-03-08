@@ -43,7 +43,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use StusDevKit\CollectionsKit\CollectionOfAnything;
-use StusDevKit\CollectionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 #[TestDox('CollectionOfAnything')]
 class CollectionOfAnythingTest extends TestCase

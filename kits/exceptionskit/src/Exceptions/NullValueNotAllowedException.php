@@ -39,31 +39,29 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\CollectionsKit\Exceptions;
-
-use StusDevKit\ExceptionsKit\Exceptions\Rfc9457ProblemDetailsException;
+namespace StusDevKit\ExceptionsKit\Exceptions;
 
 /**
- * NullValueNotAllowed is thrown when a null value is passed
- * to a collection that does not accept null values.
+ * NullValueNotAllowedException is thrown when a null value
+ * is encountered where null values are not permitted.
  *
  * Usage:
  *
- *     throw new NullValueNotAllowed(
- *         collectionType: 'ListOfStrings',
+ *     throw new NullValueNotAllowedException(
+ *         detail: 'ListOfStrings does not accept null values',
  *     );
  */
 class NullValueNotAllowedException extends Rfc9457ProblemDetailsException
 {
     public function __construct(
-        string $collectionType,
+        string $detail,
     ) {
         parent::__construct(
             // we have not sorted out documentation yet!
             type: 'https://example.com/errors/null-value-not-allowed',
             status: 422,
-            title: $collectionType . ' does not accept null values',
-            detail: $collectionType . ' received a null value',
+            title: 'Null value not allowed',
+            detail: $detail,
         );
     }
 }
