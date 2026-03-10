@@ -47,6 +47,7 @@ use PHPUnit\Framework\TestCase;
 use StusDevKit\AssertionsKit\Assert;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\AssertionsKit\Tests\Fixtures\ValueObject;
+use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 
 #[TestDox('Assert')]
 class AssertTest extends TestCase
@@ -2302,6 +2303,60 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('assertObjectEquals() throws InvalidArgumentException when method does not exist')]
+    public function test_assertObjectEquals_throws_InvalidArgumentException_when_method_missing(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertObjectEquals throws
+        // InvalidArgumentException when the comparator
+        // method does not exist on the actual object.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = new ValueObject(value: 42);
+        $actual = new ValueObject(value: 42);
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertObjectEquals(
+            expected: $expected,
+            actual: $actual,
+            method: 'nonExistentMethod',
+        );
+    }
+
+    #[TestDox('assertObjectNotEquals() throws InvalidArgumentException when method does not exist')]
+    public function test_assertObjectNotEquals_throws_InvalidArgumentException_when_method_missing(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertObjectNotEquals throws
+        // InvalidArgumentException when the comparator
+        // method does not exist on the actual object.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = new ValueObject(value: 42);
+        $actual = new ValueObject(value: 42);
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertObjectNotEquals(
+            expected: $expected,
+            actual: $actual,
+            method: 'nonExistentMethod',
+        );
+    }
+
     // ================================================================
     //
     // Identity Assertions
@@ -2656,6 +2711,54 @@ class AssertTest extends TestCase
 
         Assert::assertArrayNotHasKey(
             key: 'a',
+            array: ['a' => 1],
+        );
+    }
+
+    #[TestDox('assertArrayHasKey() throws InvalidArgumentException when key is not int or string')]
+    public function test_assertArrayHasKey_throws_InvalidArgumentException_when_key_is_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertArrayHasKey throws
+        // InvalidArgumentException when the key is not
+        // an int or string.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertArrayHasKey(
+            key: 1.5,
+            array: ['a' => 1],
+        );
+    }
+
+    #[TestDox('assertArrayNotHasKey() throws InvalidArgumentException when key is not int or string')]
+    public function test_assertArrayNotHasKey_throws_InvalidArgumentException_when_key_is_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertArrayNotHasKey throws
+        // InvalidArgumentException when the key is not
+        // an int or string.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertArrayNotHasKey(
+            key: 1.5,
             array: ['a' => 1],
         );
     }
@@ -4648,6 +4751,30 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('assertStringMatchesFormatFile() throws InvalidArgumentException when format file is not readable')]
+    public function test_assertStringMatchesFormatFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertStringMatchesFormatFile throws
+        // InvalidArgumentException when the format file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringMatchesFormatFile(
+            formatFile: '/nonexistent/path/format.txt',
+            string: 'hello',
+        );
+    }
+
     // ================================================================
     //
     // Regex Assertions
@@ -5365,6 +5492,30 @@ class AssertTest extends TestCase
         }
     }
 
+    #[TestDox('assertFileMatchesFormat() throws InvalidArgumentException when actual file is not readable')]
+    public function test_assertFileMatchesFormat_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileMatchesFormat throws
+        // InvalidArgumentException when the actual file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileMatchesFormat(
+            format: 'Hello %s',
+            actualFile: '/nonexistent/path/file.txt',
+        );
+    }
+
     /**
      * @covers ::assertFileMatchesFormatFile
      */
@@ -5433,6 +5584,57 @@ class AssertTest extends TestCase
         } finally {
             unlink($tmpFile);
         }
+    }
+
+    #[TestDox('assertFileMatchesFormatFile() throws InvalidArgumentException when format file is not readable')]
+    public function test_assertFileMatchesFormatFile_throws_InvalidArgumentException_when_formatFile_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileMatchesFormatFile throws
+        // InvalidArgumentException when the format file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileMatchesFormatFile(
+            formatFile: '/nonexistent/path/format.txt',
+            actualFile: __FILE__,
+        );
+    }
+
+    #[TestDox('assertFileMatchesFormatFile() throws InvalidArgumentException when actual file is not readable')]
+    public function test_assertFileMatchesFormatFile_throws_InvalidArgumentException_when_actualFile_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileMatchesFormatFile throws
+        // InvalidArgumentException when the actual file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $formatFile = __DIR__
+            . '/../../fixtures/format-template.txt';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileMatchesFormatFile(
+            formatFile: $formatFile,
+            actualFile: '/nonexistent/path/file.txt',
+        );
     }
 
     // ================================================================
@@ -5713,6 +5915,150 @@ class AssertTest extends TestCase
         Assert::assertFileNotEqualsIgnoringCase(
             expected: $fixtureDir . 'hello.txt',
             actual: $fixtureDir . 'hello-uppercase.txt',
+        );
+    }
+
+    #[TestDox('assertFileEquals() throws InvalidArgumentException when file is not readable')]
+    public function test_assertFileEquals_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileEquals throws
+        // InvalidArgumentException when the expected
+        // file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileEquals(
+            expected: '/nonexistent/path/file.txt',
+            actual: __FILE__,
+        );
+    }
+
+    #[TestDox('assertFileEqualsCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    public function test_assertFileEqualsCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileEqualsCanonicalizing
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileEqualsCanonicalizing(
+            expected: '/nonexistent/path/file.txt',
+            actual: __FILE__,
+        );
+    }
+
+    #[TestDox('assertFileEqualsIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    public function test_assertFileEqualsIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileEqualsIgnoringCase throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileEqualsIgnoringCase(
+            expected: '/nonexistent/path/file.txt',
+            actual: __FILE__,
+        );
+    }
+
+    #[TestDox('assertFileNotEquals() throws InvalidArgumentException when file is not readable')]
+    public function test_assertFileNotEquals_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileNotEquals throws
+        // InvalidArgumentException when the expected
+        // file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileNotEquals(
+            expected: '/nonexistent/path/file.txt',
+            actual: __FILE__,
+        );
+    }
+
+    #[TestDox('assertFileNotEqualsCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    public function test_assertFileNotEqualsCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileNotEqualsCanonicalizing
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileNotEqualsCanonicalizing(
+            expected: '/nonexistent/path/file.txt',
+            actual: __FILE__,
+        );
+    }
+
+    #[TestDox('assertFileNotEqualsIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    public function test_assertFileNotEqualsIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertFileNotEqualsIgnoringCase
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileNotEqualsIgnoringCase(
+            expected: '/nonexistent/path/file.txt',
+            actual: __FILE__,
         );
     }
 
@@ -5997,6 +6343,152 @@ class AssertTest extends TestCase
         Assert::assertStringNotEqualsFileIgnoringCase(
             expectedFile: $fixtureDir . 'hello.txt',
             actualString: 'HELLO WORLD',
+        );
+    }
+
+    #[TestDox('assertStringEqualsFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertStringEqualsFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertStringEqualsFile throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringEqualsFile(
+            expectedFile: '/nonexistent/path/file.txt',
+            actualString: 'hello',
+        );
+    }
+
+    #[TestDox('assertStringEqualsFileCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    public function test_assertStringEqualsFileCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertStringEqualsFileCanonicalizing
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringEqualsFileCanonicalizing(
+            expectedFile: '/nonexistent/path/file.txt',
+            actualString: 'hello',
+        );
+    }
+
+    #[TestDox('assertStringEqualsFileIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    public function test_assertStringEqualsFileIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertStringEqualsFileIgnoringCase
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringEqualsFileIgnoringCase(
+            expectedFile: '/nonexistent/path/file.txt',
+            actualString: 'hello',
+        );
+    }
+
+    #[TestDox('assertStringNotEqualsFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertStringNotEqualsFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertStringNotEqualsFile throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringNotEqualsFile(
+            expectedFile: '/nonexistent/path/file.txt',
+            actualString: 'hello',
+        );
+    }
+
+    #[TestDox('assertStringNotEqualsFileCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    public function test_assertStringNotEqualsFileCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that
+        // assertStringNotEqualsFileCanonicalizing throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringNotEqualsFileCanonicalizing(
+            expectedFile: '/nonexistent/path/file.txt',
+            actualString: 'hello',
+        );
+    }
+
+    #[TestDox('assertStringNotEqualsFileIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    public function test_assertStringNotEqualsFileIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that
+        // assertStringNotEqualsFileIgnoringCase throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringNotEqualsFileIgnoringCase(
+            expectedFile: '/nonexistent/path/file.txt',
+            actualString: 'hello',
         );
     }
 
@@ -6319,6 +6811,102 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('assertJsonStringEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertJsonStringEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertJsonStringEqualsJsonFile
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertJsonStringEqualsJsonFile(
+            expectedFile: '/nonexistent/path/file.json',
+            actualJson: '{"key": "value"}',
+        );
+    }
+
+    #[TestDox('assertJsonStringNotEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertJsonStringNotEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertJsonStringNotEqualsJsonFile
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertJsonStringNotEqualsJsonFile(
+            expectedFile: '/nonexistent/path/file.json',
+            actualJson: '{"key": "value"}',
+        );
+    }
+
+    #[TestDox('assertJsonFileEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertJsonFileEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertJsonFileEqualsJsonFile throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertJsonFileEqualsJsonFile(
+            expectedFile: '/nonexistent/path/file.json',
+            actualFile: __FILE__,
+        );
+    }
+
+    #[TestDox('assertJsonFileNotEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertJsonFileNotEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertJsonFileNotEqualsJsonFile
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertJsonFileNotEqualsJsonFile(
+            expectedFile: '/nonexistent/path/file.json',
+            actualFile: __FILE__,
+        );
+    }
+
     // ================================================================
     //
     // XML Assertions
@@ -6407,6 +6995,54 @@ class AssertTest extends TestCase
         Assert::assertXmlStringNotEqualsXmlString(
             expectedXml: '<root><item>test</item></root>',
             actualXml: "<root>\n  <item>test</item>\n</root>",
+        );
+    }
+
+    #[TestDox('assertXmlStringEqualsXmlString() throws InvalidArgumentException when XML is invalid')]
+    public function test_assertXmlStringEqualsXmlString_throws_InvalidArgumentException_when_xml_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertXmlStringEqualsXmlString
+        // throws InvalidArgumentException when the
+        // expected XML string is not valid XML.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertXmlStringEqualsXmlString(
+            expectedXml: 'not valid xml',
+            actualXml: '<root/>',
+        );
+    }
+
+    #[TestDox('assertXmlStringNotEqualsXmlString() throws InvalidArgumentException when XML is invalid')]
+    public function test_assertXmlStringNotEqualsXmlString_throws_InvalidArgumentException_when_xml_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertXmlStringNotEqualsXmlString
+        // throws InvalidArgumentException when the
+        // expected XML string is not valid XML.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertXmlStringNotEqualsXmlString(
+            expectedXml: 'not valid xml',
+            actualXml: '<root/>',
         );
     }
 
@@ -6591,6 +7227,102 @@ class AssertTest extends TestCase
         Assert::assertXmlFileNotEqualsXmlFile(
             expectedFile: $fixtureDir . 'valid.xml',
             actualFile: $fixtureDir . 'valid-equivalent.xml',
+        );
+    }
+
+    #[TestDox('assertXmlStringEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertXmlStringEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertXmlStringEqualsXmlFile throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertXmlStringEqualsXmlFile(
+            expectedFile: '/nonexistent/path/file.xml',
+            actualXml: '<root/>',
+        );
+    }
+
+    #[TestDox('assertXmlStringNotEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertXmlStringNotEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertXmlStringNotEqualsXmlFile
+        // throws InvalidArgumentException when the
+        // expected file does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertXmlStringNotEqualsXmlFile(
+            expectedFile: '/nonexistent/path/file.xml',
+            actualXml: '<root/>',
+        );
+    }
+
+    #[TestDox('assertXmlFileEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertXmlFileEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertXmlFileEqualsXmlFile throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertXmlFileEqualsXmlFile(
+            expectedFile: '/nonexistent/path/file.xml',
+            actualFile: __FILE__,
+        );
+    }
+
+    #[TestDox('assertXmlFileNotEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    public function test_assertXmlFileNotEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+        //
+        // Verify that assertXmlFileNotEqualsXmlFile throws
+        // InvalidArgumentException when the expected file
+        // does not exist or is not readable.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertXmlFileNotEqualsXmlFile(
+            expectedFile: '/nonexistent/path/file.xml',
+            actualFile: __FILE__,
         );
     }
 }

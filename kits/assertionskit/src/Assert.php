@@ -46,6 +46,7 @@ use Countable;
 use PHPUnit\Framework\Constraint\Constraint;
 use StusDevKit\AssertionsKit\Contracts\Assert as AssertContract;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
+use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 
 /**
  * Concrete implementation of the Assert contract.
@@ -84,13 +85,9 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!is_int($key) && !is_string($key)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that an array has a key',
-                extra: [
-                    'key' => self::exportValue($key),
-                    'reason' => 'key must be int or string',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$key must be int or string, got '
+                    . get_debug_type($key),
             );
         }
 
@@ -124,13 +121,9 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!is_int($key) && !is_string($key)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that an array does not have a key',
-                extra: [
-                    'key' => self::exportValue($key),
-                    'reason' => 'key must be int or string',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$key must be int or string, got '
+                    . get_debug_type($key),
             );
         }
 
@@ -1597,14 +1590,10 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!method_exists($actual, $method)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that two objects are equal',
-                extra: [
-                    'expected' => get_debug_type($expected),
-                    'actual' => get_debug_type($actual),
-                    'reason' => 'Method ' . $method . '() does not exist on ' . get_debug_type($actual),
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$method ' . $method
+                    . '() does not exist on '
+                    . get_debug_type($actual),
             );
         }
 
@@ -1636,14 +1625,10 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!method_exists($actual, $method)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that two objects are not equal',
-                extra: [
-                    'expected' => get_debug_type($expected),
-                    'actual' => get_debug_type($actual),
-                    'reason' => 'Method ' . $method . '() does not exist on ' . get_debug_type($actual),
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$method ' . $method
+                    . '() does not exist on '
+                    . get_debug_type($actual),
             );
         }
 
@@ -3596,26 +3581,18 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!is_file($formatFile) || !is_readable($formatFile)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a string matches a format file',
-                extra: [
-                    'formatFile' => self::exportValue($formatFile),
-                    'reason' => 'file does not exist or is not readable',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$formatFile does not exist or is not'
+                    . ' readable: ' . $formatFile,
             );
         }
 
         $format = file_get_contents($formatFile);
 
         if ($format === false) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a string matches a format file',
-                extra: [
-                    'formatFile' => self::exportValue($formatFile),
-                    'reason' => 'could not read file',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$formatFile could not be read: '
+                    . $formatFile,
             );
         }
 
@@ -4070,26 +4047,18 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!is_file($actualFile) || !is_readable($actualFile)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a file matches a format',
-                extra: [
-                    'actualFile' => self::exportValue($actualFile),
-                    'reason' => 'file does not exist or is not readable',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$actualFile does not exist or is not'
+                    . ' readable: ' . $actualFile,
             );
         }
 
         $actual = file_get_contents($actualFile);
 
         if ($actual === false) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a file matches a format',
-                extra: [
-                    'actualFile' => self::exportValue($actualFile),
-                    'reason' => 'could not read file',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$actualFile could not be read: '
+                    . $actualFile,
             );
         }
 
@@ -4125,50 +4094,34 @@ class Assert implements AssertContract
         string $message = '',
     ): void {
         if (!is_file($formatFile) || !is_readable($formatFile)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a file matches a format file',
-                extra: [
-                    'formatFile' => self::exportValue($formatFile),
-                    'reason' => 'format file does not exist or is not readable',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$formatFile does not exist or is not'
+                    . ' readable: ' . $formatFile,
             );
         }
 
         if (!is_file($actualFile) || !is_readable($actualFile)) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a file matches a format file',
-                extra: [
-                    'actualFile' => self::exportValue($actualFile),
-                    'reason' => 'actual file does not exist or is not readable',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$actualFile does not exist or is not'
+                    . ' readable: ' . $actualFile,
             );
         }
 
         $format = file_get_contents($formatFile);
 
         if ($format === false) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a file matches a format file',
-                extra: [
-                    'formatFile' => self::exportValue($formatFile),
-                    'reason' => 'could not read format file',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$formatFile could not be read: '
+                    . $formatFile,
             );
         }
 
         $actual = file_get_contents($actualFile);
 
         if ($actual === false) {
-            throw new AssertionFailedException(
-                title: 'Failed asserting that a file matches a format file',
-                extra: [
-                    'actualFile' => self::exportValue($actualFile),
-                    'reason' => 'could not read actual file',
-                ],
-                detail: $message,
+            throw new InvalidArgumentException(
+                detail: '$actualFile could not be read: '
+                    . $actualFile,
             );
         }
 
@@ -4688,7 +4641,7 @@ class Assert implements AssertContract
      * - a label for the file (used in error messages)
      * @return string
      * - the file contents
-     * @throws AssertionFailedException
+     * @throws InvalidArgumentException
      * - if the file does not exist or cannot be read
      */
     private static function readFileContents(
@@ -4696,24 +4649,19 @@ class Assert implements AssertContract
         string $label,
     ): string {
         if (!is_file($filePath) || !is_readable($filePath)) {
-            throw new AssertionFailedException(
-                title: 'Failed to read file',
-                extra: [
-                    $label => self::exportValue($filePath),
-                    'reason' => 'file does not exist or is not readable',
-                ],
+            throw new InvalidArgumentException(
+                detail: '$' . $label
+                    . ' does not exist or is not readable: '
+                    . $filePath,
             );
         }
 
         $contents = file_get_contents($filePath);
 
         if ($contents === false) {
-            throw new AssertionFailedException(
-                title: 'Failed to read file',
-                extra: [
-                    $label => self::exportValue($filePath),
-                    'reason' => 'could not read file',
-                ],
+            throw new InvalidArgumentException(
+                detail: '$' . $label
+                    . ' could not be read: ' . $filePath,
             );
         }
 
@@ -4727,7 +4675,7 @@ class Assert implements AssertContract
      * - the XML string to parse
      * @return \DOMDocument
      * - the parsed document
-     * @throws AssertionFailedException
+     * @throws InvalidArgumentException
      * - if the XML cannot be parsed
      */
     private static function loadXmlString(
@@ -4741,11 +4689,8 @@ class Assert implements AssertContract
         $result = $doc->loadXML($xml, LIBXML_NOERROR);
 
         if ($result === false) {
-            throw new AssertionFailedException(
-                title: 'Failed to parse XML string',
-                extra: [
-                    'xml' => $xml,
-                ],
+            throw new InvalidArgumentException(
+                detail: '$xml is not valid XML',
             );
         }
 

@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ExceptionsKit
 
-- added InvalidArgumentException ([f3fba4b](https://github.com/stuartherbert/stusdevkit/commit/f3fba4b)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 
@@ -41,3 +41,7 @@ This CHANGELOG is automatically compiled.
 ### Refactoring
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### AssertionsKit
+
+- now throws InvalidArgumentException where appopriate ([38811b4](https://github.com/stuartherbert/stusdevkit/commit/38811b4)) — Stuart Herbert <stuart@stuartherbert.com>
