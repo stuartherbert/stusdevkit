@@ -20,9 +20,13 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### ExceptionsKit
+
+- added InvalidArgumentException ([f3fba4b](https://github.com/stuartherbert/stusdevkit/commit/f3fba4b)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
-- initial build of PHPUnit assertions API ([e91e737](https://github.com/stuartherbert/stusdevkit/commit/e91e737)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial build of PHPUnit assertions API ([b9e9711](https://github.com/stuartherbert/stusdevkit/commit/b9e9711)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### changelog-tool
 
