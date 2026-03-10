@@ -8,6 +8,7 @@
             "StusDevKit\\ChangelogTool\\": "tools/ChangelogTool/src/",
             "StusDevKit\\CollectionsKit\\": "kits/collectionskit/src/",
             "StusDevKit\\DateTimeKit\\": "kits/datetimekit/src/",
+            "StusDevKit\\AssertionsKit\\": "kits/assertionskit/src/",
             "StusDevKit\\ExceptionsKit\\": "kits/exceptionskit/src/"
         }
     },
@@ -19,6 +20,8 @@
             "StusDevKit\\CollectionsKit\\Tests\\Fixtures\\": "kits/collectionskit/tests/fixtures/src",
             "StusDevKit\\DateTimeKit\\Tests\\Unit\\": "kits/datetimekit/tests/unit/src",
             "StusDevKit\\DateTimeKit\\TestFixtures\\": "kits/datetimekit/tests/fixtures/src",
+            "StusDevKit\\AssertionsKit\\Tests\\Unit\\": "kits/assertionskit/tests/unit/src",
+            "StusDevKit\\AssertionsKit\\Tests\\Fixtures\\": "kits/assertionskit/tests/fixtures/src",
             "StusDevKit\\ExceptionsKit\\Tests\\Unit\\": "kits/exceptionskit/tests/unit/src",
             "StusDevKit\\ExceptionsKit\\TestFixtures\\": "kits/exceptionskit/tests/fixtures/src"
         }
@@ -31,11 +34,11 @@
         }
     ],
     "require": {
+        "phpstan/phpstan": "^2.1.38",
         "ramsey/uuid": "^4.9"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "^3.1",
-        "phpstan/phpstan": "^2.1.38",
         "phpunit/phpunit": "^13.0",
         "roave/security-advisories": "dev-latest"
     },

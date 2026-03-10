@@ -30,6 +30,7 @@ The primary goal of this project is to provide a PHP framework that will be stab
 
 | Kit | Namespace | Purpose |
 |-----|-----------|---------|
+| assertionskit | `StusDevKit\AssertionsKit` | Interfaces (contracts) describing assertion methods |
 | collectionskit | `StusDevKit\CollectionsKit` | Type-safe data collection classes (lists, dictionaries, indexes) |
 | datetimekit | `StusDevKit\DateTimeKit` | DateTime utilities (When, Now) for CLI and HTTP apps |
 | exceptionskit | `StusDevKit\ExceptionsKit` | RFC 9457 problem details exceptions |

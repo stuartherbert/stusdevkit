@@ -7,7 +7,7 @@ Stu's Dev Kit is a PHP framework with this mission:
 - building blocks for assembling the things you need to build
 - in a way that will last.
 
-You're probably here to see the _what_. If you want to learn more about the _how_ and the _why_, head on over to the [Objectives](./docs/00-Introduction/OBJECTIVES.md) docs to learn more.
+You're probably here to see the _what_. If you want to learn more about the _how_ and the _why_, head on over to the [Objectives](./docs/00-Introduction/Objectives.md) docs to learn more.
 
 ## Key Concepts
 
@@ -27,7 +27,7 @@ Here are some of the principles that guides the design of Stu's Dev Kit.
   - focus on forward-compatible code
   - minimal third-party dependencies
 
-We keep the full list over in our [Engineering Standards](./docs/00-Introduction/ENGINEERING_STANDARDS.md).
+We keep the full list over in our [Engineering Standards](./docs/00-Introduction/01-Engineering-Standards/).
 
 ### Kits And Tools
 

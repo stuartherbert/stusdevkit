@@ -20,10 +20,14 @@
 >
     <testsuites>
         <testsuite name="unit">
+            <directory suffix="Test.php">kits/assertionskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/collectionskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/datetimekit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
             <directory suffix="Test.php">tools/ChangelogTool/tests/unit/src</directory>
+        </testsuite>
+        <testsuite name="unit-assertionskit">
+            <directory suffix="Test.php">kits/assertionskit/tests/unit/src</directory>
         </testsuite>
         <testsuite name="unit-collectionskit">
             <directory suffix="Test.php">kits/collectionskit/tests/unit/src</directory>
@@ -40,6 +44,7 @@
     </testsuites>
     <source>
         <include>
+            <directory suffix=".php">kits/assertionskit/src</directory>
             <directory suffix=".php">kits/collectionskit/src</directory>
             <directory suffix=".php">kits/datetimekit/src</directory>
             <directory suffix=".php">kits/exceptionskit/src</directory>

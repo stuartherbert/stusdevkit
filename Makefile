@@ -91,6 +91,9 @@ test: unit ## Run all tests
 unit:  ## Run all unit tests
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
+unit-assertionskit: ## Run unit tests for the AssertionsKit
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-assertionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+
 unit-collectionskit: ## Run unit tests for the CollectionsKit
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-collectionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 

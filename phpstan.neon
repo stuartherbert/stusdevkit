@@ -2,9 +2,18 @@ parameters:
     level: max
     treatPhpDocTypesAsCertain: false
     paths:
+        - kits/assertionskit/src
+        - kits/assertionskit/tests
         - kits/collectionskit/src
         - kits/collectionskit/tests
         - kits/datetimekit/src
         - kits/datetimekit/tests
         - tools/ChangelogTool/src
         - tools/ChangelogTool/tests
+    ignoreErrors:
+        -
+            identifier: staticMethod.alreadyNarrowedType
+            path: kits/assertionskit/tests/unit/src/AssertTest.php
+        -
+            identifier: staticMethod.impossibleType
+            path: kits/assertionskit/tests/unit/src/AssertTest.php
