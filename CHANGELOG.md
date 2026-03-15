@@ -32,6 +32,13 @@ This CHANGELOG is automatically compiled.
 
 - added initial changelog-tool ([9ec9113](https://github.com/stuartherbert/stusdevkit/commit/9ec9113)) — Stuart Herbert <stuart@stuartherbert.com>
 
+### Bug Fixes
+
+
+#### AssertionsKit
+
+- Assert implementation now uses docblocks from parent interface ([dd83497](https://github.com/stuartherbert/stusdevkit/commit/dd83497)) — Stuart Herbert <stuart@stuartherbert.com>
+
 ### Documentation
 
 - move CHANGELOG preamble into separate files, to improve readability ([53fdfb6](https://github.com/stuartherbert/stusdevkit/commit/53fdfb6)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -44,4 +51,4 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- now throws InvalidArgumentException where appopriate ([38811b4](https://github.com/stuartherbert/stusdevkit/commit/38811b4)) — Stuart Herbert <stuart@stuartherbert.com>
+- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
