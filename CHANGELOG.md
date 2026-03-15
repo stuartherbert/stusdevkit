@@ -37,7 +37,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- Assert implementation now uses docblocks from parent interface ([dd83497](https://github.com/stuartherbert/stusdevkit/commit/dd83497)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 ### Documentation
 

@@ -44,7 +44,9 @@ namespace StusDevKit\AssertionsKit\Tests\Unit;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use StusDevKit\AssertionsKit\Assert;
+use StusDevKit\AssertionsKit\Contracts\Assert as AssertContract;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\AssertionsKit\Tests\Fixtures\ValueObject;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
@@ -52,6 +54,35 @@ use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 #[TestDox('Assert')]
 class AssertTest extends TestCase
 {
+    // ================================================================
+    //
+    // Interfaces
+    //
+    // ----------------------------------------------------------------
+
+    public function test_implements_Assert(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that our `Assert` class extends the `Assert`
+        // interface
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new Assert();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(AssertContract::class, $unit);
+    }
+
     // ================================================================
     //
     // Boolean Assertions
