@@ -41,9 +41,14 @@ This CHANGELOG is automatically compiled.
 
 ### Documentation
 
+- improve README for AssertionsKit ([38713af](https://github.com/stuartherbert/stusdevkit/commit/38713af)) — Stuart Herbert <stuart@stuartherbert.com>
 - move CHANGELOG preamble into separate files, to improve readability ([53fdfb6](https://github.com/stuartherbert/stusdevkit/commit/53fdfb6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### AssertionKit
+
+- add list of available methods ([e583f63](https://github.com/stuartherbert/stusdevkit/commit/e583f63)) — Stuart Herbert <stuart@stuartherbert.com>
 
 ### Refactoring
 
@@ -51,6 +56,6 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- Assert interface is now AssertApi, to reduce confusion ([651641a](https://github.com/stuartherbert/stusdevkit/commit/651641a)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
 - drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
 - now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
