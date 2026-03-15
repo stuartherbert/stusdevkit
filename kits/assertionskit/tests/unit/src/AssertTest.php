@@ -45,7 +45,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use StusDevKit\AssertionsKit\Assert;
-use StusDevKit\AssertionsKit\Contracts\Assert as AssertContract;
+use StusDevKit\AssertionsKit\Contracts\AssertApi;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\AssertionsKit\Tests\Fixtures\ValueObject;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
@@ -64,8 +64,8 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that our `Assert` class extends the `Assert`
-        // interface
+        // this test proves that our `Assert` class implements the
+        // `AssertApi` interface
 
         // ----------------------------------------------------------------
         // setup your test
@@ -79,7 +79,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(AssertContract::class, $unit);
+        $this->assertInstanceOf(AssertApi::class, $unit);
     }
 
     // ================================================================

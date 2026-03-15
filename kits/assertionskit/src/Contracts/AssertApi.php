@@ -56,7 +56,7 @@ use Countable;
  * All methods are static, matching PHPUnit's assertion
  * calling convention.
  */
-interface Assert
+interface AssertApi
 {
     // ================================================================
     //

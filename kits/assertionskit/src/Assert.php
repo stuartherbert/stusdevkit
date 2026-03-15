@@ -43,12 +43,12 @@ namespace StusDevKit\AssertionsKit;
 
 use ArrayAccess;
 use Countable;
-use StusDevKit\AssertionsKit\Contracts\Assert as AssertContract;
+use StusDevKit\AssertionsKit\Contracts\AssertApi;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 
 /**
- * Concrete implementation of the Assert contract.
+ * Concrete implementation of the AssertApi contract.
  *
  * Each assertion method contains its own checking logic
  * and throws AssertionFailedException on failure. This
@@ -63,7 +63,7 @@ use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
  *     Assert::assertEquals($expected, $actual);
  *     Assert::assertStringContainsString('needle', $haystack);
  */
-class Assert implements AssertContract
+class Assert implements AssertApi
 {
     // ================================================================
     //
