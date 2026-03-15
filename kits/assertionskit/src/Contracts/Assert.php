@@ -43,7 +43,6 @@ namespace StusDevKit\AssertionsKit\Contracts;
 
 use ArrayAccess;
 use Countable;
-use PHPUnit\Framework\Constraint\Constraint;
 
 /**
  * Describes all assertion methods available in PHPUnit's
@@ -1885,22 +1884,6 @@ interface Assert
     public static function assertXmlStringNotEqualsXmlString(
         string $expectedXml,
         string $actualXml,
-        string $message = '',
-    ): void;
-
-    // ================================================================
-    //
-    // Constraint Assertion
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * Evaluates a PHPUnit\Framework\Constraint matcher
-     * object.
-     */
-    public static function assertThat(
-        mixed $value,
-        Constraint $constraint,
         string $message = '',
     ): void;
 

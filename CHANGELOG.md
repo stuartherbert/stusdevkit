@@ -51,4 +51,5 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- drop `assertThat()` - not really a public assert API ([8ae8b6a](https://github.com/stuartherbert/stusdevkit/commit/8ae8b6a)) — Stuart Herbert <stuart@stuartherbert.com>
 - now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>

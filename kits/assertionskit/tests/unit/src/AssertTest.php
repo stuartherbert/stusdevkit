@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\AssertionsKit\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use StusDevKit\AssertionsKit\Assert;
@@ -2593,58 +2592,6 @@ class AssertTest extends TestCase
         Assert::assertObjectNotHasProperty(
             propertyName: 'value',
             object: $object,
-        );
-    }
-
-    // ================================================================
-    //
-    // Constraint Assertion
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('assertThat() passes when constraint is satisfied')]
-    public function test_assertThat_passes_when_constraint_is_satisfied(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-        //
-        // Verify that assertThat does not throw when the
-        // constraint evaluates to true.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertThat(
-            value: 42,
-            constraint: new IsEqual(42),
-        );
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('assertThat() throws when constraint is not satisfied')]
-    public function test_assertThat_throws_when_constraint_is_not_satisfied(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-        //
-        // Verify that assertThat throws when the constraint
-        // evaluates to false.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertThat(
-            value: 42,
-            constraint: new IsEqual(99),
         );
     }
 

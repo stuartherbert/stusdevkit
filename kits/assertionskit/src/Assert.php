@@ -43,7 +43,6 @@ namespace StusDevKit\AssertionsKit;
 
 use ArrayAccess;
 use Countable;
-use PHPUnit\Framework\Constraint\Constraint;
 use StusDevKit\AssertionsKit\Contracts\Assert as AssertContract;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
@@ -2440,31 +2439,6 @@ class Assert implements AssertContract
             extra: [
                 'expectedFile' => self::exportValue($expectedFile),
                 'actualString' => self::exportValue($actualString),
-            ],
-            detail: $message,
-        );
-    }
-
-    // ================================================================
-    //
-    // Constraint Assertion
-    //
-    // ----------------------------------------------------------------
-
-    public static function assertThat(
-        mixed $value,
-        Constraint $constraint,
-        string $message = '',
-    ): void {
-        if ($constraint->evaluate($value, '', true)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a value matches a constraint',
-            extra: [
-                'constraint' => $constraint->toString(),
-                'actual' => self::exportValue($value),
             ],
             detail: $message,
         );
