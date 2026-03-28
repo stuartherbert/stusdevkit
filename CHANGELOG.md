@@ -63,7 +63,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- Validate::boolean()->coerce() can now replace the default list of supported strings ([091a5d3](https://github.com/stuartherbert/stusdevkit/commit/091a5d3)) — Stuart Herbert <stuart@stuartherbert.com>
+- CoerceToDateTime is now able to accept a larger number of datetime formats ([613847b](https://github.com/stuartherbert/stusdevkit/commit/613847b)) — Stuart Herbert <stuart@stuartherbert.com>
+- Validate::boolean()->coerce() can now replace the default list of supported strings ([0939e7a](https://github.com/stuartherbert/stusdevkit/commit/0939e7a)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve implementation of CoerceToBoolean ([0e79a0f](https://github.com/stuartherbert/stusdevkit/commit/0e79a0f)) — Stuart Herbert <stuart@stuartherbert.com>
 - extract coercion code into separate classes ([ee29081](https://github.com/stuartherbert/stusdevkit/commit/ee29081)) — Stuart Herbert <stuart@stuartherbert.com>
 - issues are now returned as a ValidationIssuesList ([7f5ccf4](https://github.com/stuartherbert/stusdevkit/commit/7f5ccf4)) — Stuart Herbert <stuart@stuartherbert.com>

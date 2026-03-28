@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Coercions;
 
 use DateTimeImmutable;
-use DateTimeInterface;
 use Exception;
 use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 
@@ -70,15 +69,6 @@ final class CoerceToDateTime implements ValueCoercion
     public function coerce(mixed $data): mixed
     {
         if (is_string($data)) {
-            $dateTime = DateTimeImmutable::createFromFormat(
-                DateTimeInterface::ATOM,
-                $data,
-            );
-            if ($dateTime !== false) {
-                return $dateTime;
-            }
-
-            // try a more lenient parse
             try {
                 return new DateTimeImmutable($data);
             } catch (Exception) {
@@ -89,8 +79,7 @@ final class CoerceToDateTime implements ValueCoercion
         }
 
         if (is_int($data)) {
-            return (new DateTimeImmutable())
-                ->setTimestamp($data);
+            return new DateTimeImmutable('@' . $data);
         }
 
         return $data;
