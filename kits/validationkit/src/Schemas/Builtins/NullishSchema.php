@@ -95,24 +95,9 @@ class NullishSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    public function parseWithContext(
-        mixed $data,
-        ValidationContext $context,
-    ): mixed {
-        // null is allowed — return it without delegating
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-
-            return null;
-        }
-
-        // delegate to the inner schema
-        return $this->innerSchema->parseWithContext(
-            data: $data,
-            context: $context,
-        );
+    protected function acceptsNull(): bool
+    {
+        return true;
     }
 
     protected function expectedType(): string
@@ -124,7 +109,23 @@ class NullishSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): bool {
-        // handled by parseWithContext
+        // the inner schema handles type checking
         return true;
+    }
+
+    protected function validateChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // null is accepted by this schema
+        if ($data === null) {
+            return null;
+        }
+
+        // delegate to the inner schema
+        return $this->innerSchema->parseWithContext(
+            data: $data,
+            context: $context,
+        );
     }
 }

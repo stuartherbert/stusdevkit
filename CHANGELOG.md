@@ -62,9 +62,13 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ValidationLib
+
+- simplify processing pipeline ([35dc077](https://github.com/stuartherbert/stusdevkit/commit/35dc077)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ValidationKit
 
-- reduce number of schemas that need unique parsing pipelines ([91ca451](https://github.com/stuartherbert/stusdevkit/commit/91ca451)) — Stuart Herbert <stuart@stuartherbert.com>
+- reduce number of schemas that need unique parsing pipelines ([54d4bc3](https://github.com/stuartherbert/stusdevkit/commit/54d4bc3)) — Stuart Herbert <stuart@stuartherbert.com>
 - simplify transformers implementation ([db1e258](https://github.com/stuartherbert/stusdevkit/commit/db1e258)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up implementation of type coercion ([b5b86d2](https://github.com/stuartherbert/stusdevkit/commit/b5b86d2)) — Stuart Herbert <stuart@stuartherbert.com>
 - CoerceToDateTime is now able to accept a larger number of datetime formats ([3aa1d54](https://github.com/stuartherbert/stusdevkit/commit/3aa1d54)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -224,25 +224,15 @@ class ArraySchema extends BaseSchema
         return false;
     }
 
-    protected function checkConstraints(
+    /**
+     * validate each element against the element schema
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
 
-        // run array-level constraints (min, max, length)
-        parent::checkConstraints(
-            data: $data,
-            context: $context,
-        );
-
-        // stop if array-level constraints failed — don't
-        // validate elements
-        if ($context->hasIssues()) {
-            return;
-        }
-
-        // validate each element
         $index = 0;
         foreach ($data as $element) {
             $childContext = $context->atPath($index);
@@ -252,5 +242,7 @@ class ArraySchema extends BaseSchema
             );
             $index++;
         }
+
+        return $data;
     }
 }

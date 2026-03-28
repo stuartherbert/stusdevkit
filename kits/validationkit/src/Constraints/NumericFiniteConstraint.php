@@ -113,10 +113,10 @@ final class NumericFiniteConstraint implements ValidationConstraint
      *
      * @param int|float $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_int($data) || is_float($data));
 
         if (is_float($data) && ! is_finite($data)) {
@@ -125,5 +125,12 @@ final class NumericFiniteConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

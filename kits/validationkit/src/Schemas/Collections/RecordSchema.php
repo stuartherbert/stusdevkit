@@ -135,21 +135,14 @@ class RecordSchema extends BaseSchema
         return false;
     }
 
-    protected function checkConstraints(
+    /**
+     * validate each key and value against their schemas
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
-
-        // run any constraints added via withConstraint()
-        parent::checkConstraints(
-            data: $data,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return;
-        }
 
         foreach ($data as $key => $value) {
             // validate the key
@@ -166,5 +159,7 @@ class RecordSchema extends BaseSchema
                 context: $valueContext,
             );
         }
+
+        return $data;
     }
 }

@@ -41,27 +41,39 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
- * UpperCaseTransformer converts a string value to upper
- * case using mb_strtoupper for Unicode support.
+ * SuperRefineStep wraps a callable that has full access
+ * to the ValidationContext as a pipeline constraint.
  *
- * Usage:
+ * Used internally by the superRefine() builder method.
+ * The callable can add multiple custom issues with
+ * different codes and paths.
  *
- *     $transformer = new UpperCaseTransformer();
- *     $transformer->process('hello', $ctx); // 'HELLO'
+ * @phpstan-type SuperRefineCallable callable(mixed, ValidationContext): void
  */
-final class UpperCaseTransformer implements ValueTransformer
+final class SuperRefineStep implements ValidationConstraint
 {
+    /** @var SuperRefineCallable */
+    private readonly mixed $callable;
+
+    /**
+     * @param SuperRefineCallable $callable
+     */
+    public function __construct(callable $callable)
+    {
+        $this->callable = $callable;
+    }
+
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_string($data));
+        ($this->callable)($data, $context);
 
-        return mb_strtoupper($data);
+        return $data;
     }
 
     public function skipOnIssues(): bool

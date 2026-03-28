@@ -39,33 +39,44 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Transformers;
+namespace StusDevKit\ValidationKit\Contracts;
 
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
- * UpperCaseTransformer converts a string value to upper
- * case using mb_strtoupper for Unicode support.
+ * PipelineStep defines the contract for all steps in the
+ * validation pipeline — constraints, normalisers, and
+ * transforms.
  *
- * Usage:
+ * Steps are executed in the order they are added. Each
+ * step receives the current data and a validation context,
+ * and returns the (possibly modified) data.
  *
- *     $transformer = new UpperCaseTransformer();
- *     $transformer->process('hello', $ctx); // 'HELLO'
+ * Steps that should be skipped when prior issues exist
+ * (e.g. data transforms) return true from skipOnIssues().
+ * When the pipeline encounters such a step and there are
+ * issues, it stops executing.
  */
-final class UpperCaseTransformer implements ValueTransformer
+interface PipelineStep
 {
+    /**
+     * process the data
+     *
+     * Constraints validate and return $data unchanged.
+     * Normalisers and transforms return modified data.
+     */
     public function process(
         mixed $data,
         ValidationContext $context,
-    ): mixed {
-        assert(is_string($data));
+    ): mixed;
 
-        return mb_strtoupper($data);
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
-    }
+    /**
+     * should this step cause the pipeline to stop when
+     * prior issues exist?
+     *
+     * Return true for transforms (don't transform invalid
+     * data). Return false for constraints and normalisers
+     * (always run).
+     */
+    public function skipOnIssues(): bool;
 }

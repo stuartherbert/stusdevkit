@@ -131,10 +131,10 @@ final class StringIncludesConstraint implements ValidationConstraint
      *
      * @param string $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_string($data));
 
         if (! str_contains($data, $this->needle)) {
@@ -143,5 +143,12 @@ final class StringIncludesConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

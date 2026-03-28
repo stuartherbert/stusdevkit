@@ -101,10 +101,10 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
      *
      * @param array<mixed> $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
 
         foreach ($this->dependencies as $propertyName => $schema) {
@@ -115,5 +115,12 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
                 );
             }
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

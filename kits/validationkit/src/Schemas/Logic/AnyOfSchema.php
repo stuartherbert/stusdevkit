@@ -114,21 +114,29 @@ class AnyOfSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to try each schema
+     * null is allowed through to the child schemas
      */
-    public function parseWithContext(
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // child schemas handle type checking
+        return true;
+    }
+
+    /**
+     * try each schema in order; the first one that
+     * succeeds wins
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-        }
-
-        // try each schema — the first one that succeeds
-        // wins
         foreach ($this->schemas as $schema) {
             $childContext = new ValidationContext(
                 $context->path(),
@@ -139,33 +147,6 @@ class AnyOfSchema extends BaseSchema
             );
 
             if (! $childContext->hasIssues()) {
-                // run any constraints added via
-                // withConstraint()
-                $this->checkConstraints(
-                    data: $result,
-                    context: $context,
-                );
-
-                if ($context->hasIssues()) {
-                    return $result;
-                }
-
-                // run this schema's own pipeline
-                // (transform, refine, pipe)
-                /** @var array{mixed, bool} $pipelineResult */
-                $pipelineResult = $this->runPipeline(
-                    data: $result,
-                    context: $context,
-                );
-                $result = $pipelineResult[0];
-
-                if ($pipelineResult[1] && $this->pipeTarget !== null) {
-                    $result = $this->pipeTarget->parseWithContext(
-                        data: $result,
-                        context: $context,
-                    );
-                }
-
                 return $result;
             }
         }
@@ -178,13 +159,5 @@ class AnyOfSchema extends BaseSchema
         );
 
         return $data;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
     }
 }

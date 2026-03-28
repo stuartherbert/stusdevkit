@@ -54,10 +54,10 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 final class RejectEverythingConstraint implements ValidationConstraint
 {
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         $issue = new ValidationIssue(
             code: IssueCode::Custom,
             input: $data,
@@ -68,5 +68,12 @@ final class RejectEverythingConstraint implements ValidationConstraint
         $context->addExistingIssue(
             $issue->withPath($context->path()),
         );
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

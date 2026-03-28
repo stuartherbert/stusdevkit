@@ -45,6 +45,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Contracts\ValueTransformer;
+use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Transformers\UpperCaseTransformer;
 
 #[TestDox('UpperCaseTransformer')]
@@ -124,7 +125,7 @@ class UpperCaseTransformerTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->transform($inputValue);
+        $actualResult = $unit->process(data: $inputValue, context: new ValidationContext());
 
         // ----------------------------------------------------------------
         // test the results

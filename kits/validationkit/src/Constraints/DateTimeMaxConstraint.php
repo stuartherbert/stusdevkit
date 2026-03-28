@@ -114,10 +114,10 @@ final class DateTimeMaxConstraint implements ValidationConstraint
      *
      * @param DateTimeInterface $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert($data instanceof DateTimeInterface);
 
         if ($data > $this->date) {
@@ -126,5 +126,12 @@ final class DateTimeMaxConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

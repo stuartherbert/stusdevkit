@@ -42,6 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Transformers;
 
 use StusDevKit\ValidationKit\Contracts\ValueTransformer;
+use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
  * LowerCaseTransformer converts a string value to lower
@@ -50,14 +51,21 @@ use StusDevKit\ValidationKit\Contracts\ValueTransformer;
  * Usage:
  *
  *     $transformer = new LowerCaseTransformer();
- *     $transformer->transform('HELLO'); // 'hello'
+ *     $transformer->process('HELLO', $ctx); // 'hello'
  */
 final class LowerCaseTransformer implements ValueTransformer
 {
-    public function transform(mixed $data): mixed
-    {
+    public function process(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
         assert(is_string($data));
 
         return mb_strtolower($data);
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

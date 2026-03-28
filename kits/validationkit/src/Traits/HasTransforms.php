@@ -43,44 +43,23 @@ namespace StusDevKit\ValidationKit\Traits;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
+use StusDevKit\ValidationKit\Transformers\CallableTransform;
+use StusDevKit\ValidationKit\Transformers\RefineStep;
+use StusDevKit\ValidationKit\Transformers\SuperRefineStep;
 
 /**
  * HasTransforms provides transform(), refine(),
  * superRefine(), pipe(), and catch() methods for schemas.
  *
- * - transform() modifies validated data
+ * - transform() modifies validated data (skips on issues)
  * - refine() adds custom validation logic
  * - superRefine() adds advanced validation with multiple
  *   issues
  * - pipe() chains to another schema
  * - catch() provides a fallback on validation failure
- *
- * @phpstan-type RefinementEntry array{
- *     type: 'refine',
- *     callable: callable(mixed): bool,
- *     message: string,
- * }
- * @phpstan-type SuperRefinementEntry array{
- *     type: 'superRefine',
- *     callable: callable(mixed, ValidationContext): void,
- * }
- * @phpstan-type TransformEntry array{
- *     type: 'transform',
- *     callable: callable(mixed): mixed,
- * }
- * @phpstan-type PipelineEntry RefinementEntry
- *     |SuperRefinementEntry|TransformEntry
  */
 trait HasTransforms
 {
-    /**
-     * ordered list of refinements, super-refinements,
-     * and transforms to apply after constraint checks
-     *
-     * @var list<PipelineEntry>
-     */
-    protected array $pipeline = [];
-
     /** @var BaseSchema<mixed>|null */
     protected ?BaseSchema $pipeTarget = null;
 
@@ -99,21 +78,16 @@ trait HasTransforms
      * add a data transformation step
      *
      * The callable receives the validated data and returns
-     * the transformed value. Transforms run after all
-     * validations (type check, constraints, refinements)
-     * have passed.
+     * the transformed value. Transforms are skipped when
+     * prior pipeline steps have produced issues.
      *
      * @param callable(mixed): mixed $fn
      */
     public function transform(callable $fn): static
     {
-        $clone = clone $this;
-        $clone->pipeline[] = [
-            'type'     => 'transform',
-            'callable' => $fn,
-        ];
-
-        return $clone;
+        return $this->withStep(
+            new CallableTransform($fn),
+        );
     }
 
     /**
@@ -129,14 +103,12 @@ trait HasTransforms
      */
     public function refine(callable $fn, string $message): static
     {
-        $clone = clone $this;
-        $clone->pipeline[] = [
-            'type'     => 'refine',
-            'callable' => $fn,
-            'message'  => $message,
-        ];
-
-        return $clone;
+        return $this->withStep(
+            new RefineStep(
+                callable: $fn,
+                message: $message,
+            ),
+        );
     }
 
     /**
@@ -150,13 +122,9 @@ trait HasTransforms
      */
     public function superRefine(callable $fn): static
     {
-        $clone = clone $this;
-        $clone->pipeline[] = [
-            'type'     => 'superRefine',
-            'callable' => $fn,
-        ];
-
-        return $clone;
+        return $this->withStep(
+            new SuperRefineStep($fn),
+        );
     }
 
     /**

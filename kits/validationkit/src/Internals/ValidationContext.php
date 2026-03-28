@@ -144,6 +144,8 @@ final class ValidationContext
 
     /**
      * do we have any validation issues?
+     *
+     * @phpstan-impure
      */
     public function hasIssues(): bool
     {

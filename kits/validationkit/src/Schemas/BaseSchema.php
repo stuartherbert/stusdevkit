@@ -43,12 +43,10 @@ namespace StusDevKit\ValidationKit\Schemas;
 
 use StusDevKit\ValidationKit\Coercions\NoCoercion;
 use StusDevKit\ValidationKit\Contracts\Parseable;
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Contracts\PipelineStep;
 use StusDevKit\ValidationKit\Contracts\ValueCoercion;
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ParseResult;
 use StusDevKit\ValidationKit\Traits\HasErrorCallback;
 use StusDevKit\ValidationKit\Traits\HasMetadata;
@@ -64,16 +62,14 @@ use StusDevKit\ValidationKit\Traits\HasTransforms;
  * 1. Null/missing check with default value support
  * 2. Type coercion (if enabled)
  * 3. Type check (delegated to concrete schemas)
- * 3.5. Pre-constraint transformers (trim, etc.)
- * 4. Constraint checks (delegated to concrete schemas)
- * 5. Refinements and super-refinements
- * 6. Transforms
- * 7. Pipe to another schema
+ * 4. Validate children (e.g. object fields)
+ * 5. Pipeline steps (normalisers, constraints,
+ *    refinements, transforms — in order added)
+ * 6. Pipe to another schema
  *
- * Concrete schemas must implement checkType() and
- * checkConstraints(). Schemas that support type
- * coercion should provide their own coerce() builder
- * method.
+ * Concrete schemas must implement checkType(). Schemas
+ * that support type coercion should provide their own
+ * coerce() builder method.
  *
  * All builder methods return new instances (immutable
  * schemas).
@@ -90,11 +86,8 @@ abstract class BaseSchema implements Parseable
 
     protected ValueCoercion $coercion;
 
-    /** @var list<ValueTransformer> */
-    protected array $transformers = [];
-
-    /** @var list<ValidationConstraint> */
-    protected array $constraints = [];
+    /** @var list<PipelineStep> */
+    protected array $steps = [];
 
     public function __construct()
     {
@@ -108,18 +101,18 @@ abstract class BaseSchema implements Parseable
     // ----------------------------------------------------------------
 
     /**
-     * add a pre-constraint normaliser to this schema
+     * add a step to the pipeline
      *
-     * Returns a new schema instance with the normaliser
-     * appended to the normaliser list. Normalisers run
-     * in the order they are added, after the type check
-     * has passed but before constraint checks.
+     * Returns a new schema instance with the step
+     * appended. Steps run in the order they are added,
+     * after the type check and validateChildren have
+     * passed. Steps with skipOnIssues() returning true
+     * cause the pipeline to stop when prior issues exist.
      */
-    public function withNormaliser(
-        ValueTransformer $transformer,
-    ): static {
+    public function withStep(PipelineStep $step): static
+    {
         $clone = clone $this;
-        $clone->transformers[] = $transformer;
+        $clone->steps[] = $step;
 
         return $clone;
     }
@@ -127,18 +120,21 @@ abstract class BaseSchema implements Parseable
     /**
      * add a validation constraint to this schema
      *
-     * Returns a new schema instance with the constraint
-     * appended to the constraint list. Constraints are
-     * checked in the order they are added, after the
-     * type check has passed.
+     * Convenience method — equivalent to withStep().
      */
-    public function withConstraint(
-        ValidationConstraint $constraint,
-    ): static {
-        $clone = clone $this;
-        $clone->constraints[] = $constraint;
+    public function withConstraint(PipelineStep $step): static
+    {
+        return $this->withStep($step);
+    }
 
-        return $clone;
+    /**
+     * add a pre-constraint normaliser to this schema
+     *
+     * Convenience method — equivalent to withStep().
+     */
+    public function withNormaliser(PipelineStep $step): static
+    {
+        return $this->withStep($step);
     }
 
     // ================================================================
@@ -268,11 +264,6 @@ abstract class BaseSchema implements Parseable
             return $data;
         }
 
-        // step 3.5: pre-constraint normalisers
-        foreach ($this->transformers as $transformer) {
-            $data = $transformer->transform($data);
-        }
-
         // step 4: validate children (e.g. object fields)
         $data = $this->validateChildren(
             data: $data,
@@ -283,31 +274,23 @@ abstract class BaseSchema implements Parseable
             return $data;
         }
 
-        // step 5: constraint checks
-        $this->checkConstraints(
-            data: $data,
-            context: $context,
-        );
+        // step 5: pipeline steps (normalisers, constraints,
+        // refinements, transforms — in order added)
+        foreach ($this->steps as $step) {
+            if ($step->skipOnIssues() && $context->hasIssues()) {
+                break;
+            }
+            $data = $step->process(
+                data: $data,
+                context: $context,
+            );
+        }
 
         if ($context->hasIssues()) {
             return $data;
         }
 
-        // steps 5 + 6: refinements and transforms
-        // (interleaved in pipeline order)
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $data,
-            context: $context,
-        );
-        $data = $pipelineResult[0];
-        $pipelineClean = $pipelineResult[1];
-
-        if (! $pipelineClean) {
-            return $data;
-        }
-
-        // step 7: pipe to another schema
+        // step 6: pipe to another schema
         if ($this->pipeTarget !== null) {
             $data = $this->pipeTarget->parseWithContext(
                 data: $data,
@@ -376,87 +359,5 @@ abstract class BaseSchema implements Parseable
         ValidationContext $context,
     ): mixed {
         return $data;
-    }
-
-    /**
-     * check constraints (min, max, length, etc.)
-     *
-     * Only called if the type check passed. Iterates over
-     * all constraints added via withConstraint() and runs
-     * each one.
-     *
-     * Concrete schemas may override this to add additional
-     * logic before or after constraint checks.
-     */
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        foreach ($this->constraints as $constraint) {
-            $constraint->check(
-                data: $data,
-                context: $context,
-            );
-        }
-    }
-
-    // ================================================================
-    //
-    // Pipeline Execution
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * run the refinement/transform pipeline
-     *
-     * Entries are executed in the order they were added.
-     * If a refinement fails, subsequent entries are still
-     * executed (to collect all issues). If any issues exist
-     * after refinements, transforms are skipped.
-     *
-     * @return array{mixed, bool}
-     * - [0] the (possibly transformed) data
-     * - [1] true if the pipeline completed without issues
-     */
-    protected function runPipeline(
-        mixed $data,
-        ValidationContext $context,
-    ): array {
-        foreach ($this->pipeline as $entry) {
-            switch ($entry['type']) {
-                case 'refine':
-                    /** @var callable(mixed): bool $fn */
-                    $fn = $entry['callable'];
-                    $passed = $fn($data);
-                    if (! $passed) {
-                        /** @var non-empty-string $message */
-                        $message = $entry['message'];
-                        $context->addIssue(
-                            code: IssueCode::Custom,
-                            input: $data,
-                            message: $message,
-                        );
-                    }
-                    break;
-
-                case 'superRefine':
-                    /** @var callable(mixed, ValidationContext): void $fn */
-                    $fn = $entry['callable'];
-                    $fn($data, $context);
-                    break;
-
-                case 'transform':
-                    // only run transforms if no issues so far
-                    if ($context->hasIssues()) {
-                        return [$data, false];
-                    }
-                    /** @var callable(mixed): mixed $fn */
-                    $fn = $entry['callable'];
-                    $data = $fn($data);
-                    break;
-            }
-        }
-
-        return [$data, ! $context->hasIssues()];
     }
 }

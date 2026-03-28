@@ -144,33 +144,35 @@ class EnumSchema extends BaseSchema
         return 'enum';
     }
 
+    /**
+     * null is allowed through so that validateChildren
+     * can report the appropriate enum error
+     */
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
     protected function checkType(
         mixed $data,
         ValidationContext $context,
     ): bool {
-        // in enum mode, we do all checking in checkType
-        // since the result type changes (backing value →
-        // enum case)
+        // child validation handles type checking
         return true;
     }
 
     /**
-     * override parseWithContext to return the enum case
-     * in PHP enum mode
+     * check the value against the allowed enum values
+     * or PHP BackedEnum cases
      */
-    public function parseWithContext(
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
+        // null is not a valid enum value
         if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-
-            $this->invokeErrorCallback(
-                callback: $this->typeCheckError,
-                input: $data,
+            $this->reportInvalidEnum(
+                data: $data,
                 context: $context,
             );
 
@@ -180,31 +182,6 @@ class EnumSchema extends BaseSchema
         // string literal mode — return the value as-is
         if ($this->allowedValues !== null) {
             if (in_array($data, $this->allowedValues, true)) {
-                // run any constraints added via
-                // withConstraint()
-                $this->checkConstraints(
-                    data: $data,
-                    context: $context,
-                );
-
-                if ($context->hasIssues()) {
-                    return $data;
-                }
-
-                /** @var array{mixed, bool} $pipelineResult */
-                $pipelineResult = $this->runPipeline(
-                    data: $data,
-                    context: $context,
-                );
-                $data = $pipelineResult[0];
-
-                if ($pipelineResult[1] && $this->pipeTarget !== null) {
-                    $data = $this->pipeTarget->parseWithContext(
-                        data: $data,
-                        context: $context,
-                    );
-                }
-
                 return $data;
             }
 
@@ -229,31 +206,6 @@ class EnumSchema extends BaseSchema
 
             $enumCase = $this->enumClass::tryFrom($data);
             if ($enumCase !== null) {
-                // run any constraints added via
-                // withConstraint()
-                $this->checkConstraints(
-                    data: $enumCase,
-                    context: $context,
-                );
-
-                if ($context->hasIssues()) {
-                    return $enumCase;
-                }
-
-                /** @var array{mixed, bool} $pipelineResult */
-                $pipelineResult = $this->runPipeline(
-                    data: $enumCase,
-                    context: $context,
-                );
-                $enumCase = $pipelineResult[0];
-
-                if ($pipelineResult[1] && $this->pipeTarget !== null) {
-                    $enumCase = $this->pipeTarget->parseWithContext(
-                        data: $enumCase,
-                        context: $context,
-                    );
-                }
-
                 return $enumCase;
             }
 

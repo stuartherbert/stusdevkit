@@ -104,21 +104,30 @@ class ConditionalSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to implement if/then/else
-     * logic
+     * null is allowed through to the child schemas
      */
-    public function parseWithContext(
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // child schemas handle type checking
+        return true;
+    }
+
+    /**
+     * evaluate the if-schema condition, then apply the
+     * then or else schema accordingly
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-        }
-
-        // step 2: evaluate the condition in a child context
+        // evaluate the condition in a child context
         // so that its issues do not propagate
         $childContext = new ValidationContext(
             $context->path(),
@@ -128,12 +137,11 @@ class ConditionalSchema extends BaseSchema
             context: $childContext,
         );
 
-        // step 3: apply the appropriate branch
-        $result = $data;
+        // apply the appropriate branch
         if (! $childContext->hasIssues()) {
             // condition passed — apply `then` if present
             if ($this->then !== null) {
-                $result = $this->then->parseWithContext(
+                return $this->then->parseWithContext(
                     data: $data,
                     context: $context,
                 );
@@ -141,48 +149,13 @@ class ConditionalSchema extends BaseSchema
         } else {
             // condition failed — apply `else` if present
             if ($this->else !== null) {
-                $result = $this->else->parseWithContext(
+                return $this->else->parseWithContext(
                     data: $data,
                     context: $context,
                 );
             }
         }
 
-        // step 4: run any constraints added via
-        // withConstraint()
-        $this->checkConstraints(
-            data: $result,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return $result;
-        }
-
-        // step 5: run this schema's own pipeline
-        // (transform, refine, pipe)
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $result,
-            context: $context,
-        );
-        $result = $pipelineResult[0];
-
-        if ($pipelineResult[1] && $this->pipeTarget !== null) {
-            $result = $this->pipeTarget->parseWithContext(
-                data: $result,
-                context: $context,
-            );
-        }
-
-        return $result;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
+        return $data;
     }
 }

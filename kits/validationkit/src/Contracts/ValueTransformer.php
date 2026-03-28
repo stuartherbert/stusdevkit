@@ -42,27 +42,19 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Contracts;
 
 /**
- * ValueTransformer defines the contract for
- * pre-constraint data transformation commands.
+ * ValueTransformer is a pipeline step that modifies data
+ * without validating it.
  *
- * Transformers run after the type check has passed but
- * before constraint checks. They transform the data
- * in place so that constraints operate on the
- * transformed value.
+ * Normalisers (trim, lowercase, etc.) implement this
+ * interface. They always run and never skip on prior
+ * issues.
  *
  * Usage:
  *
  *     $transformer = new TrimTransformer();
- *     $result = $transformer->transform('  hello  ');
+ *     $result = $transformer->process('  hello  ', $ctx);
  *     // returns 'hello'
  */
-interface ValueTransformer
+interface ValueTransformer extends PipelineStep
 {
-    /**
-     * transform the input value
-     *
-     * Returns the transformed value. The input is
-     * guaranteed to have passed the type check.
-     */
-    public function transform(mixed $data): mixed;
 }

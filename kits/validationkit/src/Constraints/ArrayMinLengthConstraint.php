@@ -115,10 +115,10 @@ final class ArrayMinLengthConstraint implements ValidationConstraint
      *
      * @param array<mixed> $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
 
         if (count($data) < $this->length) {
@@ -127,5 +127,12 @@ final class ArrayMinLengthConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

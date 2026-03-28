@@ -41,27 +41,52 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\IssueCode;
 
 /**
- * UpperCaseTransformer converts a string value to upper
- * case using mb_strtoupper for Unicode support.
+ * RefineStep wraps a callable boolean check as a
+ * pipeline constraint.
  *
- * Usage:
+ * Used internally by the refine() builder method. The
+ * callable receives the data and returns true if valid,
+ * false if not. A false return adds a Custom issue with
+ * the given message.
  *
- *     $transformer = new UpperCaseTransformer();
- *     $transformer->process('hello', $ctx); // 'HELLO'
+ * @phpstan-type RefineCallable callable(mixed): bool
  */
-final class UpperCaseTransformer implements ValueTransformer
+final class RefineStep implements ValidationConstraint
 {
+    /** @var RefineCallable */
+    private readonly mixed $callable;
+
+    /**
+     * @param RefineCallable $callable
+     * @param non-empty-string $message
+     */
+    public function __construct(
+        callable $callable,
+        private readonly string $message,
+    ) {
+        $this->callable = $callable;
+    }
+
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_string($data));
+        $passed = ($this->callable)($data);
 
-        return mb_strtoupper($data);
+        if (! $passed) {
+            $context->addIssue(
+                code: IssueCode::Custom,
+                input: $data,
+                message: $this->message,
+            );
+        }
+
+        return $data;
     }
 
     public function skipOnIssues(): bool

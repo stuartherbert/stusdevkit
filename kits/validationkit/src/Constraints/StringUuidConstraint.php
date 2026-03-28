@@ -93,10 +93,10 @@ final class StringUuidConstraint implements ValidationConstraint
      *
      * @param string $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_string($data));
 
         $uuidPattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
@@ -106,5 +106,12 @@ final class StringUuidConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

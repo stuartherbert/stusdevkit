@@ -130,29 +130,30 @@ class DiscriminatedAnyOfSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to select the correct
-     * schema by discriminator value
+     * null is allowed through to the child schemas
      */
-    public function parseWithContext(
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // child schemas handle type checking
+        return true;
+    }
+
+    /**
+     * select the correct schema by discriminator value
+     * and return its result
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-
-            $this->invokeErrorCallback(
-                callback: $this->typeCheckError,
-                input: $data,
-                context: $context,
-            );
-
-            return null;
-        }
-
-        // step 2: type check — must be an array
+        // must be an array to have a discriminator field
         if (! is_array($data)) {
             $this->invokeErrorCallback(
                 callback: $this->typeCheckError,
@@ -163,7 +164,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
             return $data;
         }
 
-        // step 3: check discriminator field exists
+        // check discriminator field exists
         if (! array_key_exists($this->discriminator, $data)) {
             $context->addIssue(
                 code: IssueCode::InvalidUnion,
@@ -175,10 +176,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
             return $data;
         }
 
-        // step 4: find the matching schema by trying each
-        // one against the discriminator value
-        $discriminatorValue = $data[$this->discriminator];
-
+        // find the matching schema by trying each one
         foreach ($this->schemas as $schema) {
             $testContext = new ValidationContext(
                 $context->path(),
@@ -189,43 +187,10 @@ class DiscriminatedAnyOfSchema extends BaseSchema
             );
 
             if (! $testContext->hasIssues()) {
-                $result = $schema->parseWithContext(
+                return $schema->parseWithContext(
                     data: $data,
                     context: $context,
                 );
-
-                if ($context->hasIssues()) {
-                    return $result;
-                }
-
-                // run any constraints added via
-                // withConstraint()
-                $this->checkConstraints(
-                    data: $result,
-                    context: $context,
-                );
-
-                if ($context->hasIssues()) {
-                    return $result;
-                }
-
-                // run this schema's own pipeline
-                // (transform, refine, pipe)
-                /** @var array{mixed, bool} $pipelineResult */
-                $pipelineResult = $this->runPipeline(
-                    data: $result,
-                    context: $context,
-                );
-                $result = $pipelineResult[0];
-
-                if ($pipelineResult[1] && $this->pipeTarget !== null) {
-                    $result = $this->pipeTarget->parseWithContext(
-                        data: $result,
-                        context: $context,
-                    );
-                }
-
-                return $result;
             }
         }
 
@@ -237,13 +202,5 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         );
 
         return $data;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
     }
 }

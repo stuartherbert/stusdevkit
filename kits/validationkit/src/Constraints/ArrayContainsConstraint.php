@@ -117,10 +117,10 @@ final class ArrayContainsConstraint implements ValidationConstraint
      *
      * @param array<mixed> $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
 
         foreach ($data as $element) {
@@ -133,7 +133,7 @@ final class ArrayContainsConstraint implements ValidationConstraint
             if (! $elementContext->hasIssues()) {
                 // at least one element matches — constraint
                 // is satisfied
-                return;
+                return $data;
             }
         }
 
@@ -142,5 +142,12 @@ final class ArrayContainsConstraint implements ValidationConstraint
         $context->addExistingIssue(
             $issue->withPath($context->path()),
         );
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

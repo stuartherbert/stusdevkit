@@ -133,10 +133,10 @@ final class StringEndsWithConstraint implements ValidationConstraint
      *
      * @param string $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_string($data));
 
         if (! str_ends_with($data, $this->suffix)) {
@@ -145,5 +145,12 @@ final class StringEndsWithConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

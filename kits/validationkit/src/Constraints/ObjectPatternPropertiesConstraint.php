@@ -99,10 +99,10 @@ final class ObjectPatternPropertiesConstraint implements ValidationConstraint
      *
      * @param array<mixed> $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
 
         foreach ($this->patterns as $pattern => $schema) {
@@ -117,5 +117,12 @@ final class ObjectPatternPropertiesConstraint implements ValidationConstraint
                 }
             }
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

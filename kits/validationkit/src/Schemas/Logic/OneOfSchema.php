@@ -114,20 +114,28 @@ class OneOfSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to try each schema and
-     * require exactly one match
+     * null is allowed through to the child schemas
      */
-    public function parseWithContext(
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // child schemas handle type checking
+        return true;
+    }
+
+    /**
+     * try each schema; exactly one must match
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-        }
-
         // try every schema — we must count how many pass
         $matchCount = 0;
         $matchedResult = $data;
@@ -149,33 +157,6 @@ class OneOfSchema extends BaseSchema
 
         // exactly one schema must match
         if ($matchCount === 1) {
-            // run any constraints added via
-            // withConstraint()
-            $this->checkConstraints(
-                data: $matchedResult,
-                context: $context,
-            );
-
-            if ($context->hasIssues()) {
-                return $matchedResult;
-            }
-
-            // run this schema's own pipeline
-            // (transform, refine, pipe)
-            /** @var array{mixed, bool} $pipelineResult */
-            $pipelineResult = $this->runPipeline(
-                data: $matchedResult,
-                context: $context,
-            );
-            $matchedResult = $pipelineResult[0];
-
-            if ($pipelineResult[1] && $this->pipeTarget !== null) {
-                $matchedResult = $this->pipeTarget->parseWithContext(
-                    data: $matchedResult,
-                    context: $context,
-                );
-            }
-
             return $matchedResult;
         }
 
@@ -202,13 +183,5 @@ class OneOfSchema extends BaseSchema
         }
 
         return $data;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
     }
 }

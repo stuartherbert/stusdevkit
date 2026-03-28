@@ -42,6 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Transformers;
 
 use StusDevKit\ValidationKit\Contracts\ValueTransformer;
+use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
  * TrimTransformer trims leading and trailing whitespace
@@ -50,14 +51,22 @@ use StusDevKit\ValidationKit\Contracts\ValueTransformer;
  * Usage:
  *
  *     $transformer = new TrimTransformer();
- *     $transformer->transform('  hello  '); // 'hello'
+ *     $transformer->process('  hello  ', $ctx);
+ *     // 'hello'
  */
 final class TrimTransformer implements ValueTransformer
 {
-    public function transform(mixed $data): mixed
-    {
+    public function process(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
         assert(is_string($data));
 
         return trim($data);
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

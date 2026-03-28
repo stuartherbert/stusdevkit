@@ -129,21 +129,15 @@ class TupleSchema extends BaseSchema
         return false;
     }
 
-    protected function checkConstraints(
+    /**
+     * validate tuple length and each position against
+     * its schema
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
-
-        // run any constraints added via withConstraint()
-        parent::checkConstraints(
-            data: $data,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return;
-        }
 
         $expectedCount = count($this->schemas);
         $actualCount = count($data);
@@ -161,7 +155,7 @@ class TupleSchema extends BaseSchema
                 message: $message,
             );
 
-            return;
+            return $data;
         }
 
         // validate each position
@@ -173,5 +167,7 @@ class TupleSchema extends BaseSchema
                 context: $childContext,
             );
         }
+
+        return $data;
     }
 }

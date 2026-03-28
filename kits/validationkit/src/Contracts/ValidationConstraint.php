@@ -41,16 +41,13 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Contracts;
 
-use StusDevKit\ValidationKit\Internals\ValidationContext;
-
 /**
- * ValidationConstraint defines a single validation rule
- * that can be applied to data after it has passed its
- * type check.
+ * ValidationConstraint is a pipeline step that validates
+ * data without modifying it.
  *
- * Each constraint is responsible for checking one rule
- * and adding issues to the context if the rule is
- * violated.
+ * Constraints check a rule and add issues to the context
+ * if the rule is violated. They always return the data
+ * unchanged and never skip on prior issues.
  *
  * Usage:
  *
@@ -64,17 +61,6 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *         new MyCustomConstraint(...),
  *     );
  */
-interface ValidationConstraint
+interface ValidationConstraint extends PipelineStep
 {
-    /**
-     * check the given data against this constraint
-     *
-     * Must add issues to the context for any violations.
-     * The data has already passed its type check before
-     * this method is called.
-     */
-    public function check(
-        mixed $data,
-        ValidationContext $context,
-    ): void;
 }

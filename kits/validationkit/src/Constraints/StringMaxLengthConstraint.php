@@ -115,10 +115,10 @@ final class StringMaxLengthConstraint implements ValidationConstraint
      *
      * @param string $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_string($data));
 
         if (mb_strlen($data) > $this->length) {
@@ -127,5 +127,12 @@ final class StringMaxLengthConstraint implements ValidationConstraint
                 $issue->withPath($context->path()),
             );
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }

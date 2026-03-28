@@ -41,31 +41,41 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
+use StusDevKit\ValidationKit\Contracts\PipelineStep;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
- * UpperCaseTransformer converts a string value to upper
- * case using mb_strtoupper for Unicode support.
+ * CallableTransform wraps a callable data transformation
+ * as a pipeline step that skips when prior issues exist.
  *
- * Usage:
+ * Used internally by the transform() builder method.
+ * The callable receives the validated data and returns
+ * the transformed value.
  *
- *     $transformer = new UpperCaseTransformer();
- *     $transformer->process('hello', $ctx); // 'HELLO'
+ * @phpstan-type TransformCallable callable(mixed): mixed
  */
-final class UpperCaseTransformer implements ValueTransformer
+final class CallableTransform implements PipelineStep
 {
+    /** @var TransformCallable */
+    private readonly mixed $callable;
+
+    /**
+     * @param TransformCallable $callable
+     */
+    public function __construct(callable $callable)
+    {
+        $this->callable = $callable;
+    }
+
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_string($data));
-
-        return mb_strtoupper($data);
+        return ($this->callable)($data);
     }
 
     public function skipOnIssues(): bool
     {
-        return false;
+        return true;
     }
 }

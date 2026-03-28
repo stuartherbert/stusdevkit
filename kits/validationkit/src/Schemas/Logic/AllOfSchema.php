@@ -114,31 +114,22 @@ class AllOfSchema extends BaseSchema
         return 'intersection';
     }
 
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // child schemas handle type checking
+        return true;
+    }
+
     /**
-     * override parseWithContext to validate against all
-     * schemas
+     * validate against all schemas; issues from all are
+     * collected into the same context
      */
-    public function parseWithContext(
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-
-            $this->invokeErrorCallback(
-                callback: $this->typeCheckError,
-                input: $data,
-                context: $context,
-            );
-
-            return null;
-        }
-
-        // validate against all schemas — issues from all
-        // are collected into the same context
         $result = $data;
         foreach ($this->schemas as $schema) {
             $schemaResult = $schema->parseWithContext(
@@ -153,44 +144,6 @@ class AllOfSchema extends BaseSchema
                 : $schemaResult;
         }
 
-        if ($context->hasIssues()) {
-            return $result;
-        }
-
-        // run any constraints added via withConstraint()
-        $this->checkConstraints(
-            data: $result,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return $result;
-        }
-
-        // run this schema's own pipeline
-        // (transform, refine, pipe)
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $result,
-            context: $context,
-        );
-        $result = $pipelineResult[0];
-
-        if ($pipelineResult[1] && $this->pipeTarget !== null) {
-            $result = $this->pipeTarget->parseWithContext(
-                data: $result,
-                context: $context,
-            );
-        }
-
         return $result;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
     }
 }

@@ -111,20 +111,29 @@ class NotSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to negate the inner schema's
-     * result
+     * null is allowed through to the child schema
      */
-    public function parseWithContext(
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // child schema handles type checking
+        return true;
+    }
+
+    /**
+     * negate the inner schema's result: if the inner
+     * schema passes, report an error
+     */
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-        }
-
         // try the inner schema in a child context
         $childContext = new ValidationContext(
             $context->path(),
@@ -142,47 +151,9 @@ class NotSchema extends BaseSchema
                 input: $data,
                 context: $context,
             );
-
-            return $data;
         }
 
-        // the inner schema failed, so the data is valid
-        // for NotSchema
-
-        // run any constraints added via withConstraint()
-        $this->checkConstraints(
-            data: $data,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return $data;
-        }
-
-        // run this schema's own pipeline
-        // (transform, refine, pipe)
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $data,
-            context: $context,
-        );
-        $result = $pipelineResult[0];
-
-        if ($pipelineResult[1] && $this->pipeTarget !== null) {
-            $result = $this->pipeTarget->parseWithContext(
-                data: $result,
-                context: $context,
-            );
-        }
-
-        return $result;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
+        // return data unchanged regardless
+        return $data;
     }
 }

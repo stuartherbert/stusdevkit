@@ -117,10 +117,10 @@ final class ObjectPropertyNamesConstraint implements ValidationConstraint
      *
      * @param array<mixed> $data
      */
-    public function check(
+    public function process(
         mixed $data,
         ValidationContext $context,
-    ): void {
+    ): mixed {
         assert(is_array($data));
 
         foreach (array_keys($data) as $key) {
@@ -135,8 +135,15 @@ final class ObjectPropertyNamesConstraint implements ValidationConstraint
                 $context->addExistingIssue(
                     $issue->withPath($context->path()),
                 );
-                return;
+                return $data;
             }
         }
+
+        return $data;
+    }
+
+    public function skipOnIssues(): bool
+    {
+        return false;
     }
 }
