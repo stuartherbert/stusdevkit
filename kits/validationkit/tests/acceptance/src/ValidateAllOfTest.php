@@ -59,14 +59,14 @@ class ValidateAllOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('accepts input that passes both schemas')]
-    public function test_accepts_input_passing_both_schemas(): void
+    #[TestDox('accepts input that passes all schemas')]
+    public function test_accepts_input_passing_all_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that intersection() accepts input
-        // that satisfies both the left and right schemas
+        // this test proves that allOf() accepts input that
+        // satisfies all of the given schemas
 
         // ----------------------------------------------------------------
         // shorthand
@@ -112,7 +112,122 @@ class ValidateAllOfTest extends TestCase
 
     }
 
-    #[TestDox('merges object results from both schemas')]
+    #[TestDox('accepts more than two schemas')]
+    public function test_accepts_more_than_two_schemas(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that allOf() works with three or
+        // more schemas, not just two
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::allOf(
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+                Validate::object([
+                    'email' => Validate::string()->email(),
+                ]),
+            ],
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'age' => 42,
+            'email' => 'stuart@example.com',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            [
+                'name' => 'Stuart',
+                'age' => 42,
+                'email' => 'stuart@example.com',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('fails when any of three or more schemas fails')]
+    public function test_fails_when_any_of_three_schemas_fails(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that allOf() rejects input when
+        // any one of three or more schemas fails
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::allOf(
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+                Validate::object([
+                    'email' => Validate::string()->email(),
+                ]),
+            ],
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 42,
+            'email' => 'not-an-email',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('merges object results from all schemas')]
     public function test_merges_object_results(): void
     {
         // ----------------------------------------------------------------
