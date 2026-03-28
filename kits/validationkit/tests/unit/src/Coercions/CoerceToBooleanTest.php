@@ -197,4 +197,106 @@ class CoerceToBooleanTest extends TestCase
 
         $this->assertSame($inputValue, $actualResult);
     }
+
+    // ================================================================
+    //
+    // Custom String Mappings
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('custom strings replace built-in defaults')]
+    public function test_custom_strings_replace_defaults(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that custom string mappings
+        // replace the built-in defaults entirely, so only
+        // the custom strings are recognised
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new CoerceToBoolean(
+            strings: ['on' => true, 'off' => false],
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // custom strings work
+        $this->assertTrue($unit->coerce('on'));
+        $this->assertFalse($unit->coerce('off'));
+
+        // built-in defaults are no longer recognised
+        $this->assertSame('true', $unit->coerce('true'));
+        $this->assertSame('false', $unit->coerce('false'));
+    }
+
+    #[TestDox('custom strings are case-insensitive')]
+    public function test_custom_strings_are_case_insensitive(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that custom string mappings are
+        // matched case-insensitively, because the input is
+        // lowercased before lookup
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new CoerceToBoolean(
+            strings: ['on' => true, 'off' => false],
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($unit->coerce('ON'));
+        $this->assertTrue($unit->coerce('On'));
+        $this->assertFalse($unit->coerce('OFF'));
+        $this->assertFalse($unit->coerce('Off'));
+    }
+
+    #[TestDox('DEFAULTS can be merged with custom strings')]
+    public function test_defaults_can_be_merged_with_custom(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that users can keep the built-in
+        // defaults and add custom strings by merging the
+        // DEFAULTS constant with their own array
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var array<string, bool> $strings */
+        $strings = [
+            ...CoerceToBoolean::DEFAULT_STRINGS,
+            ...['on' => true, 'off' => false]
+        ];
+        $unit = new CoerceToBoolean(strings: $strings);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // custom strings work
+        $this->assertTrue($unit->coerce('on'));
+        $this->assertFalse($unit->coerce('off'));
+
+        // built-in defaults still work
+        $this->assertTrue($unit->coerce('true'));
+        $this->assertFalse($unit->coerce('false'));
+    }
 }

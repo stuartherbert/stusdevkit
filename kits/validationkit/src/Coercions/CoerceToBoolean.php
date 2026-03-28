@@ -54,18 +54,31 @@ use StusDevKit\ValidationKit\Contracts\ValueCoercion;
  * - integers and floats → bool via cast
  * - everything else → returned unchanged
  *
+ * The lookup table can be replaced entirely by passing
+ * custom string mappings to the constructor. Use
+ * CoerceToBoolean::DEFAULT_STRINGS as a starting point and
+ * merge your own values in if you want to keep the
+ * built-in mappings.
+ *
  * Usage:
  *
  *     $coercion = new CoerceToBoolean();
  *     $coercion->coerce('true'); // true
  *     $coercion->coerce('0');    // false
  *     $coercion->coerce(1);     // true
+ *
+ *     // replace the lookup table entirely
+ *     $coercion = new CoerceToBoolean(
+ *         strings: ['on' => true, 'off' => false],
+ *     );
+ *     $coercion->coerce('on');    // true
+ *     $coercion->coerce('true');  // 'true' (unchanged)
  */
 final class CoerceToBoolean implements ValueCoercion
 {
     /** @var array<string, bool> */
     // @phpstan-ignore classConstant.value
-    private const array LOOKUP = [
+    public const array DEFAULT_STRINGS = [
         'true'  => true,
         '1'     => true,
         'yes'   => true,
@@ -75,12 +88,27 @@ final class CoerceToBoolean implements ValueCoercion
         ''      => false,
     ];
 
+    /** @var array<string, bool> */
+    private readonly array $lookup;
+
+    /**
+     * @param array<string, bool> $strings
+     * - the string-to-boolean lookup table; defaults to
+     *   DEFAULT_STRINGS if not provided
+     */
+    public function __construct(
+        // @phpstan-ignore parameter.defaultValue
+        array $strings = self::DEFAULT_STRINGS,
+    ) {
+        $this->lookup = $strings;
+    }
+
     public function coerce(mixed $data): mixed
     {
         if (is_string($data)) {
             $lower = strtolower($data);
 
-            return self::LOOKUP[$lower] ?? $data;
+            return $this->lookup[$lower] ?? $data;
         }
 
         if (is_int($data) || is_float($data)) {

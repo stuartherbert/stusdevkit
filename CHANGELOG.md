@@ -63,7 +63,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- improve implementation of CoerceToBoolean ([787a5e0](https://github.com/stuartherbert/stusdevkit/commit/787a5e0)) — Stuart Herbert <stuart@stuartherbert.com>
+- Validate::boolean()->coerce() can now replace the default list of supported strings ([091a5d3](https://github.com/stuartherbert/stusdevkit/commit/091a5d3)) — Stuart Herbert <stuart@stuartherbert.com>
+- improve implementation of CoerceToBoolean ([0e79a0f](https://github.com/stuartherbert/stusdevkit/commit/0e79a0f)) — Stuart Herbert <stuart@stuartherbert.com>
 - extract coercion code into separate classes ([ee29081](https://github.com/stuartherbert/stusdevkit/commit/ee29081)) — Stuart Herbert <stuart@stuartherbert.com>
 - issues are now returned as a ValidationIssuesList ([7f5ccf4](https://github.com/stuartherbert/stusdevkit/commit/7f5ccf4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::allOf() now takes a list of schemas ([909fadc](https://github.com/stuartherbert/stusdevkit/commit/909fadc)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -126,6 +126,46 @@ class BooleanSchema extends BaseSchema
         return false;
     }
 
+    /**
+     * enable type coercion for this schema
+     *
+     * Optionally pass a custom string-to-boolean lookup
+     * table. If provided, it replaces the built-in
+     * defaults entirely. Use CoerceToBoolean::DEFAULT_STRINGS
+     * as a starting point if you want to keep the
+     * built-in mappings and add your own.
+     *
+     * Usage:
+     *
+     *     // default coercion
+     *     Validate::boolean()->coerce();
+     *
+     *     // replace with custom strings
+     *     Validate::boolean()->coerce(
+     *         strings: ['on' => true, 'off' => false],
+     *     );
+     *
+     *     // extend the defaults
+     *     Validate::boolean()->coerce([
+     *         ...CoerceToBoolean::DEFAULT_STRINGS,
+     *         ...['on' => true, 'off' => false],
+     *     ]);
+     *
+     * @param array<string, bool> $strings
+     * - the string-to-boolean lookup table; defaults
+     *   to CoerceToBoolean::DEFAULT_STRINGS
+     */
+    // @phpstan-ignore parameter.defaultValue
+    public function coerce(array $strings = CoerceToBoolean::DEFAULT_STRINGS): static
+    {
+        $clone = clone $this;
+        $clone->coercion = new CoerceToBoolean(
+            strings: $strings,
+        );
+
+        return $clone;
+    }
+
     protected function defaultCoercion(): ValueCoercion
     {
         return new CoerceToBoolean();
