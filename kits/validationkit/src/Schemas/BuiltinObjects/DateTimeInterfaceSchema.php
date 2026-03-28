@@ -50,7 +50,7 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * DateTimeSchema validates that the input is a
+ * DateTimeInterfaceSchema validates that the input is a
  * DateTimeInterface instance.
  *
  * With coercion enabled, it can also accept ISO 8601
@@ -72,7 +72,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  * @extends BaseSchema<DateTimeInterface>
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-class DateTimeSchema extends BaseSchema
+class DateTimeInterfaceSchema extends BaseSchema
 {
     private ?DateTimeInterface $minDate = null;
     /** @var ErrorCallback */

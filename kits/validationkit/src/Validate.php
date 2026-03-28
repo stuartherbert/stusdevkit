@@ -43,7 +43,7 @@ namespace StusDevKit\ValidationKit;
 
 use BackedEnum;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
-use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeSchema;
+use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\BooleanSchema;
@@ -434,8 +434,8 @@ final class Validate
      */
     public static function dateTime(
         ?callable $error = null,
-    ): DateTimeSchema {
-        return new DateTimeSchema(typeCheckError: $error);
+    ): DateTimeInterfaceSchema {
+        return new DateTimeInterfaceSchema(typeCheckError: $error);
     }
 
     /**
