@@ -61,7 +61,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- DateTimeSchema is now DateTimeInterfaceSchema ([a13f425](https://github.com/stuartherbert/stusdevkit/commit/a13f425)) — Stuart Herbert <stuart@stuartherbert.com>
+- move default typeCheckError callback definitions into methods, which can be overridden by child classes if required ([d8f703e](https://github.com/stuartherbert/stusdevkit/commit/d8f703e)) — Stuart Herbert <stuart@stuartherbert.com>
+- DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>
 - move validators for built-in PHP object types into their own namespace ([86941c7](https://github.com/stuartherbert/stusdevkit/commit/86941c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
 

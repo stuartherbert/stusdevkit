@@ -93,12 +93,87 @@ class FloatSchema extends BaseSchema
     public function __construct(?callable $typeCheckError = null)
     {
         $this->typeCheckError = $typeCheckError
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
-                input: $data,
-                path: [],
-                message: 'Expected float, received ' . get_debug_type($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidType,
+            input: $data,
+            path: [],
+            message: 'Expected float, received '
+                . get_debug_type($data),
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForGt(float $value): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'Number must be greater than ' . $value,
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForGte(float $value): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'Number must be greater than or equal to '
+                . $value,
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForLt(float $value): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooBig,
+            input: $data,
+            path: [],
+            message: 'Number must be less than ' . $value,
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForLte(float $value): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooBig,
+            input: $data,
+            path: [],
+            message: 'Number must be less than or equal to '
+                . $value,
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMultipleOf(
+        float $value,
+    ): callable {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::NotMultipleOf,
+            input: $data,
+            path: [],
+            message: 'Number must be a multiple of ' . $value,
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForFinite(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::NotFinite,
+            input: $data,
+            path: [],
+            message: 'Number must be finite',
+        );
     }
 
     // ================================================================
@@ -116,12 +191,7 @@ class FloatSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->gtValue = $value;
-        $clone->gtError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Number must be greater than ' . $value,
-        );
+        $clone->gtError = $error ?? $this->getDefaultTypeCheckErrorCallbackForGt($value);
 
         return $clone;
     }
@@ -136,12 +206,7 @@ class FloatSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->gteValue = $value;
-        $clone->gteError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Number must be greater than or equal to ' . $value,
-        );
+        $clone->gteError = $error ?? $this->getDefaultTypeCheckErrorCallbackForGte($value);
 
         return $clone;
     }
@@ -155,12 +220,7 @@ class FloatSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->ltValue = $value;
-        $clone->ltError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Number must be less than ' . $value,
-        );
+        $clone->ltError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLt($value);
 
         return $clone;
     }
@@ -175,12 +235,7 @@ class FloatSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->lteValue = $value;
-        $clone->lteError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Number must be less than or equal to ' . $value,
-        );
+        $clone->lteError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLte($value);
 
         return $clone;
     }
@@ -236,12 +291,7 @@ class FloatSchema extends BaseSchema
     ): static {
         $clone = clone $this;
         $clone->multipleOfValue = $value;
-        $clone->multipleOfError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::NotMultipleOf,
-            input: $data,
-            path: [],
-            message: 'Number must be a multiple of ' . $value,
-        );
+        $clone->multipleOfError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMultipleOf($value);
 
         return $clone;
     }
@@ -255,12 +305,7 @@ class FloatSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->mustBeFinite = true;
-        $clone->finiteError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::NotFinite,
-            input: $data,
-            path: [],
-            message: 'Number must be finite',
-        );
+        $clone->finiteError = $error ?? $this->getDefaultTypeCheckErrorCallbackForFinite();
 
         return $clone;
     }

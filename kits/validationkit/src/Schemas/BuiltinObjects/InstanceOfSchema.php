@@ -75,14 +75,25 @@ class InstanceOfSchema extends BaseSchema
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
-            ?? fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
-                input: $data,
-                path: [],
-                message: 'Expected instance of '
-                    . $this->className . ', received '
-                    . get_debug_type($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidType,
+            input: $data,
+            path: [],
+            message: 'Expected instance of '
+                . $this->className . ', received '
+                . get_debug_type($data),
+        );
     }
 
     // ================================================================

@@ -80,13 +80,24 @@ class UnionSchema extends BaseSchema
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidUnion,
-                input: $data,
-                path: [],
-                message: 'Input does not match any schema'
-                    . ' in the union',
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidUnion,
+            input: $data,
+            path: [],
+            message: 'Input does not match any schema'
+                . ' in the union',
+        );
     }
 
     // ================================================================

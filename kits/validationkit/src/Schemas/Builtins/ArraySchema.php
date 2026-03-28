@@ -97,12 +97,60 @@ class ArraySchema extends BaseSchema
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
-                input: $data,
-                path: [],
-                message: 'Expected array, received ' . get_debug_type($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidType,
+            input: $data,
+            path: [],
+            message: 'Expected array, received '
+                . get_debug_type($data),
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMin(
+        int $length,
+    ): callable {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'Array must have at least '
+                . $length . ' elements',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMax(
+        int $length,
+    ): callable {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooBig,
+            input: $data,
+            path: [],
+            message: 'Array must have at most '
+                . $length . ' elements',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForLength(
+        int $length,
+    ): callable {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'Array must have exactly '
+                . $length . ' elements',
+        );
     }
 
     // ================================================================
@@ -121,12 +169,7 @@ class ArraySchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->minLength = $length;
-        $clone->minError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Array must have at least ' . $length . ' elements',
-        );
+        $clone->minError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMin($length);
 
         return $clone;
     }
@@ -141,12 +184,7 @@ class ArraySchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->maxLength = $length;
-        $clone->maxError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Array must have at most ' . $length . ' elements',
-        );
+        $clone->maxError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMax($length);
 
         return $clone;
     }
@@ -161,12 +199,7 @@ class ArraySchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->exactLength = $length;
-        $clone->exactLengthError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Array must have exactly ' . $length . ' elements',
-        );
+        $clone->exactLengthError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLength($length);
 
         return $clone;
     }

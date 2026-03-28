@@ -110,13 +110,24 @@ class ObjectSchema extends BaseSchema
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
-                input: $data,
-                path: [],
-                message: 'Expected object (associative array), received '
-                    . get_debug_type($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidType,
+            input: $data,
+            path: [],
+            message: 'Expected object (associative array), received '
+                . get_debug_type($data),
+        );
     }
 
     // ================================================================

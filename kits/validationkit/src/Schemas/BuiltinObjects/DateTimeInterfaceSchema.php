@@ -88,13 +88,48 @@ class DateTimeInterfaceSchema extends BaseSchema
     public function __construct(?callable $typeCheckError = null)
     {
         $this->typeCheckError = $typeCheckError
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidDate,
-                input: $data,
-                path: [],
-                message: 'Expected DateTimeInterface, received '
-                    . get_debug_type($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidDate,
+            input: $data,
+            path: [],
+            message: 'Expected DateTimeInterface, received '
+                . get_debug_type($data),
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMin(
+        DateTimeInterface $date,
+    ): callable {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'Date must be on or after '
+                . $date->format('c'),
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMax(
+        DateTimeInterface $date,
+    ): callable {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooBig,
+            input: $data,
+            path: [],
+            message: 'Date must be on or before '
+                . $date->format('c'),
+        );
     }
 
     // ================================================================
@@ -115,13 +150,7 @@ class DateTimeInterfaceSchema extends BaseSchema
         $clone = clone $this;
         $clone->minDate = $date;
         $clone->minError = $error
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooSmall,
-                input: $data,
-                path: [],
-                message: 'Date must be on or after '
-                    . $date->format('c'),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForMin($date);
 
         return $clone;
     }
@@ -138,13 +167,7 @@ class DateTimeInterfaceSchema extends BaseSchema
         $clone = clone $this;
         $clone->maxDate = $date;
         $clone->maxError = $error
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooBig,
-                input: $data,
-                path: [],
-                message: 'Date must be on or before '
-                    . $date->format('c'),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForMax($date);
 
         return $clone;
     }

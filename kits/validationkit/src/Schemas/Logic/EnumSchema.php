@@ -110,14 +110,25 @@ class EnumSchema extends BaseSchema
         }
 
         $this->typeCheckError = $typeCheckError
-            ?? fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidEnum,
-                input: $data,
-                path: [],
-                message: 'Value is not one of the allowed'
-                    . ' enum values: '
-                    . $this->describeAllowedValues(),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidEnum,
+            input: $data,
+            path: [],
+            message: 'Value is not one of the allowed'
+                . ' enum values: '
+                . $this->describeAllowedValues(),
+        );
     }
 
     // ================================================================

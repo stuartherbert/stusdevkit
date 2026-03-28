@@ -74,12 +74,23 @@ class LiteralSchema extends BaseSchema
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
-            ?? fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidLiteral,
-                input: $data,
-                path: [],
-                message: 'Expected ' . $this->describeValue($this->expectedValue) . ', received ' . $this->describeValue($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidLiteral,
+            input: $data,
+            path: [],
+            message: 'Expected ' . $this->describeValue($this->expectedValue) . ', received ' . $this->describeValue($data),
+        );
     }
 
     // ================================================================

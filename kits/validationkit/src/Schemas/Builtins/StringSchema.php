@@ -117,12 +117,144 @@ class StringSchema extends BaseSchema
     public function __construct(?callable $typeCheckError = null)
     {
         $this->typeCheckError = $typeCheckError
-            ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
-                input: $data,
-                path: [],
-                message: 'Expected string, received ' . get_debug_type($data),
-            );
+            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+    }
+
+    // ================================================================
+    //
+    // Default Error Callbacks
+    //
+    // ----------------------------------------------------------------
+
+    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidType,
+            input: $data,
+            path: [],
+            message: 'Expected string, received '
+                . get_debug_type($data),
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMin(int $length): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'String must be at least ' . $length . ' characters',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForMax(int $length): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooBig,
+            input: $data,
+            path: [],
+            message: 'String must be at most ' . $length . ' characters',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForLength(int $length): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::TooSmall,
+            input: $data,
+            path: [],
+            message: 'String must be exactly ' . $length . ' characters',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForRegex(string $pattern): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'String does not match pattern ' . $pattern,
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForEmail(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'Invalid email address',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForUrl(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'Invalid URL',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForUuid(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'Invalid UUID',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForIpv4(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'Invalid IPv4 address',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForIpv6(): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'Invalid IPv6 address',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForIncludes(string $needle): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'String must contain "' . $needle . '"',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForStartsWith(string $prefix): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'String must start with "' . $prefix . '"',
+        );
+    }
+
+    protected function getDefaultTypeCheckErrorCallbackForEndsWith(string $suffix): callable
+    {
+        return static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::InvalidString,
+            input: $data,
+            path: [],
+            message: 'String must end with "' . $suffix . '"',
+        );
     }
 
     // ================================================================
@@ -140,12 +272,7 @@ class StringSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->minLength = $length;
-        $clone->minError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'String must be at least ' . $length . ' characters',
-        );
+        $clone->minError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMin($length);
 
         return $clone;
     }
@@ -159,12 +286,7 @@ class StringSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->maxLength = $length;
-        $clone->maxError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'String must be at most ' . $length . ' characters',
-        );
+        $clone->maxError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMax($length);
 
         return $clone;
     }
@@ -178,12 +300,7 @@ class StringSchema extends BaseSchema
     {
         $clone = clone $this;
         $clone->exactLength = $length;
-        $clone->lengthError = $error ?? static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'String must be exactly ' . $length . ' characters',
-        );
+        $clone->lengthError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLength($length);
 
         return $clone;
     }
@@ -211,12 +328,7 @@ class StringSchema extends BaseSchema
             'type'    => 'regex',
             'pattern' => $pattern,
             'needle'  => '',
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'String does not match pattern ' . $pattern,
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForRegex($pattern),
         ];
 
         return $clone;
@@ -236,12 +348,7 @@ class StringSchema extends BaseSchema
             'type'    => 'email',
             'pattern' => '',
             'needle'  => '',
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'Invalid email address',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForEmail(),
         ];
 
         return $clone;
@@ -261,12 +368,7 @@ class StringSchema extends BaseSchema
             'type'    => 'url',
             'pattern' => '',
             'needle'  => '',
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'Invalid URL',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForUrl(),
         ];
 
         return $clone;
@@ -286,12 +388,7 @@ class StringSchema extends BaseSchema
             'type'    => 'uuid',
             'pattern' => '',
             'needle'  => '',
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'Invalid UUID',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForUuid(),
         ];
 
         return $clone;
@@ -309,12 +406,7 @@ class StringSchema extends BaseSchema
             'type'    => 'ipv4',
             'pattern' => '',
             'needle'  => '',
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'Invalid IPv4 address',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForIpv4(),
         ];
 
         return $clone;
@@ -332,12 +424,7 @@ class StringSchema extends BaseSchema
             'type'    => 'ipv6',
             'pattern' => '',
             'needle'  => '',
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'Invalid IPv6 address',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForIpv6(),
         ];
 
         return $clone;
@@ -363,12 +450,7 @@ class StringSchema extends BaseSchema
             'type'    => 'includes',
             'pattern' => '',
             'needle'  => $needle,
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'String must contain "' . $needle . '"',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForIncludes($needle),
         ];
 
         return $clone;
@@ -388,12 +470,7 @@ class StringSchema extends BaseSchema
             'type'    => 'startsWith',
             'pattern' => '',
             'needle'  => $prefix,
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'String must start with "' . $prefix . '"',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForStartsWith($prefix),
         ];
 
         return $clone;
@@ -413,12 +490,7 @@ class StringSchema extends BaseSchema
             'type'    => 'endsWith',
             'pattern' => '',
             'needle'  => $suffix,
-            'error'   => $error ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
-                input: $data,
-                path: [],
-                message: 'String must end with "' . $suffix . '"',
-            ),
+            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForEndsWith($suffix),
         ];
 
         return $clone;
