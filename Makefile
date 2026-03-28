@@ -86,7 +86,13 @@ phpstan: ## Run all static analysis checks
 syntax-check: ## Check all PHP files for syntax errors
 	@docker compose run --rm test-container-85 find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l
 
-test: unit ## Run all tests
+test: unit acceptance ## Run all tests
+
+acceptance:  ## Run all acceptance tests
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
+
+acceptance-validationkit: ## Run acceptance tests for the ValidationKit
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance-validationkit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit:  ## Run all unit tests
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit --display-all-issues --testdox --testdox-summary ${OPTS}"

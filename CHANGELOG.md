@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- added placeholder ([767edd1](https://github.com/stuartherbert/stusdevkit/commit/767edd1)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial code commit ([786d8f6](https://github.com/stuartherbert/stusdevkit/commit/786d8f6)) — Stuart Herbert <stuart@stuartherbert.com>
+- added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 
