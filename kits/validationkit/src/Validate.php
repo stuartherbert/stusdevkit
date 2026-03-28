@@ -51,9 +51,11 @@ use StusDevKit\ValidationKit\Schemas\Builtins\FloatSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\IntSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\LiteralSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\MixedSchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\NullableSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\NullSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\NumberSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ObjectSchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\OptionalSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\StringSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\RecordSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\TupleSchema;
@@ -101,6 +103,45 @@ final class Validate
      */
     private function __construct()
     {
+    }
+
+    // ================================================================
+    //
+    // Nullability Schema Factories
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * wrap a schema to allow null values
+     *
+     * If the input is null, null is returned without
+     * delegating to the inner schema.
+     *
+     * @template T
+     * @param BaseSchema<T> $schema
+     * @return NullableSchema<T>
+     */
+    public static function nullable(
+        BaseSchema $schema,
+    ): NullableSchema {
+        return new NullableSchema(innerSchema: $schema);
+    }
+
+    /**
+     * wrap a schema to allow null or missing values
+     *
+     * If the input is null (or the key is missing in an
+     * object schema), null is returned without delegating
+     * to the inner schema.
+     *
+     * @template T
+     * @param BaseSchema<T> $schema
+     * @return OptionalSchema<T>
+     */
+    public static function optional(
+        BaseSchema $schema,
+    ): OptionalSchema {
+        return new OptionalSchema(innerSchema: $schema);
     }
 
     // ================================================================

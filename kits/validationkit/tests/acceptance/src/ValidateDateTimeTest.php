@@ -625,7 +625,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->nullable();
+        $unit = Validate::nullable(Validate::dateTime());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -660,7 +660,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->optional();
+        $unit = Validate::optional(Validate::dateTime());
 
         // ----------------------------------------------------------------
         // mock out any integrations

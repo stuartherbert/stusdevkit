@@ -61,7 +61,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- remove duplicate code ([ff7155b](https://github.com/stuartherbert/stusdevkit/commit/ff7155b)) — Stuart Herbert <stuart@stuartherbert.com>
+- handle optional and nullable better ([cb5691d](https://github.com/stuartherbert/stusdevkit/commit/cb5691d)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove duplicate code ([10c3cae](https://github.com/stuartherbert/stusdevkit/commit/10c3cae)) — Stuart Herbert <stuart@stuartherbert.com>
 - make schemas extensible via withConstraint() method ([03adc7d](https://github.com/stuartherbert/stusdevkit/commit/03adc7d)) — Stuart Herbert <stuart@stuartherbert.com>
 - move default typeCheckError callback definitions into methods, which can be overridden by child classes if required ([06406c5](https://github.com/stuartherbert/stusdevkit/commit/06406c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>

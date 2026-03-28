@@ -39,39 +39,80 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Traits;
+namespace StusDevKit\ValidationKit\Schemas\Builtins;
+
+use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
 /**
- * HasNullability provides the default() method for
- * schemas.
+ * NullableSchema wraps another schema to allow null
+ * values. If the input is null, it returns null without
+ * delegating to the inner schema. Otherwise, it delegates
+ * to the inner schema for validation.
  *
- * default() provides a fallback value when the input is
- * null or missing.
+ * The difference from OptionalSchema is semantic: nullable
+ * means "the value can be null", while optional means "the
+ * value can be missing entirely" (relevant for object
+ * fields).
+ *
+ * Usage:
+ *
+ *     use StusDevKit\ValidationKit\Validate;
+ *
+ *     // a string that can be null
+ *     $schema = Validate::nullable(Validate::string());
+ *     $schema->parse('hello'); // 'hello'
+ *     $schema->parse(null);    // null
+ *
+ * @template TInner
+ * @extends BaseSchema<TInner|null>
  */
-trait HasNullability
+class NullableSchema extends BaseSchema
 {
-    protected bool $hasDefault = false;
-    protected mixed $defaultValue;
+    /**
+     * @param BaseSchema<TInner> $innerSchema
+     */
+    public function __construct(
+        private readonly BaseSchema $innerSchema,
+    ) {
+    }
 
     // ================================================================
     //
-    // Builder Methods
+    // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
 
-    /**
-     * provide a default value for null or missing input
-     *
-     * When the input is null (or the key is missing in an
-     * object schema), the default value is used instead.
-     * The default value is not validated against the schema.
-     */
-    public function default(mixed $value): static
-    {
-        $clone = clone $this;
-        $clone->hasDefault = true;
-        $clone->defaultValue = $value;
+    public function parseWithContext(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // null is allowed — return it without delegating
+        if ($data === null) {
+            if ($this->hasDefault) {
+                return $this->defaultValue;
+            }
 
-        return $clone;
+            return null;
+        }
+
+        // delegate to the inner schema
+        return $this->innerSchema->parseWithContext(
+            data: $data,
+            context: $context,
+        );
+    }
+
+    protected function expectedType(): string
+    {
+        return $this->innerSchema->expectedType();
+    }
+
+    protected function checkType(
+        mixed $data,
+        ValidationContext $context,
+    ): bool {
+        // handled by parseWithContext
+        return true;
     }
 }

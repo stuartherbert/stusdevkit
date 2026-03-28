@@ -442,10 +442,10 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::record(
+        $unit = Validate::nullable(Validate::record(
             Validate::string(),
             Validate::int(),
-        )->nullable();
+        ));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -480,10 +480,10 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::record(
+        $unit = Validate::optional(Validate::record(
             Validate::string(),
             Validate::int(),
-        )->optional();
+        ));
 
         // ----------------------------------------------------------------
         // mock out any integrations

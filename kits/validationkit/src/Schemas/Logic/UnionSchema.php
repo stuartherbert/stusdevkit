@@ -123,10 +123,6 @@ class UnionSchema extends BaseSchema
             if ($this->hasDefault) {
                 return $this->defaultValue;
             }
-
-            if ($this->isNullable || $this->isOptional) {
-                return null;
-            }
         }
 
         // try each schema — the first one that succeeds

@@ -358,10 +358,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
+        $unit = Validate::nullable(Validate::union([
             Validate::string(),
             Validate::int(),
-        ])->nullable();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -396,10 +396,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
+        $unit = Validate::optional(Validate::union([
             Validate::string(),
             Validate::int(),
-        ])->optional();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations

@@ -449,14 +449,14 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
+        $unit = Validate::nullable(Validate::intersection(
             left: Validate::object([
                 'name' => Validate::string(),
             ]),
             right: Validate::object([
                 'age' => Validate::int(),
             ]),
-        )->nullable();
+        ));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -491,14 +491,14 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
+        $unit = Validate::optional(Validate::intersection(
             left: Validate::object([
                 'name' => Validate::string(),
             ]),
             right: Validate::object([
                 'age' => Validate::int(),
             ]),
-        )->optional();
+        ));
 
         // ----------------------------------------------------------------
         // mock out any integrations

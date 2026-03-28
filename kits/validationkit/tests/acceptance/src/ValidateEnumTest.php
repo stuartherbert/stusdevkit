@@ -387,7 +387,7 @@ class ValidateEnumTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::enum(['active', 'inactive'])->nullable();
+        $unit = Validate::nullable(Validate::enum(['active', 'inactive']));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -422,7 +422,7 @@ class ValidateEnumTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::enum(['active', 'inactive'])->optional();
+        $unit = Validate::optional(Validate::enum(['active', 'inactive']));
 
         // ----------------------------------------------------------------
         // mock out any integrations

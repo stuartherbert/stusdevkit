@@ -1025,7 +1025,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->nullable();
+        $unit = Validate::nullable(Validate::number());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1060,7 +1060,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->optional();
+        $unit = Validate::optional(Validate::number());
 
         // ----------------------------------------------------------------
         // mock out any integrations

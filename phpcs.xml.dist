@@ -24,6 +24,10 @@
         <exclude name="Generic.Files.LineLength.TooLong" />
         <!-- PHP4 concerns do not apply to modern code -->
         <exclude name="Generic.NamingConventions.ConstructorName.OldStyle" />
+        <!-- Seems to be buggy -->
+        <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectAnnotationsGroup" />
+        <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectOrderOfAnnotationsInGroup" />
+        <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectLinesCountBetweenAnnotationsGroups" />
         <!-- Allow PHP standard functions to be called without importing -->
         <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName"/>
         <!-- Allow an arbitrary block of comments above a method that are unrelated to that specific method -->

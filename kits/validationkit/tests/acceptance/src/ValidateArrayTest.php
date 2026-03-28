@@ -809,7 +809,7 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::array(Validate::string())->nullable();
+        $unit = Validate::nullable(Validate::array(Validate::string()));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -844,7 +844,7 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::array(Validate::string())->optional();
+        $unit = Validate::optional(Validate::array(Validate::string()));
 
         // ----------------------------------------------------------------
         // mock out any integrations

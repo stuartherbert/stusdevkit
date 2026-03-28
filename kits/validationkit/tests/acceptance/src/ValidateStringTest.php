@@ -1174,7 +1174,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->nullable();
+        $unit = Validate::nullable(Validate::string());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1209,7 +1209,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->optional();
+        $unit = Validate::optional(Validate::string());
 
         // ----------------------------------------------------------------
         // mock out any integrations

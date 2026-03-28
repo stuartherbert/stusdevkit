@@ -519,7 +519,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::nullable(Validate::discriminatedUnion('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -528,7 +528,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->nullable();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -563,7 +563,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::optional(Validate::discriminatedUnion('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -572,7 +572,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->optional();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations

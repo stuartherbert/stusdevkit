@@ -127,10 +127,6 @@ class IntersectionSchema extends BaseSchema
                 return $this->defaultValue;
             }
 
-            if ($this->isNullable || $this->isOptional) {
-                return null;
-            }
-
             $this->invokeErrorCallback(
                 callback: $this->typeCheckError,
                 input: $data,

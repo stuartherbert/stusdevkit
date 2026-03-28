@@ -231,10 +231,6 @@ abstract class BaseSchema implements Parseable
                 return $this->defaultValue;
             }
 
-            if ($this->isNullable || $this->isOptional) {
-                return null;
-            }
-
             // null is not allowed — invoke the type-check
             // callback (always set by schema constructors)
             $this->invokeErrorCallback(

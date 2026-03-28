@@ -301,7 +301,7 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::literal(value: null)->nullable();
+        $unit = Validate::nullable(Validate::literal(value: null));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -487,7 +487,7 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::literal(value: 'active')->nullable();
+        $unit = Validate::nullable(Validate::literal(value: 'active'));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -522,7 +522,7 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::literal(value: 'active')->optional();
+        $unit = Validate::optional(Validate::literal(value: 'active'));
 
         // ----------------------------------------------------------------
         // mock out any integrations

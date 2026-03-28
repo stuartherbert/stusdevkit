@@ -988,7 +988,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->nullable();
+        $unit = Validate::nullable(Validate::float());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1023,7 +1023,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->optional();
+        $unit = Validate::optional(Validate::float());
 
         // ----------------------------------------------------------------
         // mock out any integrations

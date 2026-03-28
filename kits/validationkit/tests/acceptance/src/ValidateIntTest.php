@@ -870,7 +870,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->nullable();
+        $unit = Validate::nullable(Validate::int());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -905,7 +905,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->optional();
+        $unit = Validate::optional(Validate::int());
 
         // ----------------------------------------------------------------
         // mock out any integrations

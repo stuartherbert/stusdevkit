@@ -279,7 +279,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-            'bio' => Validate::string()->optional(),
+            'bio' => Validate::optional(Validate::string()),
         ]);
 
         // ----------------------------------------------------------------
@@ -1076,9 +1076,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::nullable(Validate::object([
             'name' => Validate::string(),
-        ])->nullable();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1113,9 +1113,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::optional(Validate::object([
             'name' => Validate::string(),
-        ])->optional();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations

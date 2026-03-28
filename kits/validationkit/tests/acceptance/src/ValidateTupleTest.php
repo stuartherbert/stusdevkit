@@ -554,10 +554,10 @@ class ValidateTupleTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::tuple([
+        $unit = Validate::nullable(Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->nullable();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -592,10 +592,10 @@ class ValidateTupleTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::tuple([
+        $unit = Validate::optional(Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->optional();
+        ]));
 
         // ----------------------------------------------------------------
         // mock out any integrations

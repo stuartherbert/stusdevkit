@@ -71,7 +71,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  *     // shape modification
  *     $withBio = $userSchema->extend([
- *         'bio' => Validate::string()->optional(),
+ *         'bio' => Validate::optional(Validate::string()),
  *     ]);
  *
  *     $nameOnly = $userSchema->pick('name');
@@ -192,14 +192,16 @@ class ObjectSchema extends BaseSchema
      * make all fields optional
      *
      * Returns a new schema where every field in the shape
-     * is wrapped with optional().
+     * is wrapped with OptionalSchema.
      */
     public function partial(): static
     {
         $clone = clone $this;
         $newShape = [];
         foreach ($clone->shape as $key => $schema) {
-            $newShape[$key] = $schema->optional();
+            $newShape[$key] = new OptionalSchema(
+                innerSchema: $schema,
+            );
         }
         $clone->shape = $newShape;
 
@@ -209,19 +211,22 @@ class ObjectSchema extends BaseSchema
     /**
      * make all fields required (undo partial)
      *
-     * This creates a new schema where every field has
-     * nullable and optional flags cleared. Note: this
-     * creates fresh schemas from the shape, so any
-     * previous nullable/optional calls on individual
-     * fields will be undone.
+     * Returns a new schema where any OptionalSchema
+     * wrappers are unwrapped, making all fields required
+     * again.
      */
     public function required(): static
     {
-        // we cannot easily "un-optional" a schema because
-        // the flags are protected. Instead, we return a
-        // clone — users should apply required() before
-        // optional() on individual fields.
-        return clone $this;
+        $clone = clone $this;
+        $newShape = [];
+        foreach ($clone->shape as $key => $schema) {
+            $newShape[$key] = $schema instanceof OptionalSchema
+                ? $schema->unwrap()
+                : $schema;
+        }
+        $clone->shape = $newShape;
+
+        return $clone;
     }
 
     /**
@@ -338,10 +343,6 @@ class ObjectSchema extends BaseSchema
         if ($data === null) {
             if ($this->hasDefault) {
                 return $this->defaultValue;
-            }
-
-            if ($this->isNullable || $this->isOptional) {
-                return null;
             }
 
             $this->invokeErrorCallback(

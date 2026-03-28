@@ -347,9 +347,9 @@ class ValidateInstanceOfTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::instanceOf(
+        $unit = Validate::nullable(Validate::instanceOf(
             DateTimeInterface::class,
-        )->nullable();
+        ));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -384,9 +384,9 @@ class ValidateInstanceOfTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::instanceOf(
+        $unit = Validate::optional(Validate::instanceOf(
             DateTimeInterface::class,
-        )->optional();
+        ));
 
         // ----------------------------------------------------------------
         // mock out any integrations
