@@ -43,6 +43,8 @@ namespace StusDevKit\ValidationKit;
 
 use BackedEnum;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
+use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeSchema;
+use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\BooleanSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\FloatSchema;
@@ -59,8 +61,6 @@ use StusDevKit\ValidationKit\Schemas\Logic\DiscriminatedUnionSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\EnumSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\IntersectionSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\UnionSchema;
-use StusDevKit\ValidationKit\Schemas\Specialized\DateTimeSchema;
-use StusDevKit\ValidationKit\Schemas\Specialized\InstanceOfSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**

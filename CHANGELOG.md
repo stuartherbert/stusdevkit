@@ -61,7 +61,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- bring PHP builtins validators into a common namespace ([499ffed](https://github.com/stuartherbert/stusdevkit/commit/499ffed)) — Stuart Herbert <stuart@stuartherbert.com>
+- move validators for built-in PHP object types into their own namespace ([ada5f49](https://github.com/stuartherbert/stusdevkit/commit/ada5f49)) — Stuart Herbert <stuart@stuartherbert.com>
+- bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 

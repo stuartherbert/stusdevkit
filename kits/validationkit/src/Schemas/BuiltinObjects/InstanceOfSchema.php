@@ -39,7 +39,7 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Schemas\Specialized;
+namespace StusDevKit\ValidationKit\Schemas\BuiltinObjects;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
