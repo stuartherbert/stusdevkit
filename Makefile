@@ -100,6 +100,9 @@ unit-collectionskit: ## Run unit tests for the CollectionsKit
 unit-datetimekit: ## Run unit tests for the DateTimeKit
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-datetimekit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
+unit-validationkit: ## Run unit tests for the ValidationKit
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-validationkit --display-all-issues --testdox --testdox-summary ${OPTS}"
+
 unit-exceptionskit: ## Run unit tests for the ExceptionsKit
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-exceptionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 

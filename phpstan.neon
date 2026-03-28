@@ -8,6 +8,8 @@ parameters:
         - kits/collectionskit/tests
         - kits/datetimekit/src
         - kits/datetimekit/tests
+        - kits/validationkit/src
+        - kits/validationkit/tests
         - tools/ChangelogTool/src
         - tools/ChangelogTool/tests
     ignoreErrors:

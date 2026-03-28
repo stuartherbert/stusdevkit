@@ -9,7 +9,8 @@
             "StusDevKit\\CollectionsKit\\": "kits/collectionskit/src/",
             "StusDevKit\\DateTimeKit\\": "kits/datetimekit/src/",
             "StusDevKit\\AssertionsKit\\": "kits/assertionskit/src/",
-            "StusDevKit\\ExceptionsKit\\": "kits/exceptionskit/src/"
+            "StusDevKit\\ExceptionsKit\\": "kits/exceptionskit/src/",
+            "StusDevKit\\ValidationKit\\": "kits/validationkit/src/"
         }
     },
     "autoload-dev": {
@@ -23,7 +24,9 @@
             "StusDevKit\\AssertionsKit\\Tests\\Unit\\": "kits/assertionskit/tests/unit/src",
             "StusDevKit\\AssertionsKit\\Tests\\Fixtures\\": "kits/assertionskit/tests/fixtures/src",
             "StusDevKit\\ExceptionsKit\\Tests\\Unit\\": "kits/exceptionskit/tests/unit/src",
-            "StusDevKit\\ExceptionsKit\\TestFixtures\\": "kits/exceptionskit/tests/fixtures/src"
+            "StusDevKit\\ExceptionsKit\\TestFixtures\\": "kits/exceptionskit/tests/fixtures/src",
+            "StusDevKit\\ValidationKit\\Tests\\Unit\\": "kits/validationkit/tests/unit/src",
+            "StusDevKit\\ValidationKit\\Tests\\Fixtures\\": "kits/validationkit/tests/fixtures/src"
         }
     },
     "bin": ["tools/ChangelogTool/bin/changelog-tool"],

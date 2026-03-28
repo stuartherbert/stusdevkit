@@ -20,6 +20,10 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### ValidationKit
+
+- added placeholder ([767edd1](https://github.com/stuartherbert/stusdevkit/commit/767edd1)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ExceptionsKit
 
 - added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -48,7 +52,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionKit
 
-- add list of available methods ([e583f63](https://github.com/stuartherbert/stusdevkit/commit/e583f63)) — Stuart Herbert <stuart@stuartherbert.com>
+- add list of available methods ([7962911](https://github.com/stuartherbert/stusdevkit/commit/7962911)) — Stuart Herbert <stuart@stuartherbert.com>
 
 ### Refactoring
 
