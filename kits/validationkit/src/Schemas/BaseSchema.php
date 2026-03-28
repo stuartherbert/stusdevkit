@@ -69,8 +69,9 @@ use StusDevKit\ValidationKit\Traits\HasTransforms;
  * 7. Pipe to another schema
  *
  * Concrete schemas must implement checkType() and
- * checkConstraints(). They may also override
- * defaultCoercion() to support type coercion.
+ * checkConstraints(). Schemas that support type
+ * coercion should provide their own coerce() builder
+ * method.
  *
  * All builder methods return new instances (immutable
  * schemas).
@@ -114,25 +115,6 @@ abstract class BaseSchema implements Parseable
     ): static {
         $clone = clone $this;
         $clone->constraints[] = $constraint;
-
-        return $clone;
-    }
-
-    /**
-     * enable type coercion for this schema
-     *
-     * When enabled, the schema will attempt to convert the
-     * input to the expected type before validation. For
-     * example, a string '42' would be coerced to int 42
-     * for an int schema.
-     *
-     * Each concrete schema defines its own coercion rules
-     * by overriding defaultCoercion().
-     */
-    public function coerce(): static
-    {
-        $clone = clone $this;
-        $clone->coercion = $this->defaultCoercion();
 
         return $clone;
     }
@@ -349,18 +331,6 @@ abstract class BaseSchema implements Parseable
                 context: $context,
             );
         }
-    }
-
-    /**
-     * return the coercion to use when coerce() is called
-     *
-     * Override this in concrete schemas that support
-     * coercion. The default implementation returns
-     * NoCoercion (a no-op).
-     */
-    protected function defaultCoercion(): ValueCoercion
-    {
-        return new NoCoercion();
     }
 
     // ================================================================

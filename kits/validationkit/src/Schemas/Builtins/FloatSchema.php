@@ -48,7 +48,6 @@ use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
-use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -264,8 +263,17 @@ class FloatSchema extends BaseSchema
         return false;
     }
 
-    protected function defaultCoercion(): ValueCoercion
+    /**
+     * enable type coercion for this schema
+     *
+     * Numeric strings, integers, and booleans are
+     * converted to float.
+     */
+    public function coerce(): static
     {
-        return new CoerceToFloat();
+        $clone = clone $this;
+        $clone->coercion = new CoerceToFloat();
+
+        return $clone;
     }
 }

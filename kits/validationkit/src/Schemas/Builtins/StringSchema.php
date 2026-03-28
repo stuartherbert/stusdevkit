@@ -54,7 +54,6 @@ use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
-use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -458,9 +457,18 @@ class StringSchema extends BaseSchema
         return $data;
     }
 
-    protected function defaultCoercion(): ValueCoercion
+    /**
+     * enable type coercion for this schema
+     *
+     * Integers, floats, and booleans are converted to
+     * string.
+     */
+    public function coerce(): static
     {
-        return new CoerceToString();
+        $clone = clone $this;
+        $clone->coercion = new CoerceToString();
+
+        return $clone;
     }
 
     // ================================================================

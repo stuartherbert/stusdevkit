@@ -46,7 +46,6 @@ use StusDevKit\DateTimeKit\When;
 use StusDevKit\ValidationKit\Coercions\CoerceToWhen;
 use StusDevKit\ValidationKit\Constraints\DateTimeMaxConstraint;
 use StusDevKit\ValidationKit\Constraints\DateTimeMinConstraint;
-use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -178,8 +177,18 @@ class WhenSchema extends BaseSchema
         return false;
     }
 
-    protected function defaultCoercion(): ValueCoercion
+    /**
+     * enable type coercion for this schema
+     *
+     * Date strings, DateTimeInterface instances, and
+     * integer Unix timestamps are converted to When
+     * via When::from().
+     */
+    public function coerce(): static
     {
-        return new CoerceToWhen();
+        $clone = clone $this;
+        $clone->coercion = new CoerceToWhen();
+
+        return $clone;
     }
 }

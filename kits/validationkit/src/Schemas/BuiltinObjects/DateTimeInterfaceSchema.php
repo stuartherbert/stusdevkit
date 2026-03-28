@@ -45,7 +45,6 @@ use DateTimeInterface;
 use StusDevKit\ValidationKit\Coercions\CoerceToDateTime;
 use StusDevKit\ValidationKit\Constraints\DateTimeMaxConstraint;
 use StusDevKit\ValidationKit\Constraints\DateTimeMinConstraint;
-use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -172,8 +171,17 @@ class DateTimeInterfaceSchema extends BaseSchema
         return false;
     }
 
-    protected function defaultCoercion(): ValueCoercion
+    /**
+     * enable type coercion for this schema
+     *
+     * Date strings and integer Unix timestamps are
+     * converted to DateTimeImmutable.
+     */
+    public function coerce(): static
     {
-        return new CoerceToDateTime();
+        $clone = clone $this;
+        $clone->coercion = new CoerceToDateTime();
+
+        return $clone;
     }
 }

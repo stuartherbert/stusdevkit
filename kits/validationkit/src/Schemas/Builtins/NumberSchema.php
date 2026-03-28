@@ -48,7 +48,6 @@ use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
-use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -279,8 +278,18 @@ class NumberSchema extends BaseSchema
         return false;
     }
 
-    protected function defaultCoercion(): ValueCoercion
+    /**
+     * enable type coercion for this schema
+     *
+     * Numeric strings are converted to int or float
+     * (preserving the distinction). Booleans are
+     * converted to int.
+     */
+    public function coerce(): static
     {
-        return new CoerceToNumber();
+        $clone = clone $this;
+        $clone->coercion = new CoerceToNumber();
+
+        return $clone;
     }
 }

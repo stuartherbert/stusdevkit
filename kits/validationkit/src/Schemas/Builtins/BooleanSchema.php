@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Coercions\CoerceToBoolean;
-use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -164,10 +163,5 @@ class BooleanSchema extends BaseSchema
         );
 
         return $clone;
-    }
-
-    protected function defaultCoercion(): ValueCoercion
-    {
-        return new CoerceToBoolean();
     }
 }
