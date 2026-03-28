@@ -63,25 +63,24 @@ use StusDevKit\ValidationKit\Contracts\ValueCoercion;
  */
 final class CoerceToBoolean implements ValueCoercion
 {
+    /** @var array<string, bool> */
+    // @phpstan-ignore classConstant.value
+    private const array LOOKUP = [
+        'true'  => true,
+        '1'     => true,
+        'yes'   => true,
+        'false' => false,
+        '0'     => false,
+        'no'    => false,
+        ''      => false,
+    ];
+
     public function coerce(mixed $data): mixed
     {
         if (is_string($data)) {
             $lower = strtolower($data);
-            if (
-                $lower === 'true'
-                || $lower === '1'
-                || $lower === 'yes'
-            ) {
-                return true;
-            }
-            if (
-                $lower === 'false'
-                || $lower === '0'
-                || $lower === 'no'
-                || $lower === ''
-            ) {
-                return false;
-            }
+
+            return self::LOOKUP[$lower] ?? $data;
         }
 
         if (is_int($data) || is_float($data)) {
