@@ -568,18 +568,18 @@ class ValidateNullishTest extends TestCase
 
     // ================================================================
     //
-    // Delegation and Rejection
+    // Valid Data Passes Through
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('delegates to inner schema for non-null input')]
-    public function test_nullish_delegates_to_inner_schema(): void
+    #[TestDox('passes valid data through with string inner schema')]
+    public function test_nullish_string_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that Validate::nullish(Validate::string())
-        // delegates non-null input to the inner string schema
+        // passes valid string data through to the inner schema
         // and returns the parsed result
 
         // ----------------------------------------------------------------
@@ -610,6 +610,497 @@ class ValidateNullishTest extends TestCase
         // clean up the database
 
     }
+
+    #[TestDox('passes valid data through with int inner schema')]
+    public function test_nullish_int_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::int())
+        // passes valid int data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::int());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(42);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(42, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with float inner schema')]
+    public function test_nullish_float_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::float())
+        // passes valid float data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::float());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(3.14);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(3.14, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with number inner schema')]
+    public function test_nullish_number_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::number())
+        // passes valid number data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::number());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(42);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(42, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with boolean inner schema')]
+    public function test_nullish_boolean_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::boolean())
+        // passes valid boolean data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::boolean());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(true);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(true, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with dateTime inner schema')]
+    public function test_nullish_datetime_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::dateTime())
+        // passes valid DateTimeImmutable data through to the inner
+        // schema and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::dateTime());
+        $now = new DateTimeImmutable();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($now);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($now, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with literal inner schema')]
+    public function test_nullish_literal_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::literal(value: 'active'))
+        // passes valid literal data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::literal(value: 'active'));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('active');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('active', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with enum inner schema')]
+    public function test_nullish_enum_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::enum(['a', 'b']))
+        // passes valid enum data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::enum(['a', 'b']));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('a');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('a', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with array inner schema')]
+    public function test_nullish_array_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::array(Validate::string()))
+        // passes valid array data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::array(Validate::string()));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['hello']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(['hello'], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with object inner schema')]
+    public function test_nullish_object_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::object([...]))
+        // passes valid object data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::object(['name' => Validate::string()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['name' => 'Stuart']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(['name' => 'Stuart'], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with tuple inner schema')]
+    public function test_nullish_tuple_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::tuple([...]))
+        // passes valid tuple data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::tuple([Validate::string(), Validate::int()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['hello', 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(['hello', 42], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with union inner schema')]
+    public function test_nullish_union_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::union([...]))
+        // passes valid union data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::union([Validate::string(), Validate::int()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('hello');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with instanceOf inner schema')]
+    public function test_nullish_instance_of_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::instanceOf(...))
+        // passes valid instance data through to the inner schema
+        // and returns the parsed result
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::instanceOf(DateTimeInterface::class),
+        );
+        $now = new DateTimeImmutable();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($now);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($now, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // Delegation and Rejection
+    //
+    // ----------------------------------------------------------------
 
     #[TestDox('rejects invalid type via inner schema')]
     public function test_nullish_rejects_invalid_type(): void
