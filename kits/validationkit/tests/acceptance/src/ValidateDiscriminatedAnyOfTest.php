@@ -211,7 +211,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidUnion, $issue->code);
         $this->assertStringContainsString(
             'Missing discriminator',
@@ -315,7 +315,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
@@ -381,7 +381,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
             count($caughtException->issues()),
         );
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertSame('not-an-array', $issue->input);
 
@@ -662,7 +662,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame('x must be positive', $issue->message);
 
@@ -833,7 +833,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Custom: invalid event',
             $issue->message,
@@ -897,7 +897,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
@@ -1055,7 +1055,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

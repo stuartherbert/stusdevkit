@@ -43,6 +43,7 @@ namespace StusDevKit\ValidationKit\Internals;
 
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
+use StusDevKit\ValidationKit\ValidationIssuesList;
 
 /**
  * ValidationContext is an internal object that tracks the
@@ -151,11 +152,9 @@ final class ValidationContext
 
     /**
      * return all collected validation issues
-     *
-     * @return list<ValidationIssue>
      */
-    public function issues(): array
+    public function issues(): ValidationIssuesList
     {
-        return $this->issues;
+        return new ValidationIssuesList($this->issues);
     }
 }

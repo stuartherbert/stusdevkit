@@ -134,7 +134,7 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
@@ -175,7 +175,7 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertStringContainsString(
             'Expected instance of DateTimeInterface',
@@ -233,7 +233,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertSame('not an object', $issue->input);
         $this->assertSame([], $issue->path);
@@ -466,7 +466,7 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'Date must be after Unix epoch',
@@ -615,7 +615,7 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Custom: must be a date',
             $issue->message,
@@ -670,7 +670,7 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
@@ -806,7 +806,7 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

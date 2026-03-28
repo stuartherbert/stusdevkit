@@ -235,7 +235,7 @@ class ValidateNumberTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertSame('not a number', $issue->input);
         $this->assertSame([], $issue->path);
@@ -411,7 +411,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooSmall, $issue->code);
 
         // ----------------------------------------------------------------
@@ -489,7 +489,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooSmall, $issue->code);
 
         // ----------------------------------------------------------------
@@ -568,7 +568,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooBig, $issue->code);
 
         // ----------------------------------------------------------------
@@ -646,7 +646,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooBig, $issue->code);
 
         // ----------------------------------------------------------------
@@ -724,7 +724,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooSmall, $issue->code);
 
         // ----------------------------------------------------------------
@@ -802,7 +802,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooBig, $issue->code);
 
         // ----------------------------------------------------------------
@@ -881,7 +881,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::NotMultipleOf, $issue->code);
 
         // ----------------------------------------------------------------
@@ -959,7 +959,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::NotFinite, $issue->code);
 
         // ----------------------------------------------------------------
@@ -999,7 +999,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::NotFinite, $issue->code);
 
         // ----------------------------------------------------------------
@@ -1189,7 +1189,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame('Unlucky number', $issue->message);
 
@@ -1324,7 +1324,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('Custom: not a number', $issue->message);
         $this->assertSame(
             'https://example.com/errors/not-number',
@@ -1379,7 +1379,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Score must not be negative',
             $issue->message,
@@ -1433,7 +1433,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
@@ -1562,7 +1562,7 @@ class ValidateNumberTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

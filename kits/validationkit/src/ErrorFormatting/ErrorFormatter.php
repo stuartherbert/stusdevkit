@@ -118,7 +118,10 @@ final class ErrorFormatter
     public static function treeify(
         ValidationException $exception,
     ): TreeError {
-        return self::buildTree($exception->issues());
+        /** @var list<ValidationIssue> $issues */
+        $issues = $exception->issues()->toArray();
+
+        return self::buildTree($issues);
     }
 
     /**

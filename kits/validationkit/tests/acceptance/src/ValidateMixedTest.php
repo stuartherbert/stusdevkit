@@ -325,7 +325,7 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'Value must not be empty string',
@@ -445,10 +445,11 @@ class ValidateMixedTest extends TestCase
         $this->assertTrue($result->failed());
         $issues = $result->maybeError()->issues();
         $this->assertCount(1, $issues);
-        $this->assertSame(IssueCode::TooSmall, $issues[0]->code);
+        $issue = $issues->first();
+        $this->assertSame(IssueCode::TooSmall, $issue->code);
         $this->assertSame(
             'Must be at least 3 characters',
-            $issues[0]->message,
+            $issue->message,
         );
 
         // ----------------------------------------------------------------
@@ -852,7 +853,7 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

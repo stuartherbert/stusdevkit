@@ -148,7 +148,7 @@ class ValidateBooleanTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

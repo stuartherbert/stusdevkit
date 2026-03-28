@@ -253,7 +253,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('age', $issue->pathAsString());
 
         // ----------------------------------------------------------------
@@ -396,7 +396,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('address.zip', $issue->pathAsString());
 
         // ----------------------------------------------------------------
@@ -448,7 +448,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'user.address.city',
             $issue->pathAsString(),
@@ -496,7 +496,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('tags[0]', $issue->pathAsString());
 
         // ----------------------------------------------------------------
@@ -549,7 +549,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'items[2].price',
             $issue->pathAsString(),
@@ -849,7 +849,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             IssueCode::UnrecognizedKeys,
             $issue->code,
@@ -952,7 +952,7 @@ class ValidateObjectTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertSame(42, $issue->input);
         $this->assertSame([], $issue->path);
@@ -1200,7 +1200,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'Passwords do not match',
@@ -1347,7 +1347,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Custom: not an object',
             $issue->message,
@@ -1404,7 +1404,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
@@ -1538,7 +1538,7 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

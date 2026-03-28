@@ -42,7 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Exceptions;
 
 use StusDevKit\ExceptionsKit\Exceptions\Rfc9457ProblemDetailsException;
-use StusDevKit\ValidationKit\ValidationIssue;
+use StusDevKit\ValidationKit\ValidationIssuesList;
 
 /**
  * ValidationException is the default exception thrown when
@@ -72,15 +72,14 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 class ValidationException extends Rfc9457ProblemDetailsException
 {
-    /** @var list<ValidationIssue> */
-    private array $issues;
+    private ValidationIssuesList $issues;
 
     /**
-     * @param list<ValidationIssue> $issues
+     * @param ValidationIssuesList $issues
      * - the validation failures that were detected
      */
     public function __construct(
-        array $issues,
+        ValidationIssuesList $issues,
     ) {
         $this->issues = $issues;
 
@@ -101,10 +100,8 @@ class ValidationException extends Rfc9457ProblemDetailsException
 
     /**
      * return the list of validation issues
-     *
-     * @return list<ValidationIssue>
      */
-    public function issues(): array
+    public function issues(): ValidationIssuesList
     {
         return $this->issues;
     }
@@ -119,11 +116,11 @@ class ValidationException extends Rfc9457ProblemDetailsException
      * build a human-readable summary of the validation
      * failures
      *
-     * @param list<ValidationIssue> $issues
      * @return non-empty-string
      */
-    private static function issuesToSummary(array $issues): string
-    {
+    private static function issuesToSummary(
+        ValidationIssuesList $issues,
+    ): string {
         $count = count($issues);
 
         if ($count === 0) {
@@ -131,7 +128,7 @@ class ValidationException extends Rfc9457ProblemDetailsException
         }
 
         if ($count === 1) {
-            $issue = $issues[0];
+            $issue = $issues->first();
             $path = $issue->pathAsString();
 
             if ($path !== '') {
@@ -152,11 +149,10 @@ class ValidationException extends Rfc9457ProblemDetailsException
      * leaf level, so we convert each issue into a flat
      * string-keyed structure.
      *
-     * @param list<ValidationIssue> $issues
      * @return array<string, string|array<string, string>>
      */
     private static function issuesToExtra(
-        array $issues,
+        ValidationIssuesList $issues,
     ): array {
         $serialised = [];
 

@@ -130,7 +130,7 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidEnum, $issue->code);
 
         // ----------------------------------------------------------------
@@ -216,7 +216,7 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidEnum, $issue->code);
 
         // ----------------------------------------------------------------
@@ -270,7 +270,7 @@ class ValidateEnumTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidEnum, $issue->code);
         $this->assertSame('deleted', $issue->input);
         $this->assertSame([], $issue->path);
@@ -492,7 +492,7 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'inactive is not allowed here',
@@ -633,7 +633,7 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Custom: invalid status',
             $issue->message,
@@ -688,7 +688,7 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_enum',
             $issue->type,
@@ -819,7 +819,7 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

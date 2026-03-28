@@ -273,7 +273,7 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooSmall, $issue->code);
 
         // ----------------------------------------------------------------
@@ -355,7 +355,7 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooBig, $issue->code);
 
         // ----------------------------------------------------------------
@@ -506,7 +506,7 @@ class ValidateDateTimeTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidDate, $issue->code);
         $this->assertSame('not a date', $issue->input);
         $this->assertSame([], $issue->path);
@@ -737,7 +737,7 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'Date must not be a Sunday',
@@ -881,7 +881,7 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             IssueCode::InvalidDate,
             $issue->code,
@@ -940,7 +940,7 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_date',
             $issue->type,
@@ -1074,7 +1074,7 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

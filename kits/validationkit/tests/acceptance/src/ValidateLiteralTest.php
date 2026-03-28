@@ -370,7 +370,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidLiteral, $issue->code);
         $this->assertSame('inactive', $issue->input);
         $this->assertSame([], $issue->path);
@@ -594,7 +594,7 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'Custom refinement failed',
@@ -735,7 +735,7 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('Custom: must be active', $issue->message);
         $this->assertSame(
             'https://example.com/errors/not-active',
@@ -787,7 +787,7 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_literal',
             $issue->type,
@@ -918,7 +918,7 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

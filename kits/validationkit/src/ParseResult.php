@@ -42,6 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit;
 
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
+use StusDevKit\ValidationKit\ValidationIssuesList;
 
 /**
  * ParseResult holds the outcome of a safeParse() call.
@@ -214,7 +215,7 @@ final class ParseResult
     public function error(): ValidationException
     {
         if ($this->success) {
-            throw new ValidationException([]);
+            throw new ValidationException(new ValidationIssuesList());
         }
 
         // this is guaranteed to be non-null because

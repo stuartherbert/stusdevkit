@@ -242,7 +242,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooSmall, $issue->code);
 
         // ----------------------------------------------------------------
@@ -286,7 +286,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::TooBig, $issue->code);
 
         // ----------------------------------------------------------------
@@ -330,7 +330,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertSame('[1]', $issue->pathAsString());
 
@@ -374,7 +374,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('[0]', $issue->pathAsString());
 
         // ----------------------------------------------------------------
@@ -431,7 +431,7 @@ class ValidateTupleTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidType, $issue->code);
         $this->assertSame(42, $issue->input);
         $this->assertSame([], $issue->path);
@@ -670,7 +670,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'First element must be less than second',
@@ -820,7 +820,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Custom: not a tuple',
             $issue->message,
@@ -878,7 +878,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
@@ -1017,7 +1017,7 @@ class ValidateTupleTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

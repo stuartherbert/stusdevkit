@@ -222,6 +222,17 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'code' => IssueCode::InvalidString,
+                    'path' => ['email'],
+                    'message' => 'Invalid email address',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         // ----------------------------------------------------------------
         // clean up the database
 
@@ -282,14 +293,14 @@ class ValidateAllOfTest extends TestCase
 
     }
 
-    #[TestDox('fails when left schema fails')]
-    public function test_fails_when_left_schema_fails(): void
+    #[TestDox('fails when first schema fails')]
+    public function test_fails_when_first_schema_fails(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that intersection() reports
-        // issues when the left schema rejects the input
+        // this test proves that allOf() reports issues when
+        // the first schema rejects the input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -327,19 +338,30 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'code' => IssueCode::InvalidType,
+                    'path' => ['name'],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('fails when right schema fails')]
-    public function test_fails_when_right_schema_fails(): void
+    #[TestDox('fails when second schema fails')]
+    public function test_fails_when_second_schema_fails(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that intersection() reports
-        // issues when the right schema rejects the input
+        // this test proves that allOf() reports issues when
+        // the second schema rejects the input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -377,6 +399,17 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'code' => IssueCode::InvalidType,
+                    'path' => ['age'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         // ----------------------------------------------------------------
         // clean up the database
 
@@ -395,8 +428,8 @@ class ValidateAllOfTest extends TestCase
         // explain your test
 
         // this test proves that parse() throws a
-        // ValidationException when either schema in the
-        // intersection fails
+        // ValidationException when any schema in the
+        // allOf fails
 
         // ----------------------------------------------------------------
         // shorthand
@@ -438,9 +471,16 @@ class ValidateAllOfTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertGreaterThanOrEqual(
-            1,
-            count($caughtException->issues()),
+
+        $this->assertSame(
+            [
+                [
+                    'code' => IssueCode::InvalidType,
+                    'path' => ['age'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -511,7 +551,7 @@ class ValidateAllOfTest extends TestCase
         // explain your test
 
         // this test proves that safeParse() returns a
-        // failed ParseResult when either schema fails
+        // failed ParseResult when any schema fails
 
         // ----------------------------------------------------------------
         // shorthand
@@ -553,6 +593,17 @@ class ValidateAllOfTest extends TestCase
         $this->assertInstanceOf(
             ValidationException::class,
             $result->maybeError(),
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'code' => IssueCode::InvalidType,
+                    'path' => ['age'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -721,7 +772,7 @@ class ValidateAllOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame('Must be at least 18', $issue->message);
 
@@ -892,7 +943,7 @@ class ValidateAllOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'Custom: not an intersection',
             $issue->message,
@@ -1056,7 +1107,7 @@ class ValidateAllOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',

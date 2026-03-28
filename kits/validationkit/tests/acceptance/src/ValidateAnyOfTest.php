@@ -177,7 +177,7 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::InvalidUnion, $issue->code);
 
         // ----------------------------------------------------------------
@@ -234,7 +234,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()[0];
+        $issue = $caughtException->issues()->first();
         $this->assertSame(IssueCode::InvalidUnion, $issue->code);
         $this->assertSame(true, $issue->input);
         $this->assertSame([], $issue->path);
@@ -471,7 +471,7 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame('Value is forbidden', $issue->message);
 
@@ -617,7 +617,7 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame('Custom: no match', $issue->message);
         $this->assertSame(
             'https://example.com/errors/no-match',
@@ -672,7 +672,7 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_union',
             $issue->type,
@@ -812,7 +812,7 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
+        $issue = $result->error()->issues()->first();
         $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
             'rejected by custom constraint',
