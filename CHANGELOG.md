@@ -59,6 +59,10 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ValidationKit
+
+- bring PHP builtins validators into a common namespace ([499ffed](https://github.com/stuartherbert/stusdevkit/commit/499ffed)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
 - Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>

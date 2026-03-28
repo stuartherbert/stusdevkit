@@ -39,7 +39,7 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Schemas\Primitives;
+namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
@@ -47,45 +47,49 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * IntSchema validates that the input is an integer.
+ * NumberSchema validates that the input is a number
+ * (int or float), like JavaScript's number type.
+ *
+ * Use IntSchema or FloatSchema if you need to be specific
+ * about which PHP numeric type is accepted.
  *
  * Usage:
  *
  *     use StusDevKit\ValidationKit\Validate;
  *
- *     $schema = Validate::int()->gte(value: 0)->lte(value: 100);
+ *     $schema = Validate::number()->gte(value: 0);
  *     $schema->parse(42);    // 42
- *     $schema->parse(3.14);  // throws (not an int)
- *     $schema->parse(-1);    // throws (below minimum)
+ *     $schema->parse(3.14);  // 3.14
+ *     $schema->parse('42');  // throws
  *
- *     // with coercion
- *     $schema = Validate::int()->coerce();
- *     $schema->parse('42');  // 42
- *
- * @extends BaseSchema<int>
+ * @extends BaseSchema<int|float>
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-class IntSchema extends BaseSchema
+class NumberSchema extends BaseSchema
 {
-    private ?int $gtValue = null;
+    private int|float|null $gtValue = null;
     /** @var ErrorCallback */
     private mixed $gtError;
 
-    private ?int $gteValue = null;
+    private int|float|null $gteValue = null;
     /** @var ErrorCallback */
     private mixed $gteError;
 
-    private ?int $ltValue = null;
+    private int|float|null $ltValue = null;
     /** @var ErrorCallback */
     private mixed $ltError;
 
-    private ?int $lteValue = null;
+    private int|float|null $lteValue = null;
     /** @var ErrorCallback */
     private mixed $lteError;
 
-    private ?int $multipleOfValue = null;
+    private int|float|null $multipleOfValue = null;
     /** @var ErrorCallback */
     private mixed $multipleOfError;
+
+    private bool $mustBeFinite = false;
+    /** @var ErrorCallback */
+    private mixed $finiteError;
 
     /**
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
@@ -97,7 +101,7 @@ class IntSchema extends BaseSchema
                 code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
-                message: 'Expected int, received ' . get_debug_type($data),
+                message: 'Expected number, received ' . get_debug_type($data),
             );
     }
 
@@ -112,8 +116,10 @@ class IntSchema extends BaseSchema
      *
      * @param ErrorCallback|null $error
      */
-    public function gt(int $value, ?callable $error = null): static
-    {
+    public function gt(
+        int|float $value,
+        ?callable $error = null,
+    ): static {
         $clone = clone $this;
         $clone->gtValue = $value;
         $clone->gtError = $error ?? static fn(mixed $data) => new ValidationIssue(
@@ -132,8 +138,10 @@ class IntSchema extends BaseSchema
      *
      * @param ErrorCallback|null $error
      */
-    public function gte(int $value, ?callable $error = null): static
-    {
+    public function gte(
+        int|float $value,
+        ?callable $error = null,
+    ): static {
         $clone = clone $this;
         $clone->gteValue = $value;
         $clone->gteError = $error ?? static fn(mixed $data) => new ValidationIssue(
@@ -151,8 +159,10 @@ class IntSchema extends BaseSchema
      *
      * @param ErrorCallback|null $error
      */
-    public function lt(int $value, ?callable $error = null): static
-    {
+    public function lt(
+        int|float $value,
+        ?callable $error = null,
+    ): static {
         $clone = clone $this;
         $clone->ltValue = $value;
         $clone->ltError = $error ?? static fn(mixed $data) => new ValidationIssue(
@@ -171,8 +181,10 @@ class IntSchema extends BaseSchema
      *
      * @param ErrorCallback|null $error
      */
-    public function lte(int $value, ?callable $error = null): static
-    {
+    public function lte(
+        int|float $value,
+        ?callable $error = null,
+    ): static {
         $clone = clone $this;
         $clone->lteValue = $value;
         $clone->lteError = $error ?? static fn(mixed $data) => new ValidationIssue(
@@ -231,7 +243,7 @@ class IntSchema extends BaseSchema
      * @param ErrorCallback|null $error
      */
     public function multipleOf(
-        int $value,
+        int|float $value,
         ?callable $error = null,
     ): static {
         $clone = clone $this;
@@ -246,6 +258,28 @@ class IntSchema extends BaseSchema
         return $clone;
     }
 
+    /**
+     * require the value to be finite (not INF or NAN)
+     *
+     * Only relevant for float values. Integer values are
+     * always finite.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function finite(?callable $error = null): static
+    {
+        $clone = clone $this;
+        $clone->mustBeFinite = true;
+        $clone->finiteError = $error ?? static fn(mixed $data) => new ValidationIssue(
+            code: IssueCode::NotFinite,
+            input: $data,
+            path: [],
+            message: 'Number must be finite',
+        );
+
+        return $clone;
+    }
+
     // ================================================================
     //
     // BaseSchema Implementation
@@ -254,14 +288,14 @@ class IntSchema extends BaseSchema
 
     protected function expectedType(): string
     {
-        return 'int';
+        return 'number';
     }
 
     protected function checkType(
         mixed $data,
         ValidationContext $context,
     ): bool {
-        if (is_int($data)) {
+        if (is_int($data) || is_float($data)) {
             return true;
         }
 
@@ -278,7 +312,17 @@ class IntSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): void {
-        assert(is_int($data));
+        assert(is_int($data) || is_float($data));
+
+        if ($this->mustBeFinite && is_float($data) && ! is_finite($data)) {
+            /** @var ErrorCallback $finiteError */
+            $finiteError = $this->finiteError;
+            $this->invokeErrorCallback(
+                callback: $finiteError,
+                input: $data,
+                context: $context,
+            );
+        }
 
         if ($this->gtValue !== null && $data <= $this->gtValue) {
             /** @var ErrorCallback $gtError */
@@ -320,29 +364,33 @@ class IntSchema extends BaseSchema
             );
         }
 
-        if ($this->multipleOfValue !== null && $data % $this->multipleOfValue !== 0) {
-            /** @var ErrorCallback $multipleOfError */
-            $multipleOfError = $this->multipleOfError;
-            $this->invokeErrorCallback(
-                callback: $multipleOfError,
-                input: $data,
-                context: $context,
-            );
+        if ($this->multipleOfValue !== null) {
+            $remainder = is_float($data) || is_float($this->multipleOfValue)
+                ? fmod((float) $data, (float) $this->multipleOfValue)
+                : $data % $this->multipleOfValue;
+            $failed = is_float($remainder)
+                ? abs($remainder) > PHP_FLOAT_EPSILON
+                : $remainder !== 0;
+            if ($failed) {
+                /** @var ErrorCallback $multipleOfError */
+                $multipleOfError = $this->multipleOfError;
+                $this->invokeErrorCallback(
+                    callback: $multipleOfError,
+                    input: $data,
+                    context: $context,
+                );
+            }
         }
     }
 
     protected function coerceValue(mixed $data): mixed
     {
         if (is_string($data) && is_numeric($data)) {
-            $intVal = (int) $data;
-            // only coerce if the string represents a whole
-            // number (no fractional part)
-            if ((string) $intVal === $data) {
-                return $intVal;
+            // preserve int vs float distinction
+            if (str_contains($data, '.') || str_contains($data, 'e') || str_contains($data, 'E')) {
+                return (float) $data;
             }
-        }
 
-        if (is_float($data) && floor($data) === $data) {
             return (int) $data;
         }
 
