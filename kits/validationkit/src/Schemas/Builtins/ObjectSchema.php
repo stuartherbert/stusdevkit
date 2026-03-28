@@ -420,7 +420,7 @@ class ObjectSchema extends BaseSchema
 
         // steps 5-7: pipeline and pipe
         /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runObjectPipeline(
+        $pipelineResult = $this->runPipeline(
             data: $output,
             context: $context,
         );
@@ -477,51 +477,5 @@ class ObjectSchema extends BaseSchema
                 // no error needed
                 break;
         }
-    }
-
-    /**
-     * run refinements and transforms for the object schema
-     *
-     * @return array{mixed, bool}
-     */
-    private function runObjectPipeline(
-        mixed $data,
-        ValidationContext $context,
-    ): array {
-        foreach ($this->pipeline as $entry) {
-            switch ($entry['type']) {
-                case 'refine':
-                    /** @var callable(mixed): bool $fn */
-                    $fn = $entry['callable'];
-                    $passed = $fn($data);
-                    if (! $passed) {
-                        /** @var non-falsy-string $message */
-                        $message = $entry['message'];
-                        $context->addIssue(
-                            code: IssueCode::Custom,
-                            input: $data,
-                            message: $message,
-                        );
-                    }
-                    break;
-
-                case 'superRefine':
-                    /** @var callable(mixed, ValidationContext): void $fn */
-                    $fn = $entry['callable'];
-                    $fn($data, $context);
-                    break;
-
-                case 'transform':
-                    if ($context->hasIssues()) {
-                        return [$data, false];
-                    }
-                    /** @var callable(mixed): mixed $fn */
-                    $fn = $entry['callable'];
-                    $data = $fn($data);
-                    break;
-            }
-        }
-
-        return [$data, ! $context->hasIssues()];
     }
 }

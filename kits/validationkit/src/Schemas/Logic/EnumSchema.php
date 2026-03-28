@@ -193,10 +193,21 @@ class EnumSchema extends BaseSchema
                     return $data;
                 }
 
-                return $this->runOwnPipeline(
+                /** @var array{mixed, bool} $pipelineResult */
+                $pipelineResult = $this->runPipeline(
                     data: $data,
                     context: $context,
                 );
+                $data = $pipelineResult[0];
+
+                if ($pipelineResult[1] && $this->pipeTarget !== null) {
+                    $data = $this->pipeTarget->parseWithContext(
+                        data: $data,
+                        context: $context,
+                    );
+                }
+
+                return $data;
             }
 
             $this->reportInvalidEnum(
@@ -231,64 +242,24 @@ class EnumSchema extends BaseSchema
                     return $enumCase;
                 }
 
-                return $this->runOwnPipeline(
+                /** @var array{mixed, bool} $pipelineResult */
+                $pipelineResult = $this->runPipeline(
                     data: $enumCase,
                     context: $context,
                 );
+                $enumCase = $pipelineResult[0];
+
+                if ($pipelineResult[1] && $this->pipeTarget !== null) {
+                    $enumCase = $this->pipeTarget->parseWithContext(
+                        data: $enumCase,
+                        context: $context,
+                    );
+                }
+
+                return $enumCase;
             }
 
             $this->reportInvalidEnum(
-                data: $data,
-                context: $context,
-            );
-        }
-
-        return $data;
-    }
-
-    /**
-     * run this schema's own transform/refine/pipe
-     * pipeline after validation succeeds
-     */
-    private function runOwnPipeline(
-        mixed $data,
-        ValidationContext $context,
-    ): mixed {
-        foreach ($this->pipeline as $entry) {
-            switch ($entry['type']) {
-                case 'refine':
-                    /** @var callable(mixed): bool $fn */
-                    $fn = $entry['callable'];
-                    if (! $fn($data)) {
-                        /** @var non-empty-string $message */
-                        $message = $entry['message'];
-                        $context->addIssue(
-                            code: IssueCode::Custom,
-                            input: $data,
-                            message: $message,
-                        );
-                    }
-                    break;
-
-                case 'superRefine':
-                    /** @var callable(mixed, ValidationContext): void $fn */
-                    $fn = $entry['callable'];
-                    $fn($data, $context);
-                    break;
-
-                case 'transform':
-                    if ($context->hasIssues()) {
-                        return $data;
-                    }
-                    /** @var callable(mixed): mixed $fn */
-                    $fn = $entry['callable'];
-                    $data = $fn($data);
-                    break;
-            }
-        }
-
-        if ($this->pipeTarget !== null && ! $context->hasIssues()) {
-            $data = $this->pipeTarget->parseWithContext(
                 data: $data,
                 context: $context,
             );

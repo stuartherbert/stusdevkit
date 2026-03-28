@@ -173,61 +173,21 @@ class IntersectionSchema extends BaseSchema
 
         // run this schema's own pipeline
         // (transform, refine, pipe)
-        return $this->runOwnPipeline(
+        /** @var array{mixed, bool} $pipelineResult */
+        $pipelineResult = $this->runPipeline(
             data: $result,
             context: $context,
         );
-    }
+        $result = $pipelineResult[0];
 
-    /**
-     * run this schema's own transform/refine/pipe
-     * pipeline after both child schemas have validated
-     */
-    private function runOwnPipeline(
-        mixed $data,
-        ValidationContext $context,
-    ): mixed {
-        foreach ($this->pipeline as $entry) {
-            switch ($entry['type']) {
-                case 'refine':
-                    /** @var callable(mixed): bool $fn */
-                    $fn = $entry['callable'];
-                    if (! $fn($data)) {
-                        /** @var non-empty-string $message */
-                        $message = $entry['message'];
-                        $context->addIssue(
-                            code: IssueCode::Custom,
-                            input: $data,
-                            message: $message,
-                        );
-                    }
-                    break;
-
-                case 'superRefine':
-                    /** @var callable(mixed, ValidationContext): void $fn */
-                    $fn = $entry['callable'];
-                    $fn($data, $context);
-                    break;
-
-                case 'transform':
-                    if ($context->hasIssues()) {
-                        return $data;
-                    }
-                    /** @var callable(mixed): mixed $fn */
-                    $fn = $entry['callable'];
-                    $data = $fn($data);
-                    break;
-            }
-        }
-
-        if ($this->pipeTarget !== null && ! $context->hasIssues()) {
-            $data = $this->pipeTarget->parseWithContext(
-                data: $data,
+        if ($pipelineResult[1] && $this->pipeTarget !== null) {
+            $result = $this->pipeTarget->parseWithContext(
+                data: $result,
                 context: $context,
             );
         }
 
-        return $data;
+        return $result;
     }
 
     protected function checkType(
