@@ -273,8 +273,17 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Date must be on or after '
+                        . '2026-06-01T00:00:00+00:00',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -355,8 +364,17 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooBig, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooBig,
+                    'path'    => [],
+                    'message' => 'Date must be on or before '
+                        . '2026-06-01T00:00:00+00:00',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -505,14 +523,16 @@ class ValidateDateTimeTest extends TestCase
 
         $this->assertNotNull($caughtException);
         $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidDate, $issue->code);
-        $this->assertSame('not a date', $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected DateTimeInterface',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidDate,
+                    'path'    => [],
+                    'message' => 'Expected DateTimeInterface,'
+                        . ' received string',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -737,11 +757,15 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'Date must not be a Sunday',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Date must not be a Sunday',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -881,15 +905,18 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidDate,
+                    'path'    => [],
+                    'message' => 'Custom: not a valid date',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(
-            IssueCode::InvalidDate,
-            $issue->code,
-        );
-        $this->assertSame(
-            'Custom: not a valid date',
-            $issue->message,
-        );
         $this->assertSame(
             'https://example.com/errors/not-date',
             $issue->type,
@@ -940,13 +967,24 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidDate,
+                    'path'    => [],
+                    'message' => 'Expected DateTimeInterface,'
+                        . ' received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_date',
             $issue->type,
         );
         $this->assertSame('Invalid date', $issue->title);
-        $this->assertSame(IssueCode::InvalidDate, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1074,11 +1112,15 @@ class ValidateDateTimeTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

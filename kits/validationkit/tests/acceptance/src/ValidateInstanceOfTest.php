@@ -134,8 +134,17 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected instance of '
+                        . 'DateTimeInterface, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -175,11 +184,16 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertStringContainsString(
-            'Expected instance of DateTimeInterface',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected instance of '
+                        . 'DateTimeInterface, received stdClass',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -231,12 +245,17 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame('not an object', $issue->input);
-        $this->assertSame([], $issue->path);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected instance of '
+                        . 'DateTimeInterface, received string',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -466,11 +485,15 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'Date must be after Unix epoch',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Date must be after Unix epoch',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -615,11 +638,18 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
-            'Custom: must be a date',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Custom: must be a date',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
+
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://example.com/errors/not-date',
             $issue->type,
@@ -670,13 +700,24 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected instance of '
+                        . 'DateTimeInterface, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
         $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -806,11 +847,15 @@ class ValidateInstanceOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

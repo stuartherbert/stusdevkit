@@ -104,12 +104,12 @@ class ValidateIntTest extends TestCase
     public static function provideNonIntValues(): array
     {
         return [
-            'float' => [ 3.14 ],
-            'string' => [ 'hello' ],
-            'bool true' => [ true ],
-            'bool false' => [ false ],
-            'null' => [ null ],
-            'array' => [ [1, 2] ],
+            'float' => [ 3.14, 'Expected int, received float' ],
+            'string' => [ 'hello', 'Expected int, received string' ],
+            'bool true' => [ true, 'Expected int, received bool' ],
+            'bool false' => [ false, 'Expected int, received bool' ],
+            'null' => [ null, 'Expected int, received null' ],
+            'array' => [ [1, 2], 'Expected int, received array' ],
         ];
     }
 
@@ -117,12 +117,14 @@ class ValidateIntTest extends TestCase
     #[TestDox('rejects non-int values')]
     public function test_rejects_non_int_value(
         mixed $inputValue,
+        string $expectedMessage,
     ): void {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::int()->parse()
-        // throws a ValidationException for non-int input
+        // this test proves that Validate::int()->safeParse()
+        // returns a failed result with the correct issue
+        // for non-int input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -141,11 +143,22 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse($inputValue);
+        $result = $unit->safeParse($inputValue);
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => $expectedMessage,
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -196,15 +209,15 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame('not an int', $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected int',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -291,6 +304,16 @@ class ValidateIntTest extends TestCase
             ValidationException::class,
             $result->maybeError(),
         );
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -374,8 +397,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Number must be greater than 5',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -452,8 +483,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Number must be greater than or equal to 5',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -531,8 +570,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooBig, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooBig,
+                    'path'    => [],
+                    'message' => 'Number must be less than 10',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -609,8 +656,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooBig, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooBig,
+                    'path'    => [],
+                    'message' => 'Number must be less than or equal to 10',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -687,8 +742,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Number must be greater than 0',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -765,8 +828,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooBig, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooBig,
+                    'path'    => [],
+                    'message' => 'Number must be less than 0',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -844,8 +915,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::NotMultipleOf, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::NotMultipleOf,
+                    'path'    => [],
+                    'message' => 'Number must be a multiple of 3',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1034,9 +1113,16 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame('Unlucky number', $issue->message);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Unlucky number',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1169,8 +1255,18 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Custom: not an integer',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Custom: not an integer', $issue->message);
         $this->assertSame(
             'https://example.com/errors/not-int',
             $issue->type,
@@ -1224,8 +1320,18 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Must be at least 18',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Must be at least 18', $issue->message);
         $this->assertSame(
             'https://example.com/errors/too-young',
             $issue->type,
@@ -1275,13 +1381,23 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
         $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1404,11 +1520,15 @@ class ValidateIntTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

@@ -63,7 +63,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- issues are now returned as a ValidationIssuesList ([f77d3c0](https://github.com/stuartherbert/stusdevkit/commit/f77d3c0)) — Stuart Herbert <stuart@stuartherbert.com>
+- issues are now returned as a ValidationIssuesList ([7f5ccf4](https://github.com/stuartherbert/stusdevkit/commit/7f5ccf4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::allOf() now takes a list of schemas ([909fadc](https://github.com/stuartherbert/stusdevkit/commit/909fadc)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::allOf() now takes a list of schemas ([d64c31d](https://github.com/stuartherbert/stusdevkit/commit/d64c31d)) — Stuart Herbert <stuart@stuartherbert.com>
 - rename some schemas to be closer to JSON schema design ([8fb7e88](https://github.com/stuartherbert/stusdevkit/commit/8fb7e88)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -46,6 +46,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('Validate::optional()')]
@@ -1212,6 +1213,16 @@ class ValidateOptionalTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database

@@ -134,6 +134,18 @@ class ValidateOneOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Input must match exactly one'
+                        . ' schema, but matched 0',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         // ----------------------------------------------------------------
         // clean up the database
 
@@ -176,6 +188,18 @@ class ValidateOneOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Input matches 2 schemas in'
+                        . ' oneOf, but must match exactly one',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         // ----------------------------------------------------------------
         // clean up the database
 
@@ -217,11 +241,29 @@ class ValidateOneOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse(true);
+        $caughtException = null;
+        try {
+            $unit->parse(true);
+        } catch (ValidationException $e) {
+            $caughtException = $e;
+        }
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertNotNull($caughtException);
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Input must match exactly one'
+                        . ' schema, but matched 0',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -314,6 +356,18 @@ class ValidateOneOfTest extends TestCase
         $this->assertInstanceOf(
             ValidationException::class,
             $result->maybeError(),
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Input must match exactly one'
+                        . ' schema, but matched 0',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

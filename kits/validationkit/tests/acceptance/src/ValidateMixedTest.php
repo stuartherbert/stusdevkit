@@ -46,12 +46,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
-use StusDevKit\ValidationKit\ValidationIssue;
 
 #[TestDox('Validate::mixed()')]
 class ValidateMixedTest extends TestCase
@@ -325,11 +323,15 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'Value must not be empty string',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Value must not be empty string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -443,13 +445,15 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issues = $result->maybeError()->issues();
-        $this->assertCount(1, $issues);
-        $issue = $issues->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
         $this->assertSame(
-            'Must be at least 3 characters',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Must be at least 3 characters',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -682,6 +686,17 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'String must be at least 10'
+                        . ' characters',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -853,11 +868,15 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

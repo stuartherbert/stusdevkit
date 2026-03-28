@@ -45,6 +45,7 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
+use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('Validate::not()')]
@@ -126,6 +127,17 @@ class ValidateNotTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Value must not match the'
+                        . ' excluded schema',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -165,11 +177,28 @@ class ValidateNotTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse('hello');
+        $caughtException = null;
+        try {
+            $unit->parse('hello');
+        } catch (ValidationException $e) {
+            $caughtException = $e;
+        }
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertNotNull($caughtException);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Value must not match the'
+                        . ' excluded schema',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -256,6 +285,17 @@ class ValidateNotTest extends TestCase
         $this->assertInstanceOf(
             ValidationException::class,
             $result->maybeError(),
+        );
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Value must not match the'
+                        . ' excluded schema',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

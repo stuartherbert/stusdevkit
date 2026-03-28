@@ -121,7 +121,8 @@ class ValidateNullTest extends TestCase
         // explain your test
 
         // this test proves that Validate::null()->parse()
-        // throws a ValidationException for non-null input
+        // throws a ValidationException for non-null input,
+        // with the correct issue details
 
         // ----------------------------------------------------------------
         // shorthand
@@ -140,11 +141,23 @@ class ValidateNullTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse($inputValue);
+        $result = $unit->safeParse($inputValue);
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected null, received '
+                        . get_debug_type($inputValue),
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -195,15 +208,15 @@ class ValidateNullTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame('not null', $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected null',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected null, received string',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -290,6 +303,16 @@ class ValidateNullTest extends TestCase
             ValidationException::class,
             $result->maybeError(),
         );
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected null, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -343,8 +366,18 @@ class ValidateNullTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Custom: expected null',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Custom: expected null', $issue->message);
         $this->assertSame(
             'https://example.com/errors/not-null',
             $issue->type,
@@ -395,13 +428,23 @@ class ValidateNullTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected null, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
         $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -568,11 +611,15 @@ class ValidateNullTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

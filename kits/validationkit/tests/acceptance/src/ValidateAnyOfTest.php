@@ -177,8 +177,17 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidUnion,
+                    'path'    => [],
+                    'message' => 'Input does not match any schema'
+                        . ' in the union',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -232,15 +241,16 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
-        $this->assertSame(true, $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'does not match any schema',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidUnion,
+                    'path'    => [],
+                    'message' => 'Input does not match any schema'
+                        . ' in the union',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -471,9 +481,16 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame('Value is forbidden', $issue->message);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Value is forbidden',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -617,8 +634,18 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidUnion,
+                    'path'    => [],
+                    'message' => 'Custom: no match',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Custom: no match', $issue->message);
         $this->assertSame(
             'https://example.com/errors/no-match',
             $issue->type,
@@ -672,6 +699,18 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidUnion,
+                    'path'    => [],
+                    'message' => 'Input does not match any schema'
+                        . ' in the union',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_union',
@@ -681,7 +720,6 @@ class ValidateAnyOfTest extends TestCase
             'No matching union member',
             $issue->title,
         );
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -812,11 +850,15 @@ class ValidateAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

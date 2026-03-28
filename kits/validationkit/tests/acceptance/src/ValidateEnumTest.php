@@ -130,8 +130,17 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidEnum, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidEnum,
+                    'path'    => [],
+                    'message' => 'Value is not one of the allowed'
+                        . ' enum values: "active", "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -216,8 +225,17 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidEnum, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidEnum,
+                    'path'    => [],
+                    'message' => 'Value is not one of the allowed'
+                        . ' enum values: "active", "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -268,15 +286,16 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidEnum, $issue->code);
-        $this->assertSame('deleted', $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'not one of the allowed',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidEnum,
+                    'path'    => [],
+                    'message' => 'Value is not one of the allowed'
+                        . ' enum values: "active", "inactive"',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -492,11 +511,15 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'inactive is not allowed here',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'inactive is not allowed here',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -633,11 +656,18 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
-            'Custom: invalid status',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::InvalidEnum,
+                    'path'    => [],
+                    'message' => 'Custom: invalid status',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
+
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://example.com/errors/invalid-status',
             $issue->type,
@@ -688,13 +718,24 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidEnum,
+                    'path'    => [],
+                    'message' => 'Value is not one of the allowed'
+                        . ' enum values: "active", "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_enum',
             $issue->type,
         );
         $this->assertSame('Invalid enum value', $issue->title);
-        $this->assertSame(IssueCode::InvalidEnum, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -819,11 +860,15 @@ class ValidateEnumTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

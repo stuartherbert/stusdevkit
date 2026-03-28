@@ -44,6 +44,7 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('Validate::conditional()')]
@@ -132,6 +133,17 @@ class ValidateConditionalTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'String must be at least '
+                        . '10 characters',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -221,6 +233,17 @@ class ValidateConditionalTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Number must be greater than '
+                        . 'or equal to 0',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database

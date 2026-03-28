@@ -207,8 +207,22 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issues = $result->maybeError()->issues();
-        $this->assertGreaterThanOrEqual(2, count($issues));
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['name'],
+                    'message' => 'Expected string, received int',
+                ],
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['age'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -253,8 +267,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('age', $issue->pathAsString());
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['age'],
+                    'message' => 'Expected int, received null',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -396,8 +419,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('address.zip', $issue->pathAsString());
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['address', 'zip'],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -448,10 +480,16 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
+
         $this->assertSame(
-            'user.address.city',
-            $issue->pathAsString(),
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['user', 'address', 'city'],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -496,8 +534,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('tags[0]', $issue->pathAsString());
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['tags', 0],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -549,10 +596,16 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
+
         $this->assertSame(
-            'items[2].price',
-            $issue->pathAsString(),
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['items', 2, 'price'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -849,10 +902,16 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
+
         $this->assertSame(
-            IssueCode::UnrecognizedKeys,
-            $issue->code,
+            [
+                [
+                    'code'    => IssueCode::UnrecognizedKeys,
+                    'path'    => [],
+                    'message' => 'Unrecognized keys: extra',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -950,15 +1009,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
 
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame(42, $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected object',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object (associative'
+                        . ' array), received int',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -1051,6 +1112,18 @@ class ValidateObjectTest extends TestCase
         $this->assertInstanceOf(
             ValidationException::class,
             $result->maybeError(),
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object (associative'
+                        . ' array), received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -1200,11 +1273,16 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
+
         $this->assertSame(
-            'Passwords do not match',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Passwords do not match',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -1538,11 +1616,16 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
+
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -1637,6 +1720,18 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'One or more property names'
+                        . ' are invalid',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1739,6 +1834,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['s_name'],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1849,6 +1955,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => ['email'],
+                    'message' => 'Expected string, received null',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database

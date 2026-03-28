@@ -211,11 +211,15 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
-        $this->assertStringContainsString(
-            'Missing discriminator',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidUnion,
+                    'path'    => [],
+                    'message' => 'Missing discriminator field "type"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -268,6 +272,17 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object with discriminator'
+                        . ' "type", received array',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -315,8 +330,17 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object with discriminator'
+                        . ' "type", received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -376,14 +400,17 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertGreaterThanOrEqual(
-            1,
-            count($caughtException->issues()),
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object with discriminator'
+                        . ' "type", received string',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame('not-an-array', $issue->input);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -494,6 +521,17 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertInstanceOf(
             ValidationException::class,
             $result->maybeError(),
+        );
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object with discriminator'
+                        . ' "type", received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -662,9 +700,16 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame('x must be positive', $issue->message);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'x must be positive',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -833,11 +878,18 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
-            'Custom: invalid event',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Custom: invalid event',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
+
+        $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://example.com/errors/invalid-event',
             $issue->type,
@@ -897,13 +949,24 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected object with discriminator'
+                        . ' "type", received string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
         $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1055,11 +1118,15 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

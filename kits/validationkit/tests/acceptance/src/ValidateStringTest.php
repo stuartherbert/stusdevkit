@@ -141,11 +141,28 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse($inputValue);
+        $caughtException = null;
+        try {
+            $unit->parse($inputValue);
+        } catch (ValidationException $e) {
+            $caughtException = $e;
+        }
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertNotNull($caughtException);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected string, received '
+                        . get_debug_type($inputValue),
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -196,15 +213,15 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame(42, $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected string',
-            $issue->message,
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $caughtException->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -291,6 +308,16 @@ class ValidateStringTest extends TestCase
             ValidationException::class,
             $result->maybeError(),
         );
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -373,8 +400,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'String must be at least 3 characters',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -451,8 +486,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooBig, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooBig,
+                    'path'    => [],
+                    'message' => 'String must be at most 3 characters',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -529,8 +572,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::TooSmall, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'String must be exactly 5 characters',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -607,8 +658,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidString, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'Invalid email address',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -679,8 +738,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::InvalidString, $issue->code);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'Invalid URL',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -756,6 +823,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'Invalid UUID',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -826,6 +903,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'String does not match pattern /^[a-z]+$/',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -896,6 +983,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'String must contain "world"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -966,6 +1063,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'String must start with "hello"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1036,6 +1143,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidString,
+                    'path'    => [],
+                    'message' => 'String must end with "world"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1338,9 +1455,16 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame('Value is forbidden', $issue->message);
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Value is forbidden',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1473,8 +1597,20 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Custom: not a string',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // type and title are RFC 9457 fields not included
+        // in jsonSerialize(), so check them via first()
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Custom: not a string', $issue->message);
         $this->assertSame(
             'https://example.com/errors/not-string',
             $issue->type,
@@ -1528,8 +1664,20 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::TooSmall,
+                    'path'    => [],
+                    'message' => 'Name is too short',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // type is an RFC 9457 field not included in
+        // jsonSerialize(), so check it via first()
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Name is too short', $issue->message);
         $this->assertSame(
             'https://example.com/errors/name-too-short',
             $issue->type,
@@ -1579,13 +1727,25 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidType,
+                    'path'    => [],
+                    'message' => 'Expected string, received int',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // type and title are RFC 9457 fields not included
+        // in jsonSerialize(), so check them via first()
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
         $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1708,11 +1868,15 @@ class ValidateStringTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------

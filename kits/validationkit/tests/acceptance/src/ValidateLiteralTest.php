@@ -124,11 +124,22 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse('inactive');
+        $result = $unit->safeParse('inactive');
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Expected "active", received "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -162,11 +173,22 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse('42');
+        $result = $unit->safeParse('42');
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Expected 42, received "42"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -275,11 +297,22 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(ValidationException::class);
-        $unit->parse(false);
+        $result = $unit->safeParse(false);
 
         // ----------------------------------------------------------------
         // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Expected true, received false',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -357,26 +390,21 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $caughtException = null;
-        try {
-            $unit->parse('inactive');
-        } catch (ValidationException $e) {
-            $caughtException = $e;
-        }
+        $result = $unit->safeParse('inactive');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()->first();
-        $this->assertSame(IssueCode::InvalidLiteral, $issue->code);
-        $this->assertSame('inactive', $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected "active"',
-            $issue->message,
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Expected "active", received "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -462,6 +490,16 @@ class ValidateLiteralTest extends TestCase
         $this->assertInstanceOf(
             ValidationException::class,
             $result->maybeError(),
+        );
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Expected "active", received "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -594,11 +632,15 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'Custom refinement failed',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'Custom refinement failed',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -735,8 +777,18 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Custom: must be active',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame('Custom: must be active', $issue->message);
         $this->assertSame(
             'https://example.com/errors/not-active',
             $issue->type,
@@ -787,13 +839,23 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'code'    => IssueCode::InvalidLiteral,
+                    'path'    => [],
+                    'message' => 'Expected "active", received "inactive"',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
         $issue = $result->maybeError()->issues()->first();
         $this->assertSame(
             'https://stusdevkit.dev/errors/validation/invalid_literal',
             $issue->type,
         );
         $this->assertSame('Invalid literal value', $issue->title);
-        $this->assertSame(IssueCode::InvalidLiteral, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -918,11 +980,15 @@ class ValidateLiteralTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
         $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
+            [
+                [
+                    'code'    => IssueCode::Custom,
+                    'path'    => [],
+                    'message' => 'rejected by custom constraint',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
