@@ -81,6 +81,20 @@ class LiteralSchema extends BaseSchema
 
     // ================================================================
     //
+    // Accessors
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the expected literal value
+     */
+    public function expectedValue(): mixed
+    {
+        return $this->expectedValue;
+    }
+
+    // ================================================================
+    //
     // Default Error Callbacks
     //
     // ----------------------------------------------------------------

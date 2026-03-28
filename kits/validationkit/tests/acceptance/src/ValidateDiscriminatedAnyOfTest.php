@@ -275,10 +275,9 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'code'    => IssueCode::InvalidUnion,
                     'path'    => [],
-                    'message' => 'Expected object with discriminator'
-                        . ' "type", received array',
+                    'message' => 'Unrecognised type value: "c"',
                 ],
             ],
             $result->maybeError()->issues()->jsonSerialize(),

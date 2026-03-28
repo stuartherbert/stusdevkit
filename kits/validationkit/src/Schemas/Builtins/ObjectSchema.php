@@ -244,6 +244,17 @@ class ObjectSchema extends BaseSchema
         return array_keys($this->shape);
     }
 
+    /**
+     * return the schema for a given shape key, or null
+     * if the key is not in the shape
+     *
+     * @return BaseSchema<mixed>|null
+     */
+    public function maybeFieldSchema(string $key): ?BaseSchema
+    {
+        return $this->shape[$key] ?? null;
+    }
+
     // ================================================================
     //
     // Unknown Key Policy Methods

@@ -44,6 +44,8 @@ namespace StusDevKit\ValidationKit\Schemas\Logic;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\LiteralSchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\ObjectSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -79,6 +81,14 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class DiscriminatedAnyOfSchema extends BaseSchema
 {
     /**
+     * map of discriminator values to their schemas,
+     * built at construction time for O(1) lookup
+     *
+     * @var array<string|int, BaseSchema<mixed>>
+     */
+    private readonly array $schemaMap;
+
+    /**
      * @param non-empty-string $discriminator
      * - the key in the input array used to select the
      *   schema
@@ -90,13 +100,17 @@ class DiscriminatedAnyOfSchema extends BaseSchema
      */
     public function __construct(
         private readonly string $discriminator,
-        private readonly array $schemas,
+        array $schemas,
         ?callable $typeCheckError = null,
     ) {
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+
+        $this->schemaMap = $this->buildSchemaMap(
+            schemas: $schemas,
+        );
     }
 
     // ================================================================
@@ -176,31 +190,77 @@ class DiscriminatedAnyOfSchema extends BaseSchema
             return $data;
         }
 
-        // find the matching schema by trying each one
-        foreach ($this->schemas as $schema) {
-            $testContext = new ValidationContext(
-                $context->path(),
-            );
-            $schema->parseWithContext(
-                data: $data,
-                context: $testContext,
+        // O(1) lookup by discriminator value
+        $discriminatorValue = $data[$this->discriminator];
+        $key = is_string($discriminatorValue)
+            || is_int($discriminatorValue)
+            ? $discriminatorValue
+            : null;
+
+        $schema = $key !== null
+            ? ($this->schemaMap[$key] ?? null)
+            : null;
+
+        if ($schema === null) {
+            $described = is_string($discriminatorValue)
+                ? '"' . $discriminatorValue . '"'
+                : get_debug_type($discriminatorValue);
+            $context->addIssue(
+                code: IssueCode::InvalidUnion,
+                input: $data,
+                message: 'Unrecognised '
+                    . $this->discriminator
+                    . ' value: ' . $described,
             );
 
-            if (! $testContext->hasIssues()) {
-                return $schema->parseWithContext(
-                    data: $data,
-                    context: $context,
-                );
+            return $data;
+        }
+
+        return $schema->parseWithContext(
+            data: $data,
+            context: $context,
+        );
+    }
+
+    // ================================================================
+    //
+    // Helpers
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * build a map of discriminator values to schemas
+     *
+     * Inspects each ObjectSchema's shape to find the
+     * LiteralSchema for the discriminator field, then
+     * uses its expected value as the map key.
+     *
+     * @param list<BaseSchema<mixed>> $schemas
+     * @return array<string|int, BaseSchema<mixed>>
+     */
+    private function buildSchemaMap(array $schemas): array
+    {
+        $map = [];
+
+        foreach ($schemas as $schema) {
+            if (! $schema instanceof ObjectSchema) {
+                continue;
+            }
+
+            $fieldSchema = $schema->maybeFieldSchema(
+                key: $this->discriminator,
+            );
+
+            if (! $fieldSchema instanceof LiteralSchema) {
+                continue;
+            }
+
+            $value = $fieldSchema->expectedValue();
+            if (is_string($value) || is_int($value)) {
+                $map[$value] = $schema;
             }
         }
 
-        // no schema matched
-        $this->invokeErrorCallback(
-            callback: $this->typeCheckError,
-            input: $data,
-            context: $context,
-        );
-
-        return $data;
+        return $map;
     }
 }

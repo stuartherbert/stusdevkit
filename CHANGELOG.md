@@ -43,6 +43,10 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
+#### ValidationKit
+
+- Validate::discriminatedAnyof() performance improvement ([4a0f14e](https://github.com/stuartherbert/stusdevkit/commit/4a0f14e)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
 - Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -64,7 +68,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationLib
 
-- simplify processing pipeline ([35dc077](https://github.com/stuartherbert/stusdevkit/commit/35dc077)) — Stuart Herbert <stuart@stuartherbert.com>
+- simplify processing pipeline ([d5cecd0](https://github.com/stuartherbert/stusdevkit/commit/d5cecd0)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
