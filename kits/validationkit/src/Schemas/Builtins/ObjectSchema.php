@@ -41,6 +41,9 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
+use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
+use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -299,6 +302,69 @@ class ObjectSchema extends BaseSchema
         $clone->catchallSchema = $schema;
 
         return $clone;
+    }
+
+    // ================================================================
+    //
+    // JSON Schema Constraint Builder Methods
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * validate that all property names satisfy the given
+     * schema
+     *
+     * @param BaseSchema<mixed> $schema
+     * @param (callable(mixed): ValidationIssue)|null $error
+     */
+    public function propertyNames(
+        BaseSchema $schema,
+        ?callable $error = null,
+    ): static {
+        return $this->withConstraint(
+            new ObjectPropertyNamesConstraint(
+                schema: $schema,
+                error: $error,
+            ),
+        );
+    }
+
+    /**
+     * validate properties whose names match regex patterns
+     * against corresponding schemas
+     *
+     * @param array<string, BaseSchema<mixed>> $patterns
+     * - maps regex patterns to validation schemas
+     */
+    public function patternProperties(
+        array $patterns,
+    ): static {
+        return $this->withConstraint(
+            new ObjectPatternPropertiesConstraint(
+                patterns: $patterns,
+            ),
+        );
+    }
+
+    /**
+     * apply additional schemas when certain properties
+     * are present
+     *
+     * When a property named in $dependencies exists in
+     * the input, the corresponding schema is applied to
+     * the entire object.
+     *
+     * @param array<string, BaseSchema<mixed>> $dependencies
+     * - maps property names to schemas
+     */
+    public function dependentSchemas(
+        array $dependencies,
+    ): static {
+        return $this->withConstraint(
+            new ObjectDependentSchemasConstraint(
+                dependencies: $dependencies,
+            ),
+        );
     }
 
     // ================================================================

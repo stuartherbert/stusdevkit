@@ -1549,4 +1549,357 @@ class ValidateObjectTest extends TestCase
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // propertyNames()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('propertyNames() accepts valid keys')]
+    public function test_property_names_accepts_valid_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that propertyNames() accepts an
+        // object when all property names pass the given
+        // schema
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'name' => Validate::string(),
+        ])->propertyNames(
+            schema: Validate::string()->min(length: 1),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['name' => 'Stuart']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(['name' => 'Stuart'], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('propertyNames() rejects invalid keys')]
+    public function test_property_names_rejects_invalid_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that propertyNames() rejects an
+        // object when a property name does not pass the
+        // given schema (key 'x' is only 1 char, minimum
+        // is 3)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'x' => Validate::string(),
+        ])->propertyNames(
+            schema: Validate::string()->min(length: 3),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(['x' => 'val']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // patternProperties()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('patternProperties() validates matching keys')]
+    public function test_pattern_properties_validates_matching_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that patternProperties() validates
+        // values whose keys match the given regex pattern.
+        // The key 's_name' matches /^s_/ so its value is
+        // validated as a string, which passes. The key 'age'
+        // does not match, so it is not validated by this
+        // constraint.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->patternProperties(
+                patterns: ['/^s_/' => Validate::string()],
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            's_name' => 'Stuart',
+            'age' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([
+            's_name' => 'Stuart',
+            'age' => 42,
+        ], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('patternProperties() rejects invalid values')]
+    public function test_pattern_properties_rejects_invalid_values(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that patternProperties() rejects
+        // a value when its key matches the pattern but the
+        // value does not pass the corresponding schema
+        // (123 is not a string)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->patternProperties(
+                patterns: ['/^s_/' => Validate::string()],
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(['s_name' => 123]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // dependentSchemas()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('dependentSchemas() applies when property is present')]
+    public function test_dependent_schemas_applies_when_property_present(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dependentSchemas() applies
+        // the dependent schema when the trigger property
+        // is present. Here, 'name' is present so the
+        // dependent schema requiring 'email' is applied,
+        // and 'email' is also present so validation passes.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->dependentSchemas(
+                dependencies: [
+                    'name' => Validate::object([
+                        'email' => Validate::string(),
+                    ]),
+                ],
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'email' => 'test@test.com',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([
+            'name' => 'Stuart',
+            'email' => 'test@test.com',
+        ], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('dependentSchemas() rejects when dependency fails')]
+    public function test_dependent_schemas_rejects_when_dependency_fails(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dependentSchemas() rejects
+        // the input when the trigger property is present
+        // but the dependent schema fails. Here, 'name' is
+        // present so the dependent schema requiring 'email'
+        // is applied, but 'email' is missing.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->dependentSchemas(
+                dependencies: [
+                    'name' => Validate::object([
+                        'email' => Validate::string(),
+                    ]),
+                ],
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(['name' => 'Stuart']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('dependentSchemas() skips when property is absent')]
+    public function test_dependent_schemas_skips_when_property_absent(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dependentSchemas() does not
+        // apply the dependent schema when the trigger
+        // property is absent. Here, 'name' is not present
+        // so the dependency on 'email' is not triggered.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->dependentSchemas(
+                dependencies: [
+                    'name' => Validate::object([
+                        'email' => Validate::string(),
+                    ]),
+                ],
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['age' => 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(['age' => 42], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
 }

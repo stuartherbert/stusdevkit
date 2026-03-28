@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Constraints\ArrayContainsConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayExactLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMinLengthConstraint;
@@ -172,6 +173,25 @@ class ArraySchema extends BaseSchema
     public function nonempty(?callable $error = null): static
     {
         return $this->min(length: 1, error: $error);
+    }
+
+    /**
+     * require the array to contain at least one element
+     * matching the given schema
+     *
+     * @param BaseSchema<mixed> $schema
+     * @param ErrorCallback|null $error
+     */
+    public function contains(
+        BaseSchema $schema,
+        ?callable $error = null,
+    ): static {
+        return $this->withConstraint(
+            new ArrayContainsConstraint(
+                schema: $schema,
+                error: $error,
+            ),
+        );
     }
 
     // ================================================================

@@ -1,0 +1,146 @@
+<?php
+
+// Stu's Dev Kit
+//
+// Building blocks for assembling the things you need to build, in a way
+// that will last.
+//
+// Copyright (c) 2026-present Stuart Herbert
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+//   * Re-distributions of source code must retain the above copyright
+//     notice, this list of conditions and the following disclaimer.
+//
+//   * Redistributions in binary form must reproduce the above copyright
+//     notice, this list of conditions and the following disclaimer in
+//     the documentation and/or other materials provided with the
+//     distribution.
+//
+//   * Neither the names of the copyright holders nor the names of his
+//     contributors may be used to endorse or promote products derived
+//     from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+declare(strict_types=1);
+
+namespace StusDevKit\ValidationKit\Constraints;
+
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\IssueCode;
+use StusDevKit\ValidationKit\Schemas\BaseSchema;
+use StusDevKit\ValidationKit\ValidationIssue;
+
+/**
+ * ArrayContainsConstraint validates that at least one
+ * element in the array matches the given schema.
+ *
+ * Usage:
+ *
+ *     use StusDevKit\ValidationKit\Constraints\ArrayContainsConstraint;
+ *     use StusDevKit\ValidationKit\Validate;
+ *
+ *     // with default error message
+ *     $constraint = new ArrayContainsConstraint(
+ *         schema: Validate::string()->min(length: 1),
+ *     );
+ *
+ *     // with custom error callback
+ *     $constraint = new ArrayContainsConstraint(
+ *         schema: Validate::string()->min(length: 1),
+ *         error: fn($data) => new ValidationIssue(
+ *             code: IssueCode::Custom,
+ *             input: $data,
+ *             path: [],
+ *             message: 'Must contain a non-empty string',
+ *         ),
+ *     );
+ *
+ * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
+ */
+final class ArrayContainsConstraint implements ValidationConstraint
+{
+    /** @var ErrorCallback */
+    private readonly mixed $error;
+
+    /**
+     * @param BaseSchema<mixed> $schema
+     * - the schema that at least one element must match
+     * @param ErrorCallback|null $error
+     * - optional custom error callback; if null, a default
+     *   callback is used that creates a ValidationIssue
+     *   with IssueCode::Custom
+     */
+    public function __construct(
+        private readonly BaseSchema $schema,
+        ?callable $error = null,
+    ) {
+        $this->error = $error
+            ?? static fn(mixed $data) => new ValidationIssue(
+                code: IssueCode::Custom,
+                input: $data,
+                path: [],
+                message: 'Array must contain at least one'
+                    . ' element matching the schema',
+            );
+    }
+
+    // ================================================================
+    //
+    // ValidationConstraint Implementation
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * check that at least one element matches the schema
+     *
+     * Iterates through the array elements and validates each
+     * one against the schema. If any element passes without
+     * issues, the constraint is satisfied and returns early.
+     * If no element passes, a validation issue is added.
+     *
+     * @param array<mixed> $data
+     */
+    public function check(
+        mixed $data,
+        ValidationContext $context,
+    ): void {
+        assert(is_array($data));
+
+        foreach ($data as $element) {
+            $elementContext = new ValidationContext();
+            $this->schema->parseWithContext(
+                data: $element,
+                context: $elementContext,
+            );
+
+            if (! $elementContext->hasIssues()) {
+                // at least one element matches — constraint
+                // is satisfied
+                return;
+            }
+        }
+
+        // no element matched the schema
+        $issue = ($this->error)($data);
+        $context->addExistingIssue(
+            $issue->withPath($context->path()),
+        );
+    }
+}

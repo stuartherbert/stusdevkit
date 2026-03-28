@@ -62,8 +62,11 @@ use StusDevKit\ValidationKit\Schemas\Collections\RecordSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\TupleSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\AllOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\ConditionalSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\DiscriminatedAnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\EnumSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\NotSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -447,6 +450,76 @@ final class Validate
             discriminator: $discriminator,
             schemas: $schemas,
             typeCheckError: $error,
+        );
+    }
+
+    /**
+     * create a oneOf validation schema
+     *
+     * Validates that the input matches exactly one of the
+     * given schemas. If zero or more than one match,
+     * validation fails.
+     *
+     * @param list<BaseSchema<mixed>> $schemas
+     * - the schemas to check against
+     * @param ErrorCallback|null $error
+     * - optional error callback when validation fails
+     */
+    public static function oneOf(
+        array $schemas,
+        ?callable $error = null,
+    ): OneOfSchema {
+        return new OneOfSchema(
+            schemas: $schemas,
+            typeCheckError: $error,
+        );
+    }
+
+    /**
+     * create a not validation schema
+     *
+     * Validates that the input does NOT match the given
+     * schema. If the schema accepts the data, validation
+     * fails.
+     *
+     * @param BaseSchema<mixed> $schema
+     * - the schema that must not match
+     * @param ErrorCallback|null $error
+     * - optional error callback when validation fails
+     */
+    public static function not(
+        BaseSchema $schema,
+        ?callable $error = null,
+    ): NotSchema {
+        return new NotSchema(
+            schema: $schema,
+            typeCheckError: $error,
+        );
+    }
+
+    /**
+     * create a conditional validation schema
+     *
+     * Evaluates the if schema as a condition. If it passes,
+     * the then schema is applied. If it fails, the else
+     * schema is applied. Both then and else are optional.
+     *
+     * @param BaseSchema<mixed> $if
+     * - the condition schema
+     * @param BaseSchema<mixed>|null $then
+     * - schema to apply when condition passes
+     * @param BaseSchema<mixed>|null $else
+     * - schema to apply when condition fails
+     */
+    public static function conditional(
+        BaseSchema $if,
+        ?BaseSchema $then = null,
+        ?BaseSchema $else = null,
+    ): ConditionalSchema {
+        return new ConditionalSchema(
+            if: $if,
+            then: $then,
+            else: $else,
         );
     }
 

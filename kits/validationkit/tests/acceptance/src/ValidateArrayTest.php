@@ -1297,4 +1297,88 @@ class ValidateArrayTest extends TestCase
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // contains()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('contains() accepts array with matching element')]
+    public function test_contains_accepts_array_with_matching_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() accepts an array
+        // when at least one element matches the given schema
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(schema: Validate::int());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([1, 'a', 'b']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([1, 'a', 'b'], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('contains() rejects array without matching element')]
+    public function test_contains_rejects_array_without_matching_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() rejects an array
+        // when no element matches the given schema
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(schema: Validate::int());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(['a', 'b', 'c']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
 }
