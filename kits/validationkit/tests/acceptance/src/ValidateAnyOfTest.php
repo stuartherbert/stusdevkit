@@ -50,8 +50,8 @@ use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
 
-#[TestDox('Validate::intersection()')]
-class ValidateIntersectionTest extends TestCase
+#[TestDox('Validate::anyOf()')]
+class ValidateAnyOfTest extends TestCase
 {
     // ================================================================
     //
@@ -59,14 +59,14 @@ class ValidateIntersectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('accepts input that passes both schemas')]
-    public function test_accepts_input_passing_both_schemas(): void
+    #[TestDox('matches the first passing schema')]
+    public function test_matches_first_passing_schema(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that intersection() accepts input
-        // that satisfies both the left and right schemas
+        // this test proves that union() returns the result
+        // from the first schema that accepts the input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -74,14 +74,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -92,33 +88,26 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
-            'name' => 'Stuart',
-            'age' => 42,
-        ]);
+        $actualResult = $unit->parse('hello');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['name' => 'Stuart', 'age' => 42],
-            $actualResult,
-        );
+        $this->assertSame('hello', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('merges object results from both schemas')]
-    public function test_merges_object_results(): void
+    #[TestDox('matches second schema when first fails')]
+    public function test_matches_second_schema_when_first_fails(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that intersection() merges the
-        // array results from both object schemas into a
-        // single combined array
+        // this test proves that union() tries schemas in
+        // order and uses the second when the first fails
 
         // ----------------------------------------------------------------
         // shorthand
@@ -126,14 +115,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -144,33 +129,27 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
-            'name' => 'Stuart',
-            'age' => 42,
-        ]);
+        $actualResult = $unit->parse(42);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertIsArray($actualResult);
-        $this->assertArrayHasKey('name', $actualResult);
-        $this->assertArrayHasKey('age', $actualResult);
-        $this->assertSame('Stuart', $actualResult['name']);
-        $this->assertSame(42, $actualResult['age']);
+        $this->assertSame(42, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('fails when left schema fails')]
-    public function test_fails_when_left_schema_fails(): void
+    #[TestDox('fails when no schema matches')]
+    public function test_fails_when_no_schema_matches(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that intersection() reports
-        // issues when the left schema rejects the input
+        // this test proves that union() reports an
+        // InvalidUnion issue when none of the schemas
+        // match the input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -178,14 +157,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -196,63 +171,14 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
-            'name' => 123,
-            'age' => 42,
-        ]);
+        $result = $unit->safeParse(true);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($result->failed());
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('fails when right schema fails')]
-    public function test_fails_when_right_schema_fails(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that intersection() reports
-        // issues when the right schema rejects the input
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse([
-            'name' => 'Stuart',
-            'age' => 'not-an-int',
-        ]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
+        $issue = $result->maybeError()->issues()[0];
+        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -272,8 +198,8 @@ class ValidateIntersectionTest extends TestCase
         // explain your test
 
         // this test proves that parse() throws a
-        // ValidationException when either schema in the
-        // intersection fails
+        // ValidationException with correct issue details
+        // when no schema in the union matches
 
         // ----------------------------------------------------------------
         // shorthand
@@ -281,14 +207,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -301,10 +223,7 @@ class ValidateIntersectionTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
-                'name' => 'Stuart',
-                'age' => 'not-an-int',
-            ]);
+            $unit->parse(true);
         } catch (ValidationException $e) {
             $caughtException = $e;
         }
@@ -313,9 +232,15 @@ class ValidateIntersectionTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertGreaterThanOrEqual(
-            1,
-            count($caughtException->issues()),
+        $this->assertCount(1, $caughtException->issues());
+
+        $issue = $caughtException->issues()[0];
+        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
+        $this->assertSame(true, $issue->input);
+        $this->assertSame([], $issue->path);
+        $this->assertStringContainsString(
+            'does not match any schema',
+            $issue->message,
         );
 
         // ----------------------------------------------------------------
@@ -330,7 +255,8 @@ class ValidateIntersectionTest extends TestCase
         // explain your test
 
         // this test proves that safeParse() returns a
-        // successful ParseResult when both schemas pass
+        // successful ParseResult when the input matches
+        // a union member
 
         // ----------------------------------------------------------------
         // shorthand
@@ -338,14 +264,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -356,20 +278,14 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
-            'name' => 'Stuart',
-            'age' => 42,
-        ]);
+        $result = $unit->safeParse('hello');
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($result->succeeded());
         $this->assertFalse($result->failed());
-        $this->assertSame(
-            ['name' => 'Stuart', 'age' => 42],
-            $result->data(),
-        );
+        $this->assertSame('hello', $result->data());
         $this->assertNull($result->maybeError());
 
         // ----------------------------------------------------------------
@@ -384,7 +300,7 @@ class ValidateIntersectionTest extends TestCase
         // explain your test
 
         // this test proves that safeParse() returns a
-        // failed ParseResult when either schema fails
+        // failed ParseResult when no union member matches
 
         // ----------------------------------------------------------------
         // shorthand
@@ -392,14 +308,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        );
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -410,10 +322,7 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
-            'name' => 'Stuart',
-            'age' => 'not-an-int',
-        ]);
+        $result = $unit->safeParse(true);
 
         // ----------------------------------------------------------------
         // test the results
@@ -449,14 +358,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->default(['name' => 'default', 'age' => 0]);
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->default('fallback');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -472,10 +377,7 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['name' => 'default', 'age' => 0],
-            $actualResult,
-        );
+        $this->assertSame('fallback', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -500,17 +402,13 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->transform(
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->transform(
             function (mixed $data) {
-                /** @var array{name: string, age: int} $data */
-                return $data['name'] . ':' . $data['age'];
+                /** @var string $data */
+                return strtoupper($data);
             },
         );
 
@@ -523,15 +421,12 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
-            'name' => 'Stuart',
-            'age' => 42,
-        ]);
+        $actualResult = $unit->parse('hello');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Stuart:42', $actualResult);
+        $this->assertSame('HELLO', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -545,7 +440,7 @@ class ValidateIntersectionTest extends TestCase
         // explain your test
 
         // this test proves that refine() can reject a value
-        // that passes both intersection schemas
+        // that passes the union type check
 
         // ----------------------------------------------------------------
         // shorthand
@@ -553,19 +448,12 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->refine(
-            function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['age'] >= 18;
-            },
-            'Must be at least 18',
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->refine(
+            fn(mixed $data) => $data !== 'forbidden',
+            'Value is forbidden',
         );
 
         // ----------------------------------------------------------------
@@ -577,10 +465,7 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
-            'name' => 'Stuart',
-            'age' => 10,
-        ]);
+        $result = $unit->safeParse('forbidden');
 
         // ----------------------------------------------------------------
         // test the results
@@ -588,7 +473,7 @@ class ValidateIntersectionTest extends TestCase
         $this->assertTrue($result->failed());
         $issue = $result->maybeError()->issues()[0];
         $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame('Must be at least 18', $issue->message);
+        $this->assertSame('Value is forbidden', $issue->message);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -602,7 +487,7 @@ class ValidateIntersectionTest extends TestCase
         // explain your test
 
         // this test proves that pipe() passes the output
-        // of the intersection to another schema for further
+        // of the union to another schema for further
         // validation
 
         // ----------------------------------------------------------------
@@ -611,19 +496,15 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])
             ->transform(function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['name'];
+                /** @var string $data */
+                return strlen($data);
             })
-            ->pipe(Validate::string()->min(length: 3));
+            ->pipe(Validate::int()->gte(value: 3));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -634,15 +515,12 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
-            'name' => 'Stuart',
-            'age' => 42,
-        ]);
+        $actualResult = $unit->parse('hello');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Stuart', $actualResult);
+        $this->assertSame(5, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -661,14 +539,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->catch(['name' => 'unknown', 'age' => 0]);
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->catch('default');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -679,18 +553,12 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
-            'name' => 'Stuart',
-            'age' => 'not-an-int',
-        ]);
+        $actualResult = $unit->parse(true);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['name' => 'unknown', 'age' => 0],
-            $actualResult,
-        );
+        $this->assertSame('default', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -703,15 +571,15 @@ class ValidateIntersectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('custom error callback is used on intersection failure')]
+    #[TestDox('custom error callback is used on union failure')]
     public function test_custom_error_callback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that a custom error callback on
-        // the intersection produces a custom ValidationIssue
-        // when null is passed without nullable/optional
+        // this test proves that a custom error callback
+        // on the union produces a custom ValidationIssue
+        // when no schema matches
 
         // ----------------------------------------------------------------
         // shorthand
@@ -719,20 +587,18 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+        $unit = Validate::anyOf(
+            schemas: [
+                Validate::string(),
+                Validate::int(),
+            ],
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
+                code: IssueCode::InvalidUnion,
                 input: $data,
                 path: [],
-                message: 'Custom: not an intersection',
-                type: 'https://example.com/errors/intersection',
-                title: 'Not an intersection',
+                message: 'Custom: no match',
+                type: 'https://example.com/errors/no-match',
+                title: 'No match',
             ),
         );
 
@@ -745,7 +611,62 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse(null);
+        $result = $unit->safeParse(true);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $issue = $result->maybeError()->issues()[0];
+        $this->assertSame('Custom: no match', $issue->message);
+        $this->assertSame(
+            'https://example.com/errors/no-match',
+            $issue->type,
+        );
+        $this->assertSame('No match', $issue->title);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // Issue Fields
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('issues carry default type URI and title')]
+    public function test_issues_carry_default_type_and_title(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that ValidationIssues created by
+        // default error callbacks carry the correct default
+        // type URI and title from IssueCode
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ]);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(true);
 
         // ----------------------------------------------------------------
         // test the results
@@ -753,14 +674,14 @@ class ValidateIntersectionTest extends TestCase
         $this->assertTrue($result->failed());
         $issue = $result->maybeError()->issues()[0];
         $this->assertSame(
-            'Custom: not an intersection',
-            $issue->message,
-        );
-        $this->assertSame(
-            'https://example.com/errors/intersection',
+            'https://stusdevkit.dev/errors/validation/invalid_union',
             $issue->type,
         );
-        $this->assertSame('Not an intersection', $issue->title);
+        $this->assertSame(
+            'No matching union member',
+            $issue->title,
+        );
+        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -785,14 +706,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->describe('A person with name and age');
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->describe('A string or int value');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -808,10 +725,7 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            'A person with name and age',
-            $actualResult,
-        );
+        $this->assertSame('A string or int value', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -830,14 +744,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->meta(['label' => 'Person']);
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->meta(['label' => 'StringOrInt']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -853,7 +763,7 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(['label' => 'Person'], $actualResult);
+        $this->assertSame(['label' => 'StringOrInt'], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -882,14 +792,10 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::intersection(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
-        )->withConstraint(new RejectEverythingConstraint());
+        $unit = Validate::anyOf([
+            Validate::string(),
+            Validate::int(),
+        ])->withConstraint(new RejectEverythingConstraint());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -900,10 +806,7 @@ class ValidateIntersectionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
-            'name' => 'Stuart',
-            'age' => 42,
-        ]);
+        $result = $unit->safeParse('hello');
 
         // ----------------------------------------------------------------
         // test the results

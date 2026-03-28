@@ -1098,7 +1098,7 @@ class ValidateNullishTest extends TestCase
         // explain your test
 
         // this test proves that
-        // Validate::nullish(Validate::union([...]))
+        // Validate::nullish(Validate::anyOf([...]))
         // accepts null input and returns null
 
         // ----------------------------------------------------------------
@@ -1108,7 +1108,7 @@ class ValidateNullishTest extends TestCase
         // setup your test
 
         $unit = Validate::nullish(
-            Validate::union([Validate::string(), Validate::int()]),
+            Validate::anyOf([Validate::string(), Validate::int()]),
         );
 
         // ----------------------------------------------------------------
@@ -1139,7 +1139,7 @@ class ValidateNullishTest extends TestCase
         // explain your test
 
         // this test proves that
-        // Validate::nullish(Validate::union([...]))
+        // Validate::nullish(Validate::anyOf([...]))
         // passes valid union data through unchanged
 
         // ----------------------------------------------------------------
@@ -1149,7 +1149,7 @@ class ValidateNullishTest extends TestCase
         // setup your test
 
         $unit = Validate::nullish(
-            Validate::union([Validate::string(), Validate::int()]),
+            Validate::anyOf([Validate::string(), Validate::int()]),
         );
 
         // ----------------------------------------------------------------

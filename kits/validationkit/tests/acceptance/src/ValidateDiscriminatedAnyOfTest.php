@@ -50,8 +50,8 @@ use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
 
-#[TestDox('Validate::discriminatedUnion()')]
-class ValidateDiscriminatedUnionTest extends TestCase
+#[TestDox('Validate::discriminatedAnyOf()')]
+class ValidateDiscriminatedAnyOfTest extends TestCase
 {
     // ================================================================
     //
@@ -75,7 +75,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -129,7 +129,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -183,7 +183,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -239,7 +239,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -289,7 +289,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -345,7 +345,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -406,7 +406,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -463,7 +463,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -519,7 +519,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -572,7 +572,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -627,7 +627,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -687,7 +687,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -739,7 +739,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -796,7 +796,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion(
+        $unit = Validate::discriminatedAnyOf(
             discriminator: 'type',
             schemas: [
                 Validate::object([
@@ -871,7 +871,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -928,7 +928,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -972,7 +972,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),
@@ -1026,7 +1026,7 @@ class ValidateDiscriminatedUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::discriminatedUnion('type', [
+        $unit = Validate::discriminatedAnyOf('type', [
             Validate::object([
                 'type' => Validate::literal('a'),
                 'x' => Validate::int(),

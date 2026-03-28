@@ -47,11 +47,11 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * DiscriminatedUnionSchema validates that the input
+ * DiscriminatedAnyOfSchema validates that the input
  * matches one of the given schemas, selected by a
  * discriminator field.
  *
- * This is more efficient than UnionSchema because it
+ * This is more efficient than AnyOfSchema because it
  * looks at the discriminator field value to pick the
  * correct schema directly, rather than trying each
  * schema in sequence.
@@ -60,7 +60,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  *     use StusDevKit\ValidationKit\Validate;
  *
- *     $event = Validate::discriminatedUnion('type', [
+ *     $event = Validate::discriminatedAnyOf('type', [
  *         Validate::object([
  *             'type' => Validate::literal('click'),
  *             'x' => Validate::int(),
@@ -76,7 +76,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @extends BaseSchema<mixed>
  */
-class DiscriminatedUnionSchema extends BaseSchema
+class DiscriminatedAnyOfSchema extends BaseSchema
 {
     /**
      * @param non-empty-string $discriminator

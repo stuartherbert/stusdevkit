@@ -50,8 +50,8 @@ use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
 
-#[TestDox('Validate::union()')]
-class ValidateUnionTest extends TestCase
+#[TestDox('Validate::allOf()')]
+class ValidateAllOfTest extends TestCase
 {
     // ================================================================
     //
@@ -59,14 +59,14 @@ class ValidateUnionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('matches the first passing schema')]
-    public function test_matches_first_passing_schema(): void
+    #[TestDox('accepts input that passes both schemas')]
+    public function test_accepts_input_passing_both_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that union() returns the result
-        // from the first schema that accepts the input
+        // this test proves that intersection() accepts input
+        // that satisfies both the left and right schemas
 
         // ----------------------------------------------------------------
         // shorthand
@@ -74,10 +74,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -88,26 +92,33 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse('hello');
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('hello', $actualResult);
+        $this->assertSame(
+            ['name' => 'Stuart', 'age' => 42],
+            $actualResult,
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('matches second schema when first fails')]
-    public function test_matches_second_schema_when_first_fails(): void
+    #[TestDox('merges object results from both schemas')]
+    public function test_merges_object_results(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that union() tries schemas in
-        // order and uses the second when the first fails
+        // this test proves that intersection() merges the
+        // array results from both object schemas into a
+        // single combined array
 
         // ----------------------------------------------------------------
         // shorthand
@@ -115,10 +126,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -129,27 +144,33 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(42);
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(42, $actualResult);
+        $this->assertIsArray($actualResult);
+        $this->assertArrayHasKey('name', $actualResult);
+        $this->assertArrayHasKey('age', $actualResult);
+        $this->assertSame('Stuart', $actualResult['name']);
+        $this->assertSame(42, $actualResult['age']);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('fails when no schema matches')]
-    public function test_fails_when_no_schema_matches(): void
+    #[TestDox('fails when left schema fails')]
+    public function test_fails_when_left_schema_fails(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that union() reports an
-        // InvalidUnion issue when none of the schemas
-        // match the input
+        // this test proves that intersection() reports
+        // issues when the left schema rejects the input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -157,10 +178,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -171,14 +196,63 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse(true);
+        $result = $unit->safeParse([
+            'name' => 123,
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('fails when right schema fails')]
+    public function test_fails_when_right_schema_fails(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that intersection() reports
+        // issues when the right schema rejects the input
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 'not-an-int',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -198,8 +272,8 @@ class ValidateUnionTest extends TestCase
         // explain your test
 
         // this test proves that parse() throws a
-        // ValidationException with correct issue details
-        // when no schema in the union matches
+        // ValidationException when either schema in the
+        // intersection fails
 
         // ----------------------------------------------------------------
         // shorthand
@@ -207,10 +281,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -223,7 +301,10 @@ class ValidateUnionTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse(true);
+            $unit->parse([
+                'name' => 'Stuart',
+                'age' => 'not-an-int',
+            ]);
         } catch (ValidationException $e) {
             $caughtException = $e;
         }
@@ -232,15 +313,9 @@ class ValidateUnionTest extends TestCase
         // test the results
 
         $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()[0];
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
-        $this->assertSame(true, $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'does not match any schema',
-            $issue->message,
+        $this->assertGreaterThanOrEqual(
+            1,
+            count($caughtException->issues()),
         );
 
         // ----------------------------------------------------------------
@@ -255,8 +330,7 @@ class ValidateUnionTest extends TestCase
         // explain your test
 
         // this test proves that safeParse() returns a
-        // successful ParseResult when the input matches
-        // a union member
+        // successful ParseResult when both schemas pass
 
         // ----------------------------------------------------------------
         // shorthand
@@ -264,10 +338,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -278,14 +356,20 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse('hello');
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($result->succeeded());
         $this->assertFalse($result->failed());
-        $this->assertSame('hello', $result->data());
+        $this->assertSame(
+            ['name' => 'Stuart', 'age' => 42],
+            $result->data(),
+        );
         $this->assertNull($result->maybeError());
 
         // ----------------------------------------------------------------
@@ -300,7 +384,7 @@ class ValidateUnionTest extends TestCase
         // explain your test
 
         // this test proves that safeParse() returns a
-        // failed ParseResult when no union member matches
+        // failed ParseResult when either schema fails
 
         // ----------------------------------------------------------------
         // shorthand
@@ -308,10 +392,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -322,7 +410,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse(true);
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 'not-an-int',
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -358,10 +449,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->default('fallback');
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->default(['name' => 'default', 'age' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -377,7 +472,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('fallback', $actualResult);
+        $this->assertSame(
+            ['name' => 'default', 'age' => 0],
+            $actualResult,
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -402,13 +500,17 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->transform(
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->transform(
             function (mixed $data) {
-                /** @var string $data */
-                return strtoupper($data);
+                /** @var array{name: string, age: int} $data */
+                return $data['name'] . ':' . $data['age'];
             },
         );
 
@@ -421,12 +523,15 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse('hello');
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('HELLO', $actualResult);
+        $this->assertSame('Stuart:42', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -440,7 +545,7 @@ class ValidateUnionTest extends TestCase
         // explain your test
 
         // this test proves that refine() can reject a value
-        // that passes the union type check
+        // that passes both intersection schemas
 
         // ----------------------------------------------------------------
         // shorthand
@@ -448,12 +553,19 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->refine(
-            fn(mixed $data) => $data !== 'forbidden',
-            'Value is forbidden',
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->refine(
+            function (mixed $data) {
+                /** @var array<string, mixed> $data */
+                return $data['age'] >= 18;
+            },
+            'Must be at least 18',
         );
 
         // ----------------------------------------------------------------
@@ -465,7 +577,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse('forbidden');
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 10,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -473,7 +588,7 @@ class ValidateUnionTest extends TestCase
         $this->assertTrue($result->failed());
         $issue = $result->maybeError()->issues()[0];
         $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame('Value is forbidden', $issue->message);
+        $this->assertSame('Must be at least 18', $issue->message);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -487,7 +602,7 @@ class ValidateUnionTest extends TestCase
         // explain your test
 
         // this test proves that pipe() passes the output
-        // of the union to another schema for further
+        // of the intersection to another schema for further
         // validation
 
         // ----------------------------------------------------------------
@@ -496,15 +611,19 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )
             ->transform(function (mixed $data) {
-                /** @var string $data */
-                return strlen($data);
+                /** @var array<string, mixed> $data */
+                return $data['name'];
             })
-            ->pipe(Validate::int()->gte(value: 3));
+            ->pipe(Validate::string()->min(length: 3));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -515,12 +634,15 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse('hello');
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(5, $actualResult);
+        $this->assertSame('Stuart', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -539,10 +661,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->catch('default');
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->catch(['name' => 'unknown', 'age' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -553,12 +679,18 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(true);
+        $actualResult = $unit->parse([
+            'name' => 'Stuart',
+            'age' => 'not-an-int',
+        ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('default', $actualResult);
+        $this->assertSame(
+            ['name' => 'unknown', 'age' => 0],
+            $actualResult,
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -571,15 +703,15 @@ class ValidateUnionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('custom error callback is used on union failure')]
+    #[TestDox('custom error callback is used on intersection failure')]
     public function test_custom_error_callback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that a custom error callback
-        // on the union produces a custom ValidationIssue
-        // when no schema matches
+        // this test proves that a custom error callback on
+        // the intersection produces a custom ValidationIssue
+        // when null is passed without nullable/optional
 
         // ----------------------------------------------------------------
         // shorthand
@@ -587,18 +719,20 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union(
-            schemas: [
-                Validate::string(),
-                Validate::int(),
-            ],
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidUnion,
+                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
-                message: 'Custom: no match',
-                type: 'https://example.com/errors/no-match',
-                title: 'No match',
+                message: 'Custom: not an intersection',
+                type: 'https://example.com/errors/intersection',
+                title: 'Not an intersection',
             ),
         );
 
@@ -611,62 +745,7 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse(true);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
-        $this->assertSame('Custom: no match', $issue->message);
-        $this->assertSame(
-            'https://example.com/errors/no-match',
-            $issue->type,
-        );
-        $this->assertSame('No match', $issue->title);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Issue Fields
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('issues carry default type URI and title')]
-    public function test_issues_carry_default_type_and_title(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that ValidationIssues created by
-        // default error callbacks carry the correct default
-        // type URI and title from IssueCode
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ]);
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse(true);
+        $result = $unit->safeParse(null);
 
         // ----------------------------------------------------------------
         // test the results
@@ -674,14 +753,14 @@ class ValidateUnionTest extends TestCase
         $this->assertTrue($result->failed());
         $issue = $result->maybeError()->issues()[0];
         $this->assertSame(
-            'https://stusdevkit.dev/errors/validation/invalid_union',
-            $issue->type,
+            'Custom: not an intersection',
+            $issue->message,
         );
         $this->assertSame(
-            'No matching union member',
-            $issue->title,
+            'https://example.com/errors/intersection',
+            $issue->type,
         );
-        $this->assertSame(IssueCode::InvalidUnion, $issue->code);
+        $this->assertSame('Not an intersection', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -706,10 +785,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->describe('A string or int value');
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->describe('A person with name and age');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -725,7 +808,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('A string or int value', $actualResult);
+        $this->assertSame(
+            'A person with name and age',
+            $actualResult,
+        );
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -744,10 +830,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->meta(['label' => 'StringOrInt']);
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->meta(['label' => 'Person']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -763,7 +853,7 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(['label' => 'StringOrInt'], $actualResult);
+        $this->assertSame(['label' => 'Person'], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -792,10 +882,14 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::union([
-            Validate::string(),
-            Validate::int(),
-        ])->withConstraint(new RejectEverythingConstraint());
+        $unit = Validate::allOf(
+            left: Validate::object([
+                'name' => Validate::string(),
+            ]),
+            right: Validate::object([
+                'age' => Validate::int(),
+            ]),
+        )->withConstraint(new RejectEverythingConstraint());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -806,7 +900,10 @@ class ValidateUnionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse('hello');
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
 
         // ----------------------------------------------------------------
         // test the results

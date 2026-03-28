@@ -47,36 +47,38 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * UnionSchema validates that the input matches at least
- * one of the given schemas ("or" logic).
+ * AllOfSchema validates that the input matches
+ * both the left and right schemas ("and" logic).
  *
- * Each schema is tried in order. The first schema that
- * passes is used. If none pass, an InvalidUnion issue
- * is reported.
+ * Both schemas are run and all issues from both are
+ * collected. Primarily useful for combining two object
+ * schemas.
  *
  * Usage:
  *
  *     use StusDevKit\ValidationKit\Validate;
  *
- *     $stringOrInt = Validate::union([
- *         Validate::string(),
- *         Validate::int(),
+ *     $hasName = Validate::object([
+ *         'name' => Validate::string(),
  *     ]);
- *     $stringOrInt->parse('hello'); // 'hello'
- *     $stringOrInt->parse(42);      // 42
- *     $stringOrInt->parse(true);    // throws
+ *     $hasAge = Validate::object([
+ *         'age' => Validate::int(),
+ *     ]);
+ *     $person = Validate::allOf($hasName, $hasAge);
+ *     $person->parse(['name' => 'Stuart', 'age' => 42]);
  *
  * @extends BaseSchema<mixed>
  */
-class UnionSchema extends BaseSchema
+class AllOfSchema extends BaseSchema
 {
     /**
-     * @param list<BaseSchema<mixed>> $schemas
-     * - the schemas to try, in order
+     * @param BaseSchema<mixed> $left
+     * @param BaseSchema<mixed> $right
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
     public function __construct(
-        private readonly array $schemas,
+        private readonly BaseSchema $left,
+        private readonly BaseSchema $right,
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
@@ -92,11 +94,11 @@ class UnionSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidUnion,
+            code: IssueCode::InvalidType,
             input: $data,
             path: [],
-            message: 'Input does not match any schema'
-                . ' in the union',
+            message: 'Expected intersection, received '
+                . get_debug_type($data),
         );
     }
 
@@ -108,11 +110,12 @@ class UnionSchema extends BaseSchema
 
     protected function expectedType(): string
     {
-        return 'union';
+        return 'intersection';
     }
 
     /**
-     * override parseWithContext to try each schema
+     * override parseWithContext to validate against both
+     * schemas
      */
     public function parseWithContext(
         mixed $data,
@@ -123,59 +126,64 @@ class UnionSchema extends BaseSchema
             if ($this->hasDefault) {
                 return $this->defaultValue;
             }
-        }
 
-        // try each schema — the first one that succeeds
-        // wins
-        foreach ($this->schemas as $schema) {
-            $childContext = new ValidationContext(
-                $context->path(),
-            );
-            $result = $schema->parseWithContext(
-                data: $data,
-                context: $childContext,
+            $this->invokeErrorCallback(
+                callback: $this->typeCheckError,
+                input: $data,
+                context: $context,
             );
 
-            if (! $childContext->hasIssues()) {
-                // run any constraints added via
-                // withConstraint()
-                $this->checkConstraints(
-                    data: $result,
-                    context: $context,
-                );
-
-                if ($context->hasIssues()) {
-                    return $result;
-                }
-
-                // run this schema's own pipeline
-                // (transform, refine, pipe)
-                /** @var array{mixed, bool} $pipelineResult */
-                $pipelineResult = $this->runPipeline(
-                    data: $result,
-                    context: $context,
-                );
-                $result = $pipelineResult[0];
-
-                if ($pipelineResult[1] && $this->pipeTarget !== null) {
-                    $result = $this->pipeTarget->parseWithContext(
-                        data: $result,
-                        context: $context,
-                    );
-                }
-
-                return $result;
-            }
+            return null;
         }
 
-        // none matched
-        $this->invokeErrorCallback(
-            callback: $this->typeCheckError,
-            input: $data,
+        // validate against both schemas — issues from both
+        // are collected into the same context
+        $leftResult = $this->left->parseWithContext(
+            data: $data,
             context: $context,
         );
 
-        return $data;
+        $rightResult = $this->right->parseWithContext(
+            data: $data,
+            context: $context,
+        );
+
+        // if both schemas produce array outputs, merge them
+        $result = is_array($leftResult) && is_array($rightResult)
+            ? array_merge($leftResult, $rightResult)
+            : $leftResult;
+
+        if ($context->hasIssues()) {
+            return $result;
+        }
+
+        // run any constraints added via withConstraint()
+        $this->checkConstraints(
+            data: $result,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return $result;
+        }
+
+        // run this schema's own pipeline
+        // (transform, refine, pipe)
+        /** @var array{mixed, bool} $pipelineResult */
+        $pipelineResult = $this->runPipeline(
+            data: $result,
+            context: $context,
+        );
+        $result = $pipelineResult[0];
+
+        if ($pipelineResult[1] && $this->pipeTarget !== null) {
+            $result = $this->pipeTarget->parseWithContext(
+                data: $result,
+                context: $context,
+            );
+        }
+
+        return $result;
     }
 
     protected function checkType(

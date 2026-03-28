@@ -60,10 +60,10 @@ use StusDevKit\ValidationKit\Schemas\Builtins\OptionalSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\StringSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\RecordSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\TupleSchema;
-use StusDevKit\ValidationKit\Schemas\Logic\DiscriminatedUnionSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\AllOfSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\DiscriminatedAnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\EnumSchema;
-use StusDevKit\ValidationKit\Schemas\Logic\IntersectionSchema;
-use StusDevKit\ValidationKit\Schemas\Logic\UnionSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -379,7 +379,7 @@ final class Validate
     // ----------------------------------------------------------------
 
     /**
-     * create a union validation schema ("or" logic)
+     * create an anyOf validation schema ("or" logic)
      *
      * Validates that the input matches at least one of the
      * given schemas. Schemas are tried in order; the first
@@ -390,19 +390,18 @@ final class Validate
      * @param ErrorCallback|null $error
      * - optional error callback when no schema matches
      */
-    public static function union(
+    public static function anyOf(
         array $schemas,
         ?callable $error = null,
-    ): UnionSchema {
-        return new UnionSchema(
+    ): AnyOfSchema {
+        return new AnyOfSchema(
             schemas: $schemas,
             typeCheckError: $error,
         );
     }
 
     /**
-     * create an intersection validation schema ("and"
-     * logic)
+     * create an allOf validation schema ("and" logic)
      *
      * Validates that the input matches both schemas.
      * Primarily useful for combining two object schemas.
@@ -412,12 +411,12 @@ final class Validate
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
      */
-    public static function intersection(
+    public static function allOf(
         BaseSchema $left,
         BaseSchema $right,
         ?callable $error = null,
-    ): IntersectionSchema {
-        return new IntersectionSchema(
+    ): AllOfSchema {
+        return new AllOfSchema(
             left: $left,
             right: $right,
             typeCheckError: $error,
@@ -439,12 +438,12 @@ final class Validate
      * @param ErrorCallback|null $error
      * - optional error callback when no schema matches
      */
-    public static function discriminatedUnion(
+    public static function discriminatedAnyOf(
         string $discriminator,
         array $schemas,
         ?callable $error = null,
-    ): DiscriminatedUnionSchema {
-        return new DiscriminatedUnionSchema(
+    ): DiscriminatedAnyOfSchema {
+        return new DiscriminatedAnyOfSchema(
             discriminator: $discriminator,
             schemas: $schemas,
             typeCheckError: $error,

@@ -62,6 +62,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- rename some schemas to be closer to JSON schema design ([c8bfec1](https://github.com/stuartherbert/stusdevkit/commit/c8bfec1)) — Stuart Herbert <stuart@stuartherbert.com>
 - handle optional and nullable better ([ad2edc7](https://github.com/stuartherbert/stusdevkit/commit/ad2edc7)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove duplicate code ([10c3cae](https://github.com/stuartherbert/stusdevkit/commit/10c3cae)) — Stuart Herbert <stuart@stuartherbert.com>
 - make schemas extensible via withConstraint() method ([03adc7d](https://github.com/stuartherbert/stusdevkit/commit/03adc7d)) — Stuart Herbert <stuart@stuartherbert.com>
