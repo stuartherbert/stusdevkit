@@ -42,33 +42,29 @@
 declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Tests\Acceptance;
 
-use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use DateTimeInterface;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
-use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
-use StusDevKit\ValidationKit\ValidationIssue;
 
-#[TestDox('Validate::record()')]
-class ValidateRecordTest extends TestCase
+#[TestDox('Validate::nullish()')]
+class ValidateNullishTest extends TestCase
 {
     // ================================================================
     //
-    // Type Checking
+    // Allows Null With Each Inner Schema Type
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('accepts an associative array')]
-    public function test_accepts_associative_array(): void
+    #[TestDox('allows null with string inner schema')]
+    public function test_nullish_string_allows_null(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::record()->parse()
-        // accepts a valid associative array where all keys
-        // and values match their schemas
+        // this test proves that Validate::nullish(Validate::string())
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -76,376 +72,7 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse([
-            'alice' => 100,
-            'bob' => 85,
-        ]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame([
-            'alice' => 100,
-            'bob' => 85,
-        ], $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    /**
-     * @return array<string, array<mixed>>
-     */
-    public static function provideNonArrayValues(): array
-    {
-        return [
-            'string' => [ 'hello' ],
-            'int' => [ 42 ],
-            'null' => [ null ],
-            'bool true' => [ true ],
-            'float' => [ 3.14 ],
-        ];
-    }
-
-    #[DataProvider('provideNonArrayValues')]
-    #[TestDox('rejects non-array values')]
-    public function test_rejects_non_array_value(
-        mixed $inputValue,
-    ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::record()->parse()
-        // throws a ValidationException for non-array input
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $this->expectException(ValidationException::class);
-        $unit->parse($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Key and Value Validation
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('validates keys and values against their schemas')]
-    public function test_validates_keys_and_values(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that both keys and values are
-        // validated against their respective schemas
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse([
-            'alice' => 100,
-            'bob' => 85,
-        ]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(100, $actualResult['alice']);
-        $this->assertSame(85, $actualResult['bob']);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('value error produces path with key name')]
-    public function test_value_error_produces_path_with_key(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when a value fails
-        // validation, the issue path includes the key name
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse([
-            'alice' => 100,
-            'bob' => 'not a number',
-        ]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-
-        // find the issue related to the value error
-        $issues = $result->maybeError()->issues();
-        $valuePaths = [];
-        foreach ($issues as $issue) {
-            $valuePaths[] = $issue->pathAsString();
-        }
-        $this->assertContains('bob', $valuePaths);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // parse() and safeParse()
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('parse() throws ValidationException on failure')]
-    public function test_parse_throws_on_failure(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that parse() throws a
-        // ValidationException with correct issue details
-        // when validation fails
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $caughtException = null;
-        try {
-            $unit->parse(42);
-        } catch (ValidationException $e) {
-            $caughtException = $e;
-        }
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertNotNull($caughtException);
-        $this->assertCount(1, $caughtException->issues());
-
-        $issue = $caughtException->issues()[0];
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-        $this->assertSame(42, $issue->input);
-        $this->assertSame([], $issue->path);
-        $this->assertStringContainsString(
-            'Expected record',
-            $issue->message,
-        );
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('safeParse() returns successful result for valid input')]
-    public function test_safe_parse_returns_success(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that safeParse() returns a
-        // successful ParseResult for valid record input
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse(['alice' => 100]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->succeeded());
-        $this->assertFalse($result->failed());
-        $this->assertSame(
-            ['alice' => 100],
-            $result->data(),
-        );
-        $this->assertNull($result->maybeError());
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('safeParse() returns failed result for invalid input')]
-    public function test_safe_parse_returns_failure(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that safeParse() returns a
-        // failed ParseResult for non-array input
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse(42);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertFalse($result->succeeded());
-        $this->assertTrue($result->failed());
-        $this->assertNull($result->maybeData());
-        $this->assertInstanceOf(
-            ValidationException::class,
-            $result->maybeError(),
-        );
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Default
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->default(['default' => 0]);
+        $unit = Validate::nullish(Validate::string());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -461,7 +88,478 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(['default' => 0], $actualResult);
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with int inner schema')]
+    public function test_nullish_int_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::int())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::int());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with float inner schema')]
+    public function test_nullish_float_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::float())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::float());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with number inner schema')]
+    public function test_nullish_number_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::number())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::number());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with boolean inner schema')]
+    public function test_nullish_boolean_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::boolean())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::boolean());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with dateTime inner schema')]
+    public function test_nullish_datetime_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::nullish(Validate::dateTime())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::dateTime());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with literal inner schema')]
+    public function test_nullish_literal_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::literal(value: 'active'))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::literal(value: 'active'));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with enum inner schema')]
+    public function test_nullish_enum_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::enum(['a', 'b']))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::enum(['a', 'b']));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with array inner schema')]
+    public function test_nullish_array_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::array(Validate::string()))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::array(Validate::string()));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with object inner schema')]
+    public function test_nullish_object_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::object([...]))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::object(['name' => Validate::string()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with tuple inner schema')]
+    public function test_nullish_tuple_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::tuple([...]))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::tuple([Validate::string(), Validate::int()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with union inner schema')]
+    public function test_nullish_union_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::union([...]))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::union([Validate::string(), Validate::int()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('allows null with instanceOf inner schema')]
+    public function test_nullish_instance_of_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::nullish(Validate::instanceOf(...))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(
+            Validate::instanceOf(DateTimeInterface::class),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -470,15 +568,19 @@ class ValidateRecordTest extends TestCase
 
     // ================================================================
     //
-    // Transform, Refine, Pipe, Catch
+    // Delegation and Rejection
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('delegates to inner schema for non-null input')]
+    public function test_nullish_delegates_to_inner_schema(): void
     {
         // ----------------------------------------------------------------
         // explain your test
+
+        // this test proves that Validate::nullish(Validate::string())
+        // delegates non-null input to the inner string schema
+        // and returns the parsed result
 
         // ----------------------------------------------------------------
         // shorthand
@@ -486,12 +588,7 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->transform(
-            fn(mixed $data) => array_sum((array) $data),
-        );
+        $unit = Validate::nullish(Validate::string());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -502,29 +599,27 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
-            'alice' => 100,
-            'bob' => 85,
-        ]);
+        $actualResult = $unit->parse('hello');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(185, $actualResult);
+        $this->assertSame('hello', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('rejects invalid type via inner schema')]
+    public function test_nullish_rejects_invalid_type(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that Validate::nullish(Validate::string())
+        // rejects input that does not match the inner schema's
+        // type, returning a failed ParseResult via safeParse()
 
         // ----------------------------------------------------------------
         // shorthand
@@ -532,158 +627,7 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->refine(
-            fn(mixed $data) => count((array) $data) > 0,
-            'Record must not be empty',
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse([]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
-        $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame(
-            'Record must not be empty',
-            $issue->message,
-        );
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that pipe() passes the output of
-        // this schema to another schema for further
-        // validation
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->transform(
-            fn(mixed $data) => count((array) $data),
-        )->pipe(
-            Validate::int()->gte(value: 1),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(['alice' => 100]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(1, $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->catch([]);
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(42);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame([], $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Custom Error Callbacks
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('custom type-check error callback is used on failure')]
-    public function test_custom_type_check_error_callback(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a custom error callback
-        // on the type check produces a custom ValidationIssue
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            key: Validate::string(),
-            value: Validate::int(),
-            error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
-                input: $data,
-                path: [],
-                message: 'Custom: not a record',
-                type: 'https://example.com/errors/not-record',
-                title: 'Not a record',
-            ),
-        );
+        $unit = Validate::nullish(Validate::string());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -700,207 +644,6 @@ class ValidateRecordTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
-        $this->assertSame(
-            'Custom: not a record',
-            $issue->message,
-        );
-        $this->assertSame(
-            'https://example.com/errors/not-record',
-            $issue->type,
-        );
-        $this->assertSame('Not a record', $issue->title);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Issue Fields
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('issues carry default type URI and title')]
-    public function test_issues_carry_default_type_and_title(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that ValidationIssues created by
-        // default error callbacks carry the correct default
-        // type URI and title from IssueCode
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse(42);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-        $issue = $result->maybeError()->issues()[0];
-        $this->assertSame(
-            'https://stusdevkit.dev/errors/validation/invalid_type',
-            $issue->type,
-        );
-        $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Metadata
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->describe('A score lookup');
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->maybeDescription();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame('A score lookup', $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->meta(['label' => 'Scores']);
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->metadata();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(['label' => 'Scores'], $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // Custom Constraints
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('withConstraint() adds custom constraint to pipeline')]
-    public function test_with_constraint_adds_custom_constraint(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that withConstraint() correctly
-        // wires a custom ValidationConstraint into the
-        // schema's validation pipeline
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::record(
-            Validate::string(),
-            Validate::int(),
-        )->withConstraint(new RejectEverythingConstraint());
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse(['a' => 1]);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-        $issue = $result->error()->issues()[0];
-        $this->assertSame(IssueCode::Custom, $issue->code);
-        $this->assertSame(
-            'rejected by custom constraint',
-            $issue->message,
-        );
 
         // ----------------------------------------------------------------
         // clean up the database

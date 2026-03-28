@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- add Validate::nullish() ([93ffef1](https://github.com/stuartherbert/stusdevkit/commit/93ffef1)) — Stuart Herbert <stuart@stuartherbert.com>
+- add Validate::nullish() ([f3e7be5](https://github.com/stuartherbert/stusdevkit/commit/f3e7be5)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial code commit ([319c6f6](https://github.com/stuartherbert/stusdevkit/commit/319c6f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
 
