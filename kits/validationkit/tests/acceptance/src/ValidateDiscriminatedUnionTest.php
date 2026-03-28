@@ -595,6 +595,50 @@ class ValidateDiscriminatedUnionTest extends TestCase
 
     }
 
+    #[TestDox('nullish() allows null')]
+    public function test_nullish_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::discriminatedUnion('type', [
+            Validate::object([
+                'type' => Validate::literal('a'),
+                'x' => Validate::int(),
+            ]),
+            Validate::object([
+                'type' => Validate::literal('b'),
+                'y' => Validate::string(),
+            ]),
+        ]));
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
     #[TestDox('default() provides fallback for null')]
     public function test_default_provides_fallback(): void
     {

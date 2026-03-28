@@ -52,6 +52,7 @@ use StusDevKit\ValidationKit\Schemas\Builtins\IntSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\LiteralSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\MixedSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\NullableSchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\NullishSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\NullSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\NumberSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ObjectSchema;
@@ -142,6 +143,22 @@ final class Validate
         BaseSchema $schema,
     ): OptionalSchema {
         return new OptionalSchema(innerSchema: $schema);
+    }
+
+    /**
+     * wrap a schema to allow null or missing values
+     *
+     * Combines the behaviour of nullable() and optional():
+     * the value can be null or missing entirely.
+     *
+     * @template T
+     * @param BaseSchema<T> $schema
+     * @return NullishSchema<T>
+     */
+    public static function nullish(
+        BaseSchema $schema,
+    ): NullishSchema {
+        return new NullishSchema(innerSchema: $schema);
     }
 
     // ================================================================
