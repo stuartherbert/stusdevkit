@@ -398,37 +398,18 @@ class ObjectSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to rebuild the output array
+     * validate shape fields and rebuild the output array
      *
-     * ObjectSchema needs to reconstruct the output from
-     * validated field values, not just return the input.
+     * Each field in the shape is validated against its
+     * schema. Unknown keys are handled according to the
+     * unknownKeyPolicy or catchall schema.
      */
-    public function parseWithContext(
+    protected function validateChildren(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // step 1: null/missing check
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
+        assert(is_array($data));
 
-            $this->invokeErrorCallback(
-                callback: $this->typeCheckError,
-                input: $data,
-                context: $context,
-            );
-
-            return null;
-        }
-
-        // step 2: type check
-        if (! is_array($data)) {
-            $this->checkType(data: $data, context: $context);
-            return $data;
-        }
-
-        // step 3: validate fields and build output
         $output = [];
 
         foreach ($this->shape as $key => $fieldSchema) {
@@ -471,40 +452,6 @@ class ObjectSchema extends BaseSchema
                     $output[$key] = $validatedValue;
                 }
             }
-        }
-
-        if ($context->hasIssues()) {
-            return $output;
-        }
-
-        // run any constraints added via withConstraint()
-        $this->checkConstraints(
-            data: $output,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return $output;
-        }
-
-        // steps 5-7: pipeline and pipe
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $output,
-            context: $context,
-        );
-        $output = $pipelineResult[0];
-        $pipelineClean = $pipelineResult[1];
-
-        if (! $pipelineClean) {
-            return $output;
-        }
-
-        if ($this->pipeTarget !== null) {
-            $output = $this->pipeTarget->parseWithContext(
-                data: $output,
-                context: $context,
-            );
         }
 
         return $output;

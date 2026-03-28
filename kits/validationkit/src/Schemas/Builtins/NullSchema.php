@@ -100,22 +100,17 @@ class NullSchema extends BaseSchema
         return 'null';
     }
 
-    /**
-     * override the base null handling because NullSchema
-     * specifically requires null input
-     */
-    public function parseWithContext(
+    protected function acceptsNull(): bool
+    {
+        return true;
+    }
+
+    protected function checkType(
         mixed $data,
         ValidationContext $context,
-    ): mixed {
+    ): bool {
         if ($data === null) {
-            // run any constraints added via withConstraint()
-            $this->checkConstraints(
-                data: $data,
-                context: $context,
-            );
-
-            return null;
+            return true;
         }
 
         $this->invokeErrorCallback(
@@ -124,14 +119,6 @@ class NullSchema extends BaseSchema
             context: $context,
         );
 
-        return $data;
-    }
-
-    protected function checkType(
-        mixed $data,
-        ValidationContext $context,
-    ): bool {
-        // handled by parseWithContext override
-        return true;
+        return false;
     }
 }

@@ -82,49 +82,9 @@ class MixedSchema extends BaseSchema
         return 'mixed';
     }
 
-    /**
-     * override the base null handling because MixedSchema
-     * accepts anything including null
-     */
-    public function parseWithContext(
-        mixed $data,
-        ValidationContext $context,
-    ): mixed {
-        // skip null handling from BaseSchema — null is a
-        // valid value for mixed
-
-        // run any constraints added via withConstraint()
-        $this->checkConstraints(
-            data: $data,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return $data;
-        }
-
-        // run the pipeline (refinements, transforms, pipe)
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $data,
-            context: $context,
-        );
-        $data = $pipelineResult[0];
-        $pipelineClean = $pipelineResult[1];
-
-        if (! $pipelineClean) {
-            return $data;
-        }
-
-        // pipe to another schema
-        if ($this->pipeTarget !== null) {
-            $data = $this->pipeTarget->parseWithContext(
-                data: $data,
-                context: $context,
-            );
-        }
-
-        return $data;
+    protected function acceptsNull(): bool
+    {
+        return true;
     }
 
     protected function checkType(

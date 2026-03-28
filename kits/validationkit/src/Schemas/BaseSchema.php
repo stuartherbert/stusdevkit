@@ -242,15 +242,15 @@ abstract class BaseSchema implements Parseable
                 return $this->defaultValue;
             }
 
-            // null is not allowed — invoke the type-check
-            // callback (always set by schema constructors)
-            $this->invokeErrorCallback(
-                callback: $this->typeCheckError,
-                input: $data,
-                context: $context,
-            );
+            if (! $this->acceptsNull()) {
+                $this->invokeErrorCallback(
+                    callback: $this->typeCheckError,
+                    input: $data,
+                    context: $context,
+                );
 
-            return null;
+                return null;
+            }
         }
 
         // step 2: coerce
@@ -262,26 +262,33 @@ abstract class BaseSchema implements Parseable
             context: $context,
         );
 
-        // if type check failed, skip transformers,
-        // constraints, and refinements (they depend on
-        // the correct type)
+        // if type check failed, skip the rest of the
+        // pipeline (it depends on the correct type)
         if (! $typeCheckPassed) {
             return $data;
         }
 
-        // step 3.5: pre-constraint transformers
+        // step 3.5: pre-constraint normalisers
         foreach ($this->transformers as $transformer) {
             $data = $transformer->transform($data);
         }
 
-        // step 4: constraint checks
+        // step 4: validate children (e.g. object fields)
+        $data = $this->validateChildren(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return $data;
+        }
+
+        // step 5: constraint checks
         $this->checkConstraints(
             data: $data,
             context: $context,
         );
 
-        // if there are issues from constraints, stop before
-        // running refinements/transforms
         if ($context->hasIssues()) {
             return $data;
         }
@@ -338,6 +345,38 @@ abstract class BaseSchema implements Parseable
         mixed $data,
         ValidationContext $context,
     ): bool;
+
+    /**
+     * does this schema accept null as a valid value?
+     *
+     * Override to return true in schemas where null is a
+     * valid input (e.g. MixedSchema, NullSchema). The
+     * default is false — null triggers the type-check
+     * error callback.
+     */
+    protected function acceptsNull(): bool
+    {
+        return false;
+    }
+
+    /**
+     * validate child values and optionally rebuild the
+     * data
+     *
+     * Called after the type check and normalisers have
+     * passed but before constraint checks. Override this
+     * in schemas that need to validate nested structures
+     * (e.g. ObjectSchema validates shape fields).
+     *
+     * The returned value replaces the data for the rest
+     * of the pipeline.
+     */
+    protected function validateChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        return $data;
+    }
 
     /**
      * check constraints (min, max, length, etc.)
