@@ -57,6 +57,9 @@ use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
+use StusDevKit\ValidationKit\Transformers\LowerCaseTransformer;
+use StusDevKit\ValidationKit\Transformers\TrimTransformer;
+use StusDevKit\ValidationKit\Transformers\UpperCaseTransformer;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -95,10 +98,6 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 class StringSchema extends BaseSchema
 {
-    private bool $shouldTrim = false;
-    private bool $shouldLowerCase = false;
-    private bool $shouldUpperCase = false;
-
     /**
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
@@ -329,10 +328,7 @@ class StringSchema extends BaseSchema
      */
     public function applyTrim(): static
     {
-        $clone = clone $this;
-        $clone->shouldTrim = true;
-
-        return $clone;
+        return $this->withNormaliser(new TrimTransformer());
     }
 
     /**
@@ -340,10 +336,9 @@ class StringSchema extends BaseSchema
      */
     public function applyToLowerCase(): static
     {
-        $clone = clone $this;
-        $clone->shouldLowerCase = true;
-
-        return $clone;
+        return $this->withNormaliser(
+            new LowerCaseTransformer(),
+        );
     }
 
     /**
@@ -351,10 +346,9 @@ class StringSchema extends BaseSchema
      */
     public function applyToUpperCase(): static
     {
-        $clone = clone $this;
-        $clone->shouldUpperCase = true;
-
-        return $clone;
+        return $this->withNormaliser(
+            new UpperCaseTransformer(),
+        );
     }
 
     // ================================================================
@@ -386,78 +380,6 @@ class StringSchema extends BaseSchema
     }
 
     /**
-     * apply built-in transforms and check constraints
-     *
-     * Overrides the base parseWithContext to apply string
-     * transforms (trim, toLowerCase, toUpperCase) after
-     * the type check but before constraint checks.
-     */
-    public function parseWithContext(
-        mixed $data,
-        ValidationContext $context,
-    ): mixed {
-        // step 1: null/missing check (from base)
-        if ($data === null) {
-            if ($this->hasDefault) {
-                return $this->defaultValue;
-            }
-
-            $this->invokeErrorCallback(
-                callback: $this->typeCheckError,
-                input: $data,
-                context: $context,
-            );
-
-            return null;
-        }
-
-        // step 2: coerce
-        $data = $this->coercion->coerce($data);
-
-        // step 3: type check
-        if (! is_string($data)) {
-            $this->checkType(data: $data, context: $context);
-            return $data;
-        }
-
-        // step 3.5: apply string transforms before
-        // constraints
-        $data = $this->applyStringTransforms($data);
-
-        // step 4: constraint checks
-        $this->checkConstraints(
-            data: $data,
-            context: $context,
-        );
-
-        if ($context->hasIssues()) {
-            return $data;
-        }
-
-        // steps 5-7: pipeline and pipe (via base logic)
-        /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runPipeline(
-            data: $data,
-            context: $context,
-        );
-        $data = $pipelineResult[0];
-        $pipelineClean = $pipelineResult[1];
-
-        if (! $pipelineClean) {
-            return $data;
-        }
-
-        if ($this->pipeTarget !== null) {
-            $data = $this->pipeTarget->parseWithContext(
-                data: $data,
-                context: $context,
-            );
-        }
-
-        return $data;
-    }
-
-    /**
      * enable type coercion for this schema
      *
      * Integers, floats, and booleans are converted to
@@ -469,31 +391,5 @@ class StringSchema extends BaseSchema
         $clone->coercion = new CoerceToString();
 
         return $clone;
-    }
-
-    // ================================================================
-    //
-    // Helpers
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * apply built-in string transforms
-     */
-    private function applyStringTransforms(string $data): string
-    {
-        if ($this->shouldTrim) {
-            $data = trim($data);
-        }
-
-        if ($this->shouldLowerCase) {
-            $data = mb_strtolower($data);
-        }
-
-        if ($this->shouldUpperCase) {
-            $data = mb_strtoupper($data);
-        }
-
-        return $data;
     }
 }

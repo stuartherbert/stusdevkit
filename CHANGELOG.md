@@ -64,7 +64,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- tidy up implementation of type coercion ([7bad47a](https://github.com/stuartherbert/stusdevkit/commit/7bad47a)) — Stuart Herbert <stuart@stuartherbert.com>
+- simplify transformers implementation ([09399a6](https://github.com/stuartherbert/stusdevkit/commit/09399a6)) — Stuart Herbert <stuart@stuartherbert.com>
+- tidy up implementation of type coercion ([b5b86d2](https://github.com/stuartherbert/stusdevkit/commit/b5b86d2)) — Stuart Herbert <stuart@stuartherbert.com>
 - CoerceToDateTime is now able to accept a larger number of datetime formats ([3aa1d54](https://github.com/stuartherbert/stusdevkit/commit/3aa1d54)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::boolean()->coerce() can now replace the default list of supported strings ([0939e7a](https://github.com/stuartherbert/stusdevkit/commit/0939e7a)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve implementation of CoerceToBoolean ([0e79a0f](https://github.com/stuartherbert/stusdevkit/commit/0e79a0f)) — Stuart Herbert <stuart@stuartherbert.com>

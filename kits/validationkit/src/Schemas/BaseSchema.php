@@ -45,6 +45,7 @@ use StusDevKit\ValidationKit\Coercions\NoCoercion;
 use StusDevKit\ValidationKit\Contracts\Parseable;
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValueCoercion;
+use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
@@ -63,6 +64,7 @@ use StusDevKit\ValidationKit\Traits\HasTransforms;
  * 1. Null/missing check with default value support
  * 2. Type coercion (if enabled)
  * 3. Type check (delegated to concrete schemas)
+ * 3.5. Pre-constraint transformers (trim, etc.)
  * 4. Constraint checks (delegated to concrete schemas)
  * 5. Refinements and super-refinements
  * 6. Transforms
@@ -88,6 +90,9 @@ abstract class BaseSchema implements Parseable
 
     protected ValueCoercion $coercion;
 
+    /** @var list<ValueTransformer> */
+    protected array $transformers = [];
+
     /** @var list<ValidationConstraint> */
     protected array $constraints = [];
 
@@ -101,6 +106,23 @@ abstract class BaseSchema implements Parseable
     // Builder Methods
     //
     // ----------------------------------------------------------------
+
+    /**
+     * add a pre-constraint normaliser to this schema
+     *
+     * Returns a new schema instance with the normaliser
+     * appended to the normaliser list. Normalisers run
+     * in the order they are added, after the type check
+     * has passed but before constraint checks.
+     */
+    public function withNormaliser(
+        ValueTransformer $transformer,
+    ): static {
+        $clone = clone $this;
+        $clone->transformers[] = $transformer;
+
+        return $clone;
+    }
 
     /**
      * add a validation constraint to this schema
@@ -240,10 +262,16 @@ abstract class BaseSchema implements Parseable
             context: $context,
         );
 
-        // if type check failed, skip constraints and
-        // refinements (they depend on the correct type)
+        // if type check failed, skip transformers,
+        // constraints, and refinements (they depend on
+        // the correct type)
         if (! $typeCheckPassed) {
             return $data;
+        }
+
+        // step 3.5: pre-constraint transformers
+        foreach ($this->transformers as $transformer) {
+            $data = $transformer->transform($data);
         }
 
         // step 4: constraint checks
