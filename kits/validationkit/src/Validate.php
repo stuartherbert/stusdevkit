@@ -60,6 +60,7 @@ use StusDevKit\ValidationKit\Schemas\Builtins\OptionalSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\StringSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\RecordSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\TupleSchema;
+use StusDevKit\ValidationKit\Schemas\DevKit\WhenSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\AllOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\ConditionalSchema;
@@ -565,6 +566,22 @@ final class Validate
         ?callable $error = null,
     ): DateTimeInterfaceSchema {
         return new DateTimeInterfaceSchema(typeCheckError: $error);
+    }
+
+    /**
+     * create a When validation schema
+     *
+     * Validates that the input is a When instance. With
+     * coerce(), also accepts date strings, other
+     * DateTimeInterface instances, and Unix timestamps.
+     *
+     * @param ErrorCallback|null $error
+     * - optional error callback for type-check failures
+     */
+    public static function when(
+        ?callable $error = null,
+    ): WhenSchema {
+        return new WhenSchema(typeCheckError: $error);
     }
 
     /**
