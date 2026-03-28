@@ -75,12 +75,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -127,12 +129,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -179,12 +183,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -227,12 +233,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -282,12 +290,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -339,12 +349,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -393,12 +405,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         );
 
         // ----------------------------------------------------------------
@@ -450,12 +464,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->default(['name' => 'default', 'age' => 0]);
 
         // ----------------------------------------------------------------
@@ -501,12 +517,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->transform(
             function (mixed $data) {
                 /** @var array{name: string, age: int} $data */
@@ -554,12 +572,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->refine(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
@@ -612,12 +632,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )
             ->transform(function (mixed $data) {
                 /** @var array<string, mixed> $data */
@@ -662,12 +684,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->catch(['name' => 'unknown', 'age' => 0]);
 
         // ----------------------------------------------------------------
@@ -720,12 +744,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
             error: fn(mixed $data) => new ValidationIssue(
                 code: IssueCode::InvalidType,
                 input: $data,
@@ -786,12 +812,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->describe('A person with name and age');
 
         // ----------------------------------------------------------------
@@ -831,12 +859,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->meta(['label' => 'Person']);
 
         // ----------------------------------------------------------------
@@ -883,12 +913,14 @@ class ValidateAllOfTest extends TestCase
         // setup your test
 
         $unit = Validate::allOf(
-            left: Validate::object([
-                'name' => Validate::string(),
-            ]),
-            right: Validate::object([
-                'age' => Validate::int(),
-            ]),
+            schemas: [
+                Validate::object([
+                    'name' => Validate::string(),
+                ]),
+                Validate::object([
+                    'age' => Validate::int(),
+                ]),
+            ],
         )->withConstraint(new RejectEverythingConstraint());
 
         // ----------------------------------------------------------------

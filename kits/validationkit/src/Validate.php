@@ -406,22 +406,21 @@ final class Validate
     /**
      * create an allOf validation schema ("and" logic)
      *
-     * Validates that the input matches both schemas.
-     * Primarily useful for combining two object schemas.
+     * Validates that the input matches all of the given
+     * schemas. Primarily useful for combining object
+     * schemas.
      *
-     * @param BaseSchema<mixed> $left
-     * @param BaseSchema<mixed> $right
+     * @param list<BaseSchema<mixed>> $schemas
+     * - the schemas that must all pass
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
      */
     public static function allOf(
-        BaseSchema $left,
-        BaseSchema $right,
+        array $schemas,
         ?callable $error = null,
     ): AllOfSchema {
         return new AllOfSchema(
-            left: $left,
-            right: $right,
+            schemas: $schemas,
             typeCheckError: $error,
         );
     }

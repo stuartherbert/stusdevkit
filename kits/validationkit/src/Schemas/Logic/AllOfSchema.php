@@ -47,11 +47,11 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * AllOfSchema validates that the input matches
- * both the left and right schemas ("and" logic).
+ * AllOfSchema validates that the input matches all of
+ * the given schemas ("and" logic).
  *
- * Both schemas are run and all issues from both are
- * collected. Primarily useful for combining two object
+ * All schemas are run and all issues from all are
+ * collected. Primarily useful for combining object
  * schemas.
  *
  * Usage:
@@ -64,7 +64,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $hasAge = Validate::object([
  *         'age' => Validate::int(),
  *     ]);
- *     $person = Validate::allOf($hasName, $hasAge);
+ *     $person = Validate::allOf([$hasName, $hasAge]);
  *     $person->parse(['name' => 'Stuart', 'age' => 42]);
  *
  * @extends BaseSchema<mixed>
@@ -72,13 +72,12 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class AllOfSchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<mixed> $left
-     * @param BaseSchema<mixed> $right
+     * @param list<BaseSchema<mixed>> $schemas
+     * - the schemas that must all pass
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
     public function __construct(
-        private readonly BaseSchema $left,
-        private readonly BaseSchema $right,
+        private readonly array $schemas,
         ?callable $typeCheckError = null,
     ) {
         $this->typeCheckError = $typeCheckError
@@ -114,7 +113,7 @@ class AllOfSchema extends BaseSchema
     }
 
     /**
-     * override parseWithContext to validate against both
+     * override parseWithContext to validate against all
      * schemas
      */
     public function parseWithContext(
@@ -136,22 +135,21 @@ class AllOfSchema extends BaseSchema
             return null;
         }
 
-        // validate against both schemas — issues from both
+        // validate against all schemas — issues from all
         // are collected into the same context
-        $leftResult = $this->left->parseWithContext(
-            data: $data,
-            context: $context,
-        );
+        $result = $data;
+        foreach ($this->schemas as $schema) {
+            $schemaResult = $schema->parseWithContext(
+                data: $data,
+                context: $context,
+            );
 
-        $rightResult = $this->right->parseWithContext(
-            data: $data,
-            context: $context,
-        );
-
-        // if both schemas produce array outputs, merge them
-        $result = is_array($leftResult) && is_array($rightResult)
-            ? array_merge($leftResult, $rightResult)
-            : $leftResult;
+            // if both the current result and the schema
+            // result are arrays, merge them
+            $result = is_array($result) && is_array($schemaResult)
+                ? array_merge($result, $schemaResult)
+                : $schemaResult;
+        }
 
         if ($context->hasIssues()) {
             return $result;
