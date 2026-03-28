@@ -45,6 +45,8 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+use StusDevKit\DateTimeKit\Now;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
@@ -2015,6 +2017,77 @@ class ValidateObjectTest extends TestCase
 
         // ----------------------------------------------------------------
         // clean up the database
+
+    }
+
+    public function test_complex_object(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this tests proves that we can define a schema for a complex
+        // object ... and that the schema works
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        Now::init();
+
+        $unit = Validate::allOf([
+            Validate::object([
+                'order_id' => Validate::uuid(),
+            ]),
+            Validate::oneOf([
+                Validate::object([
+                    'stripe' => Validate::object([
+                        'payment_intent' => Validate::string(),
+                        'client_secret' => Validate::string(),
+                    ]),
+                ]),
+                Validate::object([
+                    'zero_cost' => Validate::object([
+                        'confirm_token' => Validate::uuid(),
+                        'expires_at' => Validate::dateTime()->coerce(),
+                    ]),
+                ]),
+            ]),
+        ]);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'order_id' => (string)Uuid::uuid7(),
+            'zero_cost' => [
+                'confirm_token' => (string)Uuid::uuid7(),
+                'expires_at' => Now::asFormat()->http()->rfc9110(),
+            ],
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+        // var_dump($result->error()->issues()->jsonSerialize());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
 
     }
 }

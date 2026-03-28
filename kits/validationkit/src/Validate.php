@@ -68,6 +68,7 @@ use StusDevKit\ValidationKit\Schemas\Logic\DiscriminatedAnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\EnumSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\NotSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
+use StusDevKit\ValidationKit\Schemas\UuidSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -551,6 +552,21 @@ final class Validate
     // Specialized Schema Factories
     //
     // ----------------------------------------------------------------
+
+    /**
+     * create a UUID validation schema
+     *
+     * Validates that the input is a valid UUID string in
+     * standard 8-4-4-4-12 format (case-insensitive).
+     *
+     * @param ErrorCallback|null $error
+     * - optional error callback for type-check failures
+     */
+    public static function uuid(
+        ?callable $error = null,
+    ): UuidSchema {
+        return new UuidSchema(typeCheckError: $error);
+    }
 
     /**
      * create a DateTime validation schema
