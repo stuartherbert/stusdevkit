@@ -40,7 +40,6 @@
 //
 
 declare(strict_types=1);
-
 namespace StusDevKit\ValidationKit\Tests\Acceptance;
 
 use DateTimeImmutable;
@@ -54,18 +53,19 @@ class ValidateOptionalTest extends TestCase
 {
     // ================================================================
     //
-    // Null Passthrough Per Schema Type
+    // array
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('allows null with string inner schema')]
-    public function test_optional_string_allows_null(): void
+    #[TestDox('allows null with array inner schema')]
+    public function test_optional_array_allows_null(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a string schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::array(Validate::string()))
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -73,7 +73,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(Validate::string());
+        $unit = Validate::optional(
+            Validate::array(Validate::string()),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -96,14 +98,15 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('allows null with int inner schema')]
-    public function test_optional_int_allows_null(): void
+    #[TestDox('passes valid data through with array inner schema')]
+    public function test_optional_array_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // an int schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::array(Validate::string()))
+        // passes valid array data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -111,7 +114,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(Validate::int());
+        $unit = Validate::optional(
+            Validate::array(Validate::string()),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -122,93 +127,23 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(null);
+        $actualResult = $unit->parse(['hello']);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertNull($actualResult);
+        $this->assertSame(['hello'], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
 
-    #[TestDox('allows null with float inner schema')]
-    public function test_optional_float_allows_null(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // a float schema allows null input and returns null
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::float());
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(null);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertNull($actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('allows null with number inner schema')]
-    public function test_optional_number_allows_null(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // a number schema allows null input and returns null
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::number());
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(null);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertNull($actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
+    // ================================================================
+    //
+    // boolean
+    //
+    // ----------------------------------------------------------------
 
     #[TestDox('allows null with boolean inner schema')]
     public function test_optional_boolean_allows_null(): void
@@ -216,8 +151,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a boolean schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::boolean())
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -248,14 +184,60 @@ class ValidateOptionalTest extends TestCase
 
     }
 
+    #[TestDox('passes valid data through with boolean inner schema')]
+    public function test_optional_boolean_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::boolean()) passes
+        // valid boolean data through unchanged
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(Validate::boolean());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(true);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(true, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // dateTime
+    //
+    // ----------------------------------------------------------------
+
     #[TestDox('allows null with dateTime inner schema')]
     public function test_optional_datetime_allows_null(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a dateTime schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::dateTime())
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -286,14 +268,15 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('allows null with literal inner schema')]
-    public function test_optional_literal_allows_null(): void
+    #[TestDox('passes valid data through with dateTime inner schema')]
+    public function test_optional_datetime_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a literal schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::dateTime()) passes
+        // valid DateTimeImmutable data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -301,7 +284,8 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(Validate::literal(value: 'active'));
+        $unit = Validate::optional(Validate::dateTime());
+        $now = new DateTimeImmutable();
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -312,17 +296,23 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(null);
+        $actualResult = $unit->parse($now);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertNull($actualResult);
+        $this->assertSame($now, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // enum
+    //
+    // ----------------------------------------------------------------
 
     #[TestDox('allows null with enum inner schema')]
     public function test_optional_enum_allows_null(): void
@@ -330,84 +320,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // an enum schema allows null input and returns null
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::enum(['a', 'b']));
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(null);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertNull($actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('allows null with array inner schema')]
-    public function test_optional_array_allows_null(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // an array schema allows null input and returns null
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::array(Validate::string()));
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(null);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertNull($actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('allows null with object inner schema')]
-    public function test_optional_object_allows_null(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // an object schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::enum(['a', 'b']))
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -416,7 +331,7 @@ class ValidateOptionalTest extends TestCase
         // setup your test
 
         $unit = Validate::optional(
-            Validate::object(['name' => Validate::string()]),
+            Validate::enum(['a', 'b']),
         );
 
         // ----------------------------------------------------------------
@@ -440,14 +355,15 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('allows null with tuple inner schema')]
-    public function test_optional_tuple_allows_null(): void
+    #[TestDox('passes valid data through with enum inner schema')]
+    public function test_optional_enum_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a tuple schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::enum(['a', 'b']))
+        // passes valid enum data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -456,8 +372,53 @@ class ValidateOptionalTest extends TestCase
         // setup your test
 
         $unit = Validate::optional(
-            Validate::tuple([Validate::string(), Validate::int()]),
+            Validate::enum(['a', 'b']),
         );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('a');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('a', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // float
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with float inner schema')]
+    public function test_optional_float_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::float())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(Validate::float());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -480,14 +441,15 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('allows null with union inner schema')]
-    public function test_optional_union_allows_null(): void
+    #[TestDox('passes valid data through with float inner schema')]
+    public function test_optional_float_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a union schema allows null input and returns null
+        // this test proves that
+        // Validate::optional(Validate::float()) passes
+        // valid float data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -495,9 +457,7 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(
-            Validate::union([Validate::string(), Validate::int()]),
-        );
+        $unit = Validate::optional(Validate::float());
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -508,17 +468,23 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(null);
+        $actualResult = $unit->parse(3.14);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertNull($actualResult);
+        $this->assertSame(3.14, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // instanceOf
+    //
+    // ----------------------------------------------------------------
 
     #[TestDox('allows null with instanceOf inner schema')]
     public function test_optional_instance_of_allows_null(): void
@@ -526,9 +492,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // an instanceOf schema allows null input and returns
-        // null
+        // this test proves that
+        // Validate::optional(Validate::instanceOf(...))
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -561,21 +527,15 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    // ================================================================
-    //
-    // Valid Data Passes Through
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('passes valid data through with string inner schema')]
-    public function test_optional_string_passes_valid_data(): void
+    #[TestDox('passes valid data through with instanceOf inner schema')]
+    public function test_optional_instance_of_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a string schema passes valid string data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::instanceOf(...))
+        // passes valid instance data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -583,7 +543,10 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(Validate::string());
+        $unit = Validate::optional(
+            Validate::instanceOf(DateTimeInterface::class),
+        );
+        $now = new DateTimeImmutable();
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -594,12 +557,57 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse('hello');
+        $actualResult = $unit->parse($now);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('hello', $actualResult);
+        $this->assertSame($now, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // int
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with int inner schema')]
+    public function test_optional_int_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::int())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(Validate::int());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -612,9 +620,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // an int schema passes valid int data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::int()) passes
+        // valid int data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -645,15 +653,21 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('passes valid data through with float inner schema')]
-    public function test_optional_float_passes_valid_data(): void
+    // ================================================================
+    //
+    // literal
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with literal inner schema')]
+    public function test_optional_literal_allows_null(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a float schema passes valid float data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::literal(value: 'active'))
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -661,7 +675,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(Validate::float());
+        $unit = Validate::optional(
+            Validate::literal(value: 'active'),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -672,12 +688,98 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(3.14);
+        $actualResult = $unit->parse(null);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(3.14, $actualResult);
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with literal inner schema')]
+    public function test_optional_literal_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::literal(value: 'active'))
+        // passes valid literal data through unchanged
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(
+            Validate::literal(value: 'active'),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('active');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('active', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // number
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with number inner schema')]
+    public function test_optional_number_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::number())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(Validate::number());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -690,9 +792,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a number schema passes valid number data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::number()) passes
+        // valid number data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -723,15 +825,21 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('passes valid data through with boolean inner schema')]
-    public function test_optional_boolean_passes_valid_data(): void
+    // ================================================================
+    //
+    // object
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with object inner schema')]
+    public function test_optional_object_allows_null(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a boolean schema passes valid boolean data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::object([...]))
+        // accepts null input and returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -739,7 +847,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::optional(Validate::boolean());
+        $unit = Validate::optional(
+            Validate::object(['name' => Validate::string()]),
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -750,169 +860,12 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(true);
+        $actualResult = $unit->parse(null);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(true, $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('passes valid data through with dateTime inner schema')]
-    public function test_optional_datetime_passes_valid_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // a dateTime schema passes valid DateTimeImmutable data
-        // through unchanged
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::dateTime());
-        $now = new DateTimeImmutable();
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse($now);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($now, $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('passes valid data through with literal inner schema')]
-    public function test_optional_literal_passes_valid_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // a literal schema passes valid literal data through
-        // unchanged
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::literal(value: 'active'));
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse('active');
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame('active', $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('passes valid data through with enum inner schema')]
-    public function test_optional_enum_passes_valid_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // an enum schema passes valid enum data through
-        // unchanged
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::enum(['a', 'b']));
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse('a');
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame('a', $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('passes valid data through with array inner schema')]
-    public function test_optional_array_passes_valid_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // an array schema passes valid array data through
-        // unchanged
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(Validate::array(Validate::string()));
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(['hello']);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(['hello'], $actualResult);
+        $this->assertNull($actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -925,9 +878,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // an object schema passes valid object data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::object([...]))
+        // passes valid object data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -960,15 +913,146 @@ class ValidateOptionalTest extends TestCase
 
     }
 
+    // ================================================================
+    //
+    // string
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with string inner schema')]
+    public function test_optional_string_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::string())
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(Validate::string());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('passes valid data through with string inner schema')]
+    public function test_optional_string_passes_valid_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::string()) passes
+        // valid string data through unchanged
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(Validate::string());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('hello');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // tuple
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with tuple inner schema')]
+    public function test_optional_tuple_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::tuple([...]))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(
+            Validate::tuple([Validate::string(), Validate::int()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
     #[TestDox('passes valid data through with tuple inner schema')]
     public function test_optional_tuple_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a tuple schema passes valid tuple data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::tuple([...]))
+        // passes valid tuple data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1001,15 +1085,62 @@ class ValidateOptionalTest extends TestCase
 
     }
 
+    // ================================================================
+    //
+    // union
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('allows null with union inner schema')]
+    public function test_optional_union_allows_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that
+        // Validate::optional(Validate::union([...]))
+        // accepts null input and returns null
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::optional(
+            Validate::union([Validate::string(), Validate::int()]),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(null);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
     #[TestDox('passes valid data through with union inner schema')]
     public function test_optional_union_passes_valid_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() wrapping
-        // a union schema passes valid union data through
-        // unchanged
+        // this test proves that
+        // Validate::optional(Validate::union([...]))
+        // passes valid union data through unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1042,51 +1173,9 @@ class ValidateOptionalTest extends TestCase
 
     }
 
-    #[TestDox('passes valid data through with instanceOf inner schema')]
-    public function test_optional_instance_of_passes_valid_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::optional() wrapping
-        // an instanceOf schema passes valid instance data
-        // through unchanged
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::optional(
-            Validate::instanceOf(DateTimeInterface::class),
-        );
-        $now = new DateTimeImmutable();
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse($now);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($now, $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
     // ================================================================
     //
-    // Delegation and Rejection
+    // Type Error Propagation
     //
     // ----------------------------------------------------------------
 
@@ -1096,10 +1185,9 @@ class ValidateOptionalTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::optional() delegates
-        // to the inner schema for non-null input, and the
-        // inner schema rejects values that do not match its
-        // type
+        // this test proves that when a non-null value of the
+        // wrong type is passed to an optional schema, the inner
+        // schema's type error propagates through safeParse()
 
         // ----------------------------------------------------------------
         // shorthand
