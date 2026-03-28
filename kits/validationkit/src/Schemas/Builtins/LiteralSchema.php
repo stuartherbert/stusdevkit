@@ -73,6 +73,8 @@ class LiteralSchema extends BaseSchema
         private readonly mixed $expectedValue,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }

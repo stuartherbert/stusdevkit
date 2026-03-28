@@ -75,6 +75,7 @@ class NullableSchema extends BaseSchema
     public function __construct(
         private readonly BaseSchema $innerSchema,
     ) {
+        parent::__construct();
     }
 
     // ================================================================

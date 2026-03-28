@@ -41,8 +41,10 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas;
 
+use StusDevKit\ValidationKit\Coercions\NoCoercion;
 use StusDevKit\ValidationKit\Contracts\Parseable;
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
@@ -67,8 +69,8 @@ use StusDevKit\ValidationKit\Traits\HasTransforms;
  * 7. Pipe to another schema
  *
  * Concrete schemas must implement checkType() and
- * checkConstraints(). They may also override coerceValue()
- * to support type coercion.
+ * checkConstraints(). They may also override
+ * defaultCoercion() to support type coercion.
  *
  * All builder methods return new instances (immutable
  * schemas).
@@ -83,10 +85,15 @@ abstract class BaseSchema implements Parseable
     use HasNullability;
     use HasTransforms;
 
-    protected bool $coercionEnabled = false;
+    protected ValueCoercion $coercion;
 
     /** @var list<ValidationConstraint> */
     protected array $constraints = [];
+
+    public function __construct()
+    {
+        $this->coercion = new NoCoercion();
+    }
 
     // ================================================================
     //
@@ -120,12 +127,12 @@ abstract class BaseSchema implements Parseable
      * for an int schema.
      *
      * Each concrete schema defines its own coercion rules
-     * by overriding coerceValue().
+     * by overriding defaultCoercion().
      */
     public function coerce(): static
     {
         $clone = clone $this;
-        $clone->coercionEnabled = true;
+        $clone->coercion = $this->defaultCoercion();
 
         return $clone;
     }
@@ -242,10 +249,8 @@ abstract class BaseSchema implements Parseable
             return null;
         }
 
-        // step 2: coerce (if enabled)
-        if ($this->coercionEnabled) {
-            $data = $this->coerceValue($data);
-        }
+        // step 2: coerce
+        $data = $this->coercion->coerce($data);
 
         // step 3: type check
         $typeCheckPassed = $this->checkType(
@@ -347,15 +352,15 @@ abstract class BaseSchema implements Parseable
     }
 
     /**
-     * attempt to coerce the input to the expected type
+     * return the coercion to use when coerce() is called
      *
      * Override this in concrete schemas that support
-     * coercion. The default implementation returns the
-     * input unchanged.
+     * coercion. The default implementation returns
+     * NoCoercion (a no-op).
      */
-    protected function coerceValue(mixed $data): mixed
+    protected function defaultCoercion(): ValueCoercion
     {
-        return $data;
+        return new NoCoercion();
     }
 
     // ================================================================

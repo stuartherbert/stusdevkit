@@ -41,11 +41,11 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\BuiltinObjects;
 
-use DateTimeImmutable;
 use DateTimeInterface;
-use Exception;
+use StusDevKit\ValidationKit\Coercions\CoerceToDateTime;
 use StusDevKit\ValidationKit\Constraints\DateTimeMaxConstraint;
 use StusDevKit\ValidationKit\Constraints\DateTimeMinConstraint;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -81,6 +81,8 @@ class DateTimeInterfaceSchema extends BaseSchema
      */
     public function __construct(?callable $typeCheckError = null)
     {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }
@@ -170,32 +172,8 @@ class DateTimeInterfaceSchema extends BaseSchema
         return false;
     }
 
-    protected function coerceValue(mixed $data): mixed
+    protected function defaultCoercion(): ValueCoercion
     {
-        if (is_string($data)) {
-            $dateTime = DateTimeImmutable::createFromFormat(
-                DateTimeInterface::ATOM,
-                $data,
-            );
-            if ($dateTime !== false) {
-                return $dateTime;
-            }
-
-            // try a more lenient parse
-            try {
-                return new DateTimeImmutable($data);
-            } catch (Exception) {
-                // could not parse — return the original
-                // string and let the type check handle it
-                return $data;
-            }
-        }
-
-        if (is_int($data)) {
-            return (new DateTimeImmutable())
-                ->setTimestamp($data);
-        }
-
-        return $data;
+        return new CoerceToDateTime();
     }
 }

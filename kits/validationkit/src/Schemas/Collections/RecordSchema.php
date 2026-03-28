@@ -84,6 +84,8 @@ class RecordSchema extends BaseSchema
         private readonly BaseSchema $valueSchema,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }

@@ -93,6 +93,8 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         private readonly array $schemas,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }

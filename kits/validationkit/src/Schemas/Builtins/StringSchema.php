@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Coercions\CoerceToString;
 use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEndsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringExactLengthConstraint;
@@ -53,6 +54,7 @@ use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -103,6 +105,8 @@ class StringSchema extends BaseSchema
      */
     public function __construct(?callable $typeCheckError = null)
     {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }
@@ -408,10 +412,8 @@ class StringSchema extends BaseSchema
             return null;
         }
 
-        // step 2: coerce (if enabled)
-        if ($this->coercionEnabled) {
-            $data = $this->coerceValue($data);
-        }
+        // step 2: coerce
+        $data = $this->coercion->coerce($data);
 
         // step 3: type check
         if (! is_string($data)) {
@@ -456,17 +458,9 @@ class StringSchema extends BaseSchema
         return $data;
     }
 
-    protected function coerceValue(mixed $data): mixed
+    protected function defaultCoercion(): ValueCoercion
     {
-        if (is_int($data) || is_float($data)) {
-            return (string) $data;
-        }
-
-        if (is_bool($data)) {
-            return $data ? 'true' : 'false';
-        }
-
-        return $data;
+        return new CoerceToString();
     }
 
     // ================================================================

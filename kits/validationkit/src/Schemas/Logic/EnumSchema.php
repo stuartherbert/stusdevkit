@@ -103,6 +103,8 @@ class EnumSchema extends BaseSchema
         array|string $valuesOrEnumClass,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         if (is_string($valuesOrEnumClass)) {
             $this->enumClass = $valuesOrEnumClass;
         } else {

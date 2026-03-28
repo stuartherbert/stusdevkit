@@ -76,6 +76,8 @@ class NotSchema extends BaseSchema
         private readonly BaseSchema $schema,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }

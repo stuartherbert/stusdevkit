@@ -112,6 +112,8 @@ class ObjectSchema extends BaseSchema
         private array $shape,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }

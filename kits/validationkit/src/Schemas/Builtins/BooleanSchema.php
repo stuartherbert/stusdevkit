@@ -41,6 +41,8 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Coercions\CoerceToBoolean;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -73,6 +75,8 @@ class BooleanSchema extends BaseSchema
      */
     public function __construct(?callable $typeCheckError = null)
     {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }
@@ -122,22 +126,8 @@ class BooleanSchema extends BaseSchema
         return false;
     }
 
-    protected function coerceValue(mixed $data): mixed
+    protected function defaultCoercion(): ValueCoercion
     {
-        if (is_string($data)) {
-            $lower = strtolower($data);
-            if ($lower === 'true' || $lower === '1' || $lower === 'yes') {
-                return true;
-            }
-            if ($lower === 'false' || $lower === '0' || $lower === 'no' || $lower === '') {
-                return false;
-            }
-        }
-
-        if (is_int($data) || is_float($data)) {
-            return (bool) $data;
-        }
-
-        return $data;
+        return new CoerceToBoolean();
     }
 }

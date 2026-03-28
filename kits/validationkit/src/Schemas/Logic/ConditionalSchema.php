@@ -89,6 +89,7 @@ class ConditionalSchema extends BaseSchema
         private readonly ?BaseSchema $then = null,
         private readonly ?BaseSchema $else = null,
     ) {
+        parent::__construct();
     }
 
     // ================================================================

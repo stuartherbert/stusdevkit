@@ -88,6 +88,8 @@ class ArraySchema extends BaseSchema
         private readonly BaseSchema $elementSchema,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }

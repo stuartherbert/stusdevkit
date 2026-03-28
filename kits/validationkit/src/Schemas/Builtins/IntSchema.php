@@ -41,11 +41,13 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Coercions\CoerceToInt;
 use StusDevKit\ValidationKit\Constraints\NumericGtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -77,6 +79,8 @@ class IntSchema extends BaseSchema
      */
     public function __construct(?callable $typeCheckError = null)
     {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }
@@ -251,25 +255,8 @@ class IntSchema extends BaseSchema
         return false;
     }
 
-    protected function coerceValue(mixed $data): mixed
+    protected function defaultCoercion(): ValueCoercion
     {
-        if (is_string($data) && is_numeric($data)) {
-            $intVal = (int) $data;
-            // only coerce if the string represents a whole
-            // number (no fractional part)
-            if ((string) $intVal === $data) {
-                return $intVal;
-            }
-        }
-
-        if (is_float($data) && floor($data) === $data) {
-            return (int) $data;
-        }
-
-        if (is_bool($data)) {
-            return $data ? 1 : 0;
-        }
-
-        return $data;
+        return new CoerceToInt();
     }
 }

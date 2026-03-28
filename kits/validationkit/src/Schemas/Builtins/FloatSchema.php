@@ -41,12 +41,14 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Coercions\CoerceToFloat;
 use StusDevKit\ValidationKit\Constraints\NumericFiniteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -74,6 +76,8 @@ class FloatSchema extends BaseSchema
      */
     public function __construct(?callable $typeCheckError = null)
     {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }
@@ -260,20 +264,8 @@ class FloatSchema extends BaseSchema
         return false;
     }
 
-    protected function coerceValue(mixed $data): mixed
+    protected function defaultCoercion(): ValueCoercion
     {
-        if (is_string($data) && is_numeric($data)) {
-            return (float) $data;
-        }
-
-        if (is_int($data)) {
-            return (float) $data;
-        }
-
-        if (is_bool($data)) {
-            return $data ? 1.0 : 0.0;
-        }
-
-        return $data;
+        return new CoerceToFloat();
     }
 }

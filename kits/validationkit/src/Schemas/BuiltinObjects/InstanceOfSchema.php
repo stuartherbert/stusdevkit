@@ -74,6 +74,8 @@ class InstanceOfSchema extends BaseSchema
         private readonly string $className,
         ?callable $typeCheckError = null,
     ) {
+        parent::__construct();
+
         $this->typeCheckError = $typeCheckError
             ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
     }
