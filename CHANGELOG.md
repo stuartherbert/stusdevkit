@@ -45,7 +45,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- Validate::discriminatedAnyof() performance improvement ([4a0f14e](https://github.com/stuartherbert/stusdevkit/commit/4a0f14e)) — Stuart Herbert <stuart@stuartherbert.com>
+- make it easier for third-party validators to create validation issues ([b4c206b](https://github.com/stuartherbert/stusdevkit/commit/b4c206b)) — Stuart Herbert <stuart@stuartherbert.com>
+- Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 

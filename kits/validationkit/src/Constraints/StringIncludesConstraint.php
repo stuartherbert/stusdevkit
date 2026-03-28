@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -69,7 +68,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *         new StringIncludesConstraint(
  *             needle: '@',
  *             error: fn($data) => new ValidationIssue(
- *                 code: IssueCode::InvalidString,
+ *                 type: 'https://stusdevkit.dev/errors/validation/invalid_string',
  *                 input: $data,
  *                 path: [],
  *                 message: 'Must contain an @ symbol',
@@ -110,7 +109,7 @@ final class StringIncludesConstraint implements ValidationConstraint
         $this->needle = $needle;
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
+                type: 'https://stusdevkit.dev/errors/validation/invalid_string',
                 input: $data,
                 path: [],
                 message: 'String must contain "' . $needle . '"',

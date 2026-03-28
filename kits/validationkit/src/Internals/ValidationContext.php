@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Internals;
 
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 use StusDevKit\ValidationKit\ValidationIssuesList;
 
@@ -116,17 +115,18 @@ final class ValidationContext
     /**
      * add a validation issue at the current path
      *
+     * @param non-empty-string $type
      * @param non-empty-string $message
      * @param array<string, int|string> $extra
      */
     public function addIssue(
-        IssueCode $code,
+        string $type,
         mixed $input,
         string $message,
         array $extra = [],
     ): void {
         $this->issues[] = new ValidationIssue(
-            code: $code,
+            type: $type,
             input: $input,
             path: $this->path,
             message: $message,

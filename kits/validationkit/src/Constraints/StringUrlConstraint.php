@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -74,7 +73,7 @@ final class StringUrlConstraint implements ValidationConstraint
     {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
+                type: 'https://stusdevkit.dev/errors/validation/invalid_string',
                 input: $data,
                 path: [],
                 message: 'Invalid URL',

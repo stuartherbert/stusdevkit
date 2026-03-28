@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -257,7 +256,7 @@ class ValidateRecordTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['bob'],
                     'message' => 'Expected int, received string',
                 ],
@@ -320,7 +319,7 @@ class ValidateRecordTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected record (associative array),'
                         . ' received int',
@@ -562,7 +561,7 @@ class ValidateRecordTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Record must not be empty',
                 ],
@@ -684,7 +683,6 @@ class ValidateRecordTest extends TestCase
             key: Validate::string(),
             value: Validate::int(),
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: not a record',
@@ -711,7 +709,7 @@ class ValidateRecordTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://example.com/errors/not-record',
                     'path'    => [],
                     'message' => 'Custom: not a record',
                 ],
@@ -745,7 +743,7 @@ class ValidateRecordTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -776,7 +774,7 @@ class ValidateRecordTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected record (associative array),'
                         . ' received int',
@@ -790,7 +788,7 @@ class ValidateRecordTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -924,7 +922,7 @@ class ValidateRecordTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

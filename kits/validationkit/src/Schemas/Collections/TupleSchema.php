@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Collections;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -93,7 +92,7 @@ class TupleSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected tuple (array), received '
@@ -148,9 +147,9 @@ class TupleSchema extends BaseSchema
                 . $expectedCount . ' elements, received '
                 . $actualCount;
             $context->addIssue(
-                code: $actualCount < $expectedCount
-                    ? IssueCode::TooSmall
-                    : IssueCode::TooBig,
+                type: $actualCount < $expectedCount
+                    ? 'https://stusdevkit.dev/errors/validation/too_small'
+                    : 'https://stusdevkit.dev/errors/validation/too_big',
                 input: $data,
                 message: $message,
             );

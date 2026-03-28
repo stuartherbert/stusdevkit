@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -71,7 +70,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *         new StringStartsWithConstraint(
  *             prefix: 'https://',
  *             error: fn($data) => new ValidationIssue(
- *                 code: IssueCode::InvalidString,
+ *                 type: 'https://stusdevkit.dev/errors/validation/invalid_string',
  *                 input: $data,
  *                 path: [],
  *                 message: 'URL must use HTTPS',
@@ -112,7 +111,7 @@ final class StringStartsWithConstraint implements ValidationConstraint
         $this->prefix = $prefix;
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidString,
+                type: 'https://stusdevkit.dev/errors/validation/invalid_string',
                 input: $data,
                 path: [],
                 message: 'String must start with "' . $prefix . '"',

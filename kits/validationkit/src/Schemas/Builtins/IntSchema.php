@@ -48,7 +48,6 @@ use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -93,7 +92,7 @@ class IntSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected int, received '

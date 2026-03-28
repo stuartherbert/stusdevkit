@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -66,7 +65,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     // with custom error callback
  *     $constraint = new NumericFiniteConstraint(
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::NotFinite,
+ *             type: 'https://stusdevkit.dev/errors/validation/not_finite',
  *             input: $data,
  *             path: [],
  *             message: 'Value must not be infinity or NaN',
@@ -84,14 +83,14 @@ final class NumericFiniteConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::NotFinite
+     *   with 'https://stusdevkit.dev/errors/validation/not_finite'
      */
     public function __construct(
         ?callable $error = null,
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::NotFinite,
+                type: 'https://stusdevkit.dev/errors/validation/not_finite',
                 input: $data,
                 path: [],
                 message: 'Number must be finite',

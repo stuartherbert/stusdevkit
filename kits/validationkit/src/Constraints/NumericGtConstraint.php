@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -65,7 +64,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $constraint = new NumericGtConstraint(
  *         value: 0,
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::TooSmall,
+ *             type: 'https://stusdevkit.dev/errors/validation/too_small',
  *             input: $data,
  *             path: [],
  *             message: 'Must be positive',
@@ -86,7 +85,7 @@ final class NumericGtConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::TooSmall
+     *   with 'https://stusdevkit.dev/errors/validation/too_small'
      */
     public function __construct(
         private readonly int|float $value,
@@ -94,7 +93,7 @@ final class NumericGtConstraint implements ValidationConstraint
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooSmall,
+                type: 'https://stusdevkit.dev/errors/validation/too_small',
                 input: $data,
                 path: [],
                 message: 'Number must be greater than '

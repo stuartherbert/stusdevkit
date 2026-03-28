@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\BuiltinObjects;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -89,7 +88,7 @@ class InstanceOfSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected instance of '

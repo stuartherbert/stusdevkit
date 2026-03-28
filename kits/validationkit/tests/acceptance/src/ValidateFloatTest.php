@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -199,7 +198,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected float, received string',
                 ],
@@ -377,7 +376,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Number must be greater than 5',
                 ],
@@ -463,7 +462,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Number must be greater than or equal to 5',
                 ],
@@ -550,7 +549,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooBig,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_big',
                     'path'    => [],
                     'message' => 'Number must be less than 10',
                 ],
@@ -636,7 +635,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooBig,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_big',
                     'path'    => [],
                     'message' => 'Number must be less than or equal to 10',
                 ],
@@ -722,7 +721,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Number must be greater than 0',
                 ],
@@ -808,7 +807,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooBig,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_big',
                     'path'    => [],
                     'message' => 'Number must be less than 0',
                 ],
@@ -895,7 +894,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::NotMultipleOf,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/not_multiple_of',
                     'path'    => [],
                     'message' => 'Number must be a multiple of 0.5',
                 ],
@@ -981,7 +980,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::NotFinite,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/not_finite',
                     'path'    => [],
                     'message' => 'Number must be finite',
                 ],
@@ -1029,7 +1028,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::NotFinite,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/not_finite',
                     'path'    => [],
                     'message' => 'Number must be finite',
                 ],
@@ -1227,7 +1226,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Division by zero not allowed',
                 ],
@@ -1342,7 +1341,6 @@ class ValidateFloatTest extends TestCase
 
         $unit = Validate::float(
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: not a float',
@@ -1369,7 +1367,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://example.com/errors/not-float',
                     'path'    => [],
                     'message' => 'Custom: not a float',
                 ],
@@ -1407,7 +1405,6 @@ class ValidateFloatTest extends TestCase
         $unit = Validate::float()->gte(
             value: 0.0,
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooSmall,
                 input: $data,
                 path: [],
                 message: 'Price must not be negative',
@@ -1434,7 +1431,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://example.com/errors/negative-price',
                     'path'    => [],
                     'message' => 'Price must not be negative',
                 ],
@@ -1467,7 +1464,7 @@ class ValidateFloatTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1495,7 +1492,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected float, received string',
                 ],
@@ -1508,7 +1505,7 @@ class ValidateFloatTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1634,7 +1631,7 @@ class ValidateFloatTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

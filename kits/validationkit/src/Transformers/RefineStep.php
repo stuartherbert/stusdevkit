@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Transformers;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 
 /**
  * RefineStep wraps a callable boolean check as a
@@ -80,7 +79,7 @@ final class RefineStep implements ValidationConstraint
 
         if (! $passed) {
             $context->addIssue(
-                code: IssueCode::Custom,
+                type: 'https://stusdevkit.dev/errors/validation/custom',
                 input: $data,
                 message: $this->message,
             );

@@ -45,7 +45,6 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -214,7 +213,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidUnion,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_union',
                     'path'    => [],
                     'message' => 'Missing discriminator field "type"',
                 ],
@@ -275,7 +274,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidUnion,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_union',
                     'path'    => [],
                     'message' => 'Unrecognised type value: "c"',
                 ],
@@ -332,7 +331,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected object with discriminator'
                         . ' "type", received string',
@@ -402,7 +401,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected object with discriminator'
                         . ' "type", received string',
@@ -524,7 +523,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected object with discriminator'
                         . ' "type", received string',
@@ -702,7 +701,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'x must be positive',
                 ],
@@ -853,7 +852,6 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 ]),
             ],
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: invalid event',
@@ -880,7 +878,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://example.com/errors/invalid-event',
                     'path'    => [],
                     'message' => 'Custom: invalid event',
                 ],
@@ -914,7 +912,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -951,7 +949,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected object with discriminator'
                         . ' "type", received string',
@@ -965,7 +963,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1120,7 +1118,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

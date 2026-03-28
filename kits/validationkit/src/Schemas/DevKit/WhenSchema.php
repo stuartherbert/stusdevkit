@@ -47,7 +47,6 @@ use StusDevKit\ValidationKit\Coercions\CoerceToWhen;
 use StusDevKit\ValidationKit\Constraints\DateTimeMaxConstraint;
 use StusDevKit\ValidationKit\Constraints\DateTimeMinConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -101,7 +100,7 @@ class WhenSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidDate,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_date',
             input: $data,
             path: [],
             message: 'Expected When, received '

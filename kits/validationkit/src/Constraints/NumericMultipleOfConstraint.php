@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 use const PHP_FLOAT_EPSILON;
@@ -71,7 +70,7 @@ use const PHP_FLOAT_EPSILON;
  *     $constraint = new NumericMultipleOfConstraint(
  *         value: 0.01,
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::NotMultipleOf,
+ *             type: 'https://stusdevkit.dev/errors/validation/not_multiple_of',
  *             input: $data,
  *             path: [],
  *             message: 'Amount must be in whole cents',
@@ -92,7 +91,7 @@ final class NumericMultipleOfConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::NotMultipleOf
+     *   with 'https://stusdevkit.dev/errors/validation/not_multiple_of'
      */
     public function __construct(
         private readonly int|float $value,
@@ -100,7 +99,7 @@ final class NumericMultipleOfConstraint implements ValidationConstraint
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::NotMultipleOf,
+                type: 'https://stusdevkit.dev/errors/validation/not_multiple_of',
                 input: $data,
                 path: [],
                 message: 'Number must be a multiple of '

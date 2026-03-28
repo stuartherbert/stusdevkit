@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -65,7 +64,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $constraint = new NumericLtConstraint(
  *         value: 100,
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::TooBig,
+ *             type: 'https://stusdevkit.dev/errors/validation/too_big',
  *             input: $data,
  *             path: [],
  *             message: 'Must be under 100',
@@ -86,7 +85,7 @@ final class NumericLtConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::TooBig
+     *   with 'https://stusdevkit.dev/errors/validation/too_big'
      */
     public function __construct(
         private readonly int|float $value,
@@ -94,7 +93,7 @@ final class NumericLtConstraint implements ValidationConstraint
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooBig,
+                type: 'https://stusdevkit.dev/errors/validation/too_big',
                 input: $data,
                 path: [],
                 message: 'Number must be less than '

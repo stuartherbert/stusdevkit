@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Coercions\CoerceToBoolean;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -89,7 +88,7 @@ class BooleanSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected boolean, received '

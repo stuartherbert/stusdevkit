@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -65,7 +64,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $constraint = new ArrayContainsConstraint(
  *         schema: Validate::string()->min(length: 1),
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::Custom,
+ *             type: 'https://stusdevkit.dev/errors/validation/custom',
  *             input: $data,
  *             path: [],
  *             message: 'Must contain a non-empty string',
@@ -85,7 +84,7 @@ final class ArrayContainsConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::Custom
+     *   with 'https://stusdevkit.dev/errors/validation/custom'
      */
     public function __construct(
         private readonly BaseSchema $schema,
@@ -93,7 +92,7 @@ final class ArrayContainsConstraint implements ValidationConstraint
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::Custom,
+                type: 'https://stusdevkit.dev/errors/validation/custom',
                 input: $data,
                 path: [],
                 message: 'Array must contain at least one'

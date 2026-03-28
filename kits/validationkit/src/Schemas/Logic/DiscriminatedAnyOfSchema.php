@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Logic;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\LiteralSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ObjectSchema;
@@ -122,7 +121,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected object with discriminator'
@@ -181,7 +180,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         // check discriminator field exists
         if (! array_key_exists($this->discriminator, $data)) {
             $context->addIssue(
-                code: IssueCode::InvalidUnion,
+                type: 'https://stusdevkit.dev/errors/validation/invalid_union',
                 input: $data,
                 message: 'Missing discriminator field "'
                     . $this->discriminator . '"',
@@ -206,7 +205,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
                 ? '"' . $discriminatorValue . '"'
                 : get_debug_type($discriminatorValue);
             $context->addIssue(
-                code: IssueCode::InvalidUnion,
+                type: 'https://stusdevkit.dev/errors/validation/invalid_union',
                 input: $data,
                 message: 'Unrecognised '
                     . $this->discriminator

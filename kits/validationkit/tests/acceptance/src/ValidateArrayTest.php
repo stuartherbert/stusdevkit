@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -149,7 +148,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected array, received '
                         . get_debug_type($inputValue),
@@ -243,7 +242,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [1],
                     'message' => 'Expected string, received int',
                 ],
@@ -291,12 +290,12 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [0],
                     'message' => 'Expected string, received int',
                 ],
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [2],
                     'message' => 'Expected string, received int',
                 ],
@@ -352,7 +351,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [1, 'name'],
                     'message' => 'Expected string, received int',
                 ],
@@ -445,7 +444,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Array must have at least 3 elements',
                 ],
@@ -531,7 +530,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooBig,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_big',
                     'path'    => [],
                     'message' => 'Array must have at most 2 elements',
                 ],
@@ -617,7 +616,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Array must have exactly 3 elements',
                 ],
@@ -665,7 +664,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Array must have at least 1 elements',
                 ],
@@ -763,7 +762,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected array, received int',
                 ],
@@ -858,7 +857,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected array, received int',
                 ],
@@ -996,7 +995,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Array must have an even number of elements',
                 ],
@@ -1109,7 +1108,6 @@ class ValidateArrayTest extends TestCase
         $unit = Validate::array(
             Validate::string(),
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: not an array',
@@ -1136,7 +1134,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://example.com/errors/not-array',
                     'path'    => [],
                     'message' => 'Custom: not an array',
                 ],
@@ -1174,7 +1172,6 @@ class ValidateArrayTest extends TestCase
         $unit = Validate::array(Validate::string())->min(
             length: 3,
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooSmall,
                 input: $data,
                 path: [],
                 message: 'Need at least 3 items',
@@ -1201,7 +1198,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://example.com/errors/too-few-items',
                     'path'    => [],
                     'message' => 'Need at least 3 items',
                 ],
@@ -1234,7 +1231,7 @@ class ValidateArrayTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1262,7 +1259,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected array, received int',
                 ],
@@ -1275,7 +1272,7 @@ class ValidateArrayTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1403,7 +1400,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],
@@ -1497,7 +1494,7 @@ class ValidateArrayTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Array must contain at least one'
                         . ' element matching the schema',

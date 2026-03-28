@@ -47,7 +47,6 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 
@@ -326,7 +325,7 @@ class ValidateMixedTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Value must not be empty string',
                 ],
@@ -405,7 +404,7 @@ class ValidateMixedTest extends TestCase
             function (mixed $data, ValidationContext $ctx): void {
                 if (! is_string($data)) {
                     $ctx->addIssue(
-                        code: IssueCode::InvalidType,
+                        type: 'https://stusdevkit.dev/errors/validation/invalid_type',
                         input: $data,
                         message: 'Must be a string',
                     );
@@ -414,7 +413,7 @@ class ValidateMixedTest extends TestCase
 
                 if (strlen($data) < 3) {
                     $ctx->addIssue(
-                        code: IssueCode::TooSmall,
+                        type: 'https://stusdevkit.dev/errors/validation/too_small',
                         input: $data,
                         message: 'Must be at least 3 characters',
                     );
@@ -422,7 +421,7 @@ class ValidateMixedTest extends TestCase
 
                 if (strlen($data) > 10) {
                     $ctx->addIssue(
-                        code: IssueCode::TooBig,
+                        type: 'https://stusdevkit.dev/errors/validation/too_big',
                         input: $data,
                         message: 'Must be at most 10 characters',
                     );
@@ -448,7 +447,7 @@ class ValidateMixedTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Must be at least 3 characters',
                 ],
@@ -480,7 +479,7 @@ class ValidateMixedTest extends TestCase
             function (mixed $data, ValidationContext $ctx): void {
                 if (! is_string($data) || strlen($data) < 3) {
                     $ctx->addIssue(
-                        code: IssueCode::Custom,
+                        type: 'https://stusdevkit.dev/errors/validation/custom',
                         input: $data,
                         message: 'Must be a string of 3+ chars',
                     );
@@ -689,7 +688,7 @@ class ValidateMixedTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'String must be at least 10'
                         . ' characters',
@@ -871,7 +870,7 @@ class ValidateMixedTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Tests\Fixtures;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -59,7 +58,7 @@ final class RejectEverythingConstraint implements ValidationConstraint
         ValidationContext $context,
     ): mixed {
         $issue = new ValidationIssue(
-            code: IssueCode::Custom,
+            type: 'https://stusdevkit.dev/errors/validation/custom',
             input: $data,
             path: [],
             message: 'rejected by custom constraint',

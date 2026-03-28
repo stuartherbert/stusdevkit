@@ -55,7 +55,6 @@ use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\Transformers\LowerCaseTransformer;
 use StusDevKit\ValidationKit\Transformers\TrimTransformer;
@@ -118,7 +117,7 @@ class StringSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected string, received '

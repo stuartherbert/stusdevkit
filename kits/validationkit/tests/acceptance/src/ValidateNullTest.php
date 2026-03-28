@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -150,7 +149,7 @@ class ValidateNullTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected null, received '
                         . get_debug_type($inputValue),
@@ -211,7 +210,7 @@ class ValidateNullTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected null, received string',
                 ],
@@ -306,7 +305,7 @@ class ValidateNullTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected null, received int',
                 ],
@@ -342,7 +341,6 @@ class ValidateNullTest extends TestCase
 
         $unit = Validate::null(
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: expected null',
@@ -369,7 +367,7 @@ class ValidateNullTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://example.com/errors/not-null',
                     'path'    => [],
                     'message' => 'Custom: expected null',
                 ],
@@ -403,7 +401,7 @@ class ValidateNullTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -431,7 +429,7 @@ class ValidateNullTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected null, received string',
                 ],
@@ -444,7 +442,7 @@ class ValidateNullTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -614,7 +612,7 @@ class ValidateNullTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

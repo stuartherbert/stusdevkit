@@ -45,7 +45,6 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('Validate::oneOf()')]
@@ -137,7 +136,7 @@ class ValidateOneOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Input must match exactly one'
                         . ' schema, but matched 0',
@@ -191,7 +190,7 @@ class ValidateOneOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Input matches 2 schemas in'
                         . ' oneOf, but must match exactly one',
@@ -256,7 +255,7 @@ class ValidateOneOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Input must match exactly one'
                         . ' schema, but matched 0',
@@ -361,7 +360,7 @@ class ValidateOneOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Input must match exactly one'
                         . ' schema, but matched 0',

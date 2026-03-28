@@ -45,7 +45,6 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -225,7 +224,7 @@ class ValidateAllOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code' => IssueCode::InvalidString,
+                    'type' => 'https://stusdevkit.dev/errors/validation/invalid_string',
                     'path' => ['email'],
                     'message' => 'Invalid email address',
                 ],
@@ -341,7 +340,7 @@ class ValidateAllOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code' => IssueCode::InvalidType,
+                    'type' => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path' => ['name'],
                     'message' => 'Expected string, received int',
                 ],
@@ -402,7 +401,7 @@ class ValidateAllOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code' => IssueCode::InvalidType,
+                    'type' => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path' => ['age'],
                     'message' => 'Expected int, received string',
                 ],
@@ -475,7 +474,7 @@ class ValidateAllOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code' => IssueCode::InvalidType,
+                    'type' => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path' => ['age'],
                     'message' => 'Expected int, received string',
                 ],
@@ -598,7 +597,7 @@ class ValidateAllOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code' => IssueCode::InvalidType,
+                    'type' => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path' => ['age'],
                     'message' => 'Expected int, received string',
                 ],
@@ -773,7 +772,7 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
         $issue = $result->maybeError()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
+        $this->assertSame('https://stusdevkit.dev/errors/validation/custom', $issue->type);
         $this->assertSame('Must be at least 18', $issue->message);
 
         // ----------------------------------------------------------------
@@ -919,7 +918,6 @@ class ValidateAllOfTest extends TestCase
                 ]),
             ],
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: not an intersection',
@@ -1108,7 +1106,7 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
         $issue = $result->error()->issues()->first();
-        $this->assertSame(IssueCode::Custom, $issue->code);
+        $this->assertSame('https://stusdevkit.dev/errors/validation/custom', $issue->type);
         $this->assertSame(
             'rejected by custom constraint',
             $issue->message,

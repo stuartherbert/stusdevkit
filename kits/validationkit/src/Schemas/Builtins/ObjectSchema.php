@@ -45,7 +45,6 @@ use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -127,7 +126,7 @@ class ObjectSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidType,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
             message: 'Expected object (associative array), received '
@@ -493,7 +492,7 @@ class ObjectSchema extends BaseSchema
             case 'strict':
                 $keyNames = implode(', ', array_keys($unknownKeys));
                 $context->addIssue(
-                    code: IssueCode::UnrecognizedKeys,
+                    type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
                     input: $unknownKeys,
                     message: 'Unrecognized keys: ' . $keyNames,
                 );

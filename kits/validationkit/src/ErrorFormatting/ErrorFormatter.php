@@ -185,7 +185,7 @@ final class ErrorFormatter
             // create a new issue with the first path
             // segment removed
             $childIssue = new ValidationIssue(
-                code: $issue->code,
+                type: $issue->type,
                 input: $issue->input,
                 path: array_slice($issue->path, 1),
                 message: $issue->message,

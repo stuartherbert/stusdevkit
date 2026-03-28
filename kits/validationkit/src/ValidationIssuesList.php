@@ -58,7 +58,7 @@ use StusDevKit\CollectionsKit\Lists\CollectionAsList;
  *     $this->assertSame(
  *         [
  *             [
- *                 'code' => IssueCode::InvalidType,
+ *                 'type' => 'https://stusdevkit.dev/errors/validation/invalid_type',
  *                 'path' => ['age'],
  *                 'message' => 'Expected int, received string',
  *             ],
@@ -82,10 +82,10 @@ class ValidationIssuesList extends CollectionAsList implements JsonSerializable
     /**
      * return a concise array representation of each issue
      *
-     * Each issue is reduced to its code, path, and message.
+     * Each issue is reduced to its type, path, and message.
      *
      * @return list<array{
-     *     code: IssueCode,
+     *     type: string,
      *     path: list<string|int>,
      *     message: string,
      * }>
@@ -94,7 +94,7 @@ class ValidationIssuesList extends CollectionAsList implements JsonSerializable
     {
         return array_map(
             fn(ValidationIssue $issue) => [
-                'code'    => $issue->code,
+                'type'    => $issue->type,
                 'path'    => $issue->path,
                 'message' => $issue->message,
             ],

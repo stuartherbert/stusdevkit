@@ -44,7 +44,6 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('Validate::conditional()')]
@@ -136,7 +135,7 @@ class ValidateConditionalTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'String must be at least '
                         . '10 characters',
@@ -236,7 +235,7 @@ class ValidateConditionalTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::TooSmall,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
                     'path'    => [],
                     'message' => 'Number must be greater than '
                         . 'or equal to 0',

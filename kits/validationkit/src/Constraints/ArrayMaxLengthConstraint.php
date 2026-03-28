@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -63,7 +62,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $constraint = new ArrayMaxLengthConstraint(
  *         length: 10,
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::TooBig,
+ *             type: 'https://stusdevkit.dev/errors/validation/too_big',
  *             input: $data,
  *             path: [],
  *             message: 'Must have at most 10 items',
@@ -85,7 +84,7 @@ final class ArrayMaxLengthConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::TooBig
+     *   with 'https://stusdevkit.dev/errors/validation/too_big'
      */
     public function __construct(
         private readonly int $length,
@@ -93,7 +92,7 @@ final class ArrayMaxLengthConstraint implements ValidationConstraint
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooBig,
+                type: 'https://stusdevkit.dev/errors/validation/too_big',
                 input: $data,
                 path: [],
                 message: 'Array must have at most '

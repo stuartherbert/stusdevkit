@@ -45,7 +45,6 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -180,7 +179,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidUnion,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_union',
                     'path'    => [],
                     'message' => 'Input does not match any schema'
                         . ' in the union',
@@ -244,7 +243,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidUnion,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_union',
                     'path'    => [],
                     'message' => 'Input does not match any schema'
                         . ' in the union',
@@ -484,7 +483,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Value is forbidden',
                 ],
@@ -610,7 +609,6 @@ class ValidateAnyOfTest extends TestCase
                 Validate::int(),
             ],
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidUnion,
                 input: $data,
                 path: [],
                 message: 'Custom: no match',
@@ -637,7 +635,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidUnion,
+                    'type'    => 'https://example.com/errors/no-match',
                     'path'    => [],
                     'message' => 'Custom: no match',
                 ],
@@ -671,7 +669,7 @@ class ValidateAnyOfTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -702,7 +700,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidUnion,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_union',
                     'path'    => [],
                     'message' => 'Input does not match any schema'
                         . ' in the union',
@@ -717,7 +715,7 @@ class ValidateAnyOfTest extends TestCase
             $issue->type,
         );
         $this->assertSame(
-            'No matching union member',
+            'Validation failed',
             $issue->title,
         );
 
@@ -853,7 +851,7 @@ class ValidateAnyOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

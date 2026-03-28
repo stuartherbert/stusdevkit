@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -102,7 +101,7 @@ class LiteralSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidLiteral,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_literal',
             input: $data,
             path: [],
             message: 'Expected ' . $this->describeValue($this->expectedValue) . ', received ' . $this->describeValue($data),

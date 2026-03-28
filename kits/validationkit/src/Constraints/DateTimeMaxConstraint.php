@@ -44,7 +44,6 @@ namespace StusDevKit\ValidationKit\Constraints;
 use DateTimeInterface;
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -64,7 +63,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $constraint = new DateTimeMaxConstraint(
  *         date: new DateTimeImmutable('2025-12-31'),
  *         error: fn($data) => new ValidationIssue(
- *             code: IssueCode::TooBig,
+ *             type: 'https://stusdevkit.dev/errors/validation/too_big',
  *             input: $data,
  *             path: [],
  *             message: 'Date must be in 2025 or earlier',
@@ -84,7 +83,7 @@ final class DateTimeMaxConstraint implements ValidationConstraint
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
-     *   with IssueCode::TooBig
+     *   with 'https://stusdevkit.dev/errors/validation/too_big'
      */
     public function __construct(
         private readonly DateTimeInterface $date,
@@ -92,7 +91,7 @@ final class DateTimeMaxConstraint implements ValidationConstraint
     ) {
         $this->error = $error
             ?? static fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::TooBig,
+                type: 'https://stusdevkit.dev/errors/validation/too_big',
                 input: $data,
                 path: [],
                 message: 'Date must be on or before '

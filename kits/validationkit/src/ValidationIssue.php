@@ -48,10 +48,15 @@ namespace StusDevKit\ValidationKit;
  * failed, where in the data structure it occurred, and a
  * human-readable message describing the problem.
  *
+ * The `type` field is an RFC 9457-compliant URI identifying
+ * the class of error. Each schema and constraint defines
+ * its own type URIs. Third parties can use their own URIs
+ * for custom constraints.
+ *
  * Usage:
  *
  *     $issue = new ValidationIssue(
- *         code: IssueCode::TooSmall,
+ *         type: 'https://stusdevkit.dev/errors/validation/too_small',
  *         input: 'ab',
  *         path: ['username'],
  *         message: 'String must be at least 3 characters',
@@ -59,11 +64,11 @@ namespace StusDevKit\ValidationKit;
  *
  *     // with additional context
  *     $issue = new ValidationIssue(
- *         code: IssueCode::TooSmall,
+ *         type: 'https://stusdevkit.dev/errors/validation/too_small',
  *         input: 'ab',
  *         path: ['username'],
  *         message: 'String must be at least 3 characters',
- *         extra: ['minimum' => 3, 'type' => 'string'],
+ *         extra: ['minimum' => 3],
  *     );
  *
  * @phpstan-type ValidationIssueExtra array<string, int|string>
@@ -71,28 +76,18 @@ namespace StusDevKit\ValidationKit;
 final class ValidationIssue
 {
     /**
-     * URI to documentation about this class of error
-     *
-     * Follows RFC 9457 conventions. If not provided, a
-     * default is derived from the IssueCode.
-     *
-     * @var non-empty-string
-     */
-    public readonly string $type;
-
-    /**
      * short, human-readable summary of the error category
      *
-     * Follows RFC 9457 conventions. If not provided, a
-     * default is derived from the IssueCode.
+     * Follows RFC 9457 conventions. If not provided,
+     * defaults to 'Validation failed'.
      *
      * @var non-empty-string
      */
     public readonly string $title;
 
     /**
-     * @param IssueCode $code
-     * - the kind of validation failure
+     * @param non-empty-string $type
+     * - RFC 9457 URI identifying the class of error
      * @param mixed $input
      * - the value that failed validation
      * @param list<string|int> $path
@@ -100,31 +95,24 @@ final class ValidationIssue
      *   occurred, e.g. ['address', 'zip'] or ['items', 0]
      * @param non-empty-string $message
      * - human-readable description of the failure
-     * @param string $type
-     * - URI to documentation about this error class;
-     *   defaults to IssueCode::defaultType()
      * @param string $title
      * - short summary of the error category; defaults
-     *   to IssueCode::defaultTitle()
+     *   to 'Validation failed'
      * @param ValidationIssueExtra $extra
      * - additional context about the failure, such as
      *   minimum/maximum values or expected types
      */
     public function __construct(
-        public readonly IssueCode $code,
+        public readonly string $type,
         public readonly mixed $input,
         public readonly array $path,
         public readonly string $message,
-        string $type = '',
         string $title = '',
         public readonly array $extra = [],
     ) {
-        $this->type = $type !== ''
-            ? $type
-            : $code->defaultType();
         $this->title = $title !== ''
             ? $title
-            : $code->defaultTitle();
+            : 'Validation failed';
     }
 
     // ================================================================
@@ -145,11 +133,10 @@ final class ValidationIssue
     public function withPath(array $path): self
     {
         return new self(
-            code: $this->code,
+            type: $this->type,
             input: $this->input,
             path: $path,
             message: $this->message,
-            type: $this->type,
             title: $this->title,
             extra: $this->extra,
         );

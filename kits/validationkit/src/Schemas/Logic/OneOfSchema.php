@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Logic;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -94,7 +93,7 @@ class OneOfSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::Custom,
+            type: 'https://stusdevkit.dev/errors/validation/custom',
             input: $data,
             path: [],
             message: 'Input must match exactly one schema,'
@@ -170,7 +169,7 @@ class OneOfSchema extends BaseSchema
         } else {
             $this->invokeErrorCallback(
                 callback: static fn(mixed $input) => new ValidationIssue(
-                    code: IssueCode::Custom,
+                    type: 'https://stusdevkit.dev/errors/validation/custom',
                     input: $input,
                     path: [],
                     message: 'Input matches ' . $matchCount

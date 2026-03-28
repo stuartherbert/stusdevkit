@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -211,12 +210,12 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['name'],
                     'message' => 'Expected string, received int',
                 ],
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['age'],
                     'message' => 'Expected int, received string',
                 ],
@@ -271,7 +270,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['age'],
                     'message' => 'Expected int, received null',
                 ],
@@ -423,7 +422,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['address', 'zip'],
                     'message' => 'Expected string, received int',
                 ],
@@ -484,7 +483,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['user', 'address', 'city'],
                     'message' => 'Expected string, received int',
                 ],
@@ -538,7 +537,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['tags', 0],
                     'message' => 'Expected string, received int',
                 ],
@@ -600,7 +599,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['items', 2, 'price'],
                     'message' => 'Expected int, received string',
                 ],
@@ -906,7 +905,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::UnrecognizedKeys,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
                     'path'    => [],
                     'message' => 'Unrecognized keys: extra',
                 ],
@@ -1013,7 +1012,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected object (associative'
                         . ' array), received int',
@@ -1117,7 +1116,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected object (associative'
                         . ' array), received int',
@@ -1277,7 +1276,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Passwords do not match',
                 ],
@@ -1401,7 +1400,6 @@ class ValidateObjectTest extends TestCase
                 'name' => Validate::string(),
             ],
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: not an object',
@@ -1455,7 +1453,7 @@ class ValidateObjectTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode
+        // type URI and title from the issue type
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1487,8 +1485,8 @@ class ValidateObjectTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
-        $this->assertSame(IssueCode::InvalidType, $issue->code);
+        $this->assertSame('Validation failed', $issue->title);
+        $this->assertSame('https://stusdevkit.dev/errors/validation/invalid_type', $issue->type);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1620,7 +1618,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],
@@ -1724,7 +1722,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'One or more property names'
                         . ' are invalid',
@@ -1838,7 +1836,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['s_name'],
                     'message' => 'Expected string, received int',
                 ],
@@ -1959,7 +1957,7 @@ class ValidateObjectTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => ['email'],
                     'message' => 'Expected string, received null',
                 ],

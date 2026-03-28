@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -133,7 +132,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_literal',
                     'path'    => [],
                     'message' => 'Expected "active", received "inactive"',
                 ],
@@ -182,7 +181,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_literal',
                     'path'    => [],
                     'message' => 'Expected 42, received "42"',
                 ],
@@ -306,7 +305,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_literal',
                     'path'    => [],
                     'message' => 'Expected true, received false',
                 ],
@@ -399,7 +398,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_literal',
                     'path'    => [],
                     'message' => 'Expected "active", received "inactive"',
                 ],
@@ -494,7 +493,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_literal',
                     'path'    => [],
                     'message' => 'Expected "active", received "inactive"',
                 ],
@@ -635,7 +634,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Custom refinement failed',
                 ],
@@ -753,7 +752,6 @@ class ValidateLiteralTest extends TestCase
         $unit = Validate::literal(
             value: 'active',
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidLiteral,
                 input: $data,
                 path: [],
                 message: 'Custom: must be active',
@@ -780,7 +778,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://example.com/errors/not-active',
                     'path'    => [],
                     'message' => 'Custom: must be active',
                 ],
@@ -814,7 +812,7 @@ class ValidateLiteralTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode::InvalidLiteral
+        // type URI and title from 'https://stusdevkit.dev/errors/validation/invalid_literal'
 
         // ----------------------------------------------------------------
         // shorthand
@@ -842,7 +840,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidLiteral,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_literal',
                     'path'    => [],
                     'message' => 'Expected "active", received "inactive"',
                 ],
@@ -855,7 +853,7 @@ class ValidateLiteralTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_literal',
             $issue->type,
         );
-        $this->assertSame('Invalid literal value', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -983,7 +981,7 @@ class ValidateLiteralTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],

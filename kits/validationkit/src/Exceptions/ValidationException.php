@@ -160,7 +160,6 @@ class ValidationException extends Rfc9457ProblemDetailsException
             $serialised['issue_' . $index] = [
                 'type'    => $issue->type,
                 'title'   => $issue->title,
-                'code'    => $issue->code->value,
                 'path'    => $issue->pathAsString(),
                 'message' => $issue->message,
             ];

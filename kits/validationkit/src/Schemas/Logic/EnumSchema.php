@@ -43,7 +43,6 @@ namespace StusDevKit\ValidationKit\Schemas\Logic;
 
 use BackedEnum;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -124,7 +123,7 @@ class EnumSchema extends BaseSchema
     protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
     {
         return fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidEnum,
+            type: 'https://stusdevkit.dev/errors/validation/invalid_enum',
             input: $data,
             path: [],
             message: 'Value is not one of the allowed'

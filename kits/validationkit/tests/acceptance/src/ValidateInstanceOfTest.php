@@ -47,7 +47,6 @@ use DateTimeInterface;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -137,7 +136,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected instance of '
                         . 'DateTimeInterface, received string',
@@ -187,7 +186,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected instance of '
                         . 'DateTimeInterface, received stdClass',
@@ -248,7 +247,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected instance of '
                         . 'DateTimeInterface, received string',
@@ -488,7 +487,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'Date must be after Unix epoch',
                 ],
@@ -614,7 +613,6 @@ class ValidateInstanceOfTest extends TestCase
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
             error: fn(mixed $data) => new ValidationIssue(
-                code: IssueCode::InvalidType,
                 input: $data,
                 path: [],
                 message: 'Custom: must be a date',
@@ -641,7 +639,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://example.com/errors/not-date',
                     'path'    => [],
                     'message' => 'Custom: must be a date',
                 ],
@@ -675,7 +673,7 @@ class ValidateInstanceOfTest extends TestCase
 
         // this test proves that ValidationIssues created by
         // default error callbacks carry the correct default
-        // type URI and title from IssueCode::InvalidType
+        // type URI and title from 'https://stusdevkit.dev/errors/validation/invalid_type'
 
         // ----------------------------------------------------------------
         // shorthand
@@ -703,7 +701,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::InvalidType,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
                     'message' => 'Expected instance of '
                         . 'DateTimeInterface, received string',
@@ -717,7 +715,7 @@ class ValidateInstanceOfTest extends TestCase
             'https://stusdevkit.dev/errors/validation/invalid_type',
             $issue->type,
         );
-        $this->assertSame('Invalid type', $issue->title);
+        $this->assertSame('Validation failed', $issue->title);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -850,7 +848,7 @@ class ValidateInstanceOfTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'code'    => IssueCode::Custom,
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
                     'message' => 'rejected by custom constraint',
                 ],
