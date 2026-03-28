@@ -133,6 +133,16 @@ class TupleSchema extends BaseSchema
     ): void {
         assert(is_array($data));
 
+        // run any constraints added via withConstraint()
+        parent::checkConstraints(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return;
+        }
+
         $expectedCount = count($this->schemas);
         $actualCount = count($data);
 

@@ -41,6 +41,11 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Constraints\NumericGtConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -67,26 +72,6 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 class IntSchema extends BaseSchema
 {
-    private ?int $gtValue = null;
-    /** @var ErrorCallback */
-    private mixed $gtError;
-
-    private ?int $gteValue = null;
-    /** @var ErrorCallback */
-    private mixed $gteError;
-
-    private ?int $ltValue = null;
-    /** @var ErrorCallback */
-    private mixed $ltError;
-
-    private ?int $lteValue = null;
-    /** @var ErrorCallback */
-    private mixed $lteError;
-
-    private ?int $multipleOfValue = null;
-    /** @var ErrorCallback */
-    private mixed $multipleOfError;
-
     /**
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
@@ -113,56 +98,6 @@ class IntSchema extends BaseSchema
         );
     }
 
-    protected function getDefaultTypeCheckErrorCallbackForGt(int $value): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Number must be greater than ' . $value,
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForGte(int $value): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Number must be greater than or equal to ' . $value,
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForLt(int $value): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Number must be less than ' . $value,
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForLte(int $value): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Number must be less than or equal to ' . $value,
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForMultipleOf(int $value): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::NotMultipleOf,
-            input: $data,
-            path: [],
-            message: 'Number must be a multiple of ' . $value,
-        );
-    }
-
     // ================================================================
     //
     // Constraint Builder Methods
@@ -176,11 +111,12 @@ class IntSchema extends BaseSchema
      */
     public function gt(int $value, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->gtValue = $value;
-        $clone->gtError = $error ?? $this->getDefaultTypeCheckErrorCallbackForGt($value);
-
-        return $clone;
+        return $this->withConstraint(
+            new NumericGtConstraint(
+                value: $value,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -191,11 +127,12 @@ class IntSchema extends BaseSchema
      */
     public function gte(int $value, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->gteValue = $value;
-        $clone->gteError = $error ?? $this->getDefaultTypeCheckErrorCallbackForGte($value);
-
-        return $clone;
+        return $this->withConstraint(
+            new NumericGteConstraint(
+                value: $value,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -205,11 +142,12 @@ class IntSchema extends BaseSchema
      */
     public function lt(int $value, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->ltValue = $value;
-        $clone->ltError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLt($value);
-
-        return $clone;
+        return $this->withConstraint(
+            new NumericLtConstraint(
+                value: $value,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -220,11 +158,12 @@ class IntSchema extends BaseSchema
      */
     public function lte(int $value, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->lteValue = $value;
-        $clone->lteError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLte($value);
-
-        return $clone;
+        return $this->withConstraint(
+            new NumericLteConstraint(
+                value: $value,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -276,11 +215,12 @@ class IntSchema extends BaseSchema
         int $value,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->multipleOfValue = $value;
-        $clone->multipleOfError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMultipleOf($value);
-
-        return $clone;
+        return $this->withConstraint(
+            new NumericMultipleOfConstraint(
+                value: $value,
+                error: $error,
+            ),
+        );
     }
 
     // ================================================================
@@ -309,63 +249,6 @@ class IntSchema extends BaseSchema
         );
 
         return false;
-    }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        assert(is_int($data));
-
-        if ($this->gtValue !== null && $data <= $this->gtValue) {
-            /** @var ErrorCallback $gtError */
-            $gtError = $this->gtError;
-            $this->invokeErrorCallback(
-                callback: $gtError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->gteValue !== null && $data < $this->gteValue) {
-            /** @var ErrorCallback $gteError */
-            $gteError = $this->gteError;
-            $this->invokeErrorCallback(
-                callback: $gteError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->ltValue !== null && $data >= $this->ltValue) {
-            /** @var ErrorCallback $ltError */
-            $ltError = $this->ltError;
-            $this->invokeErrorCallback(
-                callback: $ltError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->lteValue !== null && $data > $this->lteValue) {
-            /** @var ErrorCallback $lteError */
-            $lteError = $this->lteError;
-            $this->invokeErrorCallback(
-                callback: $lteError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->multipleOfValue !== null && $data % $this->multipleOfValue !== 0) {
-            /** @var ErrorCallback $multipleOfError */
-            $multipleOfError = $this->multipleOfError;
-            $this->invokeErrorCallback(
-                callback: $multipleOfError,
-                input: $data,
-                context: $context,
-            );
-        }
     }
 
     protected function coerceValue(mixed $data): mixed

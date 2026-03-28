@@ -41,6 +41,18 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
+use StusDevKit\ValidationKit\Constraints\StringEndsWithConstraint;
+use StusDevKit\ValidationKit\Constraints\StringExactLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIncludesConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIpv4Constraint;
+use StusDevKit\ValidationKit\Constraints\StringIpv6Constraint;
+use StusDevKit\ValidationKit\Constraints\StringMaxLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\StringMinLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
+use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
+use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
+use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -79,34 +91,9 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @extends BaseSchema<string>
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
- * @phpstan-type StringFormatCheck array{
- *     type: string,
- *     pattern: string,
- *     needle: string,
- *     error: ErrorCallback,
- * }
  */
 class StringSchema extends BaseSchema
 {
-    private ?int $minLength = null;
-    /** @var ErrorCallback */
-    private mixed $minError;
-
-    private ?int $maxLength = null;
-    /** @var ErrorCallback */
-    private mixed $maxError;
-
-    private ?int $exactLength = null;
-    /** @var ErrorCallback */
-    private mixed $lengthError;
-
-    /**
-     * format and content checks, evaluated in order
-     *
-     * @var list<StringFormatCheck>
-     */
-    private array $formatChecks = [];
-
     private bool $shouldTrim = false;
     private bool $shouldLowerCase = false;
     private bool $shouldUpperCase = false;
@@ -137,129 +124,9 @@ class StringSchema extends BaseSchema
         );
     }
 
-    protected function getDefaultTypeCheckErrorCallbackForMin(int $length): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'String must be at least ' . $length . ' characters',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForMax(int $length): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'String must be at most ' . $length . ' characters',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForLength(int $length): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'String must be exactly ' . $length . ' characters',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForRegex(string $pattern): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'String does not match pattern ' . $pattern,
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForEmail(): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'Invalid email address',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForUrl(): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'Invalid URL',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForUuid(): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'Invalid UUID',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForIpv4(): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'Invalid IPv4 address',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForIpv6(): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'Invalid IPv6 address',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForIncludes(string $needle): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'String must contain "' . $needle . '"',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForStartsWith(string $prefix): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'String must start with "' . $prefix . '"',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForEndsWith(string $suffix): callable
-    {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::InvalidString,
-            input: $data,
-            path: [],
-            message: 'String must end with "' . $suffix . '"',
-        );
-    }
-
     // ================================================================
     //
-    // Length Constraint Builder Methods
+    // Constraint Builder Methods
     //
     // ----------------------------------------------------------------
 
@@ -270,11 +137,12 @@ class StringSchema extends BaseSchema
      */
     public function min(int $length, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->minLength = $length;
-        $clone->minError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMin($length);
-
-        return $clone;
+        return $this->withConstraint(
+            new StringMinLengthConstraint(
+                length: $length,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -284,11 +152,12 @@ class StringSchema extends BaseSchema
      */
     public function max(int $length, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->maxLength = $length;
-        $clone->maxError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMax($length);
-
-        return $clone;
+        return $this->withConstraint(
+            new StringMaxLengthConstraint(
+                length: $length,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -298,18 +167,13 @@ class StringSchema extends BaseSchema
      */
     public function length(int $length, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->exactLength = $length;
-        $clone->lengthError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLength($length);
-
-        return $clone;
+        return $this->withConstraint(
+            new StringExactLengthConstraint(
+                length: $length,
+                error: $error,
+            ),
+        );
     }
-
-    // ================================================================
-    //
-    // Format Constraint Builder Methods
-    //
-    // ----------------------------------------------------------------
 
     /**
      * require the string to match the given regex pattern
@@ -323,15 +187,12 @@ class StringSchema extends BaseSchema
         string $pattern,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'regex',
-            'pattern' => $pattern,
-            'needle'  => '',
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForRegex($pattern),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringRegexConstraint(
+                pattern: $pattern,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -343,15 +204,9 @@ class StringSchema extends BaseSchema
      */
     public function email(?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'email',
-            'pattern' => '',
-            'needle'  => '',
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForEmail(),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringEmailConstraint(error: $error),
+        );
     }
 
     /**
@@ -363,15 +218,9 @@ class StringSchema extends BaseSchema
      */
     public function url(?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'url',
-            'pattern' => '',
-            'needle'  => '',
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForUrl(),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringUrlConstraint(error: $error),
+        );
     }
 
     /**
@@ -383,15 +232,9 @@ class StringSchema extends BaseSchema
      */
     public function uuid(?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'uuid',
-            'pattern' => '',
-            'needle'  => '',
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForUuid(),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringUuidConstraint(error: $error),
+        );
     }
 
     /**
@@ -401,15 +244,9 @@ class StringSchema extends BaseSchema
      */
     public function ipv4(?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'ipv4',
-            'pattern' => '',
-            'needle'  => '',
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForIpv4(),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringIpv4Constraint(error: $error),
+        );
     }
 
     /**
@@ -419,22 +256,10 @@ class StringSchema extends BaseSchema
      */
     public function ipv6(?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'ipv6',
-            'pattern' => '',
-            'needle'  => '',
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForIpv6(),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringIpv6Constraint(error: $error),
+        );
     }
-
-    // ================================================================
-    //
-    // Content Constraint Builder Methods
-    //
-    // ----------------------------------------------------------------
 
     /**
      * require the string to contain the given substring
@@ -445,15 +270,12 @@ class StringSchema extends BaseSchema
         string $needle,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'includes',
-            'pattern' => '',
-            'needle'  => $needle,
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForIncludes($needle),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringIncludesConstraint(
+                needle: $needle,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -465,15 +287,12 @@ class StringSchema extends BaseSchema
         string $prefix,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'startsWith',
-            'pattern' => '',
-            'needle'  => $prefix,
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForStartsWith($prefix),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringStartsWithConstraint(
+                prefix: $prefix,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -485,15 +304,12 @@ class StringSchema extends BaseSchema
         string $suffix,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->formatChecks[] = [
-            'type'    => 'endsWith',
-            'pattern' => '',
-            'needle'  => $suffix,
-            'error'   => $error ?? $this->getDefaultTypeCheckErrorCallbackForEndsWith($suffix),
-        ];
-
-        return $clone;
+        return $this->withConstraint(
+            new StringEndsWithConstraint(
+                suffix: $suffix,
+                error: $error,
+            ),
+        );
     }
 
     // ================================================================
@@ -623,7 +439,7 @@ class StringSchema extends BaseSchema
 
         // steps 5-7: pipeline and pipe (via base logic)
         /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runStringPipeline(
+        $pipelineResult = $this->runPipeline(
             data: $data,
             context: $context,
         );
@@ -642,55 +458,6 @@ class StringSchema extends BaseSchema
         }
 
         return $data;
-    }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        assert(is_string($data));
-
-        $len = mb_strlen($data);
-
-        // length constraints
-        if ($this->exactLength !== null && $len !== $this->exactLength) {
-            /** @var ErrorCallback $lengthError */
-            $lengthError = $this->lengthError;
-            $this->invokeErrorCallback(
-                callback: $lengthError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->minLength !== null && $len < $this->minLength) {
-            /** @var ErrorCallback $minError */
-            $minError = $this->minError;
-            $this->invokeErrorCallback(
-                callback: $minError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->maxLength !== null && $len > $this->maxLength) {
-            /** @var ErrorCallback $maxError */
-            $maxError = $this->maxError;
-            $this->invokeErrorCallback(
-                callback: $maxError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        // format and content checks
-        foreach ($this->formatChecks as $check) {
-            $this->runFormatCheck(
-                data: $data,
-                check: $check,
-                context: $context,
-            );
-        }
     }
 
     protected function coerceValue(mixed $data): mixed
@@ -730,160 +497,5 @@ class StringSchema extends BaseSchema
         }
 
         return $data;
-    }
-
-    /**
-     * run a single format or content check
-     *
-     * @param StringFormatCheck $check
-     */
-    private function runFormatCheck(
-        string $data,
-        array $check,
-        ValidationContext $context,
-    ): void {
-        /** @var ErrorCallback $error */
-        $error = $check['error'];
-
-        switch ($check['type']) {
-            case 'regex':
-                /** @var non-empty-string $pattern */
-                $pattern = $check['pattern'];
-                if (preg_match($pattern, $data) !== 1) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'email':
-                if (filter_var($data, FILTER_VALIDATE_EMAIL) === false) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'url':
-                if (filter_var($data, FILTER_VALIDATE_URL) === false) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'uuid':
-                $uuidPattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
-                if (preg_match($uuidPattern, $data) !== 1) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'ipv4':
-                if (filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'ipv6':
-                if (filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'includes':
-                if (! str_contains($data, $check['needle'])) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'startsWith':
-                if (! str_starts_with($data, $check['needle'])) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-
-            case 'endsWith':
-                if (! str_ends_with($data, $check['needle'])) {
-                    $this->invokeErrorCallback(
-                        callback: $error,
-                        input: $data,
-                        context: $context,
-                    );
-                }
-                break;
-        }
-    }
-
-    /**
-     * run refinements and transforms for the string schema
-     *
-     * @return array{mixed, bool}
-     */
-    private function runStringPipeline(
-        mixed $data,
-        ValidationContext $context,
-    ): array {
-        foreach ($this->pipeline as $entry) {
-            switch ($entry['type']) {
-                case 'refine':
-                    /** @var callable(mixed): bool $fn */
-                    $fn = $entry['callable'];
-                    $passed = $fn($data);
-                    if (! $passed) {
-                        /** @var non-falsy-string $message */
-                        $message = $entry['message'];
-                        $context->addIssue(
-                            code: IssueCode::Custom,
-                            input: $data,
-                            message: $message,
-                        );
-                    }
-                    break;
-
-                case 'superRefine':
-                    /** @var callable(mixed, ValidationContext): void $fn */
-                    $fn = $entry['callable'];
-                    $fn($data, $context);
-                    break;
-
-                case 'transform':
-                    if ($context->hasIssues()) {
-                        return [$data, false];
-                    }
-                    /** @var callable(mixed): mixed $fn */
-                    $fn = $entry['callable'];
-                    $data = $fn($data);
-                    break;
-            }
-        }
-
-        return [$data, ! $context->hasIssues()];
     }
 }

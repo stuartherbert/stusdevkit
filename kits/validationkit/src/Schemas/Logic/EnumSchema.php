@@ -152,43 +152,6 @@ class EnumSchema extends BaseSchema
         return true;
     }
 
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // string literal mode
-        if ($this->allowedValues !== null) {
-            if (! in_array($data, $this->allowedValues, true)) {
-                $this->reportInvalidEnum(
-                    data: $data,
-                    context: $context,
-                );
-            }
-
-            return;
-        }
-
-        // PHP enum mode
-        if ($this->enumClass !== null) {
-            if (! is_string($data) && ! is_int($data)) {
-                $this->reportInvalidEnum(
-                    data: $data,
-                    context: $context,
-                );
-
-                return;
-            }
-
-            $enumCase = $this->enumClass::tryFrom($data);
-            if ($enumCase === null) {
-                $this->reportInvalidEnum(
-                    data: $data,
-                    context: $context,
-                );
-            }
-        }
-    }
-
     /**
      * override parseWithContext to return the enum case
      * in PHP enum mode
@@ -219,6 +182,17 @@ class EnumSchema extends BaseSchema
         // string literal mode — return the value as-is
         if ($this->allowedValues !== null) {
             if (in_array($data, $this->allowedValues, true)) {
+                // run any constraints added via
+                // withConstraint()
+                $this->checkConstraints(
+                    data: $data,
+                    context: $context,
+                );
+
+                if ($context->hasIssues()) {
+                    return $data;
+                }
+
                 return $this->runOwnPipeline(
                     data: $data,
                     context: $context,
@@ -246,6 +220,17 @@ class EnumSchema extends BaseSchema
 
             $enumCase = $this->enumClass::tryFrom($data);
             if ($enumCase !== null) {
+                // run any constraints added via
+                // withConstraint()
+                $this->checkConstraints(
+                    data: $enumCase,
+                    context: $context,
+                );
+
+                if ($context->hasIssues()) {
+                    return $enumCase;
+                }
+
                 return $this->runOwnPipeline(
                     data: $enumCase,
                     context: $context,

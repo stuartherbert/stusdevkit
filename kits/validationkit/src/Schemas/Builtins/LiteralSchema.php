@@ -121,13 +121,6 @@ class LiteralSchema extends BaseSchema
         return false;
     }
 
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // literal has no constraints beyond the type check
-    }
-
     // ================================================================
     //
     // Helpers

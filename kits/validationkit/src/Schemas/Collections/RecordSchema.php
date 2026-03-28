@@ -139,6 +139,16 @@ class RecordSchema extends BaseSchema
     ): void {
         assert(is_array($data));
 
+        // run any constraints added via withConstraint()
+        parent::checkConstraints(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return;
+        }
+
         foreach ($data as $key => $value) {
             // validate the key
             $keyContext = $context->atPath($key);

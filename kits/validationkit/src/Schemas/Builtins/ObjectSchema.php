@@ -324,49 +324,6 @@ class ObjectSchema extends BaseSchema
         return false;
     }
 
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        assert(is_array($data));
-
-        $output = [];
-
-        // validate each field in the shape
-        foreach ($this->shape as $key => $fieldSchema) {
-            $childContext = $context->atPath($key);
-
-            if (array_key_exists($key, $data)) {
-                $fieldSchema->parseWithContext(
-                    data: $data[$key],
-                    context: $childContext,
-                );
-            } else {
-                // key is missing — pass null to let the
-                // field schema handle it (optional/default
-                // will accept null, required will reject)
-                $fieldSchema->parseWithContext(
-                    data: null,
-                    context: $childContext,
-                );
-            }
-        }
-
-        // handle unknown keys
-        /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key(
-            $data,
-            $this->shape,
-        );
-
-        if (count($unknownKeys) > 0) {
-            $this->handleUnknownKeys(
-                unknownKeys: $unknownKeys,
-                context: $context,
-            );
-        }
-    }
-
     /**
      * override parseWithContext to rebuild the output array
      *
@@ -446,6 +403,16 @@ class ObjectSchema extends BaseSchema
                 }
             }
         }
+
+        if ($context->hasIssues()) {
+            return $output;
+        }
+
+        // run any constraints added via withConstraint()
+        $this->checkConstraints(
+            data: $output,
+            context: $context,
+        );
 
         if ($context->hasIssues()) {
             return $output;

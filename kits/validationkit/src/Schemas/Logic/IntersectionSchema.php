@@ -161,6 +161,16 @@ class IntersectionSchema extends BaseSchema
             return $result;
         }
 
+        // run any constraints added via withConstraint()
+        $this->checkConstraints(
+            data: $result,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return $result;
+        }
+
         // run this schema's own pipeline
         // (transform, refine, pipe)
         return $this->runOwnPipeline(
@@ -226,12 +236,5 @@ class IntersectionSchema extends BaseSchema
     ): bool {
         // handled by parseWithContext override
         return true;
-    }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // handled by parseWithContext override
     }
 }

@@ -122,13 +122,6 @@ class BooleanSchema extends BaseSchema
         return false;
     }
 
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // boolean has no constraints
-    }
-
     protected function coerceValue(mixed $data): mixed
     {
         if (is_string($data)) {

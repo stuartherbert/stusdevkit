@@ -44,6 +44,8 @@ namespace StusDevKit\ValidationKit\Schemas\BuiltinObjects;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
+use StusDevKit\ValidationKit\Constraints\DateTimeMaxConstraint;
+use StusDevKit\ValidationKit\Constraints\DateTimeMinConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -74,14 +76,6 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 class DateTimeInterfaceSchema extends BaseSchema
 {
-    private ?DateTimeInterface $minDate = null;
-    /** @var ErrorCallback */
-    private mixed $minError;
-
-    private ?DateTimeInterface $maxDate = null;
-    /** @var ErrorCallback */
-    private mixed $maxError;
-
     /**
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
@@ -108,30 +102,6 @@ class DateTimeInterfaceSchema extends BaseSchema
         );
     }
 
-    protected function getDefaultTypeCheckErrorCallbackForMin(
-        DateTimeInterface $date,
-    ): callable {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Date must be on or after '
-                . $date->format('c'),
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForMax(
-        DateTimeInterface $date,
-    ): callable {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Date must be on or before '
-                . $date->format('c'),
-        );
-    }
-
     // ================================================================
     //
     // Constraint Builder Methods
@@ -147,12 +117,12 @@ class DateTimeInterfaceSchema extends BaseSchema
         DateTimeInterface $date,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->minDate = $date;
-        $clone->minError = $error
-            ?? $this->getDefaultTypeCheckErrorCallbackForMin($date);
-
-        return $clone;
+        return $this->withConstraint(
+            new DateTimeMinConstraint(
+                date: $date,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -164,12 +134,12 @@ class DateTimeInterfaceSchema extends BaseSchema
         DateTimeInterface $date,
         ?callable $error = null,
     ): static {
-        $clone = clone $this;
-        $clone->maxDate = $date;
-        $clone->maxError = $error
-            ?? $this->getDefaultTypeCheckErrorCallbackForMax($date);
-
-        return $clone;
+        return $this->withConstraint(
+            new DateTimeMaxConstraint(
+                date: $date,
+                error: $error,
+            ),
+        );
     }
 
     // ================================================================
@@ -198,33 +168,6 @@ class DateTimeInterfaceSchema extends BaseSchema
         );
 
         return false;
-    }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        assert($data instanceof DateTimeInterface);
-
-        if ($this->minDate !== null && $data < $this->minDate) {
-            /** @var ErrorCallback $minError */
-            $minError = $this->minError;
-            $this->invokeErrorCallback(
-                callback: $minError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->maxDate !== null && $data > $this->maxDate) {
-            /** @var ErrorCallback $maxError */
-            $maxError = $this->maxError;
-            $this->invokeErrorCallback(
-                callback: $maxError,
-                input: $data,
-                context: $context,
-            );
-        }
     }
 
     protected function coerceValue(mixed $data): mixed

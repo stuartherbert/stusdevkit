@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
 /**
@@ -94,9 +93,19 @@ class MixedSchema extends BaseSchema
         // skip null handling from BaseSchema — null is a
         // valid value for mixed
 
+        // run any constraints added via withConstraint()
+        $this->checkConstraints(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return $data;
+        }
+
         // run the pipeline (refinements, transforms, pipe)
         /** @var array{mixed, bool} $pipelineResult */
-        $pipelineResult = $this->runMixedPipeline(
+        $pipelineResult = $this->runPipeline(
             data: $data,
             context: $context,
         );
@@ -124,70 +133,5 @@ class MixedSchema extends BaseSchema
     ): bool {
         // mixed accepts everything
         return true;
-    }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // mixed has no constraints
-    }
-
-    // ================================================================
-    //
-    // Helpers
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * run refinements and transforms for the mixed schema
-     *
-     * Duplicated from BaseSchema::runPipeline because that
-     * method is private and MixedSchema overrides
-     * parseWithContext.
-     *
-     * @return array{mixed, bool}
-     */
-    private function runMixedPipeline(
-        mixed $data,
-        ValidationContext $context,
-    ): array {
-        foreach ($this->pipeline as $entry) {
-            switch ($entry['type']) {
-                case 'refine':
-                    /** @var callable(mixed): bool $fn */
-                    $fn = $entry['callable'];
-                    $passed = $fn($data);
-                    if (! $passed) {
-                        /** @var non-falsy-string $message */
-                        $message = $entry['message'];
-                        $context->addIssue(
-                            code: IssueCode::Custom,
-                            input: $data,
-                            message: $message,
-                        );
-                    }
-                    break;
-
-                case 'superRefine':
-                    /** @var callable(mixed, ValidationContext): void $fn */
-                    $fn = $entry['callable'];
-                    $fn($data, $context);
-                    break;
-
-                case 'transform':
-                    if ($context->hasIssues()) {
-                        return [$data, false];
-                    }
-                    /** @var callable(mixed): mixed $fn */
-                    $fn = $entry['callable'];
-                    $data = $fn($data);
-                    break;
-            }
-        }
-
-        $clean = ! $context->hasIssues();
-
-        return [$data, $clean];
     }
 }

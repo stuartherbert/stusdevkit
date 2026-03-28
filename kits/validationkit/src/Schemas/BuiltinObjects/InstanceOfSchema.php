@@ -123,11 +123,4 @@ class InstanceOfSchema extends BaseSchema
 
         return false;
     }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // no constraints beyond type check
-    }
 }

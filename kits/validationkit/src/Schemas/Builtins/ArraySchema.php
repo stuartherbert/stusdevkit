@@ -41,6 +41,9 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Constraints\ArrayExactLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\ArrayMaxLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\ArrayMinLengthConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -75,18 +78,6 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 class ArraySchema extends BaseSchema
 {
-    private ?int $minLength = null;
-    /** @var ErrorCallback */
-    private mixed $minError;
-
-    private ?int $maxLength = null;
-    /** @var ErrorCallback */
-    private mixed $maxError;
-
-    private ?int $exactLength = null;
-    /** @var ErrorCallback */
-    private mixed $exactLengthError;
-
     /**
      * @param BaseSchema<TElement> $elementSchema
      * - the schema to validate each element against
@@ -117,42 +108,6 @@ class ArraySchema extends BaseSchema
         );
     }
 
-    protected function getDefaultTypeCheckErrorCallbackForMin(
-        int $length,
-    ): callable {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Array must have at least '
-                . $length . ' elements',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForMax(
-        int $length,
-    ): callable {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooBig,
-            input: $data,
-            path: [],
-            message: 'Array must have at most '
-                . $length . ' elements',
-        );
-    }
-
-    protected function getDefaultTypeCheckErrorCallbackForLength(
-        int $length,
-    ): callable {
-        return static fn(mixed $data) => new ValidationIssue(
-            code: IssueCode::TooSmall,
-            input: $data,
-            path: [],
-            message: 'Array must have exactly '
-                . $length . ' elements',
-        );
-    }
-
     // ================================================================
     //
     // Constraint Builder Methods
@@ -167,11 +122,12 @@ class ArraySchema extends BaseSchema
      */
     public function min(int $length, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->minLength = $length;
-        $clone->minError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMin($length);
-
-        return $clone;
+        return $this->withConstraint(
+            new ArrayMinLengthConstraint(
+                length: $length,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -182,11 +138,12 @@ class ArraySchema extends BaseSchema
      */
     public function max(int $length, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->maxLength = $length;
-        $clone->maxError = $error ?? $this->getDefaultTypeCheckErrorCallbackForMax($length);
-
-        return $clone;
+        return $this->withConstraint(
+            new ArrayMaxLengthConstraint(
+                length: $length,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -197,11 +154,12 @@ class ArraySchema extends BaseSchema
      */
     public function length(int $length, ?callable $error = null): static
     {
-        $clone = clone $this;
-        $clone->exactLength = $length;
-        $clone->exactLengthError = $error ?? $this->getDefaultTypeCheckErrorCallbackForLength($length);
-
-        return $clone;
+        return $this->withConstraint(
+            new ArrayExactLengthConstraint(
+                length: $length,
+                error: $error,
+            ),
+        );
     }
 
     /**
@@ -250,38 +208,11 @@ class ArraySchema extends BaseSchema
     ): void {
         assert(is_array($data));
 
-        $count = count($data);
-
-        // length constraints
-        if ($this->exactLength !== null && $count !== $this->exactLength) {
-            /** @var ErrorCallback $exactLengthError */
-            $exactLengthError = $this->exactLengthError;
-            $this->invokeErrorCallback(
-                callback: $exactLengthError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->minLength !== null && $count < $this->minLength) {
-            /** @var ErrorCallback $minError */
-            $minError = $this->minError;
-            $this->invokeErrorCallback(
-                callback: $minError,
-                input: $data,
-                context: $context,
-            );
-        }
-
-        if ($this->maxLength !== null && $count > $this->maxLength) {
-            /** @var ErrorCallback $maxError */
-            $maxError = $this->maxError;
-            $this->invokeErrorCallback(
-                callback: $maxError,
-                input: $data,
-                context: $context,
-            );
-        }
+        // run array-level constraints (min, max, length)
+        parent::checkConstraints(
+            data: $data,
+            context: $context,
+        );
 
         // stop if array-level constraints failed — don't
         // validate elements

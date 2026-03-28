@@ -49,6 +49,7 @@ use stdClass;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
+use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -805,6 +806,58 @@ class ValidateMixedTest extends TestCase
         // test the results
 
         $this->assertSame(['label' => 'Payload'], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // Custom Constraints
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('withConstraint() adds custom constraint to pipeline')]
+    public function test_with_constraint_adds_custom_constraint(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that withConstraint() correctly
+        // wires a custom ValidationConstraint into the
+        // schema's validation pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::mixed()
+            ->withConstraint(new RejectEverythingConstraint());
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('anything');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $issue = $result->error()->issues()[0];
+        $this->assertSame(IssueCode::Custom, $issue->code);
+        $this->assertSame(
+            'rejected by custom constraint',
+            $issue->message,
+        );
 
         // ----------------------------------------------------------------
         // clean up the database

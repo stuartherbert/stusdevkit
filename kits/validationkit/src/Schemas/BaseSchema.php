@@ -42,6 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas;
 
 use StusDevKit\ValidationKit\Contracts\Parseable;
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\IssueCode;
@@ -84,11 +85,31 @@ abstract class BaseSchema implements Parseable
 
     protected bool $coercionEnabled = false;
 
+    /** @var list<ValidationConstraint> */
+    protected array $constraints = [];
+
     // ================================================================
     //
     // Builder Methods
     //
     // ----------------------------------------------------------------
+
+    /**
+     * add a validation constraint to this schema
+     *
+     * Returns a new schema instance with the constraint
+     * appended to the constraint list. Constraints are
+     * checked in the order they are added, after the
+     * type check has passed.
+     */
+    public function withConstraint(
+        ValidationConstraint $constraint,
+    ): static {
+        $clone = clone $this;
+        $clone->constraints[] = $constraint;
+
+        return $clone;
+    }
 
     /**
      * enable type coercion for this schema
@@ -310,13 +331,24 @@ abstract class BaseSchema implements Parseable
     /**
      * check constraints (min, max, length, etc.)
      *
-     * Only called if the type check passed. Must add issues
-     * to the context for any constraint violations.
+     * Only called if the type check passed. Iterates over
+     * all constraints added via withConstraint() and runs
+     * each one.
+     *
+     * Concrete schemas may override this to add additional
+     * logic before or after constraint checks.
      */
-    abstract protected function checkConstraints(
+    protected function checkConstraints(
         mixed $data,
         ValidationContext $context,
-    ): void;
+    ): void {
+        foreach ($this->constraints as $constraint) {
+            $constraint->check(
+                data: $data,
+                context: $context,
+            );
+        }
+    }
 
     /**
      * attempt to coerce the input to the expected type
@@ -348,7 +380,7 @@ abstract class BaseSchema implements Parseable
      * - [0] the (possibly transformed) data
      * - [1] true if the pipeline completed without issues
      */
-    private function runPipeline(
+    protected function runPipeline(
         mixed $data,
         ValidationContext $context,
     ): array {

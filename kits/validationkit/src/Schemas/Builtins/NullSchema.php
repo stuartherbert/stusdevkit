@@ -107,6 +107,12 @@ class NullSchema extends BaseSchema
         ValidationContext $context,
     ): mixed {
         if ($data === null) {
+            // run any constraints added via withConstraint()
+            $this->checkConstraints(
+                data: $data,
+                context: $context,
+            );
+
             return null;
         }
 
@@ -125,12 +131,5 @@ class NullSchema extends BaseSchema
     ): bool {
         // handled by parseWithContext override
         return true;
-    }
-
-    protected function checkConstraints(
-        mixed $data,
-        ValidationContext $context,
-    ): void {
-        // null has no constraints
     }
 }
