@@ -63,6 +63,7 @@ use StusDevKit\ValidationKit\Schemas\Codec;
 use StusDevKit\ValidationKit\Schemas\Collections\RecordSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\TupleSchema;
 use StusDevKit\ValidationKit\Schemas\DevKit\WhenSchema;
+use StusDevKit\ValidationKit\Schemas\LazySchema;
 use StusDevKit\ValidationKit\Schemas\Logic\AllOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\ConditionalSchema;
@@ -555,6 +556,35 @@ final class Validate
     // Specialized Schema Factories
     //
     // ----------------------------------------------------------------
+
+    /**
+     * create a lazy schema for recursive definitions
+     *
+     * The factory closure is not called until the first
+     * validation. This allows a schema to reference itself,
+     * because by the time validation runs the variable
+     * holding the schema is fully defined.
+     *
+     *     $treeNode = Validate::object([
+     *         'value' => Validate::string(),
+     *         'children' => Validate::array(
+     *             Validate::lazy(
+     *                 function () use (&$treeNode) {
+     *                     return $treeNode;
+     *                 },
+     *             ),
+     *         ),
+     *     ]);
+     *
+     * @template T
+     * @param Closure(): ValidationSchema<T> $factory
+     * - a closure that returns the real schema
+     * @return LazySchema<T>
+     */
+    public static function lazy(Closure $factory): LazySchema
+    {
+        return new LazySchema(factory: $factory);
+    }
 
     /**
      * create a UUID validation schema
