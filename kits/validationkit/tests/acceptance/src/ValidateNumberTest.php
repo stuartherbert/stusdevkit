@@ -1785,8 +1785,8 @@ class ValidateNumberTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1797,7 +1797,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->withMeta(['label' => 'Score']);
+        $unit = Validate::number()->withMetadata(['label' => 'Score']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1808,7 +1808,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

@@ -157,15 +157,17 @@ abstract class BaseSchema implements ValidationSchema
     /**
      * attach arbitrary metadata to this schema
      *
-     * Metadata is merged with any existing metadata. To
-     * replace all metadata, create a new schema instead.
+     * Replaces any existing metadata. Metadata does not
+     * affect validation behaviour — it is used by tooling
+     * such as JSON Schema generation, code generation,
+     * and documentation.
      *
      * @param SchemaMetadata $data
      */
-    public function withMeta(array $data): static
+    public function withMetadata(array $data): static
     {
         $clone = clone $this;
-        $clone->metadata = array_merge($clone->metadata, $data);
+        $clone->metadata = $data;
 
         return $clone;
     }
@@ -776,7 +778,7 @@ abstract class BaseSchema implements ValidationSchema
      *
      * @return SchemaMetadata
      */
-    public function metadata(): array
+    public function getMetadata(): array
     {
         return $this->metadata;
     }

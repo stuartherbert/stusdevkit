@@ -1734,8 +1734,8 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1748,7 +1748,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->withMeta(['label' => 'User']);
+        ])->withMetadata(['label' => 'User']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1759,7 +1759,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

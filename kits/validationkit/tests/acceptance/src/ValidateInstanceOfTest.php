@@ -949,8 +949,8 @@ class ValidateInstanceOfTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -963,7 +963,7 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->withMeta(['label' => 'Timestamp']);
+        )->withMetadata(['label' => 'Timestamp']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -974,7 +974,7 @@ class ValidateInstanceOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

@@ -1053,13 +1053,13 @@ class ValidateCodecTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withMeta() is allowed on codecs
+        // this test proves that withMetadata() is allowed on codecs
         // and sets arbitrary metadata
 
         // ----------------------------------------------------------------
@@ -1069,7 +1069,7 @@ class ValidateCodecTest extends TestCase
         // setup your test
 
         $unit = self::uuidCodec()
-            ->withMeta(['version' => 4]);
+            ->withMetadata(['version' => 4]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1080,7 +1080,7 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

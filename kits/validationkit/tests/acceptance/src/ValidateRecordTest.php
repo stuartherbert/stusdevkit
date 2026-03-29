@@ -1012,8 +1012,8 @@ class ValidateRecordTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1027,7 +1027,7 @@ class ValidateRecordTest extends TestCase
         $unit = Validate::record(
             Validate::string(),
             Validate::int(),
-        )->withMeta(['label' => 'Scores']);
+        )->withMetadata(['label' => 'Scores']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1038,7 +1038,7 @@ class ValidateRecordTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

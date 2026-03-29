@@ -62,7 +62,7 @@ use StusDevKit\ValidationKit\ParseResult;
  * - Builder methods: withCustomTransform,
  *   withCustomConstraint, withPipe, withCatch,
  *   withDefault, etc. configure the validation pipeline.
- * - Metadata: withDescription and withMeta attach
+ * - Metadata: withDescription and withMetadata attach
  *   non-validation metadata for tooling.
  * - Internal composition: parseWithContext and
  *   encodeWithContext allow parent schemas to validate
@@ -230,23 +230,25 @@ interface ValidationSchema
     public function withDescription(string $text): static;
 
     /**
-     * attach arbitrary metadata to this schema
-     *
-     * @param array<string, mixed> $data
-     */
-    public function withMeta(array $data): static;
-
-    /**
      * return the description, or null if none was set
      */
     public function maybeDescription(): ?string;
+
+    /**
+     * attach arbitrary metadata to this schema
+     *
+     * Replaces any existing metadata.
+     *
+     * @param array<string, mixed> $data
+     */
+    public function withMetadata(array $data): static;
 
     /**
      * return the metadata
      *
      * @return array<string, mixed>
      */
-    public function metadata(): array;
+    public function getMetadata(): array;
 
     // ================================================================
     //

@@ -1172,8 +1172,8 @@ class ValidateTupleTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1187,7 +1187,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->withMeta(['label' => 'Coordinate']);
+        ])->withMetadata(['label' => 'Coordinate']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1198,7 +1198,7 @@ class ValidateTupleTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

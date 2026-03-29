@@ -1975,8 +1975,8 @@ class ValidateStringTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1987,7 +1987,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->withMeta(['label' => 'Name']);
+        $unit = Validate::string()->withMetadata(['label' => 'Name']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1998,7 +1998,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

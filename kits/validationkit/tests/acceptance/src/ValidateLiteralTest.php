@@ -1085,8 +1085,8 @@ class ValidateLiteralTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1098,7 +1098,7 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->withMeta(['label' => 'Status']);
+            ->withMetadata(['label' => 'Status']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1109,7 +1109,7 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

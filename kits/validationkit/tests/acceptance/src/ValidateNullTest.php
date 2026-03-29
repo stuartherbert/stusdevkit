@@ -491,8 +491,8 @@ class ValidateNullTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -503,7 +503,7 @@ class ValidateNullTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::null()->withMeta(['label' => 'Sentinel']);
+        $unit = Validate::null()->withMetadata(['label' => 'Sentinel']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -514,7 +514,7 @@ class ValidateNullTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

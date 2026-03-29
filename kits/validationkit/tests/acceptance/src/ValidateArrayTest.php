@@ -1506,8 +1506,8 @@ class ValidateArrayTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1519,7 +1519,7 @@ class ValidateArrayTest extends TestCase
         // setup your test
 
         $unit = Validate::array(Validate::string())
-            ->withMeta(['label' => 'Tags']);
+            ->withMetadata(['label' => 'Tags']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1530,7 +1530,7 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results

@@ -1738,8 +1738,8 @@ class ValidateFloatTest extends TestCase
 
     }
 
-    #[TestDox('withMeta() sets the metadata')]
-    public function test_with_meta_sets_metadata(): void
+    #[TestDox('withMetadata() sets the metadata')]
+    public function test_with_metadata_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1750,7 +1750,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->withMeta(['label' => 'Price']);
+        $unit = Validate::float()->withMetadata(['label' => 'Price']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1761,7 +1761,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->metadata();
+        $actualResult = $unit->getMetadata();
 
         // ----------------------------------------------------------------
         // test the results
