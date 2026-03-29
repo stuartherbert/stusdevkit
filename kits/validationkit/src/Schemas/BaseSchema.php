@@ -50,11 +50,9 @@ use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ParseResult;
-use StusDevKit\ValidationKit\Traits\HasErrorCallback;
-use StusDevKit\ValidationKit\Traits\HasMetadata;
-use StusDevKit\ValidationKit\Traits\HasNullability;
 use StusDevKit\ValidationKit\Transformers\CustomConstraint;
 use StusDevKit\ValidationKit\Transformers\CustomTransform;
+use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
  * BaseSchema is the abstract foundation for all validation
@@ -79,12 +77,28 @@ use StusDevKit\ValidationKit\Transformers\CustomTransform;
  *
  * @template-covariant TOutput
  * @implements ValidationSchema<TOutput>
+ *
+ * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
+ * @phpstan-type SchemaMetadata array<string, mixed>
  */
 abstract class BaseSchema implements ValidationSchema
 {
-    use HasErrorCallback;
-    use HasMetadata;
-    use HasNullability;
+    /**
+     * error callback for type-check failures
+     *
+     * Always set — each schema provides a default in its constructor
+     *
+     * @var ErrorCallback
+     */
+    protected mixed $typeCheckError;
+
+    protected ?string $description = null;
+
+    /** @var SchemaMetadata */
+    protected array $metadata = [];
+
+    protected bool $hasDefault = false;
+    protected mixed $defaultValue;
 
     protected ValueCoercion $coercion;
 
@@ -109,6 +123,54 @@ abstract class BaseSchema implements ValidationSchema
     // Builder Methods
     //
     // ----------------------------------------------------------------
+
+    /**
+     * provide a default value for null or missing input
+     *
+     * When the input is null (or the key is missing in an
+     * object schema), the default value is used instead.
+     * The default value is not validated against the schema.
+     */
+    public function withDefault(mixed $value): static
+    {
+        $clone = clone $this;
+        $clone->hasDefault = true;
+        $clone->defaultValue = $value;
+
+        return $clone;
+    }
+
+    /**
+     * add a human-readable description to this schema
+     *
+     * This is a convenience shorthand for setting the
+     * 'description' key in the metadata.
+     *
+     * @param non-empty-string $text
+     */
+    public function withDescription(string $text): static
+    {
+        $clone = clone $this;
+        $clone->description = $text;
+
+        return $clone;
+    }
+
+    /**
+     * attach arbitrary metadata to this schema
+     *
+     * Metadata is merged with any existing metadata. To
+     * replace all metadata, create a new schema instead.
+     *
+     * @param SchemaMetadata $data
+     */
+    public function withMeta(array $data): static
+    {
+        $clone = clone $this;
+        $clone->metadata = array_merge($clone->metadata, $data);
+
+        return $clone;
+    }
 
     /**
      * add a step to the pipeline
@@ -682,5 +744,56 @@ abstract class BaseSchema implements ValidationSchema
             data: $data,
             context: $context,
         );
+    }
+
+    // ================================================================
+    //
+    // Error Callback Helpers
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * invoke an error callback and add the resulting issue
+     * to the validation context
+     *
+     * The issue's path is replaced with the context's
+     * current path, so callbacks do not need to know their
+     * position in the data structure.
+     *
+     * @param ErrorCallback $callback
+     */
+    protected function invokeErrorCallback(
+        callable $callback,
+        mixed $input,
+        ValidationContext $context,
+    ): void {
+        $issue = $callback($input);
+        $context->addExistingIssue(
+            $issue->withPath($context->path()),
+        );
+    }
+
+    // ================================================================
+    //
+    // Metadata Getters
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the description, or null if none was set
+     */
+    public function maybeDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * return the metadata
+     *
+     * @return SchemaMetadata
+     */
+    public function metadata(): array
+    {
+        return $this->metadata;
     }
 }

@@ -79,7 +79,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- improve naming of custom constraints and custom transforms ([254c37d](https://github.com/stuartherbert/stusdevkit/commit/254c37d)) — Stuart Herbert <stuart@stuartherbert.com>
+- absorb the traits into the BaseSchema ([6b6d649](https://github.com/stuartherbert/stusdevkit/commit/6b6d649)) — Stuart Herbert <stuart@stuartherbert.com>
+- improve naming of custom constraints and custom transforms ([ea941f6](https://github.com/stuartherbert/stusdevkit/commit/ea941f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove `withStep()` from public API ([61b9ce1](https://github.com/stuartherbert/stusdevkit/commit/61b9ce1)) — Stuart Herbert <stuart@stuartherbert.com>
 - standardise naming of public API methods ([3f491d8](https://github.com/stuartherbert/stusdevkit/commit/3f491d8)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up default error reporting ([9580045](https://github.com/stuartherbert/stusdevkit/commit/9580045)) — Stuart Herbert <stuart@stuartherbert.com>
