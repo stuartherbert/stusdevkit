@@ -99,6 +99,22 @@ class InstanceOfSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the class or interface name
+     *
+     * @return class-string<T>
+     */
+    public function className(): string
+    {
+        return $this->className;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

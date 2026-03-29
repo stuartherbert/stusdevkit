@@ -109,6 +109,32 @@ class RecordSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the key schema
+     *
+     * @return ValidationSchema<TKey>
+     */
+    public function keySchema(): ValidationSchema
+    {
+        return $this->keySchema;
+    }
+
+    /**
+     * return the value schema
+     *
+     * @return ValidationSchema<TValue>
+     */
+    public function valueSchema(): ValidationSchema
+    {
+        return $this->valueSchema;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

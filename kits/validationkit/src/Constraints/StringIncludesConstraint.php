@@ -118,6 +118,20 @@ final class StringIncludesConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the required substring
+     */
+    public function needle(): string
+    {
+        return $this->needle;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

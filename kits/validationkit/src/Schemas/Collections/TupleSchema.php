@@ -103,6 +103,22 @@ class TupleSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the positional schemas
+     *
+     * @return list<ValidationSchema<mixed>>
+     */
+    public function schemas(): array
+    {
+        return $this->schemas;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

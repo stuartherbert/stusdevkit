@@ -42,94 +42,92 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
-use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * ObjectDependentSchemasConstraint validates that when
- * certain properties are present in the object, additional
- * schemas are satisfied.
+ * StringTimeConstraint checks that a string is a valid
+ * time in RFC 3339 format.
  *
- * Each dependency maps a property name to a schema. When
- * the property exists in the data, the entire data object
- * is validated against that schema. Issues from the
- * dependent schemas propagate naturally through the
- * context.
+ * Accepts HH:MM:SS with optional fractional seconds and
+ * timezone offset (Z or +/-HH:MM).
  *
  * Usage:
  *
- *     use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
- *     use StusDevKit\ValidationKit\Validate;
- *
- *     $constraint = new ObjectDependentSchemasConstraint(
- *         dependencies: [
- *             'billing_address' => Validate::object([
- *                 'billing_address' => Validate::string(),
- *                 'billing_city' => Validate::string(),
- *             ]),
- *         ],
+ *     $constraint = new StringTimeConstraint();
+ *     // or with custom error
+ *     $constraint = new StringTimeConstraint(
+ *         error: fn($data) => new ValidationIssue(...),
  *     );
  *
- * @phpstan-type DependencyMap array<string, ValidationSchema<mixed>>
+ * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class ObjectDependentSchemasConstraint implements ValidationConstraint
+final class StringTimeConstraint implements ValidationConstraint
 {
-    /**
-     * @param DependencyMap $dependencies
-     * - map of property names to schemas that must be
-     *   satisfied when that property is present in the
-     *   data
-     */
-    public function __construct(
-        private readonly array $dependencies,
-    ) {
-    }
-
-    // ================================================================
-    //
-    // Introspection
-    //
-    // ----------------------------------------------------------------
+    /** @var ErrorCallback */
+    private mixed $error;
 
     /**
-     * return the dependency map
-     *
-     * @return array<string, ValidationSchema<mixed>>
+     * @param ErrorCallback|null $error
+     * - custom error callback; if null, a default is used
      */
-    public function dependencies(): array
+    public function __construct(?callable $error = null)
     {
-        return $this->dependencies;
+        $this->error = $error
+            ?? static fn(mixed $data) => new ValidationIssue(
+                type: 'https://stusdevkit.dev/errors/validation/invalid_string',
+                input: $data,
+                path: [],
+                message: 'Invalid time',
+            );
     }
 
     // ================================================================
     //
-    // ValidationConstraint Implementation
+    // ValidationConstraint Interface
     //
     // ----------------------------------------------------------------
 
     /**
-     * check dependent schemas for present properties
+     * check that the string is a valid time
      *
-     * For each dependency, if the property exists in the
-     * data, the entire data object is validated against the
-     * dependent schema using the current context. Issues
-     * propagate naturally.
-     *
-     * @param array<mixed> $data
+     * @param string $data
      */
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_array($data));
+        assert(is_string($data));
 
-        foreach ($this->dependencies as $propertyName => $schema) {
-            if (array_key_exists($propertyName, $data)) {
-                $schema->parseWithContext(
-                    data: $data,
-                    context: $context,
-                );
-            }
+        // check the format matches HH:MM:SS with optional
+        // fractional seconds and timezone offset
+        if (preg_match('/^\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/i', $data) !== 1) {
+            $issue = ($this->error)($data);
+            $context->addExistingIssue(
+                $issue->withPath($context->path()),
+            );
+
+            return $data;
+        }
+
+        // extract hours, minutes, and seconds for range
+        // validation
+        $parts = explode(':', $data);
+        $hours = (int) $parts[0];
+        $minutes = (int) $parts[1];
+        $seconds = (int) $parts[2];
+
+        // validate ranges: hours 0-23, minutes 0-59,
+        // seconds 0-60 (60 for leap seconds per RFC 3339)
+        if (
+            $hours < 0 || $hours > 23
+            || $minutes < 0 || $minutes > 59
+            || $seconds < 0 || $seconds > 60
+        ) {
+            $issue = ($this->error)($data);
+            $context->addExistingIssue(
+                $issue->withPath($context->path()),
+            );
         }
 
         return $data;

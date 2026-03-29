@@ -39,102 +39,96 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Constraints;
+namespace StusDevKit\ValidationKit\Exporters;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
-use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\ValidationIssue;
+use JsonSerializable;
+use stdClass;
 
 /**
- * StringRegexConstraint checks that a string matches the
- * given PCRE regular expression pattern.
+ * JsonSchema is a value object representing a JSON Schema
+ * document.
  *
- * The pattern must include delimiters (e.g. '/^[a-z]+$/i').
+ * It implements JsonSerializable so that json_encode()
+ * produces correct JSON. Empty schemas serialize as `{}`
+ * (a JSON object) rather than `[]` (a JSON array),
+ * because the internal representation uses stdClass.
  *
  * Usage:
  *
- *     $constraint = new StringRegexConstraint(
- *         pattern: '/^[a-z]+$/i',
- *     );
- *     // or with custom error
- *     $constraint = new StringRegexConstraint(
- *         pattern: '/^[a-z]+$/i',
- *         error: fn($data) => new ValidationIssue(...),
- *     );
+ *     $schema = new JsonSchema();
+ *     $schema->type = 'string';
+ *     echo json_encode($schema, JSON_PRETTY_PRINT);
+ *     // {"type": "string"}
  *
- * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
+ *     $empty = new JsonSchema();
+ *     echo json_encode($empty);
+ *     // {}
  */
-final class StringRegexConstraint implements ValidationConstraint
+final class JsonSchema implements JsonSerializable
 {
-    /** @var ErrorCallback */
-    private mixed $error;
-
     /**
-     * @param non-empty-string $pattern
-     * - a PCRE pattern including delimiters,
-     *   e.g. '/^[a-z]+$/i'
-     * @param ErrorCallback|null $error
-     * - custom error callback; if null, a default is used
+     * the JSON Schema keywords and their values
      */
-    public function __construct(
-        private readonly string $pattern,
-        ?callable $error = null,
-    ) {
-        $this->error = $error
-            ?? static fn(mixed $data) => new ValidationIssue(
-                type: 'https://stusdevkit.dev/errors/validation/invalid_string',
-                input: $data,
-                path: [],
-                message: 'String does not match pattern '
-                    . $pattern,
-            );
+    private readonly stdClass $schema;
+
+    public function __construct(?stdClass $schema = null)
+    {
+        $this->schema = $schema ?? new stdClass();
     }
 
     // ================================================================
     //
-    // Introspection
+    // JsonSerializable
     //
     // ----------------------------------------------------------------
 
     /**
-     * return the regex pattern
+     * serialize to a value suitable for json_encode
      *
-     * @return non-empty-string
+     * The internal stdClass naturally serializes as a
+     * JSON object, so empty schemas produce `{}`.
      */
-    public function pattern(): string
+    public function jsonSerialize(): stdClass
     {
-        return $this->pattern;
+        return $this->schema;
     }
 
     // ================================================================
     //
-    // ValidationConstraint Interface
+    // Conversion
     //
     // ----------------------------------------------------------------
 
     /**
-     * check that the string matches the regex pattern
+     * return the schema as a plain PHP object
      *
-     * @param string $data
+     * Returns a deep clone so that callers cannot
+     * mutate the internal state.
      */
-    public function process(
-        mixed $data,
-        ValidationContext $context,
-    ): mixed {
-        assert(is_string($data));
+    public function toObject(): stdClass
+    {
+        $json = json_encode($this);
+        assert(is_string($json));
 
-        if (preg_match($this->pattern, $data) !== 1) {
-            $issue = ($this->error)($data);
-            $context->addExistingIssue(
-                $issue->withPath($context->path()),
-            );
-        }
+        $result = json_decode($json);
+        assert($result instanceof stdClass);
 
-        return $data;
+        return $result;
     }
 
-    public function skipOnIssues(): bool
+    /**
+     * return the schema as a plain PHP array
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
     {
-        return false;
+        $json = json_encode($this);
+        assert(is_string($json));
+
+        /** @var array<string, mixed> $result */
+        $result = json_decode($json, associative: true);
+
+        return $result;
     }
 }

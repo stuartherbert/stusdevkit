@@ -42,43 +42,37 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
-use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
- * ObjectDependentSchemasConstraint validates that when
+ * ObjectDependentRequiredConstraint validates that when
  * certain properties are present in the object, additional
- * schemas are satisfied.
+ * properties are also required to be present.
  *
- * Each dependency maps a property name to a schema. When
- * the property exists in the data, the entire data object
- * is validated against that schema. Issues from the
- * dependent schemas propagate naturally through the
- * context.
+ * Each dependency maps a property name to a list of
+ * property names that must also exist when the trigger
+ * property is present.
  *
  * Usage:
  *
- *     use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
- *     use StusDevKit\ValidationKit\Validate;
+ *     use StusDevKit\ValidationKit\Constraints\ObjectDependentRequiredConstraint;
  *
- *     $constraint = new ObjectDependentSchemasConstraint(
+ *     $constraint = new ObjectDependentRequiredConstraint(
  *         dependencies: [
- *             'billing_address' => Validate::object([
- *                 'billing_address' => Validate::string(),
- *                 'billing_city' => Validate::string(),
- *             ]),
+ *             'billing_address' => [
+ *                 'billing_city',
+ *                 'billing_zip',
+ *             ],
  *         ],
  *     );
- *
- * @phpstan-type DependencyMap array<string, ValidationSchema<mixed>>
  */
-final class ObjectDependentSchemasConstraint implements ValidationConstraint
+final class ObjectDependentRequiredConstraint implements ValidationConstraint
 {
     /**
-     * @param DependencyMap $dependencies
-     * - map of property names to schemas that must be
-     *   satisfied when that property is present in the
-     *   data
+     * @param array<string, list<string>> $dependencies
+     * - map of property names to lists of property names
+     *   that must also be present when the trigger property
+     *   exists
      */
     public function __construct(
         private readonly array $dependencies,
@@ -94,7 +88,7 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     /**
      * return the dependency map
      *
-     * @return array<string, ValidationSchema<mixed>>
+     * @return array<string, list<string>>
      */
     public function dependencies(): array
     {
@@ -108,12 +102,12 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     // ----------------------------------------------------------------
 
     /**
-     * check dependent schemas for present properties
+     * check dependent required properties
      *
-     * For each dependency, if the property exists in the
-     * data, the entire data object is validated against the
-     * dependent schema using the current context. Issues
-     * propagate naturally.
+     * For each dependency, if the trigger property exists
+     * in the data, checks that all required properties are
+     * also present. For each missing required property, a
+     * validation issue is added.
      *
      * @param array<mixed> $data
      */
@@ -123,12 +117,20 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     ): mixed {
         assert(is_array($data));
 
-        foreach ($this->dependencies as $propertyName => $schema) {
+        foreach ($this->dependencies as $propertyName => $requiredProperties) {
             if (array_key_exists($propertyName, $data)) {
-                $schema->parseWithContext(
-                    data: $data,
-                    context: $context,
-                );
+                foreach ($requiredProperties as $requiredProperty) {
+                    if (! array_key_exists($requiredProperty, $data)) {
+                        $context->addIssue(
+                            type: 'https://stusdevkit.dev/errors/validation/custom',
+                            input: $data,
+                            message: 'Property "' . $propertyName
+                                . '" requires property "'
+                                . $requiredProperty
+                                . '" to also be present',
+                        );
+                    }
+                }
             }
         }
 

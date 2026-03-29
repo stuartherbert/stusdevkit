@@ -2016,6 +2016,982 @@ class ValidateStringTest extends TestCase
     //
     // ----------------------------------------------------------------
 
+    // ================================================================
+    //
+    // date
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('date() accepts a valid date')]
+    public function test_date_accepts_valid_date(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that date() accepts a string
+        // containing a valid YYYY-MM-DD date
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->date();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('2024-03-15');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('2024-03-15', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('date() rejects an invalid date format')]
+    public function test_date_rejects_invalid_format(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that date() rejects a string
+        // that is not in the YYYY-MM-DD format
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->date();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('15-03-2024');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid date',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('date() rejects an invalid calendar date')]
+    public function test_date_rejects_invalid_calendar_date(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that date() rejects a string
+        // that looks like YYYY-MM-DD but is not a real
+        // calendar date
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->date();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('2024-02-30');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid date',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // time
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('time() accepts a basic time')]
+    public function test_time_accepts_basic_time(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that time() accepts a valid
+        // HH:MM:SS time string
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->time();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('14:30:00');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('14:30:00', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('time() accepts fractional seconds')]
+    public function test_time_accepts_fractional_seconds(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that time() accepts a time
+        // string with fractional seconds
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->time();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('14:30:00.123');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('14:30:00.123', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('time() accepts UTC timezone')]
+    public function test_time_accepts_utc_timezone(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that time() accepts a time
+        // string with the Z UTC timezone suffix
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->time();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('14:30:00Z');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('14:30:00Z', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('time() accepts offset timezone')]
+    public function test_time_accepts_offset_timezone(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that time() accepts a time
+        // string with a numeric timezone offset
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->time();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('14:30:00+05:30');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('14:30:00+05:30', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('time() rejects an invalid time')]
+    public function test_time_rejects_invalid_time(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that time() rejects a time
+        // string with an out-of-range hour value
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->time();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('25:00:00');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid time',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('time() rejects a non-time string')]
+    public function test_time_rejects_non_time_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that time() rejects a string
+        // that is not a time at all
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->time();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('not-a-time');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid time',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // duration
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('duration() accepts a full duration')]
+    public function test_duration_accepts_full_duration(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() accepts a full
+        // ISO 8601 duration with date and time components
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('P1Y2M3DT4H5M6S');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('P1Y2M3DT4H5M6S', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('duration() accepts a date-only duration')]
+    public function test_duration_accepts_date_only(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() accepts an
+        // ISO 8601 duration with only date components
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('P1Y2M3D');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('P1Y2M3D', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('duration() accepts a time-only duration')]
+    public function test_duration_accepts_time_only(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() accepts an
+        // ISO 8601 duration with only time components
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('PT1H30M');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('PT1H30M', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('duration() accepts weeks')]
+    public function test_duration_accepts_weeks(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() accepts an
+        // ISO 8601 duration using the weeks designator
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('P1W');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('P1W', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('duration() rejects an empty period')]
+    public function test_duration_rejects_empty_period(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() rejects a bare
+        // P designator with no date or time components
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('P');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid duration',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('duration() rejects an empty time')]
+    public function test_duration_rejects_empty_time(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() rejects a
+        // duration with T but no time components after it
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('PT');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid duration',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('duration() rejects a non-duration string')]
+    public function test_duration_rejects_non_duration(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that duration() rejects a
+        // string that is not a duration at all
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->duration();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('not-a-duration');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid duration',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // hostname
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('hostname() accepts a simple hostname')]
+    public function test_hostname_accepts_simple_hostname(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that hostname() accepts a
+        // simple two-label hostname
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->hostname();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('example.com');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('example.com', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('hostname() accepts a subdomain hostname')]
+    public function test_hostname_accepts_subdomain(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that hostname() accepts a
+        // hostname with multiple subdomain labels
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->hostname();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('sub.example.co.uk');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('sub.example.co.uk', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('hostname() accepts a single label hostname')]
+    public function test_hostname_accepts_single_label(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that hostname() accepts a
+        // single-label hostname like localhost
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->hostname();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('localhost');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('localhost', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('hostname() rejects a hostname with a leading hyphen')]
+    public function test_hostname_rejects_leading_hyphen(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that hostname() rejects a
+        // hostname where a label starts with a hyphen
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->hostname();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('-invalid.com');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid hostname',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('hostname() rejects a hostname with a trailing hyphen')]
+    public function test_hostname_rejects_trailing_hyphen(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that hostname() rejects a
+        // hostname where a label ends with a hyphen
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->hostname();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('invalid-.com');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid hostname',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('hostname() rejects a hostname that is too long')]
+    public function test_hostname_rejects_too_long(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that hostname() rejects a
+        // hostname that exceeds the 253-character limit
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->hostname();
+
+        // build a hostname of 254 characters by repeating
+        // labels separated by dots
+        $longHostname = str_repeat('a', 63) . '.'
+            . str_repeat('b', 63) . '.'
+            . str_repeat('c', 63) . '.'
+            . str_repeat('d', 62);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        $this->assertSame(254, strlen($longHostname));
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($longHostname);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid hostname',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // Custom Constraints
+    //
+    // ----------------------------------------------------------------
+
     #[TestDox('withConstraint() adds custom constraint to pipeline')]
     public function test_with_constraint_adds_custom_constraint(): void
     {

@@ -102,6 +102,20 @@ final class StringExactLengthConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the required length
+     */
+    public function length(): int
+    {
+        return $this->length;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

@@ -151,6 +151,19 @@ class LazySchema implements ValidationSchema
         return $this->resolved;
     }
 
+    /**
+     * return the resolved schema for introspection
+     *
+     * Forces resolution of the factory closure if not
+     * already resolved, then returns the cached schema.
+     *
+     * @return ValidationSchema<TOutput>
+     */
+    public function resolvedSchema(): ValidationSchema
+    {
+        return $this->resolve();
+    }
+
     // ================================================================
     //
     // Core Validation (delegated to resolved schema)

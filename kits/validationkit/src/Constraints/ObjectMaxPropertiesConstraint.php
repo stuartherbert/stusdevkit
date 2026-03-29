@@ -42,47 +42,61 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
-use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * ObjectDependentSchemasConstraint validates that when
- * certain properties are present in the object, additional
- * schemas are satisfied.
- *
- * Each dependency maps a property name to a schema. When
- * the property exists in the data, the entire data object
- * is validated against that schema. Issues from the
- * dependent schemas propagate naturally through the
- * context.
+ * ObjectMaxPropertiesConstraint validates that an object
+ * (associative array) has at most the specified number
+ * of properties.
  *
  * Usage:
  *
- *     use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
- *     use StusDevKit\ValidationKit\Validate;
+ *     use StusDevKit\ValidationKit\Constraints\ObjectMaxPropertiesConstraint;
  *
- *     $constraint = new ObjectDependentSchemasConstraint(
- *         dependencies: [
- *             'billing_address' => Validate::object([
- *                 'billing_address' => Validate::string(),
- *                 'billing_city' => Validate::string(),
- *             ]),
- *         ],
+ *     // with default error message
+ *     $constraint = new ObjectMaxPropertiesConstraint(
+ *         count: 5,
  *     );
  *
- * @phpstan-type DependencyMap array<string, ValidationSchema<mixed>>
+ *     // with custom error callback
+ *     $constraint = new ObjectMaxPropertiesConstraint(
+ *         count: 5,
+ *         error: fn($data) => new ValidationIssue(
+ *             type: 'https://stusdevkit.dev/errors/validation/too_big',
+ *             input: $data,
+ *             path: [],
+ *             message: 'Must have at most 5 properties',
+ *         ),
+ *     );
+ *
+ * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class ObjectDependentSchemasConstraint implements ValidationConstraint
+final class ObjectMaxPropertiesConstraint implements ValidationConstraint
 {
+    /** @var ErrorCallback */
+    private readonly mixed $error;
+
     /**
-     * @param DependencyMap $dependencies
-     * - map of property names to schemas that must be
-     *   satisfied when that property is present in the
-     *   data
+     * @param int $count
+     * - the maximum number of properties allowed
+     * @param ErrorCallback|null $error
+     * - optional custom error callback; if null, a default
+     *   callback is used that creates a ValidationIssue
+     *   with 'https://stusdevkit.dev/errors/validation/too_big'
      */
     public function __construct(
-        private readonly array $dependencies,
+        private readonly int $count,
+        ?callable $error = null,
     ) {
+        $this->error = $error
+            ?? static fn(mixed $data) => new ValidationIssue(
+                type: 'https://stusdevkit.dev/errors/validation/too_big',
+                input: $data,
+                path: [],
+                message: 'Object must have at most '
+                    . $count . ' properties',
+            );
     }
 
     // ================================================================
@@ -92,13 +106,11 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     // ----------------------------------------------------------------
 
     /**
-     * return the dependency map
-     *
-     * @return array<string, ValidationSchema<mixed>>
+     * return the maximum property count
      */
-    public function dependencies(): array
+    public function count(): int
     {
-        return $this->dependencies;
+        return $this->count;
     }
 
     // ================================================================
@@ -108,12 +120,11 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     // ----------------------------------------------------------------
 
     /**
-     * check dependent schemas for present properties
+     * check that the object does not exceed the maximum
+     * property count
      *
-     * For each dependency, if the property exists in the
-     * data, the entire data object is validated against the
-     * dependent schema using the current context. Issues
-     * propagate naturally.
+     * Adds a validation issue to the context if the object
+     * has more properties than allowed.
      *
      * @param array<mixed> $data
      */
@@ -123,13 +134,11 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     ): mixed {
         assert(is_array($data));
 
-        foreach ($this->dependencies as $propertyName => $schema) {
-            if (array_key_exists($propertyName, $data)) {
-                $schema->parseWithContext(
-                    data: $data,
-                    context: $context,
-                );
-            }
+        if (count($data) > $this->count) {
+            $issue = ($this->error)($data);
+            $context->addExistingIssue(
+                $issue->withPath($context->path()),
+            );
         }
 
         return $data;

@@ -105,6 +105,22 @@ class AllOfSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the intersection member schemas
+     *
+     * @return list<ValidationSchema<mixed>>
+     */
+    public function schemas(): array
+    {
+        return $this->schemas;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

@@ -134,6 +134,32 @@ class DiscriminatedAnyOfSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the discriminator field name
+     *
+     * @return non-empty-string
+     */
+    public function discriminator(): string
+    {
+        return $this->discriminator;
+    }
+
+    /**
+     * return the map of discriminator values to schemas
+     *
+     * @return array<string|int, ValidationSchema<mixed>>
+     */
+    public function schemaMap(): array
+    {
+        return $this->schemaMap;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

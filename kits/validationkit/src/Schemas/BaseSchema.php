@@ -782,4 +782,69 @@ abstract class BaseSchema implements ValidationSchema
     {
         return $this->metadata;
     }
+
+    // ================================================================
+    //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the pipeline steps
+     *
+     * Returns the ordered list of normalisers, constraints,
+     * and transforms that have been added to this schema.
+     *
+     * @return list<PipelineStep>
+     */
+    public function getSteps(): array
+    {
+        return $this->steps;
+    }
+
+    /**
+     * does this schema have a default value?
+     */
+    public function hasDefaultValue(): bool
+    {
+        return $this->hasDefault;
+    }
+
+    /**
+     * return the default value
+     *
+     * Only meaningful when hasDefaultValue() is true.
+     */
+    public function getDefaultValue(): mixed
+    {
+        return $this->defaultValue;
+    }
+
+    /**
+     * does this schema have a catch fallback?
+     */
+    public function hasCatchFallback(): bool
+    {
+        return $this->hasCatch;
+    }
+
+    /**
+     * return the catch fallback value
+     *
+     * Only meaningful when hasCatchFallback() is true.
+     */
+    public function getCatchFallback(): mixed
+    {
+        return $this->catchFallback;
+    }
+
+    /**
+     * return the pipe target schema, or null if none
+     *
+     * @return ValidationSchema<mixed>|null
+     */
+    public function maybePipeTarget(): ?ValidationSchema
+    {
+        return $this->pipeTarget;
+    }
 }

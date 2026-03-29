@@ -102,6 +102,22 @@ final class ObjectPropertyNamesConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the validation schema
+     *
+     * @return ValidationSchema<mixed>
+     */
+    public function schema(): ValidationSchema
+    {
+        return $this->schema;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

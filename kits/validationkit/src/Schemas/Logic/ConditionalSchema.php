@@ -95,6 +95,42 @@ class ConditionalSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the condition schema
+     *
+     * @return ValidationSchema<mixed>
+     */
+    public function ifSchema(): ValidationSchema
+    {
+        return $this->if;
+    }
+
+    /**
+     * return the then schema, or null if not set
+     *
+     * @return ValidationSchema<mixed>|null
+     */
+    public function maybeThenSchema(): ?ValidationSchema
+    {
+        return $this->then;
+    }
+
+    /**
+     * return the else schema, or null if not set
+     *
+     * @return ValidationSchema<mixed>|null
+     */
+    public function maybeElseSchema(): ?ValidationSchema
+    {
+        return $this->else;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

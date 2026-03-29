@@ -81,6 +81,22 @@ class NullableSchema extends BaseSchema
 
     // ================================================================
     //
+    // Accessors
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the inner schema
+     *
+     * @return ValidationSchema<TInner>
+     */
+    public function unwrap(): ValidationSchema
+    {
+        return $this->innerSchema;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

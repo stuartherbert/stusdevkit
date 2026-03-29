@@ -101,6 +101,22 @@ class NotSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the negated schema
+     *
+     * @return ValidationSchema<mixed>
+     */
+    public function innerSchema(): ValidationSchema
+    {
+        return $this->schema;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

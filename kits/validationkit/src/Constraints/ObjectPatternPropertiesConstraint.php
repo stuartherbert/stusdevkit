@@ -85,6 +85,22 @@ final class ObjectPatternPropertiesConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the pattern-to-schema map
+     *
+     * @return array<string, ValidationSchema<mixed>>
+     */
+    public function patterns(): array
+    {
+        return $this->patterns;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

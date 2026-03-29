@@ -2216,6 +2216,368 @@ class ValidateObjectTest extends TestCase
 
     }
 
+    // ================================================================
+    //
+    // minProperties / maxProperties
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('minProperties() accepts object with enough properties')]
+    public function test_min_properties_accepts_object_with_enough(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that minProperties() accepts an
+        // object when it has at least the required number
+        // of properties
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'a' => Validate::string(),
+            'b' => Validate::string(),
+            'c' => Validate::string(),
+        ])->minProperties(count: 2);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            'a' => 'one',
+            'b' => 'two',
+            'c' => 'three',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([
+            'a' => 'one',
+            'b' => 'two',
+            'c' => 'three',
+        ], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('minProperties() rejects object with too few properties')]
+    public function test_min_properties_rejects_object_with_too_few(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that minProperties() rejects an
+        // object when it has fewer properties than the
+        // required minimum. We use passthrough() so
+        // that the constraint counts actual input
+        // properties, not the shape-expanded output.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'a' => Validate::optional(Validate::string()),
+        ])->passthrough()
+          ->minProperties(count: 2);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'a' => 'one',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $issue = $result->maybeError()->issues()->first();
+        $this->assertSame(
+            'https://stusdevkit.dev/errors/validation/too_small',
+            $issue->type,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('maxProperties() accepts object within limit')]
+    public function test_max_properties_accepts_within_limit(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maxProperties() accepts an
+        // object when it has no more than the allowed number
+        // of properties
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'a' => Validate::string(),
+            'b' => Validate::string(),
+        ])->maxProperties(count: 3);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            'a' => 'one',
+            'b' => 'two',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([
+            'a' => 'one',
+            'b' => 'two',
+        ], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('maxProperties() rejects object with too many properties')]
+    public function test_max_properties_rejects_too_many(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maxProperties() rejects an
+        // object when it has more properties than the
+        // allowed maximum. We use passthrough() so that
+        // extra keys are not stripped before the constraint
+        // runs.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'a' => Validate::string(),
+            'b' => Validate::string(),
+        ])->passthrough()
+          ->maxProperties(count: 2);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'a' => 'one',
+            'b' => 'two',
+            'c' => 'three',
+            'd' => 'four',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $issue = $result->maybeError()->issues()->first();
+        $this->assertSame(
+            'https://stusdevkit.dev/errors/validation/too_big',
+            $issue->type,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // dependentRequired
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('dependentRequired() passes when trigger property is absent')]
+    public function test_dependent_required_passes_when_trigger_absent(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dependentRequired() does not
+        // enforce the dependency when the trigger property
+        // is absent from the input. We use passthrough()
+        // with an empty shape so that the constraint sees
+        // only the actual input properties.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->dependentRequired(['email' => ['name']]);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            'name' => 'test',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('test', $actualResult['name']);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('dependentRequired() passes when all dependencies are present')]
+    public function test_dependent_required_passes_when_all_present(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dependentRequired() passes
+        // when the trigger property is present and all of
+        // the required dependent properties are also present.
+        // We use passthrough() with an empty shape so that
+        // the constraint sees only actual input properties.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->dependentRequired(['email' => ['name']]);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([
+            'name' => 'test',
+            'email' => 'a@b.com',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('test', $actualResult['name']);
+        $this->assertSame('a@b.com', $actualResult['email']);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('dependentRequired() fails when dependent property is missing')]
+    public function test_dependent_required_fails_when_dependent_missing(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dependentRequired() rejects
+        // the input when the trigger property is present but
+        // a required dependent property is missing. We use
+        // passthrough() with an empty shape so that the
+        // constraint sees only actual input properties.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([])
+            ->passthrough()
+            ->dependentRequired(['email' => ['name']]);
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'email' => 'a@b.com',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $issue = $result->maybeError()->issues()->first();
+        $this->assertStringContainsString(
+            'requires property',
+            $issue->message,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
     public function test_complex_object(): void
     {
         // ----------------------------------------------------------------

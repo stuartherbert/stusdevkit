@@ -42,63 +42,55 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
-use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * ObjectDependentSchemasConstraint validates that when
- * certain properties are present in the object, additional
- * schemas are satisfied.
+ * ArrayUniqueItemsConstraint validates that all elements
+ * in the array are unique.
  *
- * Each dependency maps a property name to a schema. When
- * the property exists in the data, the entire data object
- * is validated against that schema. Issues from the
- * dependent schemas propagate naturally through the
- * context.
+ * Uses strict comparison (===) to detect duplicates via
+ * a nested loop comparing each pair of elements.
  *
  * Usage:
  *
- *     use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
- *     use StusDevKit\ValidationKit\Validate;
+ *     use StusDevKit\ValidationKit\Constraints\ArrayUniqueItemsConstraint;
  *
- *     $constraint = new ObjectDependentSchemasConstraint(
- *         dependencies: [
- *             'billing_address' => Validate::object([
- *                 'billing_address' => Validate::string(),
- *                 'billing_city' => Validate::string(),
- *             ]),
- *         ],
+ *     // with default error message
+ *     $constraint = new ArrayUniqueItemsConstraint();
+ *
+ *     // with custom error callback
+ *     $constraint = new ArrayUniqueItemsConstraint(
+ *         error: fn($data) => new ValidationIssue(
+ *             type: 'https://stusdevkit.dev/errors/validation/custom',
+ *             input: $data,
+ *             path: [],
+ *             message: 'Items must be unique',
+ *         ),
  *     );
  *
- * @phpstan-type DependencyMap array<string, ValidationSchema<mixed>>
+ * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class ObjectDependentSchemasConstraint implements ValidationConstraint
+final class ArrayUniqueItemsConstraint implements ValidationConstraint
 {
-    /**
-     * @param DependencyMap $dependencies
-     * - map of property names to schemas that must be
-     *   satisfied when that property is present in the
-     *   data
-     */
-    public function __construct(
-        private readonly array $dependencies,
-    ) {
-    }
-
-    // ================================================================
-    //
-    // Introspection
-    //
-    // ----------------------------------------------------------------
+    /** @var ErrorCallback */
+    private readonly mixed $error;
 
     /**
-     * return the dependency map
-     *
-     * @return array<string, ValidationSchema<mixed>>
+     * @param ErrorCallback|null $error
+     * - optional custom error callback; if null, a default
+     *   callback is used that creates a ValidationIssue
+     *   with 'https://stusdevkit.dev/errors/validation/custom'
      */
-    public function dependencies(): array
+    public function __construct(?callable $error = null)
     {
-        return $this->dependencies;
+        $this->error = $error
+            ?? static fn(mixed $data) => new ValidationIssue(
+                type: 'https://stusdevkit.dev/errors/validation/custom',
+                input: $data,
+                path: [],
+                message: 'Array must contain only unique items',
+            );
     }
 
     // ================================================================
@@ -108,12 +100,11 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     // ----------------------------------------------------------------
 
     /**
-     * check dependent schemas for present properties
+     * check that all array elements are unique
      *
-     * For each dependency, if the property exists in the
-     * data, the entire data object is validated against the
-     * dependent schema using the current context. Issues
-     * propagate naturally.
+     * Iterates through every pair of elements using strict
+     * comparison (===) to detect duplicates. If any duplicate
+     * pair is found, a validation issue is added.
      *
      * @param array<mixed> $data
      */
@@ -123,12 +114,19 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
     ): mixed {
         assert(is_array($data));
 
-        foreach ($this->dependencies as $propertyName => $schema) {
-            if (array_key_exists($propertyName, $data)) {
-                $schema->parseWithContext(
-                    data: $data,
-                    context: $context,
-                );
+        $values = array_values($data);
+        $count = count($values);
+
+        for ($i = 0; $i < $count; $i++) {
+            for ($j = $i + 1; $j < $count; $j++) {
+                if ($values[$i] === $values[$j]) {
+                    $issue = ($this->error)($data);
+                    $context->addExistingIssue(
+                        $issue->withPath($context->path()),
+                    );
+
+                    return $data;
+                }
             }
         }
 

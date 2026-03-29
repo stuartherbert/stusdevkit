@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- added Validate::lazy() ([d87c9a5](https://github.com/stuartherbert/stusdevkit/commit/d87c9a5)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial support for JSON schema export ([2b098e1](https://github.com/stuartherbert/stusdevkit/commit/2b098e1)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Validate::lazy() ([b477726](https://github.com/stuartherbert/stusdevkit/commit/b477726)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ValidationSchema::withTransformer() ([22149b6](https://github.com/stuartherbert/stusdevkit/commit/22149b6)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce ValidationSchema interface ([8e69224](https://github.com/stuartherbert/stusdevkit/commit/8e69224)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for codecs ([31e7fb9](https://github.com/stuartherbert/stusdevkit/commit/31e7fb9)) — Stuart Herbert <stuart@stuartherbert.com>

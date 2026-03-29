@@ -47,17 +47,30 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * ArrayContainsConstraint validates that at least one
- * element in the array matches the given schema.
+ * ArrayContainsConstraint validates that elements in the
+ * array match the given schema, with optional bounds on
+ * how many matches are required.
+ *
+ * When neither minContains nor maxContains is set, at
+ * least one element must match (default behavior). When
+ * bounds are set, the number of matching elements must
+ * fall within the specified range.
  *
  * Usage:
  *
  *     use StusDevKit\ValidationKit\Constraints\ArrayContainsConstraint;
  *     use StusDevKit\ValidationKit\Validate;
  *
- *     // with default error message
+ *     // with default error message (at least one match)
  *     $constraint = new ArrayContainsConstraint(
  *         schema: Validate::string()->min(length: 1),
+ *     );
+ *
+ *     // with min/max contains bounds
+ *     $constraint = new ArrayContainsConstraint(
+ *         schema: Validate::string()->min(length: 1),
+ *         minContains: 2,
+ *         maxContains: 5,
  *     );
  *
  *     // with custom error callback
@@ -80,7 +93,14 @@ final class ArrayContainsConstraint implements ValidationConstraint
 
     /**
      * @param ValidationSchema<mixed> $schema
-     * - the schema that at least one element must match
+     * - the schema that elements must match
+     * @param int|null $minContains
+     * - minimum number of matching elements required;
+     *   if null, defaults to 1 when maxContains is also
+     *   null
+     * @param int|null $maxContains
+     * - maximum number of matching elements allowed;
+     *   if null, no upper bound is enforced
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
      *   callback is used that creates a ValidationIssue
@@ -88,6 +108,8 @@ final class ArrayContainsConstraint implements ValidationConstraint
      */
     public function __construct(
         private readonly ValidationSchema $schema,
+        private readonly ?int $minContains = null,
+        private readonly ?int $maxContains = null,
         ?callable $error = null,
     ) {
         $this->error = $error
@@ -95,9 +117,76 @@ final class ArrayContainsConstraint implements ValidationConstraint
                 type: 'https://stusdevkit.dev/errors/validation/custom',
                 input: $data,
                 path: [],
-                message: 'Array must contain at least one'
-                    . ' element matching the schema',
+                message: self::buildDefaultMessage(
+                    minContains: $minContains,
+                    maxContains: $maxContains,
+                ),
             );
+    }
+
+    /**
+     * build the default error message based on the bounds
+     *
+     * @return non-empty-string
+     */
+    private static function buildDefaultMessage(
+        ?int $minContains,
+        ?int $maxContains,
+    ): string {
+        if ($minContains === null && $maxContains === null) {
+            return 'Array must contain at least one'
+                . ' element matching the schema';
+        }
+
+        if ($minContains !== null && $maxContains !== null) {
+            return 'Array must contain between '
+                . $minContains . ' and ' . $maxContains
+                . ' elements matching the schema';
+        }
+
+        if ($minContains !== null) {
+            return 'Array must contain at least '
+                . $minContains
+                . ' elements matching the schema';
+        }
+
+        return 'Array must contain at most '
+            . $maxContains
+            . ' elements matching the schema';
+    }
+
+    // ================================================================
+    //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the validation schema
+     *
+     * @return ValidationSchema<mixed>
+     */
+    public function schema(): ValidationSchema
+    {
+        return $this->schema;
+    }
+
+    /**
+     * return the minimum number of matching elements, or
+     * null if no minimum is set
+     */
+    public function minContains(): ?int
+    {
+        return $this->minContains;
+    }
+
+    /**
+     * return the maximum number of matching elements, or
+     * null if no maximum is set
+     */
+    public function maxContains(): ?int
+    {
+        return $this->maxContains;
     }
 
     // ================================================================
@@ -107,12 +196,15 @@ final class ArrayContainsConstraint implements ValidationConstraint
     // ----------------------------------------------------------------
 
     /**
-     * check that at least one element matches the schema
+     * check that elements matching the schema fall within
+     * the expected bounds
      *
-     * Iterates through the array elements and validates each
-     * one against the schema. If any element passes without
-     * issues, the constraint is satisfied and returns early.
-     * If no element passes, a validation issue is added.
+     * Iterates through all array elements and counts how
+     * many match the schema. Then checks the count against
+     * the configured bounds:
+     * - no bounds: at least 1 match required
+     * - minContains: at least that many matches required
+     * - maxContains: at most that many matches allowed
      *
      * @param array<mixed> $data
      */
@@ -122,6 +214,8 @@ final class ArrayContainsConstraint implements ValidationConstraint
     ): mixed {
         assert(is_array($data));
 
+        $matchCount = 0;
+
         foreach ($data as $element) {
             $elementContext = new ValidationContext();
             $this->schema->parseWithContext(
@@ -130,17 +224,40 @@ final class ArrayContainsConstraint implements ValidationConstraint
             );
 
             if (! $elementContext->hasIssues()) {
-                // at least one element matches — constraint
-                // is satisfied
-                return $data;
+                $matchCount++;
             }
         }
 
-        // no element matched the schema
-        $issue = ($this->error)($data);
-        $context->addExistingIssue(
-            $issue->withPath($context->path()),
-        );
+        $hasIssue = false;
+
+        if (
+            $this->minContains === null
+            && $this->maxContains === null
+        ) {
+            // default behavior: require at least one match
+            $hasIssue = $matchCount < 1;
+        } else {
+            if (
+                $this->minContains !== null
+                && $matchCount < $this->minContains
+            ) {
+                $hasIssue = true;
+            }
+
+            if (
+                $this->maxContains !== null
+                && $matchCount > $this->maxContains
+            ) {
+                $hasIssue = true;
+            }
+        }
+
+        if ($hasIssue) {
+            $issue = ($this->error)($data);
+            $context->addExistingIssue(
+                $issue->withPath($context->path()),
+            );
+        }
 
         return $data;
     }

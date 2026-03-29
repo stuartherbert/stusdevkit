@@ -41,7 +41,10 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Constraints\ObjectDependentRequiredConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
+use StusDevKit\ValidationKit\Constraints\ObjectMaxPropertiesConstraint;
+use StusDevKit\ValidationKit\Constraints\ObjectMinPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
@@ -88,12 +91,8 @@ class ObjectSchema extends BaseSchema
     /**
      * how to handle keys in the input that are not in
      * the shape
-     *
-     * - 'strip': silently remove unknown keys (default)
-     * - 'strict': reject unknown keys with an error
-     * - 'passthrough': keep unknown keys in the output
      */
-    private string $unknownKeyPolicy = 'strip';
+    private UnknownKeyPolicy $unknownKeyPolicy = UnknownKeyPolicy::Strip;
 
     /**
      * if set, unknown keys are validated against this
@@ -270,7 +269,7 @@ class ObjectSchema extends BaseSchema
     public function strict(): static
     {
         $clone = clone $this;
-        $clone->unknownKeyPolicy = 'strict';
+        $clone->unknownKeyPolicy = UnknownKeyPolicy::Strict;
         $clone->catchallSchema = null;
 
         return $clone;
@@ -282,7 +281,7 @@ class ObjectSchema extends BaseSchema
     public function strip(): static
     {
         $clone = clone $this;
-        $clone->unknownKeyPolicy = 'strip';
+        $clone->unknownKeyPolicy = UnknownKeyPolicy::Strip;
         $clone->catchallSchema = null;
 
         return $clone;
@@ -294,7 +293,7 @@ class ObjectSchema extends BaseSchema
     public function passthrough(): static
     {
         $clone = clone $this;
-        $clone->unknownKeyPolicy = 'passthrough';
+        $clone->unknownKeyPolicy = UnknownKeyPolicy::Passthrough;
         $clone->catchallSchema = null;
 
         return $clone;
@@ -315,6 +314,40 @@ class ObjectSchema extends BaseSchema
         $clone->catchallSchema = $schema;
 
         return $clone;
+    }
+
+    // ================================================================
+    //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the full shape
+     *
+     * @return array<string, ValidationSchema<mixed>>
+     */
+    public function shape(): array
+    {
+        return $this->shape;
+    }
+
+    /**
+     * return the unknown key policy
+     */
+    public function unknownKeyPolicy(): UnknownKeyPolicy
+    {
+        return $this->unknownKeyPolicy;
+    }
+
+    /**
+     * return the catchall schema, or null if none
+     *
+     * @return ValidationSchema<mixed>|null
+     */
+    public function maybeCatchallSchema(): ?ValidationSchema
+    {
+        return $this->catchallSchema;
     }
 
     // ================================================================
@@ -375,6 +408,64 @@ class ObjectSchema extends BaseSchema
     ): static {
         return $this->withConstraint(
             new ObjectDependentSchemasConstraint(
+                dependencies: $dependencies,
+            ),
+        );
+    }
+
+    /**
+     * require the object to have at least the given number
+     * of properties
+     *
+     * @param (callable(mixed): ValidationIssue)|null $error
+     */
+    public function minProperties(
+        int $count,
+        ?callable $error = null,
+    ): static {
+        return $this->withConstraint(
+            new ObjectMinPropertiesConstraint(
+                count: $count,
+                error: $error,
+            ),
+        );
+    }
+
+    /**
+     * require the object to have at most the given number
+     * of properties
+     *
+     * @param (callable(mixed): ValidationIssue)|null $error
+     */
+    public function maxProperties(
+        int $count,
+        ?callable $error = null,
+    ): static {
+        return $this->withConstraint(
+            new ObjectMaxPropertiesConstraint(
+                count: $count,
+                error: $error,
+            ),
+        );
+    }
+
+    /**
+     * require additional properties to be present when
+     * certain properties exist
+     *
+     * When a property named in $dependencies exists in
+     * the input, the listed properties must also be
+     * present.
+     *
+     * @param array<string, list<string>> $dependencies
+     * - maps property names to lists of required
+     *   property names
+     */
+    public function dependentRequired(
+        array $dependencies,
+    ): static {
+        return $this->withConstraint(
+            new ObjectDependentRequiredConstraint(
                 dependencies: $dependencies,
             ),
         );
@@ -445,7 +536,7 @@ class ObjectSchema extends BaseSchema
 
             // passthrough or catchall: include unknown keys
             // in the output
-            if ($this->unknownKeyPolicy === 'passthrough') {
+            if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
                 $output = array_merge($output, $unknownKeys);
             } elseif ($this->catchallSchema !== null) {
                 foreach ($unknownKeys as $key => $value) {
@@ -505,7 +596,7 @@ class ObjectSchema extends BaseSchema
 
             // passthrough or catchall: include unknown keys
             // in the output
-            if ($this->unknownKeyPolicy === 'passthrough') {
+            if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
                 $output = array_merge($output, $unknownKeys);
             } elseif ($this->catchallSchema !== null) {
                 foreach ($unknownKeys as $key => $value) {
@@ -545,7 +636,7 @@ class ObjectSchema extends BaseSchema
         }
 
         switch ($this->unknownKeyPolicy) {
-            case 'strict':
+            case UnknownKeyPolicy::Strict:
                 $keyNames = implode(', ', array_keys($unknownKeys));
                 $context->addIssue(
                     type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
@@ -554,8 +645,8 @@ class ObjectSchema extends BaseSchema
                 );
                 break;
 
-            case 'strip':
-            case 'passthrough':
+            case UnknownKeyPolicy::Strip:
+            case UnknownKeyPolicy::Passthrough:
                 // no error needed
                 break;
         }

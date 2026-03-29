@@ -101,6 +101,20 @@ final class DateTimeMaxConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the maximum date
+     */
+    public function date(): DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

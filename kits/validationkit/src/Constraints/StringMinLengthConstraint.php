@@ -102,6 +102,20 @@ final class StringMinLengthConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the minimum length
+     */
+    public function length(): int
+    {
+        return $this->length;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

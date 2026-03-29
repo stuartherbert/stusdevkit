@@ -101,6 +101,20 @@ final class DateTimeMinConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the minimum date
+     */
+    public function date(): DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

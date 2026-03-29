@@ -120,6 +120,20 @@ final class StringEndsWithConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the required suffix
+     */
+    public function suffix(): string
+    {
+        return $this->suffix;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

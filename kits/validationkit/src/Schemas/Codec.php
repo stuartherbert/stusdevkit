@@ -116,6 +116,32 @@ class Codec extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the input (serialised) schema
+     *
+     * @return ValidationSchema<TInput>
+     */
+    public function inputSchema(): ValidationSchema
+    {
+        return $this->inputSchema;
+    }
+
+    /**
+     * return the output (native) schema
+     *
+     * @return ValidationSchema<TOutput>
+     */
+    public function outputSchema(): ValidationSchema
+    {
+        return $this->outputSchema;
+    }
+
+    // ================================================================
+    //
     // Encode (output → input)
     //
     // ----------------------------------------------------------------

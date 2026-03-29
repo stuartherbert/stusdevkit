@@ -42,9 +42,12 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Coercions\CoerceToString;
+use StusDevKit\ValidationKit\Constraints\StringDateConstraint;
+use StusDevKit\ValidationKit\Constraints\StringDurationConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEndsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringExactLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\StringHostnameConstraint;
 use StusDevKit\ValidationKit\Constraints\StringIncludesConstraint;
 use StusDevKit\ValidationKit\Constraints\StringIpv4Constraint;
 use StusDevKit\ValidationKit\Constraints\StringIpv6Constraint;
@@ -52,6 +55,7 @@ use StusDevKit\ValidationKit\Constraints\StringMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMinLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
+use StusDevKit\ValidationKit\Constraints\StringTimeConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
@@ -310,6 +314,64 @@ class StringSchema extends BaseSchema
                 suffix: $suffix,
                 error: $error,
             ),
+        );
+    }
+
+    /**
+     * require the string to be a valid date (YYYY-MM-DD)
+     *
+     * Validates the format and that the date is a real
+     * calendar date (e.g. rejects 2024-02-30).
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function date(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringDateConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid time
+     *
+     * Accepts RFC 3339 time format: HH:MM:SS with
+     * optional fractional seconds and timezone offset.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function time(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringTimeConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid ISO 8601 duration
+     *
+     * Accepts durations like P1Y2M3D, PT1H30M, P1W.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function duration(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringDurationConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid hostname
+     *
+     * Validates against RFC 952/1123 hostname rules.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function hostname(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringHostnameConstraint(error: $error),
         );
     }
 

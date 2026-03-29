@@ -120,6 +120,20 @@ final class StringStartsWithConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the required prefix
+     */
+    public function prefix(): string
+    {
+        return $this->prefix;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

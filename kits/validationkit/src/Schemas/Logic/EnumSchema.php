@@ -134,6 +134,33 @@ class EnumSchema extends BaseSchema
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the allowed values, or null if in PHP enum mode
+     *
+     * @return list<string|int>|null
+     */
+    public function maybeAllowedValues(): ?array
+    {
+        return $this->allowedValues;
+    }
+
+    /**
+     * return the BackedEnum class name, or null if in
+     * string literal mode
+     *
+     * @return class-string<BackedEnum>|null
+     */
+    public function maybeEnumClass(): ?string
+    {
+        return $this->enumClass;
+    }
+
+    // ================================================================
+    //
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------

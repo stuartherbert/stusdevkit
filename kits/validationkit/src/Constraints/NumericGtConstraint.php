@@ -103,6 +103,20 @@ final class NumericGtConstraint implements ValidationConstraint
 
     // ================================================================
     //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the threshold value
+     */
+    public function value(): int|float
+    {
+        return $this->value;
+    }
+
+    // ================================================================
+    //
     // ValidationConstraint Implementation
     //
     // ----------------------------------------------------------------

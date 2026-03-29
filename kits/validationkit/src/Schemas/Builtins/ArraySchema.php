@@ -45,6 +45,7 @@ use StusDevKit\ValidationKit\Constraints\ArrayContainsConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayExactLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMinLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\ArrayUniqueItemsConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
@@ -178,22 +179,60 @@ class ArraySchema extends BaseSchema
     }
 
     /**
-     * require the array to contain at least one element
-     * matching the given schema
+     * require the array to contain elements matching the
+     * given schema, with optional bounds on how many
+     * matches are required
+     *
+     * When neither minContains nor maxContains is set, at
+     * least one element must match.
      *
      * @param ValidationSchema<mixed> $schema
      * @param ErrorCallback|null $error
      */
     public function contains(
         ValidationSchema $schema,
+        ?int $minContains = null,
+        ?int $maxContains = null,
         ?callable $error = null,
     ): static {
         return $this->withConstraint(
             new ArrayContainsConstraint(
                 schema: $schema,
+                minContains: $minContains,
+                maxContains: $maxContains,
                 error: $error,
             ),
         );
+    }
+
+    /**
+     * require the array to contain only unique items
+     *
+     * Uses strict comparison (===) to detect duplicates.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function uniqueItems(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new ArrayUniqueItemsConstraint(error: $error),
+        );
+    }
+
+    // ================================================================
+    //
+    // Introspection
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * return the element schema
+     *
+     * @return ValidationSchema<TElement>
+     */
+    public function elementSchema(): ValidationSchema
+    {
+        return $this->elementSchema;
     }
 
     // ================================================================

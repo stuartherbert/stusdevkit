@@ -1692,4 +1692,418 @@ class ValidateArrayTest extends TestCase
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // uniqueItems
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('uniqueItems() accepts array with unique elements')]
+    public function test_unique_items_accepts_array_with_unique_elements(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uniqueItems() accepts an
+        // array where all elements are unique
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::int())->uniqueItems();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([1, 2, 3]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([1, 2, 3], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('uniqueItems() accepts empty array')]
+    public function test_unique_items_accepts_empty_array(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uniqueItems() accepts an
+        // empty array (no duplicates possible)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())->uniqueItems();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('uniqueItems() rejects array with duplicates')]
+    public function test_unique_items_rejects_array_with_duplicates(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uniqueItems() rejects an
+        // array containing duplicate values and reports a
+        // custom error type URI
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::int())->uniqueItems();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([1, 2, 1]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
+                    'path'    => [],
+                    'message' => 'Array must contain only unique items',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('uniqueItems() uses strict comparison')]
+    public function test_unique_items_uses_strict_comparison(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uniqueItems() uses strict
+        // comparison (===), so values like 1, '1', and true
+        // are treated as distinct elements
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())->uniqueItems();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([1, '1', true]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([1, '1', true], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // contains with bounds
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('contains() with minContains accepts when enough matches')]
+    public function test_contains_min_accepts_when_enough_matches(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() with minContains
+        // accepts the array when the number of matching
+        // elements meets the minimum requirement
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(
+                schema: Validate::string(),
+                minContains: 2,
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([1, 'a', 2, 'b']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([1, 'a', 2, 'b'], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('contains() with minContains rejects when too few matches')]
+    public function test_contains_min_rejects_when_too_few_matches(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() with minContains
+        // rejects the array when the number of matching
+        // elements is below the minimum requirement
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(
+                schema: Validate::string(),
+                minContains: 2,
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([1, 'a', 2]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
+                    'path'    => [],
+                    'message' => 'Array must contain at least 2'
+                        . ' elements matching the schema',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('contains() with maxContains accepts within limit')]
+    public function test_contains_max_accepts_within_limit(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() with maxContains
+        // accepts the array when the number of matching
+        // elements does not exceed the maximum
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(
+                schema: Validate::string(),
+                maxContains: 2,
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([1, 'a', 2]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([1, 'a', 2], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('contains() with maxContains rejects when too many')]
+    public function test_contains_max_rejects_when_too_many(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() with maxContains
+        // rejects the array when the number of matching
+        // elements exceeds the maximum
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(
+                schema: Validate::string(),
+                maxContains: 2,
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(['a', 'b', 'c']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/custom',
+                    'path'    => [],
+                    'message' => 'Array must contain at most 2'
+                        . ' elements matching the schema',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('contains() with both bounds accepts within range')]
+    public function test_contains_both_bounds(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contains() with both
+        // minContains and maxContains accepts the array
+        // when the match count falls within the range
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::array(Validate::mixed())
+            ->contains(
+                schema: Validate::string(),
+                minContains: 1,
+                maxContains: 3,
+            );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse([1, 'a', 'b', 2]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame([1, 'a', 'b', 2], $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
 }
