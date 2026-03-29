@@ -42,8 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas;
 
 use StusDevKit\ValidationKit\Coercions\NoCoercion;
-use StusDevKit\ValidationKit\Contracts\Parseable;
 use StusDevKit\ValidationKit\Contracts\PipelineStep;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
@@ -75,9 +75,9 @@ use StusDevKit\ValidationKit\Traits\HasTransforms;
  * schemas).
  *
  * @template-covariant TOutput
- * @implements Parseable<TOutput>
+ * @implements ValidationSchema<TOutput>
  */
-abstract class BaseSchema implements Parseable
+abstract class BaseSchema implements ValidationSchema
 {
     use HasErrorCallback;
     use HasMetadata;
@@ -139,7 +139,7 @@ abstract class BaseSchema implements Parseable
 
     // ================================================================
     //
-    // Parseable Interface
+    // ValidationSchema Interface
     //
     // ----------------------------------------------------------------
 

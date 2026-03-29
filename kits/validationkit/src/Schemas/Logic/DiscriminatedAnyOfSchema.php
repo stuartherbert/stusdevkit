@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Logic;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\LiteralSchema;
@@ -83,7 +84,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
      * map of discriminator values to their schemas,
      * built at construction time for O(1) lookup
      *
-     * @var array<string|int, BaseSchema<mixed>>
+     * @var array<string|int, ValidationSchema<mixed>>
      */
     private readonly array $schemaMap;
 
@@ -91,7 +92,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
      * @param non-empty-string $discriminator
      * - the key in the input array used to select the
      *   schema
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas to choose from; each must be an
      *   ObjectSchema with a literal field for the
      *   discriminator
@@ -297,8 +298,8 @@ class DiscriminatedAnyOfSchema extends BaseSchema
      * LiteralSchema for the discriminator field, then
      * uses its expected value as the map key.
      *
-     * @param list<BaseSchema<mixed>> $schemas
-     * @return array<string|int, BaseSchema<mixed>>
+     * @param list<ValidationSchema<mixed>> $schemas
+     * @return array<string|int, ValidationSchema<mixed>>
      */
     private function buildSchemaMap(array $schemas): array
     {

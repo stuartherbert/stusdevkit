@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
@@ -65,10 +66,10 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 class NullishSchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<TInner> $innerSchema
+     * @param ValidationSchema<TInner> $innerSchema
      */
     public function __construct(
-        private readonly BaseSchema $innerSchema,
+        private readonly ValidationSchema $innerSchema,
     ) {
         parent::__construct();
     }
@@ -82,9 +83,9 @@ class NullishSchema extends BaseSchema
     /**
      * return the inner schema
      *
-     * @return BaseSchema<TInner>
+     * @return ValidationSchema<TInner>
      */
-    public function unwrap(): BaseSchema
+    public function unwrap(): ValidationSchema
     {
         return $this->innerSchema;
     }
@@ -102,7 +103,7 @@ class NullishSchema extends BaseSchema
 
     protected function expectedType(): string
     {
-        return $this->innerSchema->expectedType();
+        return 'nullish';
     }
 
     protected function checkType(

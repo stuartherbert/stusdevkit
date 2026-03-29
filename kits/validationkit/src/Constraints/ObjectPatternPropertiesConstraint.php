@@ -42,8 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
 /**
  * ObjectPatternPropertiesConstraint validates properties
@@ -68,7 +68,7 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
  *         ],
  *     );
  *
- * @phpstan-type PatternMap array<string, BaseSchema<mixed>>
+ * @phpstan-type PatternMap array<string, ValidationSchema<mixed>>
  */
 final class ObjectPatternPropertiesConstraint implements ValidationConstraint
 {

@@ -42,8 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
 /**
  * ObjectDependentSchemasConstraint validates that when
@@ -70,7 +70,7 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
  *         ],
  *     );
  *
- * @phpstan-type DependencyMap array<string, BaseSchema<mixed>>
+ * @phpstan-type DependencyMap array<string, ValidationSchema<mixed>>
  */
 final class ObjectDependentSchemasConstraint implements ValidationConstraint
 {

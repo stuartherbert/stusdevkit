@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Logic;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -67,12 +68,12 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class NotSchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      * - the schema that must NOT match
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
     public function __construct(
-        private readonly BaseSchema $schema,
+        private readonly ValidationSchema $schema,
         ?callable $typeCheckError = null,
     ) {
         parent::__construct();

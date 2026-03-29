@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Collections;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -69,7 +70,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class TupleSchema extends BaseSchema
 {
     /**
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - one schema per tuple position, in order
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */

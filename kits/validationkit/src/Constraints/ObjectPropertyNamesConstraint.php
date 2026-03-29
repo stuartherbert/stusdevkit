@@ -42,8 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -79,7 +79,7 @@ final class ObjectPropertyNamesConstraint implements ValidationConstraint
     private readonly mixed $error;
 
     /**
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      * - the schema that every property name must satisfy
      * @param ErrorCallback|null $error
      * - optional custom error callback; if null, a default
@@ -87,7 +87,7 @@ final class ObjectPropertyNamesConstraint implements ValidationConstraint
      *   with 'https://stusdevkit.dev/errors/validation/custom'
      */
     public function __construct(
-        private readonly BaseSchema $schema,
+        private readonly ValidationSchema $schema,
         ?callable $error = null,
     ) {
         $this->error = $error

@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
@@ -70,10 +71,10 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 class NullableSchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<TInner> $innerSchema
+     * @param ValidationSchema<TInner> $innerSchema
      */
     public function __construct(
-        private readonly BaseSchema $innerSchema,
+        private readonly ValidationSchema $innerSchema,
     ) {
         parent::__construct();
     }
@@ -91,7 +92,7 @@ class NullableSchema extends BaseSchema
 
     protected function expectedType(): string
     {
-        return $this->innerSchema->expectedType();
+        return 'nullable';
     }
 
     protected function checkType(

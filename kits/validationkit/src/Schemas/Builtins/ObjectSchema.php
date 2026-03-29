@@ -44,6 +44,7 @@ namespace StusDevKit\ValidationKit\Schemas\Builtins;
 use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -98,12 +99,12 @@ class ObjectSchema extends BaseSchema
      * if set, unknown keys are validated against this
      * schema instead of being handled by unknownKeyPolicy
      *
-     * @var BaseSchema<mixed>|null
+     * @var ValidationSchema<mixed>|null
      */
-    private ?BaseSchema $catchallSchema = null;
+    private ?ValidationSchema $catchallSchema = null;
 
     /**
-     * @param array<string, BaseSchema<mixed>> $shape
+     * @param array<string, ValidationSchema<mixed>> $shape
      * - map of key names to their validation schemas
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
@@ -147,7 +148,7 @@ class ObjectSchema extends BaseSchema
      * the additional fields. Existing fields with the
      * same key are overwritten.
      *
-     * @param array<string, BaseSchema<mixed>> $additionalShape
+     * @param array<string, ValidationSchema<mixed>> $additionalShape
      */
     public function extend(array $additionalShape): static
     {
@@ -247,9 +248,9 @@ class ObjectSchema extends BaseSchema
      * return the schema for a given shape key, or null
      * if the key is not in the shape
      *
-     * @return BaseSchema<mixed>|null
+     * @return ValidationSchema<mixed>|null
      */
-    public function maybeFieldSchema(string $key): ?BaseSchema
+    public function maybeFieldSchema(string $key): ?ValidationSchema
     {
         return $this->shape[$key] ?? null;
     }
@@ -306,9 +307,9 @@ class ObjectSchema extends BaseSchema
      * schema instead of being stripped, rejected, or
      * passed through.
      *
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      */
-    public function catchall(BaseSchema $schema): static
+    public function catchall(ValidationSchema $schema): static
     {
         $clone = clone $this;
         $clone->catchallSchema = $schema;
@@ -326,11 +327,11 @@ class ObjectSchema extends BaseSchema
      * validate that all property names satisfy the given
      * schema
      *
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      * @param (callable(mixed): ValidationIssue)|null $error
      */
     public function propertyNames(
-        BaseSchema $schema,
+        ValidationSchema $schema,
         ?callable $error = null,
     ): static {
         return $this->withConstraint(
@@ -345,7 +346,7 @@ class ObjectSchema extends BaseSchema
      * validate properties whose names match regex patterns
      * against corresponding schemas
      *
-     * @param array<string, BaseSchema<mixed>> $patterns
+     * @param array<string, ValidationSchema<mixed>> $patterns
      * - maps regex patterns to validation schemas
      */
     public function patternProperties(
@@ -366,7 +367,7 @@ class ObjectSchema extends BaseSchema
      * the input, the corresponding schema is applied to
      * the entire object.
      *
-     * @param array<string, BaseSchema<mixed>> $dependencies
+     * @param array<string, ValidationSchema<mixed>> $dependencies
      * - maps property names to schemas
      */
     public function dependentSchemas(

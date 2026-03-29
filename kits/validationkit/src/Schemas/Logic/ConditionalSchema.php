@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Logic;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 
@@ -77,17 +78,17 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 class ConditionalSchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<mixed> $if
+     * @param ValidationSchema<mixed> $if
      * - the condition schema to evaluate
-     * @param BaseSchema<mixed>|null $then
+     * @param ValidationSchema<mixed>|null $then
      * - the schema to apply when the condition passes
-     * @param BaseSchema<mixed>|null $else
+     * @param ValidationSchema<mixed>|null $else
      * - the schema to apply when the condition fails
      */
     public function __construct(
-        private readonly BaseSchema $if,
-        private readonly ?BaseSchema $then = null,
-        private readonly ?BaseSchema $else = null,
+        private readonly ValidationSchema $if,
+        private readonly ?ValidationSchema $then = null,
+        private readonly ?ValidationSchema $else = null,
     ) {
         parent::__construct();
     }

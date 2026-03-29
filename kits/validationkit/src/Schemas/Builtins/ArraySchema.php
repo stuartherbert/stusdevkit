@@ -45,6 +45,7 @@ use StusDevKit\ValidationKit\Constraints\ArrayContainsConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayExactLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMinLengthConstraint;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -79,12 +80,12 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class ArraySchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<TElement> $elementSchema
+     * @param ValidationSchema<TElement> $elementSchema
      * - the schema to validate each element against
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
     public function __construct(
-        private readonly BaseSchema $elementSchema,
+        private readonly ValidationSchema $elementSchema,
         ?callable $typeCheckError = null,
     ) {
         parent::__construct();
@@ -180,11 +181,11 @@ class ArraySchema extends BaseSchema
      * require the array to contain at least one element
      * matching the given schema
      *
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      * @param ErrorCallback|null $error
      */
     public function contains(
-        BaseSchema $schema,
+        ValidationSchema $schema,
         ?callable $error = null,
     ): static {
         return $this->withConstraint(

@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Collections;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -72,15 +73,15 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class RecordSchema extends BaseSchema
 {
     /**
-     * @param BaseSchema<TKey> $keySchema
+     * @param ValidationSchema<TKey> $keySchema
      * - schema for validating keys (typically StringSchema)
-     * @param BaseSchema<TValue> $valueSchema
+     * @param ValidationSchema<TValue> $valueSchema
      * - schema for validating values
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */
     public function __construct(
-        private readonly BaseSchema $keySchema,
-        private readonly BaseSchema $valueSchema,
+        private readonly ValidationSchema $keySchema,
+        private readonly ValidationSchema $valueSchema,
         ?callable $typeCheckError = null,
     ) {
         parent::__construct();

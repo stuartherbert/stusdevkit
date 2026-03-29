@@ -41,8 +41,8 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Traits;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
-use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\Transformers\CallableTransform;
 use StusDevKit\ValidationKit\Transformers\RefineStep;
 use StusDevKit\ValidationKit\Transformers\SuperRefineStep;
@@ -60,8 +60,8 @@ use StusDevKit\ValidationKit\Transformers\SuperRefineStep;
  */
 trait HasTransforms
 {
-    /** @var BaseSchema<mixed>|null */
-    protected ?BaseSchema $pipeTarget = null;
+    /** @var ValidationSchema<mixed>|null */
+    protected ?ValidationSchema $pipeTarget = null;
 
     protected bool $hasCatch = false;
     protected mixed $catchFallback;
@@ -134,9 +134,9 @@ trait HasTransforms
      * the result is passed to the target schema for further
      * validation.
      *
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      */
-    public function pipe(BaseSchema $schema): static
+    public function pipe(ValidationSchema $schema): static
     {
         $clone = clone $this;
         $clone->pipeTarget = $schema;

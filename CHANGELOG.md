@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- initial support for codecs ([98506ea](https://github.com/stuartherbert/stusdevkit/commit/98506ea)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce ValidationSchema interface ([0fa1316](https://github.com/stuartherbert/stusdevkit/commit/0fa1316)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial support for codecs ([31e7fb9](https://github.com/stuartherbert/stusdevkit/commit/31e7fb9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::uuid() ([5981663](https://github.com/stuartherbert/stusdevkit/commit/5981663)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::when() ([a4e5e02](https://github.com/stuartherbert/stusdevkit/commit/a4e5e02)) — Stuart Herbert <stuart@stuartherbert.com>
 - added missing JSON schema logic/sub-schema support ([5950061](https://github.com/stuartherbert/stusdevkit/commit/5950061)) — Stuart Herbert <stuart@stuartherbert.com>

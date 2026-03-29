@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Logic;
 
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -70,7 +71,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
 class OneOfSchema extends BaseSchema
 {
     /**
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas to try; exactly one must match
      * @param (callable(mixed): ValidationIssue)|null $typeCheckError
      */

@@ -43,7 +43,7 @@ namespace StusDevKit\ValidationKit;
 
 use BackedEnum;
 use Closure;
-use StusDevKit\ValidationKit\Schemas\BaseSchema;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
@@ -126,11 +126,11 @@ final class Validate
      * delegating to the inner schema.
      *
      * @template T
-     * @param BaseSchema<T> $schema
+     * @param ValidationSchema<T> $schema
      * @return NullableSchema<T>
      */
     public static function nullable(
-        BaseSchema $schema,
+        ValidationSchema $schema,
     ): NullableSchema {
         return new NullableSchema(innerSchema: $schema);
     }
@@ -143,11 +143,11 @@ final class Validate
      * to the inner schema.
      *
      * @template T
-     * @param BaseSchema<T> $schema
+     * @param ValidationSchema<T> $schema
      * @return OptionalSchema<T>
      */
     public static function optional(
-        BaseSchema $schema,
+        ValidationSchema $schema,
     ): OptionalSchema {
         return new OptionalSchema(innerSchema: $schema);
     }
@@ -159,11 +159,11 @@ final class Validate
      * the value can be null or missing entirely.
      *
      * @template T
-     * @param BaseSchema<T> $schema
+     * @param ValidationSchema<T> $schema
      * @return NullishSchema<T>
      */
     public static function nullish(
-        BaseSchema $schema,
+        ValidationSchema $schema,
     ): NullishSchema {
         return new NullishSchema(innerSchema: $schema);
     }
@@ -291,14 +291,14 @@ final class Validate
      * matches the given element schema.
      *
      * @template TElement
-     * @param BaseSchema<TElement> $element
+     * @param ValidationSchema<TElement> $element
      * - the schema to validate each element against
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
      * @return ArraySchema<TElement>
      */
     public static function array(
-        BaseSchema $element,
+        ValidationSchema $element,
         ?callable $error = null,
     ): ArraySchema {
         return new ArraySchema(
@@ -313,7 +313,7 @@ final class Validate
      * Validates an associative array against a defined
      * shape where each key maps to a schema.
      *
-     * @param array<string, BaseSchema<mixed>> $shape
+     * @param array<string, ValidationSchema<mixed>> $shape
      * - map of key names to their validation schemas
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
@@ -338,17 +338,17 @@ final class Validate
      *
      * @template TKey of array-key
      * @template TValue
-     * @param BaseSchema<TKey> $key
+     * @param ValidationSchema<TKey> $key
      * - schema for validating keys
-     * @param BaseSchema<TValue> $value
+     * @param ValidationSchema<TValue> $value
      * - schema for validating values
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
      * @return RecordSchema<TKey, TValue>
      */
     public static function record(
-        BaseSchema $key,
-        BaseSchema $value,
+        ValidationSchema $key,
+        ValidationSchema $value,
         ?callable $error = null,
     ): RecordSchema {
         return new RecordSchema(
@@ -364,7 +364,7 @@ final class Validate
      * Validates a fixed-length array where each position
      * has its own schema.
      *
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - one schema per tuple position, in order
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
@@ -392,7 +392,7 @@ final class Validate
      * given schemas. Schemas are tried in order; the first
      * match wins.
      *
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas to try
      * @param ErrorCallback|null $error
      * - optional error callback when no schema matches
@@ -414,7 +414,7 @@ final class Validate
      * schemas. Primarily useful for combining object
      * schemas.
      *
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas that must all pass
      * @param ErrorCallback|null $error
      * - optional error callback for type-check failures
@@ -439,7 +439,7 @@ final class Validate
      *
      * @param non-empty-string $discriminator
      * - the key used to select the schema
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas to choose from
      * @param ErrorCallback|null $error
      * - optional error callback when no schema matches
@@ -463,7 +463,7 @@ final class Validate
      * given schemas. If zero or more than one match,
      * validation fails.
      *
-     * @param list<BaseSchema<mixed>> $schemas
+     * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas to check against
      * @param ErrorCallback|null $error
      * - optional error callback when validation fails
@@ -485,13 +485,13 @@ final class Validate
      * schema. If the schema accepts the data, validation
      * fails.
      *
-     * @param BaseSchema<mixed> $schema
+     * @param ValidationSchema<mixed> $schema
      * - the schema that must not match
      * @param ErrorCallback|null $error
      * - optional error callback when validation fails
      */
     public static function not(
-        BaseSchema $schema,
+        ValidationSchema $schema,
         ?callable $error = null,
     ): NotSchema {
         return new NotSchema(
@@ -507,17 +507,17 @@ final class Validate
      * the then schema is applied. If it fails, the else
      * schema is applied. Both then and else are optional.
      *
-     * @param BaseSchema<mixed> $if
+     * @param ValidationSchema<mixed> $if
      * - the condition schema
-     * @param BaseSchema<mixed>|null $then
+     * @param ValidationSchema<mixed>|null $then
      * - schema to apply when condition passes
-     * @param BaseSchema<mixed>|null $else
+     * @param ValidationSchema<mixed>|null $else
      * - schema to apply when condition fails
      */
     public static function conditional(
-        BaseSchema $if,
-        ?BaseSchema $then = null,
-        ?BaseSchema $else = null,
+        ValidationSchema $if,
+        ?ValidationSchema $then = null,
+        ?ValidationSchema $else = null,
     ): ConditionalSchema {
         return new ConditionalSchema(
             if: $if,
@@ -639,10 +639,10 @@ final class Validate
      *
      * @template TInput
      * @template TOutput
-     * @param BaseSchema<TInput> $input
+     * @param ValidationSchema<TInput> $input
      * - schema that validates the serialised (input)
      *   representation
-     * @param BaseSchema<TOutput> $output
+     * @param ValidationSchema<TOutput> $output
      * - schema that validates the native (output)
      *   representation
      * @param Closure(TInput): TOutput $decode
@@ -652,8 +652,8 @@ final class Validate
      * @return Codec<TInput, TOutput>
      */
     public static function codec(
-        BaseSchema $input,
-        BaseSchema $output,
+        ValidationSchema $input,
+        ValidationSchema $output,
         Closure $decode,
         Closure $encode,
     ): Codec {

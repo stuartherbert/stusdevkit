@@ -44,6 +44,7 @@ namespace StusDevKit\ValidationKit\Schemas;
 use BadMethodCallException;
 use Closure;
 use StusDevKit\ValidationKit\Contracts\PipelineStep;
+use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ParseResult;
@@ -94,9 +95,9 @@ use StusDevKit\ValidationKit\ParseResult;
 class Codec extends BaseSchema
 {
     /**
-     * @param BaseSchema<TInput> $inputSchema
+     * @param ValidationSchema<TInput> $inputSchema
      * - validates the serialised (input) representation
-     * @param BaseSchema<TOutput> $outputSchema
+     * @param ValidationSchema<TOutput> $outputSchema
      * - validates the native (output) representation
      * @param Closure(TInput): TOutput $decoder
      * - transforms input type to output type
@@ -104,8 +105,8 @@ class Codec extends BaseSchema
      * - transforms output type to input type
      */
     public function __construct(
-        private readonly BaseSchema $inputSchema,
-        private readonly BaseSchema $outputSchema,
+        private readonly ValidationSchema $inputSchema,
+        private readonly ValidationSchema $outputSchema,
         private readonly Closure $decoder,
         private readonly Closure $encoder,
     ) {
@@ -257,7 +258,7 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function pipe(BaseSchema $schema): never
+    public function pipe(ValidationSchema $schema): never
     {
         throw new BadMethodCallException(
             'pipe() is not supported on Codec schemas',
