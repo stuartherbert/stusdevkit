@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- added ValidationSchema::withTransformer() ([59957a0](https://github.com/stuartherbert/stusdevkit/commit/59957a0)) — Stuart Herbert <stuart@stuartherbert.com>
+- added ValidationSchema::withTransformer() ([22149b6](https://github.com/stuartherbert/stusdevkit/commit/22149b6)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce ValidationSchema interface ([8e69224](https://github.com/stuartherbert/stusdevkit/commit/8e69224)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for codecs ([31e7fb9](https://github.com/stuartherbert/stusdevkit/commit/31e7fb9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::uuid() ([5981663](https://github.com/stuartherbert/stusdevkit/commit/5981663)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -79,6 +79,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- improve naming of custom constraints and custom transforms ([254c37d](https://github.com/stuartherbert/stusdevkit/commit/254c37d)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove `withStep()` from public API ([61b9ce1](https://github.com/stuartherbert/stusdevkit/commit/61b9ce1)) — Stuart Herbert <stuart@stuartherbert.com>
 - standardise naming of public API methods ([3f491d8](https://github.com/stuartherbert/stusdevkit/commit/3f491d8)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up default error reporting ([9580045](https://github.com/stuartherbert/stusdevkit/commit/9580045)) — Stuart Herbert <stuart@stuartherbert.com>

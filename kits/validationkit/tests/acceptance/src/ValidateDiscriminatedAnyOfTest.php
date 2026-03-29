@@ -597,7 +597,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -618,7 +618,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->withTransform(
+        ])->withCustomTransform(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['type'];
@@ -867,14 +867,15 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes the discriminated union type check
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes the discriminated union
+        // type check
 
         // ----------------------------------------------------------------
         // shorthand
@@ -891,12 +892,13 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->withRefine(
+        ])->withCustomConstraint(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
-                return $data['x'] > 0;
+                return $data['x'] > 0
+                    ? null
+                    : 'x must be positive';
             },
-            'x must be positive',
         );
 
         // ----------------------------------------------------------------
@@ -959,7 +961,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'y' => Validate::string(),
             ]),
         ])
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['type'];
             })

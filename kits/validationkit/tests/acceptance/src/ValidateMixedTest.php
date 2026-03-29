@@ -46,7 +46,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Tests\Fixtures\CallableTransformer;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
@@ -284,18 +283,19 @@ class ValidateMixedTest extends TestCase
 
     // ================================================================
     //
-    // Refine
+    // Custom Constraint
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that would otherwise pass the mixed type check
+        // this test proves that withCustomConstraint() can
+        // reject a value that would otherwise pass the mixed
+        // type check
 
         // ----------------------------------------------------------------
         // shorthand
@@ -303,9 +303,10 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->withRefine(
-            fn(mixed $data) => $data !== '',
-            'Value must not be empty string',
+        $unit = Validate::mixed()->withCustomConstraint(
+            fn(mixed $data) => $data !== ''
+                ? null
+                : 'Value must not be empty string',
         );
 
         // ----------------------------------------------------------------
@@ -339,14 +340,14 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() passes when custom validation succeeds')]
-    public function test_with_refine_passes_when_valid(): void
+    #[TestDox('withCustomConstraint() passes when custom validation succeeds')]
+    public function test_with_custom_constraint_passes_when_valid(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() allows a value
-        // through when the custom check returns true
+        // this test proves that withCustomConstraint() allows
+        // a value through when the callable returns null
 
         // ----------------------------------------------------------------
         // shorthand
@@ -354,138 +355,10 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->withRefine(
-            fn(mixed $data) => $data !== '',
-            'Value must not be empty string',
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse('hello');
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame('hello', $actualResult);
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    // ================================================================
-    //
-    // SuperRefine
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('withSuperRefine() adds multiple custom issues')]
-    public function test_with_super_refine_adds_multiple_issues(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that withSuperRefine() can add
-        // multiple validation issues via the context
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::mixed()->withSuperRefine(
-            function (mixed $data, ValidationContext $ctx): void {
-                if (! is_string($data)) {
-                    $ctx->addIssue(
-                        type: 'https://stusdevkit.dev/errors/validation/invalid_type',
-                        input: $data,
-                        message: 'Must be a string',
-                    );
-                    return;
-                }
-
-                if (strlen($data) < 3) {
-                    $ctx->addIssue(
-                        type: 'https://stusdevkit.dev/errors/validation/too_small',
-                        input: $data,
-                        message: 'Must be at least 3 characters',
-                    );
-                }
-
-                if (strlen($data) > 10) {
-                    $ctx->addIssue(
-                        type: 'https://stusdevkit.dev/errors/validation/too_big',
-                        input: $data,
-                        message: 'Must be at most 10 characters',
-                    );
-                }
-            },
-        );
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse('ab');
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-        $this->assertSame(
-            [
-                [
-                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
-                    'path'    => [],
-                    'message' => 'Must be at least 3 characters',
-                ],
-            ],
-            $result->maybeError()->issues()->jsonSerialize(),
-        );
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('withSuperRefine() passes when no issues are added')]
-    public function test_with_super_refine_passes_when_valid(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that withSuperRefine() allows a value
-        // through when the callback adds no issues
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::mixed()->withSuperRefine(
-            function (mixed $data, ValidationContext $ctx): void {
-                if (! is_string($data) || strlen($data) < 3) {
-                    $ctx->addIssue(
-                        type: 'https://stusdevkit.dev/errors/validation/custom',
-                        input: $data,
-                        message: 'Must be a string of 3+ chars',
-                    );
-                }
-            },
+        $unit = Validate::mixed()->withCustomConstraint(
+            fn(mixed $data) => $data !== ''
+                ? null
+                : 'Value must not be empty string',
         );
 
         // ----------------------------------------------------------------
@@ -515,13 +388,13 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withTransform() applies a
+        // this test proves that withCustomTransform() applies a
         // transformation to the validated data
 
         // ----------------------------------------------------------------
@@ -530,7 +403,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->withTransform(
+        $unit = Validate::mixed()->withCustomTransform(
             fn(mixed $data) => is_string($data)
                 ? strtoupper($data)
                 : $data,
@@ -727,13 +600,13 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('withTransform() can change the value type')]
+    #[TestDox('withCustomTransform() can change the value type')]
     public function test_with_transform_can_change_type(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withTransform() can convert a
+        // this test proves that withCustomTransform() can convert a
         // value to a completely different type
 
         // ----------------------------------------------------------------
@@ -742,7 +615,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->withTransform(
+        $unit = Validate::mixed()->withCustomTransform(
             fn(mixed $data) => is_string($data)
                 ? strlen($data)
                 : 0,
@@ -792,7 +665,7 @@ class ValidateMixedTest extends TestCase
         // setup your test
 
         $unit = Validate::mixed()
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var string $data */
                 return $data;
             })
@@ -835,7 +708,7 @@ class ValidateMixedTest extends TestCase
         // setup your test
 
         $unit = Validate::mixed()
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var string $data */
                 return $data;
             })
@@ -895,9 +768,10 @@ class ValidateMixedTest extends TestCase
         // setup your test
 
         $unit = Validate::mixed()
-            ->withRefine(
-                fn(mixed $data) => is_string($data),
-                'Must be a string',
+            ->withCustomConstraint(
+                fn(mixed $data) => is_string($data)
+                    ? null
+                    : 'Must be a string',
             )
             ->withCatch('fallback');
 

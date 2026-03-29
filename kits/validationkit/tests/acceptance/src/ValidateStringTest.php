@@ -1380,7 +1380,7 @@ class ValidateStringTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -1392,7 +1392,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->withTransform(
+        $unit = Validate::string()->withCustomTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -1602,14 +1602,15 @@ class ValidateStringTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and constraint
+        // checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1617,9 +1618,10 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->withRefine(
-            fn(mixed $data) => $data !== 'forbidden',
-            'Value is forbidden',
+        $unit = Validate::string()->withCustomConstraint(
+            fn(mixed $data) => $data !== 'forbidden'
+                ? null
+                : 'Value is forbidden',
         );
 
         // ----------------------------------------------------------------
@@ -1670,7 +1672,7 @@ class ValidateStringTest extends TestCase
         // setup your test
 
         $unit = Validate::string()
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })

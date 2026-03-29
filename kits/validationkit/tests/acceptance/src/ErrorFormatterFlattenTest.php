@@ -314,9 +314,8 @@ class ErrorFormatterFlattenTest extends TestCase
         $unit = Validate::object([
             'name' => Validate::string(),
             'age' => Validate::int(),
-        ])->withRefine(
-            fn(mixed $data) => false,
-            'Form-level validation failed',
+        ])->withCustomConstraint(
+            fn(mixed $data) => 'Form-level validation failed',
         );
 
         // ----------------------------------------------------------------

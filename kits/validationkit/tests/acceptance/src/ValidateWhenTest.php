@@ -778,13 +778,13 @@ class ValidateWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withTransform() can modify
+        // this test proves that withCustomTransform() can modify
         // the validated When value
 
         // ----------------------------------------------------------------
@@ -793,7 +793,7 @@ class ValidateWhenTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::when()->withTransform(
+        $unit = Validate::when()->withCustomTransform(
             function (mixed $data) {
                 /** @var When $data */
                 return $data->format('Y-m-d');
@@ -1004,14 +1004,15 @@ class ValidateWhenTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and constraint
+        // checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1019,12 +1020,13 @@ class ValidateWhenTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::when()->withRefine(
+        $unit = Validate::when()->withCustomConstraint(
             function (mixed $data) {
                 /** @var When $data */
-                return $data->format('N') !== '7';
+                return $data->format('N') !== '7'
+                    ? null
+                    : 'Date must not be a Sunday';
             },
-            'Date must not be a Sunday',
         );
 
         // 2026-03-29 is a Sunday
@@ -1078,7 +1080,7 @@ class ValidateWhenTest extends TestCase
         // setup your test
 
         $unit = Validate::when()
-            ->withTransform(
+            ->withCustomTransform(
                 function (mixed $data) {
                     /** @var When $data */
                     return $data->format('Y');

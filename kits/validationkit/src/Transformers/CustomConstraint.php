@@ -45,22 +45,22 @@ use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
- * SuperRefineStep wraps a callable that has full access
- * to the ValidationContext as a pipeline constraint.
+ * CustomConstraint wraps a callable validation check as a
+ * pipeline constraint.
  *
- * Used internally by the withSuperRefine() builder method.
- * The callable can add multiple custom issues with
- * different codes and paths.
+ * Used internally by the withCustomConstraint() builder
+ * method. The callable receives the data and returns null
+ * on success or an error message string on failure.
  *
- * @phpstan-type SuperRefineCallable callable(mixed, ValidationContext): void
+ * @phpstan-type CustomConstraintCallable callable(mixed): ?string
  */
-final class SuperRefineStep implements ValidationConstraint
+final class CustomConstraint implements ValidationConstraint
 {
-    /** @var SuperRefineCallable */
+    /** @var CustomConstraintCallable */
     private readonly mixed $callable;
 
     /**
-     * @param SuperRefineCallable $callable
+     * @param CustomConstraintCallable $callable
      */
     public function __construct(callable $callable)
     {
@@ -71,7 +71,15 @@ final class SuperRefineStep implements ValidationConstraint
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        ($this->callable)($data, $context);
+        $message = ($this->callable)($data);
+
+        if ($message !== null && $message !== '') {
+            $context->addIssue(
+                type: 'https://stusdevkit.dev/errors/validation/custom',
+                input: $data,
+                message: $message,
+            );
+        }
 
         return $data;
     }

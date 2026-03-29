@@ -670,7 +670,7 @@ class ValidateAllOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -691,7 +691,7 @@ class ValidateAllOfTest extends TestCase
                     'age' => Validate::int(),
                 ]),
             ],
-        )->withTransform(
+        )->withCustomTransform(
             function (mixed $data) {
                 /** @var array{name: string, age: int} $data */
                 return $data['name'] . ':' . $data['age'];
@@ -904,14 +904,14 @@ class ValidateAllOfTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes both intersection schemas
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes both intersection schemas
 
         // ----------------------------------------------------------------
         // shorthand
@@ -928,12 +928,13 @@ class ValidateAllOfTest extends TestCase
                     'age' => Validate::int(),
                 ]),
             ],
-        )->withRefine(
+        )->withCustomConstraint(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
-                return $data['age'] >= 18;
+                return $data['age'] >= 18
+                    ? null
+                    : 'Must be at least 18';
             },
-            'Must be at least 18',
         );
 
         // ----------------------------------------------------------------
@@ -989,7 +990,7 @@ class ValidateAllOfTest extends TestCase
                 ]),
             ],
         )
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['name'];
             })

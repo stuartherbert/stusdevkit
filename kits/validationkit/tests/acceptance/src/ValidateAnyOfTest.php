@@ -400,7 +400,7 @@ class ValidateAnyOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -415,7 +415,7 @@ class ValidateAnyOfTest extends TestCase
         $unit = Validate::anyOf([
             Validate::string(),
             Validate::int(),
-        ])->withTransform(
+        ])->withCustomTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -625,14 +625,14 @@ class ValidateAnyOfTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes the union type check
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes the union type check
 
         // ----------------------------------------------------------------
         // shorthand
@@ -643,9 +643,10 @@ class ValidateAnyOfTest extends TestCase
         $unit = Validate::anyOf([
             Validate::string(),
             Validate::int(),
-        ])->withRefine(
-            fn(mixed $data) => $data !== 'forbidden',
-            'Value is forbidden',
+        ])->withCustomConstraint(
+            fn(mixed $data) => $data !== 'forbidden'
+                ? null
+                : 'Value is forbidden',
         );
 
         // ----------------------------------------------------------------
@@ -699,7 +700,7 @@ class ValidateAnyOfTest extends TestCase
             Validate::string(),
             Validate::int(),
         ])
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })

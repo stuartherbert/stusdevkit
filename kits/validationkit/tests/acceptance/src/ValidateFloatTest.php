@@ -1149,7 +1149,7 @@ class ValidateFloatTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -1161,7 +1161,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->withTransform(
+        $unit = Validate::float()->withCustomTransform(
             function (mixed $data) {
                 /** @var float $data */
                 return round($data, precision: 1);
@@ -1371,14 +1371,15 @@ class ValidateFloatTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and constraint
+        // checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1386,9 +1387,10 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->withRefine(
-            fn(mixed $data) => $data !== 0.0,
-            'Division by zero not allowed',
+        $unit = Validate::float()->withCustomConstraint(
+            fn(mixed $data) => $data !== 0.0
+                ? null
+                : 'Division by zero not allowed',
         );
 
         // ----------------------------------------------------------------
@@ -1439,7 +1441,7 @@ class ValidateFloatTest extends TestCase
         // setup your test
 
         $unit = Validate::float()
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var float $data */
                 return (int) round($data);
             })

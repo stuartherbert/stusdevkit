@@ -882,13 +882,14 @@ class ValidateCodecTest extends TestCase
 
         $unit = Validate::codec(
             input: Validate::string(),
-            output: Validate::uuid()->withRefine(
-                function (mixed $data): bool {
+            output: Validate::uuid()->withCustomConstraint(
+                function (mixed $data): ?string {
                     /** @var UuidInterface $data */
                     return $data->toString()
-                        !== '00000000-0000-0000-0000-000000000000';
+                        !== '00000000-0000-0000-0000-000000000000'
+                        ? null
+                        : 'Nil UUID not allowed';
                 },
-                'Nil UUID not allowed',
             ),
             decode: fn(string $s)
                 => Uuid::fromString($s),
@@ -934,18 +935,12 @@ class ValidateCodecTest extends TestCase
         $codec = self::uuidCodec();
 
         return [
-            'transform' => [
-                fn() => $codec->withTransform(fn($x) => $x),
+            'customTransform' => [
+                fn() => $codec->withCustomTransform(fn($x) => $x),
             ],
-            'refine' => [
-                fn() => $codec->withRefine(
-                    fn($x) => true,
-                    'msg',
-                ),
-            ],
-            'superRefine' => [
-                fn() => $codec->withSuperRefine(
-                    fn($x, $ctx) => null,
+            'customConstraint' => [
+                fn() => $codec->withCustomConstraint(
+                    fn($x) => null,
                 ),
             ],
             'pipe' => [

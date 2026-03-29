@@ -1196,7 +1196,7 @@ class ValidateNumberTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -1208,7 +1208,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->withTransform(
+        $unit = Validate::number()->withCustomTransform(
             function (mixed $data) {
                 /** @var int $data */
                 return $data * 2;
@@ -1418,14 +1418,15 @@ class ValidateNumberTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and constraint
+        // checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1433,9 +1434,10 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->withRefine(
-            fn(mixed $data) => $data !== 13,
-            'Unlucky number',
+        $unit = Validate::number()->withCustomConstraint(
+            fn(mixed $data) => $data !== 13
+                ? null
+                : 'Unlucky number',
         );
 
         // ----------------------------------------------------------------
@@ -1486,7 +1488,7 @@ class ValidateNumberTest extends TestCase
         // setup your test
 
         $unit = Validate::number()
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var int|float $data */
                 return (string) $data;
             })

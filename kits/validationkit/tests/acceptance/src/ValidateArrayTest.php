@@ -918,7 +918,7 @@ class ValidateArrayTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -930,7 +930,7 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::array(Validate::string())->withTransform(
+        $unit = Validate::array(Validate::string())->withCustomTransform(
             function (mixed $data) {
                 /** @var array<string> $data */
                 return array_map('strtoupper', $data);
@@ -1140,14 +1140,15 @@ class ValidateArrayTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and constraint
+        // checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1155,9 +1156,10 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::array(Validate::string())->withRefine(
-            fn(mixed $data) => count((array) $data) % 2 === 0,
-            'Array must have an even number of elements',
+        $unit = Validate::array(Validate::string())->withCustomConstraint(
+            fn(mixed $data) => count((array) $data) % 2 === 0
+                ? null
+                : 'Array must have an even number of elements',
         );
 
         // ----------------------------------------------------------------
@@ -1208,7 +1210,7 @@ class ValidateArrayTest extends TestCase
         // setup your test
 
         $unit = Validate::array(Validate::string())
-            ->withTransform(fn(mixed $data) => count((array) $data))
+            ->withCustomTransform(fn(mixed $data) => count((array) $data))
             ->withPipe(Validate::int()->gte(value: 2));
 
         // ----------------------------------------------------------------

@@ -436,7 +436,7 @@ class ValidateEnumTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -448,7 +448,7 @@ class ValidateEnumTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::enum(['active', 'inactive'])->withTransform(
+        $unit = Validate::enum(['active', 'inactive'])->withCustomTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -658,14 +658,14 @@ class ValidateEnumTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes the enum check
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes the enum check
 
         // ----------------------------------------------------------------
         // shorthand
@@ -673,9 +673,10 @@ class ValidateEnumTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::enum(['active', 'inactive'])->withRefine(
-            fn(mixed $data) => $data !== 'inactive',
-            'inactive is not allowed here',
+        $unit = Validate::enum(['active', 'inactive'])->withCustomConstraint(
+            fn(mixed $data) => $data !== 'inactive'
+                ? null
+                : 'inactive is not allowed here',
         );
 
         // ----------------------------------------------------------------
@@ -726,7 +727,7 @@ class ValidateEnumTest extends TestCase
         // setup your test
 
         $unit = Validate::enum(['active', 'inactive'])
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })

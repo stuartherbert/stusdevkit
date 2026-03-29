@@ -1185,7 +1185,7 @@ class ValidateObjectTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -1200,7 +1200,7 @@ class ValidateObjectTest extends TestCase
         $unit = Validate::object([
             'first' => Validate::string(),
             'last' => Validate::string(),
-        ])->withTransform(
+        ])->withCustomTransform(
             function (mixed $data) {
                 /** @var array{first: string, last: string} $data */
                 return $data['first'] . ' ' . $data['last'];
@@ -1425,14 +1425,14 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and field checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and field checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -1443,12 +1443,13 @@ class ValidateObjectTest extends TestCase
         $unit = Validate::object([
             'password' => Validate::string(),
             'confirm' => Validate::string(),
-        ])->withRefine(
+        ])->withCustomConstraint(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
-                return $data['password'] === $data['confirm'];
+                return $data['password'] === $data['confirm']
+                    ? null
+                    : 'Passwords do not match';
             },
-            'Passwords do not match',
         );
 
         // ----------------------------------------------------------------
@@ -1504,7 +1505,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->withTransform(
+        ])->withCustomTransform(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['name'];

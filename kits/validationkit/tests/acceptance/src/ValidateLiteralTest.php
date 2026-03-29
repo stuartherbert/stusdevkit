@@ -555,7 +555,7 @@ class ValidateLiteralTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -567,7 +567,7 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::literal(value: 'active')->withTransform(
+        $unit = Validate::literal(value: 'active')->withCustomTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -777,14 +777,15 @@ class ValidateLiteralTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can add custom
-        // validation logic after the literal check passes
+        // this test proves that withCustomConstraint() can add
+        // custom validation logic after the literal check
+        // passes
 
         // ----------------------------------------------------------------
         // shorthand
@@ -793,10 +794,9 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         // a contrived example: the literal matches but we
-        // add a refinement that always fails
-        $unit = Validate::literal(value: 'active')->withRefine(
-            fn(mixed $data) => false,
-            'Custom refinement failed',
+        // add a constraint that always fails
+        $unit = Validate::literal(value: 'active')->withCustomConstraint(
+            fn(mixed $data) => 'Custom constraint failed',
         );
 
         // ----------------------------------------------------------------
@@ -819,7 +819,7 @@ class ValidateLiteralTest extends TestCase
                 [
                     'type'    => 'https://stusdevkit.dev/errors/validation/custom',
                     'path'    => [],
-                    'message' => 'Custom refinement failed',
+                    'message' => 'Custom constraint failed',
                 ],
             ],
             $result->maybeError()->issues()->jsonSerialize(),
@@ -847,7 +847,7 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->withTransform(function (mixed $data) {
+            ->withCustomTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })

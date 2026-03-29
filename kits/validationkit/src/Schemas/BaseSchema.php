@@ -53,7 +53,8 @@ use StusDevKit\ValidationKit\ParseResult;
 use StusDevKit\ValidationKit\Traits\HasErrorCallback;
 use StusDevKit\ValidationKit\Traits\HasMetadata;
 use StusDevKit\ValidationKit\Traits\HasNullability;
-use StusDevKit\ValidationKit\Traits\HasTransforms;
+use StusDevKit\ValidationKit\Transformers\CustomConstraint;
+use StusDevKit\ValidationKit\Transformers\CustomTransform;
 
 /**
  * BaseSchema is the abstract foundation for all validation
@@ -84,12 +85,19 @@ abstract class BaseSchema implements ValidationSchema
     use HasErrorCallback;
     use HasMetadata;
     use HasNullability;
-    use HasTransforms;
 
     protected ValueCoercion $coercion;
 
     /** @var list<PipelineStep> */
     protected array $steps = [];
+
+    /** @var ValidationSchema<mixed>|null */
+    protected ?ValidationSchema $pipeTarget = null;
+
+    protected bool $hasCatch = false;
+    protected mixed $catchFallback;
+
+    protected bool $isReadonly = false;
 
     public function __construct()
     {
@@ -150,6 +158,91 @@ abstract class BaseSchema implements ValidationSchema
         ValueTransformer $transformer,
     ): static {
         return $this->withStep($transformer);
+    }
+
+    /**
+     * add a custom data transformation step
+     *
+     * The callable receives the validated data and returns
+     * the transformed value. Transforms are skipped when
+     * prior pipeline steps have produced issues.
+     *
+     * For reusable transforms, prefer withTransformer()
+     * with a ValueTransformer object instead.
+     *
+     * @param callable(mixed): mixed $fn
+     */
+    public function withCustomTransform(callable $fn): static
+    {
+        return $this->withStep(
+            new CustomTransform($fn),
+        );
+    }
+
+    /**
+     * add a custom validation rule
+     *
+     * The callable receives the validated data and returns
+     * null on success or an error message string on failure.
+     * A non-null return creates a Custom issue with the
+     * returned message.
+     *
+     * For reusable constraints, prefer withConstraint()
+     * with a ValidationConstraint object instead.
+     *
+     * @param callable(mixed): ?string $fn
+     */
+    public function withCustomConstraint(callable $fn): static
+    {
+        return $this->withStep(
+            new CustomConstraint($fn),
+        );
+    }
+
+    /**
+     * chain the output to another schema
+     *
+     * After this schema validates and transforms the data,
+     * the result is passed to the target schema for further
+     * validation.
+     *
+     * @param ValidationSchema<mixed> $schema
+     */
+    public function withPipe(ValidationSchema $schema): static
+    {
+        $clone = clone $this;
+        $clone->pipeTarget = $schema;
+
+        return $clone;
+    }
+
+    /**
+     * provide a fallback value on validation failure
+     *
+     * If validation fails, the fallback value is returned
+     * instead of throwing an exception.
+     */
+    public function withCatch(mixed $fallback): static
+    {
+        $clone = clone $this;
+        $clone->hasCatch = true;
+        $clone->catchFallback = $fallback;
+
+        return $clone;
+    }
+
+    /**
+     * mark the output as readonly
+     *
+     * This is a metadata flag that signals to consumers
+     * the output should not be modified.
+     */
+    public function withReadonly(): static
+    {
+        $clone = clone $this;
+        $clone->isReadonly = true;
+
+        return $clone;
     }
 
     // ================================================================

@@ -675,7 +675,7 @@ class ValidateDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -687,7 +687,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->withTransform(
+        $unit = Validate::dateTime()->withCustomTransform(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
                 return $data->format('Y-m-d');
@@ -898,14 +898,15 @@ class ValidateDateTimeTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes type and constraint checks
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes type and constraint
+        // checks
 
         // ----------------------------------------------------------------
         // shorthand
@@ -913,12 +914,13 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->withRefine(
+        $unit = Validate::dateTime()->withCustomConstraint(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
-                return $data->format('N') !== '7';
+                return $data->format('N') !== '7'
+                    ? null
+                    : 'Date must not be a Sunday';
             },
-            'Date must not be a Sunday',
         );
 
         // 2026-03-29 is a Sunday
@@ -972,7 +974,7 @@ class ValidateDateTimeTest extends TestCase
         // setup your test
 
         $unit = Validate::dateTime()
-            ->withTransform(
+            ->withCustomTransform(
                 function (mixed $data) {
                     /** @var \DateTimeInterface $data */
                     return $data->format('Y');

@@ -41,33 +41,29 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Contracts\PipelineStep;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
- * RefineStep wraps a callable boolean check as a
- * pipeline constraint.
+ * CustomTransform wraps a callable data transformation
+ * as a pipeline step that skips when prior issues exist.
  *
- * Used internally by the withRefine() builder method. The
- * callable receives the data and returns true if valid,
- * false if not. A false return adds a Custom issue with
- * the given message.
+ * Used internally by the withCustomTransform() builder
+ * method. The callable receives the validated data and
+ * returns the transformed value.
  *
- * @phpstan-type RefineCallable callable(mixed): bool
+ * @phpstan-type CustomTransformCallable callable(mixed): mixed
  */
-final class RefineStep implements ValidationConstraint
+final class CustomTransform implements PipelineStep
 {
-    /** @var RefineCallable */
+    /** @var CustomTransformCallable */
     private readonly mixed $callable;
 
     /**
-     * @param RefineCallable $callable
-     * @param non-empty-string $message
+     * @param CustomTransformCallable $callable
      */
-    public function __construct(
-        callable $callable,
-        private readonly string $message,
-    ) {
+    public function __construct(callable $callable)
+    {
         $this->callable = $callable;
     }
 
@@ -75,21 +71,11 @@ final class RefineStep implements ValidationConstraint
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        $passed = ($this->callable)($data);
-
-        if (! $passed) {
-            $context->addIssue(
-                type: 'https://stusdevkit.dev/errors/validation/custom',
-                input: $data,
-                message: $this->message,
-            );
-        }
-
-        return $data;
+        return ($this->callable)($data);
     }
 
     public function skipOnIssues(): bool
     {
-        return false;
+        return true;
     }
 }

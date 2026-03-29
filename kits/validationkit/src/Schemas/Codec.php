@@ -127,8 +127,8 @@ class Codec extends BaseSchema
      * the encoder, then validates against the input schema.
      *
      * This method bypasses all pipeline features on the
-     * codec (withDefault, withCatch, withTransform,
-     * withRefine, withPipe).
+     * codec (withDefault, withCatch, withCustomTransform,
+     * withCustomConstraint, withPipe).
      * Only the inner schemas' validation applies.
      *
      * @return TInput
@@ -225,38 +225,24 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function withTransform(callable $fn): never
+    public function withCustomTransform(callable $fn): never
     {
         throw new BadMethodCallException(
-            'withTransform() is not supported on Codec schemas'
-            . ' — add transforms to the input or output'
-            . ' schema instead',
+            'withCustomTransform() is not supported on Codec'
+            . ' schemas — add transforms to the input or'
+            . ' output schema instead',
         );
     }
 
     /**
      * @throws BadMethodCallException always.
      */
-    public function withRefine(
-        callable $fn,
-        string $message,
-    ): never {
-        throw new BadMethodCallException(
-            'withRefine() is not supported on Codec schemas'
-            . ' — add refinements to the input or output'
-            . ' schema instead',
-        );
-    }
-
-    /**
-     * @throws BadMethodCallException always.
-     */
-    public function withSuperRefine(callable $fn): never
+    public function withCustomConstraint(callable $fn): never
     {
         throw new BadMethodCallException(
-            'withSuperRefine() is not supported on Codec schemas'
-            . ' — add refinements to the input or output'
-            . ' schema instead',
+            'withCustomConstraint() is not supported on Codec'
+            . ' schemas — add constraints to the input or'
+            . ' output schema instead',
         );
     }
 

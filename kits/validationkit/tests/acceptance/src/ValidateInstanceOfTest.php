@@ -400,7 +400,7 @@ class ValidateInstanceOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('withTransform() modifies the validated data')]
+    #[TestDox('withCustomTransform() modifies the validated data')]
     public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
@@ -414,7 +414,7 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->withTransform(
+        )->withCustomTransform(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
                 return $data->format('Y-m-d');
@@ -625,14 +625,14 @@ class ValidateInstanceOfTest extends TestCase
 
     }
 
-    #[TestDox('withRefine() adds custom validation')]
-    public function test_with_refine_adds_custom_validation(): void
+    #[TestDox('withCustomConstraint() adds custom validation')]
+    public function test_with_custom_constraint_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that withRefine() can reject a value
-        // that passes the instanceOf type check
+        // this test proves that withCustomConstraint() can
+        // reject a value that passes the instanceOf type check
 
         // ----------------------------------------------------------------
         // shorthand
@@ -642,12 +642,13 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->withRefine(
+        )->withCustomConstraint(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
-                return $data->getTimestamp() > 0;
+                return $data->getTimestamp() > 0
+                    ? null
+                    : 'Date must be after Unix epoch';
             },
-            'Date must be after Unix epoch',
         );
 
         $inputValue = new DateTimeImmutable('1969-12-31T23:59:59Z');
@@ -700,7 +701,7 @@ class ValidateInstanceOfTest extends TestCase
         // setup your test
 
         $unit = Validate::instanceOf(DateTimeInterface::class)
-            ->withTransform(
+            ->withCustomTransform(
                 function (mixed $data) {
                     /** @var \DateTimeInterface $data */
                     return $data->getTimestamp();

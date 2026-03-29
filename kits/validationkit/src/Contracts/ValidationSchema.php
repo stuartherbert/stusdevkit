@@ -59,9 +59,9 @@ use StusDevKit\ValidationKit\ParseResult;
  *   validate input data and return the validated result.
  * - Encoding: encode/safeEncode validate data without
  *   applying default() or catch() fallbacks.
- * - Builder methods: withStep, withTransform, withRefine,
- *   withPipe, withCatch, withDefault, etc. configure the
- *   validation pipeline.
+ * - Builder methods: withCustomTransform,
+ *   withCustomConstraint, withPipe, withCatch,
+ *   withDefault, etc. configure the validation pipeline.
  * - Metadata: withDescription and withMeta attach
  *   non-validation metadata for tooling.
  * - Internal composition: parseWithContext and
@@ -161,42 +161,33 @@ interface ValidationSchema
     ): static;
 
     /**
-     * add a data transformation step
+     * add a custom data transformation step
      *
      * The callable receives the validated data and returns
      * the transformed value. Transforms are skipped when
      * prior pipeline steps have produced issues.
      *
+     * For reusable transforms, prefer withTransformer()
+     * with a ValueTransformer object instead.
+     *
      * @param callable(mixed): mixed $fn
      */
-    public function withTransform(callable $fn): static;
+    public function withCustomTransform(callable $fn): static;
 
     /**
      * add a custom validation rule
      *
      * The callable receives the validated data and returns
-     * true if valid, false if not. A false return creates
-     * a Custom issue with the given message.
+     * null on success or an error message string on failure.
+     * A non-null return creates a Custom issue with the
+     * returned message.
      *
-     * @param callable(mixed): bool $fn
-     * @param non-empty-string $message
-     * - the error message if the refinement fails
+     * For reusable constraints, prefer withConstraint()
+     * with a ValidationConstraint object instead.
+     *
+     * @param callable(mixed): ?string $fn
      */
-    public function withRefine(
-        callable $fn,
-        string $message,
-    ): static;
-
-    /**
-     * add an advanced custom validation rule
-     *
-     * The callable receives the validated data and a
-     * ValidationContext. Use the context to add multiple
-     * custom issues.
-     *
-     * @param callable(mixed, ValidationContext): void $fn
-     */
-    public function withSuperRefine(callable $fn): static;
+    public function withCustomConstraint(callable $fn): static;
 
     /**
      * chain the output to another schema
