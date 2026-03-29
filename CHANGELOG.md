@@ -46,15 +46,16 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
-#### Tools
-
-- fix `make claudecodekit` ([984329b](https://github.com/stuartherbert/stusdevkit/commit/984329b)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- remove all mention of PipelineStep from the public API ([3c89724](https://github.com/stuartherbert/stusdevkit/commit/3c89724)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### Tools
+
+- fix `make claudecodekit` ([e80e5c3](https://github.com/stuartherbert/stusdevkit/commit/e80e5c3)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 

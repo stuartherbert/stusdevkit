@@ -43,8 +43,10 @@ namespace StusDevKit\ValidationKit\Schemas;
 
 use StusDevKit\ValidationKit\Coercions\NoCoercion;
 use StusDevKit\ValidationKit\Contracts\PipelineStep;
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Contracts\ValueCoercion;
+use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ParseResult;
@@ -122,9 +124,10 @@ abstract class BaseSchema implements ValidationSchema
      *
      * Convenience method — equivalent to withStep().
      */
-    public function withConstraint(PipelineStep $step): static
-    {
-        return $this->withStep($step);
+    public function withConstraint(
+        ValidationConstraint $constraint,
+    ): static {
+        return $this->withStep($constraint);
     }
 
     /**
@@ -132,9 +135,10 @@ abstract class BaseSchema implements ValidationSchema
      *
      * Convenience method — equivalent to withStep().
      */
-    public function withNormaliser(PipelineStep $step): static
-    {
-        return $this->withStep($step);
+    public function withNormaliser(
+        ValueTransformer $normaliser,
+    ): static {
+        return $this->withStep($normaliser);
     }
 
     // ================================================================

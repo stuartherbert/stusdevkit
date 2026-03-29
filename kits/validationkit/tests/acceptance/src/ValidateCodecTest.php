@@ -964,7 +964,7 @@ class ValidateCodecTest extends TestCase
             ],
             'withNormaliser' => [
                 fn() => $codec->withNormaliser(
-                    new \StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint(),
+                    new \StusDevKit\ValidationKit\Transformers\TrimTransformer(),
                 ),
             ],
         ];

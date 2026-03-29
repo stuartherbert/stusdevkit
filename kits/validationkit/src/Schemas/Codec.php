@@ -43,8 +43,9 @@ namespace StusDevKit\ValidationKit\Schemas;
 
 use BadMethodCallException;
 use Closure;
-use StusDevKit\ValidationKit\Contracts\PipelineStep;
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
+use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ParseResult;
@@ -185,8 +186,9 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function withConstraint(PipelineStep $step): never
-    {
+    public function withConstraint(
+        ValidationConstraint $constraint,
+    ): never {
         throw new BadMethodCallException(
             'withConstraint() is not supported on Codec'
             . ' schemas — add constraints to the input or'
@@ -197,8 +199,9 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function withNormaliser(PipelineStep $step): never
-    {
+    public function withNormaliser(
+        ValueTransformer $normaliser,
+    ): never {
         throw new BadMethodCallException(
             'withNormaliser() is not supported on Codec'
             . ' schemas — add normalisers to the input or'

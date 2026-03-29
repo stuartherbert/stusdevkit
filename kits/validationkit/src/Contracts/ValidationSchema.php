@@ -137,12 +137,16 @@ interface ValidationSchema
     /**
      * add a validation constraint to this schema
      */
-    public function withConstraint(PipelineStep $step): static;
+    public function withConstraint(
+        ValidationConstraint $constraint,
+    ): static;
 
     /**
      * add a pre-constraint normaliser to this schema
      */
-    public function withNormaliser(PipelineStep $step): static;
+    public function withNormaliser(
+        ValueTransformer $normaliser,
+    ): static;
 
     /**
      * add a data transformation step
