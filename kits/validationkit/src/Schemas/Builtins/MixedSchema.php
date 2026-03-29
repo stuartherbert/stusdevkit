@@ -50,7 +50,7 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
  *
  * This schema performs no type checking or constraint
  * checking. It is useful as a passthrough or when combined
- * with refine() for fully custom validation.
+ * with withRefine() for fully custom validation.
  *
  * Usage:
  *
@@ -62,7 +62,7 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
  *     $schema->parse(null);       // null
  *
  *     // useful with refine for custom validation
- *     $schema = Validate::mixed()->refine(
+ *     $schema = Validate::mixed()->withRefine(
  *         fn($data) => $data !== '',
  *         'Value must not be empty string',
  *     );

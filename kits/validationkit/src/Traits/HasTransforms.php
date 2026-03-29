@@ -48,15 +48,17 @@ use StusDevKit\ValidationKit\Transformers\RefineStep;
 use StusDevKit\ValidationKit\Transformers\SuperRefineStep;
 
 /**
- * HasTransforms provides transform(), refine(),
- * superRefine(), pipe(), and catch() methods for schemas.
+ * HasTransforms provides withTransform(), withRefine(),
+ * withSuperRefine(), withPipe(), and withCatch() methods
+ * for schemas.
  *
- * - transform() modifies validated data (skips on issues)
- * - refine() adds custom validation logic
- * - superRefine() adds advanced validation with multiple
- *   issues
- * - pipe() chains to another schema
- * - catch() provides a fallback on validation failure
+ * - withTransform() modifies validated data (skips on
+ *   issues)
+ * - withRefine() adds custom validation logic
+ * - withSuperRefine() adds advanced validation with
+ *   multiple issues
+ * - withPipe() chains to another schema
+ * - withCatch() provides a fallback on validation failure
  */
 trait HasTransforms
 {
@@ -83,7 +85,7 @@ trait HasTransforms
      *
      * @param callable(mixed): mixed $fn
      */
-    public function transform(callable $fn): static
+    public function withTransform(callable $fn): static
     {
         return $this->withStep(
             new CallableTransform($fn),
@@ -101,7 +103,7 @@ trait HasTransforms
      * @param non-empty-string $message
      * - the error message if the refinement fails
      */
-    public function refine(callable $fn, string $message): static
+    public function withRefine(callable $fn, string $message): static
     {
         return $this->withStep(
             new RefineStep(
@@ -120,7 +122,7 @@ trait HasTransforms
      *
      * @param callable(mixed, ValidationContext): void $fn
      */
-    public function superRefine(callable $fn): static
+    public function withSuperRefine(callable $fn): static
     {
         return $this->withStep(
             new SuperRefineStep($fn),
@@ -136,7 +138,7 @@ trait HasTransforms
      *
      * @param ValidationSchema<mixed> $schema
      */
-    public function pipe(ValidationSchema $schema): static
+    public function withPipe(ValidationSchema $schema): static
     {
         $clone = clone $this;
         $clone->pipeTarget = $schema;
@@ -150,7 +152,7 @@ trait HasTransforms
      * If validation fails, the fallback value is returned
      * instead of throwing an exception.
      */
-    public function catch(mixed $fallback): static
+    public function withCatch(mixed $fallback): static
     {
         $clone = clone $this;
         $clone->hasCatch = true;
@@ -165,7 +167,7 @@ trait HasTransforms
      * This is a metadata flag that signals to consumers
      * the output should not be modified.
      */
-    public function readonly(): static
+    public function withReadonly(): static
     {
         $clone = clone $this;
         $clone->isReadonly = true;

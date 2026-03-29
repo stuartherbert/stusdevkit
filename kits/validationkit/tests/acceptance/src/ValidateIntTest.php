@@ -936,8 +936,8 @@ class ValidateIntTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -948,7 +948,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->default(0);
+        $unit = Validate::int()->withDefault(0);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1037,8 +1037,8 @@ class ValidateIntTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1049,7 +1049,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->transform(
+        $unit = Validate::int()->withTransform(
             function (mixed $data) {
                 /** @var int $data */
                 return $data * 2;
@@ -1077,13 +1077,13 @@ class ValidateIntTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and constraint checks
 
         // ----------------------------------------------------------------
@@ -1092,7 +1092,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->refine(
+        $unit = Validate::int()->withRefine(
             fn(mixed $data) => $data !== 13,
             'Unlucky number',
         );
@@ -1128,13 +1128,13 @@ class ValidateIntTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -1145,11 +1145,11 @@ class ValidateIntTest extends TestCase
         // setup your test
 
         $unit = Validate::int()
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var int $data */
                 return (string) $data;
             })
-            ->pipe(Validate::string()->min(length: 2));
+            ->withPipe(Validate::string()->min(length: 2));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1172,8 +1172,8 @@ class ValidateIntTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1184,7 +1184,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->catch(0);
+        $unit = Validate::int()->withCatch(0);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1407,8 +1407,8 @@ class ValidateIntTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1419,7 +1419,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->describe('A user age');
+        $unit = Validate::int()->withDescription('A user age');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1442,8 +1442,8 @@ class ValidateIntTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1454,7 +1454,7 @@ class ValidateIntTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::int()->meta(['label' => 'Age']);
+        $unit = Validate::int()->withMeta(['label' => 'Age']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

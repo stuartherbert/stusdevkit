@@ -48,7 +48,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  * CallableTransform wraps a callable data transformation
  * as a pipeline step that skips when prior issues exist.
  *
- * Used internally by the transform() builder method.
+ * Used internally by the withTransform() builder method.
  * The callable receives the validated data and returns
  * the transformed value.
  *

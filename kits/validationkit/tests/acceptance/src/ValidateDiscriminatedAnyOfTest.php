@@ -543,8 +543,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -564,7 +564,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->default(['type' => 'a', 'x' => 0]);
+        ])->withDefault(['type' => 'a', 'x' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -596,8 +596,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -617,7 +617,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->transform(
+        ])->withTransform(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['type'];
@@ -648,13 +648,13 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes the discriminated union type check
 
         // ----------------------------------------------------------------
@@ -672,7 +672,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->refine(
+        ])->withRefine(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['x'] > 0;
@@ -714,13 +714,13 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of the discriminated union to another schema for
         // further validation
 
@@ -740,11 +740,11 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'y' => Validate::string(),
             ]),
         ])
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['type'];
             })
-            ->pipe(Validate::string()->min(length: 1));
+            ->withPipe(Validate::string()->min(length: 1));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -770,8 +770,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -791,7 +791,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->catch(['type' => 'a', 'x' => 0]);
+        ])->withCatch(['type' => 'a', 'x' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -976,8 +976,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -997,7 +997,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->describe('An event by type');
+        ])->withDescription('An event by type');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1020,8 +1020,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1041,7 +1041,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->meta(['label' => 'Event']);
+        ])->withMeta(['label' => 'Event']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

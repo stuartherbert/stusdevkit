@@ -353,8 +353,8 @@ class ValidateInstanceOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -370,7 +370,7 @@ class ValidateInstanceOfTest extends TestCase
         );
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->default($fallbackValue);
+        )->withDefault($fallbackValue);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -399,8 +399,8 @@ class ValidateInstanceOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -413,7 +413,7 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->transform(
+        )->withTransform(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
                 return $data->format('Y-m-d');
@@ -442,13 +442,13 @@ class ValidateInstanceOfTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes the instanceOf type check
 
         // ----------------------------------------------------------------
@@ -459,7 +459,7 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->refine(
+        )->withRefine(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
                 return $data->getTimestamp() > 0;
@@ -500,13 +500,13 @@ class ValidateInstanceOfTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -517,13 +517,13 @@ class ValidateInstanceOfTest extends TestCase
         // setup your test
 
         $unit = Validate::instanceOf(DateTimeInterface::class)
-            ->transform(
+            ->withTransform(
                 function (mixed $data) {
                     /** @var \DateTimeInterface $data */
                     return $data->getTimestamp();
                 },
             )
-            ->pipe(Validate::int()->gte(value: 0));
+            ->withPipe(Validate::int()->gte(value: 0));
 
         $inputValue = new DateTimeImmutable('2026-03-28T12:00:00Z');
 
@@ -549,8 +549,8 @@ class ValidateInstanceOfTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -566,7 +566,7 @@ class ValidateInstanceOfTest extends TestCase
         );
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->catch($fallbackValue);
+        )->withCatch($fallbackValue);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -728,8 +728,8 @@ class ValidateInstanceOfTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -742,7 +742,7 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->describe('A date-time value');
+        )->withDescription('A date-time value');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -765,8 +765,8 @@ class ValidateInstanceOfTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -779,7 +779,7 @@ class ValidateInstanceOfTest extends TestCase
 
         $unit = Validate::instanceOf(
             DateTimeInterface::class,
-        )->meta(['label' => 'Timestamp']);
+        )->withMeta(['label' => 'Timestamp']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

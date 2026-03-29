@@ -1047,8 +1047,8 @@ class ValidateFloatTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1059,7 +1059,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->default(0.0);
+        $unit = Validate::float()->withDefault(0.0);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1148,8 +1148,8 @@ class ValidateFloatTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1160,7 +1160,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->transform(
+        $unit = Validate::float()->withTransform(
             function (mixed $data) {
                 /** @var float $data */
                 return round($data, precision: 1);
@@ -1188,13 +1188,13 @@ class ValidateFloatTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and constraint checks
 
         // ----------------------------------------------------------------
@@ -1203,7 +1203,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->refine(
+        $unit = Validate::float()->withRefine(
             fn(mixed $data) => $data !== 0.0,
             'Division by zero not allowed',
         );
@@ -1239,13 +1239,13 @@ class ValidateFloatTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -1256,11 +1256,11 @@ class ValidateFloatTest extends TestCase
         // setup your test
 
         $unit = Validate::float()
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var float $data */
                 return (int) round($data);
             })
-            ->pipe(Validate::int()->gte(value: 0));
+            ->withPipe(Validate::int()->gte(value: 0));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1283,8 +1283,8 @@ class ValidateFloatTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1295,7 +1295,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->catch(0.0);
+        $unit = Validate::float()->withCatch(0.0);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1518,8 +1518,8 @@ class ValidateFloatTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1530,7 +1530,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->describe('A product price');
+        $unit = Validate::float()->withDescription('A product price');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1553,8 +1553,8 @@ class ValidateFloatTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1565,7 +1565,7 @@ class ValidateFloatTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::float()->meta(['label' => 'Price']);
+        $unit = Validate::float()->withMeta(['label' => 'Price']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

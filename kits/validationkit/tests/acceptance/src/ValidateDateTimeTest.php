@@ -632,8 +632,8 @@ class ValidateDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -645,7 +645,7 @@ class ValidateDateTimeTest extends TestCase
         // setup your test
 
         $fallbackDate = new DateTimeImmutable('2026-01-01T00:00:00Z');
-        $unit = Validate::dateTime()->default($fallbackDate);
+        $unit = Validate::dateTime()->withDefault($fallbackDate);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -674,8 +674,8 @@ class ValidateDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -686,7 +686,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->transform(
+        $unit = Validate::dateTime()->withTransform(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
                 return $data->format('Y-m-d');
@@ -715,13 +715,13 @@ class ValidateDateTimeTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and constraint checks
 
         // ----------------------------------------------------------------
@@ -730,7 +730,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->refine(
+        $unit = Validate::dateTime()->withRefine(
             function (mixed $data) {
                 /** @var \DateTimeInterface $data */
                 return $data->format('N') !== '7';
@@ -772,13 +772,13 @@ class ValidateDateTimeTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -789,13 +789,13 @@ class ValidateDateTimeTest extends TestCase
         // setup your test
 
         $unit = Validate::dateTime()
-            ->transform(
+            ->withTransform(
                 function (mixed $data) {
                     /** @var \DateTimeInterface $data */
                     return $data->format('Y');
                 },
             )
-            ->pipe(Validate::string()->min(length: 4));
+            ->withPipe(Validate::string()->min(length: 4));
 
         $inputDate = new DateTimeImmutable('2026-03-28T12:00:00Z');
 
@@ -820,8 +820,8 @@ class ValidateDateTimeTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -833,7 +833,7 @@ class ValidateDateTimeTest extends TestCase
         // setup your test
 
         $fallbackDate = new DateTimeImmutable('1970-01-01T00:00:00Z');
-        $unit = Validate::dateTime()->catch($fallbackDate);
+        $unit = Validate::dateTime()->withCatch($fallbackDate);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -995,8 +995,8 @@ class ValidateDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1007,7 +1007,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->describe('A birth date');
+        $unit = Validate::dateTime()->withDescription('A birth date');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1030,8 +1030,8 @@ class ValidateDateTimeTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1042,7 +1042,7 @@ class ValidateDateTimeTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::dateTime()->meta(
+        $unit = Validate::dateTime()->withMeta(
             ['format' => 'ISO 8601'],
         );
 

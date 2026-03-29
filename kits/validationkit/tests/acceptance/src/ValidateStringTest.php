@@ -1278,8 +1278,8 @@ class ValidateStringTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1290,7 +1290,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->default('fallback');
+        $unit = Validate::string()->withDefault('fallback');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1379,8 +1379,8 @@ class ValidateStringTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1391,7 +1391,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->transform(
+        $unit = Validate::string()->withTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -1419,13 +1419,13 @@ class ValidateStringTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and constraint checks
 
         // ----------------------------------------------------------------
@@ -1434,7 +1434,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->refine(
+        $unit = Validate::string()->withRefine(
             fn(mixed $data) => $data !== 'forbidden',
             'Value is forbidden',
         );
@@ -1470,13 +1470,13 @@ class ValidateStringTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -1487,11 +1487,11 @@ class ValidateStringTest extends TestCase
         // setup your test
 
         $unit = Validate::string()
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })
-            ->pipe(Validate::int()->gte(value: 3));
+            ->withPipe(Validate::int()->gte(value: 3));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1514,8 +1514,8 @@ class ValidateStringTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1526,7 +1526,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->catch('default');
+        $unit = Validate::string()->withCatch('default');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1755,8 +1755,8 @@ class ValidateStringTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1767,7 +1767,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->describe('A user name');
+        $unit = Validate::string()->withDescription('A user name');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1790,8 +1790,8 @@ class ValidateStringTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1802,7 +1802,7 @@ class ValidateStringTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::string()->meta(['label' => 'Name']);
+        $unit = Validate::string()->withMeta(['label' => 'Name']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

@@ -59,11 +59,11 @@ use StusDevKit\ValidationKit\ParseResult;
  *   validate input data and return the validated result.
  * - Encoding: encode/safeEncode validate data without
  *   applying default() or catch() fallbacks.
- * - Builder methods: withStep, transform, refine, pipe,
- *   catch, default, etc. configure the validation
- *   pipeline.
- * - Metadata: describe and meta attach non-validation
- *   metadata for tooling.
+ * - Builder methods: withStep, withTransform, withRefine,
+ *   withPipe, withCatch, withDefault, etc. configure the
+ *   validation pipeline.
+ * - Metadata: withDescription and withMeta attach
+ *   non-validation metadata for tooling.
  * - Internal composition: parseWithContext and
  *   encodeWithContext allow parent schemas to validate
  *   child schemas with path tracking.
@@ -111,8 +111,8 @@ interface ValidationSchema
     public function safeDecode(mixed $data): ParseResult;
 
     /**
-     * validate the given data without applying default()
-     * or catch() fallbacks
+     * validate the given data without applying withDefault()
+     * or withCatch() fallbacks
      *
      * @return TOutput
      * @throws ValidationException if validation fails.
@@ -120,8 +120,8 @@ interface ValidationSchema
     public function encode(mixed $data): mixed;
 
     /**
-     * validate the given data without applying default()
-     * or catch() fallbacks, returning a result object
+     * validate the given data without applying withDefault()
+     * or withCatch() fallbacks, returning a result object
      * instead of throwing
      *
      * @return ParseResult<TOutput>
@@ -167,7 +167,7 @@ interface ValidationSchema
      *
      * @param callable(mixed): mixed $fn
      */
-    public function transform(callable $fn): static;
+    public function withTransform(callable $fn): static;
 
     /**
      * add a custom validation rule
@@ -180,7 +180,7 @@ interface ValidationSchema
      * @param non-empty-string $message
      * - the error message if the refinement fails
      */
-    public function refine(
+    public function withRefine(
         callable $fn,
         string $message,
     ): static;
@@ -194,7 +194,7 @@ interface ValidationSchema
      *
      * @param callable(mixed, ValidationContext): void $fn
      */
-    public function superRefine(callable $fn): static;
+    public function withSuperRefine(callable $fn): static;
 
     /**
      * chain the output to another schema
@@ -205,7 +205,7 @@ interface ValidationSchema
      *
      * @param ValidationSchema<mixed> $schema
      */
-    public function pipe(self $schema): static;
+    public function withPipe(self $schema): static;
 
     /**
      * provide a fallback value on validation failure
@@ -213,7 +213,7 @@ interface ValidationSchema
      * If validation fails, the fallback value is returned
      * instead of throwing an exception.
      */
-    public function catch(mixed $fallback): static;
+    public function withCatch(mixed $fallback): static;
 
     /**
      * provide a default value for null or missing input
@@ -221,7 +221,7 @@ interface ValidationSchema
      * The default value is NOT validated against the
      * schema.
      */
-    public function default(mixed $value): static;
+    public function withDefault(mixed $value): static;
 
     /**
      * mark the output as readonly
@@ -229,7 +229,7 @@ interface ValidationSchema
      * This is a metadata flag that signals to consumers
      * the output should not be modified.
      */
-    public function readonly(): static;
+    public function withReadonly(): static;
 
     // ================================================================
     //
@@ -242,14 +242,14 @@ interface ValidationSchema
      *
      * @param non-empty-string $text
      */
-    public function describe(string $text): static;
+    public function withDescription(string $text): static;
 
     /**
      * attach arbitrary metadata to this schema
      *
      * @param array<string, mixed> $data
      */
-    public function meta(array $data): static;
+    public function withMeta(array $data): static;
 
     /**
      * return the description, or null if none was set
@@ -285,7 +285,7 @@ interface ValidationSchema
     /**
      * run the encode pipeline with a given context
      *
-     * Like parseWithContext(), but skips the default()
+     * Like parseWithContext(), but skips the withDefault()
      * fallback for null values.
      *
      * @internal

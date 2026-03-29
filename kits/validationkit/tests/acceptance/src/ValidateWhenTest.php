@@ -732,13 +732,13 @@ class ValidateWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that default() returns the
+        // this test proves that withDefault() returns the
         // fallback value when the input is null
 
         // ----------------------------------------------------------------
@@ -748,7 +748,7 @@ class ValidateWhenTest extends TestCase
         // setup your test
 
         $fallbackDate = When::from('2026-01-01T00:00:00Z');
-        $unit = Validate::when()->default($fallbackDate);
+        $unit = Validate::when()->withDefault($fallbackDate);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -777,13 +777,13 @@ class ValidateWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that transform() can modify
+        // this test proves that withTransform() can modify
         // the validated When value
 
         // ----------------------------------------------------------------
@@ -792,7 +792,7 @@ class ValidateWhenTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::when()->transform(
+        $unit = Validate::when()->withTransform(
             function (mixed $data) {
                 /** @var When $data */
                 return $data->format('Y-m-d');
@@ -821,13 +821,13 @@ class ValidateWhenTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and constraint checks
 
         // ----------------------------------------------------------------
@@ -836,7 +836,7 @@ class ValidateWhenTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::when()->refine(
+        $unit = Validate::when()->withRefine(
             function (mixed $data) {
                 /** @var When $data */
                 return $data->format('N') !== '7';
@@ -878,13 +878,13 @@ class ValidateWhenTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -895,13 +895,13 @@ class ValidateWhenTest extends TestCase
         // setup your test
 
         $unit = Validate::when()
-            ->transform(
+            ->withTransform(
                 function (mixed $data) {
                     /** @var When $data */
                     return $data->format('Y');
                 },
             )
-            ->pipe(Validate::string()->min(length: 4));
+            ->withPipe(Validate::string()->min(length: 4));
 
         $inputDate = When::from('2026-01-15T12:00:00Z');
 
@@ -926,13 +926,13 @@ class ValidateWhenTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that catch() returns the fallback
+        // this test proves that withCatch() returns the fallback
         // value when validation fails
 
         // ----------------------------------------------------------------
@@ -942,7 +942,7 @@ class ValidateWhenTest extends TestCase
         // setup your test
 
         $fallbackDate = When::from('1970-01-01T00:00:00Z');
-        $unit = Validate::when()->catch($fallbackDate);
+        $unit = Validate::when()->withCatch($fallbackDate);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1103,13 +1103,13 @@ class ValidateWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that describe() stores a
+        // this test proves that withDescription() stores a
         // description on the schema
 
         // ----------------------------------------------------------------
@@ -1118,7 +1118,7 @@ class ValidateWhenTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::when()->describe('An event date');
+        $unit = Validate::when()->withDescription('An event date');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1141,13 +1141,13 @@ class ValidateWhenTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that meta() stores arbitrary
+        // this test proves that withMeta() stores arbitrary
         // metadata on the schema
 
         // ----------------------------------------------------------------
@@ -1156,7 +1156,7 @@ class ValidateWhenTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::when()->meta(
+        $unit = Validate::when()->withMeta(
             ['format' => 'When'],
         );
 

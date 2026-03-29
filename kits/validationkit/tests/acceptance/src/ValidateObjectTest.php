@@ -330,13 +330,13 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('default() field uses fallback when missing')]
-    public function test_default_field_uses_fallback(): void
+    #[TestDox('withDefault() field uses fallback when missing')]
+    public function test_with_default_field_uses_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that a field with default()
+        // this test proves that a field with withDefault()
         // uses the fallback value when the field is missing
 
         // ----------------------------------------------------------------
@@ -347,7 +347,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-            'role' => Validate::string()->default('user'),
+            'role' => Validate::string()->withDefault('user'),
         ]);
 
         // ----------------------------------------------------------------
@@ -1138,8 +1138,8 @@ class ValidateObjectTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1152,7 +1152,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->default(['name' => 'anonymous']);
+        ])->withDefault(['name' => 'anonymous']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1184,8 +1184,8 @@ class ValidateObjectTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1199,7 +1199,7 @@ class ValidateObjectTest extends TestCase
         $unit = Validate::object([
             'first' => Validate::string(),
             'last' => Validate::string(),
-        ])->transform(
+        ])->withTransform(
             function (mixed $data) {
                 /** @var array{first: string, last: string} $data */
                 return $data['first'] . ' ' . $data['last'];
@@ -1230,13 +1230,13 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and field checks
 
         // ----------------------------------------------------------------
@@ -1248,7 +1248,7 @@ class ValidateObjectTest extends TestCase
         $unit = Validate::object([
             'password' => Validate::string(),
             'confirm' => Validate::string(),
-        ])->refine(
+        ])->withRefine(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['password'] === $data['confirm'];
@@ -1291,13 +1291,13 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output of
+        // this test proves that withPipe() passes the output of
         // this schema to another schema for further
         // validation
 
@@ -1309,12 +1309,12 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->transform(
+        ])->withTransform(
             function (mixed $data) {
                 /** @var array<string, mixed> $data */
                 return $data['name'];
             },
-        )->pipe(
+        )->withPipe(
             Validate::string()->min(length: 3),
         );
 
@@ -1339,8 +1339,8 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1353,7 +1353,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->catch(['name' => 'unknown']);
+        ])->withCatch(['name' => 'unknown']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1501,8 +1501,8 @@ class ValidateObjectTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1515,7 +1515,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->describe('A user profile');
+        ])->withDescription('A user profile');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1538,8 +1538,8 @@ class ValidateObjectTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1552,7 +1552,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::object([
             'name' => Validate::string(),
-        ])->meta(['label' => 'User']);
+        ])->withMeta(['label' => 'User']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

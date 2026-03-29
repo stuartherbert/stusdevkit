@@ -287,13 +287,13 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that would otherwise pass the mixed type check
 
         // ----------------------------------------------------------------
@@ -302,7 +302,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->refine(
+        $unit = Validate::mixed()->withRefine(
             fn(mixed $data) => $data !== '',
             'Value must not be empty string',
         );
@@ -338,13 +338,13 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('refine() passes when custom validation succeeds')]
-    public function test_refine_passes_when_valid(): void
+    #[TestDox('withRefine() passes when custom validation succeeds')]
+    public function test_with_refine_passes_when_valid(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() allows a value
+        // this test proves that withRefine() allows a value
         // through when the custom check returns true
 
         // ----------------------------------------------------------------
@@ -353,7 +353,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->refine(
+        $unit = Validate::mixed()->withRefine(
             fn(mixed $data) => $data !== '',
             'Value must not be empty string',
         );
@@ -385,13 +385,13 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('superRefine() adds multiple custom issues')]
-    public function test_super_refine_adds_multiple_issues(): void
+    #[TestDox('withSuperRefine() adds multiple custom issues')]
+    public function test_with_super_refine_adds_multiple_issues(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that superRefine() can add
+        // this test proves that withSuperRefine() can add
         // multiple validation issues via the context
 
         // ----------------------------------------------------------------
@@ -400,7 +400,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->superRefine(
+        $unit = Validate::mixed()->withSuperRefine(
             function (mixed $data, ValidationContext $ctx): void {
                 if (! is_string($data)) {
                     $ctx->addIssue(
@@ -460,13 +460,13 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('superRefine() passes when no issues are added')]
-    public function test_super_refine_passes_when_valid(): void
+    #[TestDox('withSuperRefine() passes when no issues are added')]
+    public function test_with_super_refine_passes_when_valid(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that superRefine() allows a value
+        // this test proves that withSuperRefine() allows a value
         // through when the callback adds no issues
 
         // ----------------------------------------------------------------
@@ -475,7 +475,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->superRefine(
+        $unit = Validate::mixed()->withSuperRefine(
             function (mixed $data, ValidationContext $ctx): void {
                 if (! is_string($data) || strlen($data) < 3) {
                     $ctx->addIssue(
@@ -514,13 +514,13 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that transform() applies a
+        // this test proves that withTransform() applies a
         // transformation to the validated data
 
         // ----------------------------------------------------------------
@@ -529,7 +529,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->transform(
+        $unit = Validate::mixed()->withTransform(
             fn(mixed $data) => is_string($data)
                 ? strtoupper($data)
                 : $data,
@@ -556,13 +556,13 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('transform() can change the value type')]
-    public function test_transform_can_change_type(): void
+    #[TestDox('withTransform() can change the value type')]
+    public function test_with_transform_can_change_type(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that transform() can convert a
+        // this test proves that withTransform() can convert a
         // value to a completely different type
 
         // ----------------------------------------------------------------
@@ -571,7 +571,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->transform(
+        $unit = Validate::mixed()->withTransform(
             fn(mixed $data) => is_string($data)
                 ? strlen($data)
                 : 0,
@@ -604,13 +604,13 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -621,11 +621,11 @@ class ValidateMixedTest extends TestCase
         // setup your test
 
         $unit = Validate::mixed()
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var string $data */
                 return $data;
             })
-            ->pipe(Validate::string()->min(length: 3));
+            ->withPipe(Validate::string()->min(length: 3));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -648,13 +648,13 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('pipe() rejects when downstream schema fails')]
-    public function test_pipe_rejects_on_downstream_failure(): void
+    #[TestDox('withPipe() rejects when downstream schema fails')]
+    public function test_with_pipe_rejects_on_downstream_failure(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() fails when the
+        // this test proves that withPipe() fails when the
         // downstream schema rejects the transformed value
 
         // ----------------------------------------------------------------
@@ -664,11 +664,11 @@ class ValidateMixedTest extends TestCase
         // setup your test
 
         $unit = Validate::mixed()
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var string $data */
                 return $data;
             })
-            ->pipe(Validate::string()->min(length: 10));
+            ->withPipe(Validate::string()->min(length: 10));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -708,13 +708,13 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that catch() returns the fallback
+        // this test proves that withCatch() returns the fallback
         // value when a refinement causes validation to fail
 
         // ----------------------------------------------------------------
@@ -724,11 +724,11 @@ class ValidateMixedTest extends TestCase
         // setup your test
 
         $unit = Validate::mixed()
-            ->refine(
+            ->withRefine(
                 fn(mixed $data) => is_string($data),
                 'Must be a string',
             )
-            ->catch('fallback');
+            ->withCatch('fallback');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -757,8 +757,8 @@ class ValidateMixedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -769,7 +769,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->describe('Any value');
+        $unit = Validate::mixed()->withDescription('Any value');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -792,8 +792,8 @@ class ValidateMixedTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -804,7 +804,7 @@ class ValidateMixedTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::mixed()->meta(['label' => 'Payload']);
+        $unit = Validate::mixed()->withMeta(['label' => 'Payload']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

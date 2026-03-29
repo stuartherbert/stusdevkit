@@ -512,8 +512,8 @@ class ValidateLiteralTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -525,7 +525,7 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->default('active');
+            ->withDefault('active');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -554,8 +554,8 @@ class ValidateLiteralTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -566,7 +566,7 @@ class ValidateLiteralTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::literal(value: 'active')->transform(
+        $unit = Validate::literal(value: 'active')->withTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -594,13 +594,13 @@ class ValidateLiteralTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can add custom
+        // this test proves that withRefine() can add custom
         // validation logic after the literal check passes
 
         // ----------------------------------------------------------------
@@ -611,7 +611,7 @@ class ValidateLiteralTest extends TestCase
 
         // a contrived example: the literal matches but we
         // add a refinement that always fails
-        $unit = Validate::literal(value: 'active')->refine(
+        $unit = Validate::literal(value: 'active')->withRefine(
             fn(mixed $data) => false,
             'Custom refinement failed',
         );
@@ -647,13 +647,13 @@ class ValidateLiteralTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of the literal schema to another schema for
         // further validation
 
@@ -664,11 +664,11 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })
-            ->pipe(Validate::int()->gte(value: 3));
+            ->withPipe(Validate::int()->gte(value: 3));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -691,8 +691,8 @@ class ValidateLiteralTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -704,7 +704,7 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->catch('unknown');
+            ->withCatch('unknown');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -866,8 +866,8 @@ class ValidateLiteralTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -879,7 +879,7 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->describe('Account status');
+            ->withDescription('Account status');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -902,8 +902,8 @@ class ValidateLiteralTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -915,7 +915,7 @@ class ValidateLiteralTest extends TestCase
         // setup your test
 
         $unit = Validate::literal(value: 'active')
-            ->meta(['label' => 'Status']);
+            ->withMeta(['label' => 'Status']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

@@ -126,7 +126,8 @@ class Codec extends BaseSchema
      * the encoder, then validates against the input schema.
      *
      * This method bypasses all pipeline features on the
-     * codec (default, catch, transform, refine, pipe).
+     * codec (withDefault, withCatch, withTransform,
+     * withRefine, withPipe).
      * Only the inner schemas' validation applies.
      *
      * @return TInput
@@ -220,10 +221,10 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function transform(callable $fn): never
+    public function withTransform(callable $fn): never
     {
         throw new BadMethodCallException(
-            'transform() is not supported on Codec schemas'
+            'withTransform() is not supported on Codec schemas'
             . ' — add transforms to the input or output'
             . ' schema instead',
         );
@@ -232,12 +233,12 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function refine(
+    public function withRefine(
         callable $fn,
         string $message,
     ): never {
         throw new BadMethodCallException(
-            'refine() is not supported on Codec schemas'
+            'withRefine() is not supported on Codec schemas'
             . ' — add refinements to the input or output'
             . ' schema instead',
         );
@@ -246,10 +247,10 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function superRefine(callable $fn): never
+    public function withSuperRefine(callable $fn): never
     {
         throw new BadMethodCallException(
-            'superRefine() is not supported on Codec schemas'
+            'withSuperRefine() is not supported on Codec schemas'
             . ' — add refinements to the input or output'
             . ' schema instead',
         );
@@ -258,30 +259,30 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function pipe(ValidationSchema $schema): never
+    public function withPipe(ValidationSchema $schema): never
     {
         throw new BadMethodCallException(
-            'pipe() is not supported on Codec schemas',
+            'withPipe() is not supported on Codec schemas',
         );
     }
 
     /**
      * @throws BadMethodCallException always.
      */
-    public function catch(mixed $fallback): never
+    public function withCatch(mixed $fallback): never
     {
         throw new BadMethodCallException(
-            'catch() is not supported on Codec schemas',
+            'withCatch() is not supported on Codec schemas',
         );
     }
 
     /**
      * @throws BadMethodCallException always.
      */
-    public function default(mixed $value): never
+    public function withDefault(mixed $value): never
     {
         throw new BadMethodCallException(
-            'default() is not supported on Codec schemas'
+            'withDefault() is not supported on Codec schemas'
             . ' — add defaults to the input or output'
             . ' schema instead',
         );

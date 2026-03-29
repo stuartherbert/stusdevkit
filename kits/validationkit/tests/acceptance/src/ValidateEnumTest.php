@@ -393,8 +393,8 @@ class ValidateEnumTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -406,7 +406,7 @@ class ValidateEnumTest extends TestCase
         // setup your test
 
         $unit = Validate::enum(['active', 'inactive'])
-            ->default('inactive');
+            ->withDefault('inactive');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -435,8 +435,8 @@ class ValidateEnumTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -447,7 +447,7 @@ class ValidateEnumTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::enum(['active', 'inactive'])->transform(
+        $unit = Validate::enum(['active', 'inactive'])->withTransform(
             function (mixed $data) {
                 /** @var string $data */
                 return strtoupper($data);
@@ -475,13 +475,13 @@ class ValidateEnumTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes the enum check
 
         // ----------------------------------------------------------------
@@ -490,7 +490,7 @@ class ValidateEnumTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::enum(['active', 'inactive'])->refine(
+        $unit = Validate::enum(['active', 'inactive'])->withRefine(
             fn(mixed $data) => $data !== 'inactive',
             'inactive is not allowed here',
         );
@@ -526,13 +526,13 @@ class ValidateEnumTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of the enum to another schema for further
         // validation
 
@@ -543,11 +543,11 @@ class ValidateEnumTest extends TestCase
         // setup your test
 
         $unit = Validate::enum(['active', 'inactive'])
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var string $data */
                 return strlen($data);
             })
-            ->pipe(Validate::int()->gte(value: 5));
+            ->withPipe(Validate::int()->gte(value: 5));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -570,8 +570,8 @@ class ValidateEnumTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -583,7 +583,7 @@ class ValidateEnumTest extends TestCase
         // setup your test
 
         $unit = Validate::enum(['active', 'inactive'])
-            ->catch('inactive');
+            ->withCatch('inactive');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -746,8 +746,8 @@ class ValidateEnumTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -759,7 +759,7 @@ class ValidateEnumTest extends TestCase
         // setup your test
 
         $unit = Validate::enum(['active', 'inactive'])
-            ->describe('Account status');
+            ->withDescription('Account status');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -782,8 +782,8 @@ class ValidateEnumTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -795,7 +795,7 @@ class ValidateEnumTest extends TestCase
         // setup your test
 
         $unit = Validate::enum(['active', 'inactive'])
-            ->meta(['label' => 'Status']);
+            ->withMeta(['label' => 'Status']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

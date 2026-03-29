@@ -314,7 +314,7 @@ class ErrorFormatterFlattenTest extends TestCase
         $unit = Validate::object([
             'name' => Validate::string(),
             'age' => Validate::int(),
-        ])->refine(
+        ])->withRefine(
             fn(mixed $data) => false,
             'Form-level validation failed',
         );

@@ -42,8 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Traits;
 
 /**
- * HasMetadata provides describe() and meta() methods
- * for attaching metadata to schemas.
+ * HasMetadata provides withDescription() and withMeta()
+ * methods for attaching metadata to schemas.
  *
  * Metadata does not affect validation behaviour. It is
  * used by tooling such as JSON Schema generation, code
@@ -72,7 +72,7 @@ trait HasMetadata
      *
      * @param non-empty-string $text
      */
-    public function describe(string $text): static
+    public function withDescription(string $text): static
     {
         $clone = clone $this;
         $clone->description = $text;
@@ -88,7 +88,7 @@ trait HasMetadata
      *
      * @param SchemaMetadata $data
      */
-    public function meta(array $data): static
+    public function withMeta(array $data): static
     {
         $clone = clone $this;
         $clone->metadata = array_merge($clone->metadata, $data);

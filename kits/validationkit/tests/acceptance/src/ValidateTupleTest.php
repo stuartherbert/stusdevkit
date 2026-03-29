@@ -574,8 +574,8 @@ class ValidateTupleTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -589,7 +589,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->default(['default', 0]);
+        ])->withDefault(['default', 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -618,8 +618,8 @@ class ValidateTupleTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -633,7 +633,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->transform(
+        ])->withTransform(
             function (mixed $data) {
                 /** @var array{string, int} $data */
                 return $data[0] . ':' . $data[1];
@@ -661,13 +661,13 @@ class ValidateTupleTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and positional checks
 
         // ----------------------------------------------------------------
@@ -679,7 +679,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::int(),
             Validate::int(),
-        ])->refine(
+        ])->withRefine(
             function (mixed $data) {
                 /** @var array<int, mixed> $data */
                 return $data[0] < $data[1];
@@ -718,13 +718,13 @@ class ValidateTupleTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output of
+        // this test proves that withPipe() passes the output of
         // this schema to another schema for further
         // validation
 
@@ -737,12 +737,12 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->transform(
+        ])->withTransform(
             function (mixed $data) {
                 /** @var array{string, int} $data */
                 return $data[0] . ':' . $data[1];
             },
-        )->pipe(
+        )->withPipe(
             Validate::string()->min(length: 3),
         );
 
@@ -767,8 +767,8 @@ class ValidateTupleTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -782,7 +782,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->catch(['', 0]);
+        ])->withCatch(['', 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -949,8 +949,8 @@ class ValidateTupleTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -964,7 +964,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->describe('A key-value pair');
+        ])->withDescription('A key-value pair');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -987,8 +987,8 @@ class ValidateTupleTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1002,7 +1002,7 @@ class ValidateTupleTest extends TestCase
         $unit = Validate::tuple([
             Validate::string(),
             Validate::int(),
-        ])->meta(['label' => 'Coordinate']);
+        ])->withMeta(['label' => 'Coordinate']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

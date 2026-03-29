@@ -1094,8 +1094,8 @@ class ValidateNumberTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('default() provides fallback for null')]
-    public function test_default_provides_fallback(): void
+    #[TestDox('withDefault() provides fallback for null')]
+    public function test_with_default_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1106,7 +1106,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->default(0);
+        $unit = Validate::number()->withDefault(0);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1195,8 +1195,8 @@ class ValidateNumberTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('transform() modifies the validated data')]
-    public function test_transform_modifies_data(): void
+    #[TestDox('withTransform() modifies the validated data')]
+    public function test_with_transform_modifies_data(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1207,7 +1207,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->transform(
+        $unit = Validate::number()->withTransform(
             function (mixed $data) {
                 /** @var int $data */
                 return $data * 2;
@@ -1235,13 +1235,13 @@ class ValidateNumberTest extends TestCase
 
     }
 
-    #[TestDox('refine() adds custom validation')]
-    public function test_refine_adds_custom_validation(): void
+    #[TestDox('withRefine() adds custom validation')]
+    public function test_with_refine_adds_custom_validation(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that refine() can reject a value
+        // this test proves that withRefine() can reject a value
         // that passes type and constraint checks
 
         // ----------------------------------------------------------------
@@ -1250,7 +1250,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->refine(
+        $unit = Validate::number()->withRefine(
             fn(mixed $data) => $data !== 13,
             'Unlucky number',
         );
@@ -1286,13 +1286,13 @@ class ValidateNumberTest extends TestCase
 
     }
 
-    #[TestDox('pipe() chains to another schema')]
-    public function test_pipe_chains_schemas(): void
+    #[TestDox('withPipe() chains to another schema')]
+    public function test_with_pipe_chains_schemas(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that pipe() passes the output
+        // this test proves that withPipe() passes the output
         // of this schema to another schema for further
         // validation
 
@@ -1303,11 +1303,11 @@ class ValidateNumberTest extends TestCase
         // setup your test
 
         $unit = Validate::number()
-            ->transform(function (mixed $data) {
+            ->withTransform(function (mixed $data) {
                 /** @var int|float $data */
                 return (string) $data;
             })
-            ->pipe(Validate::string()->min(length: 1));
+            ->withPipe(Validate::string()->min(length: 1));
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1330,8 +1330,8 @@ class ValidateNumberTest extends TestCase
 
     }
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1342,7 +1342,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->catch(0);
+        $unit = Validate::number()->withCatch(0);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1565,8 +1565,8 @@ class ValidateNumberTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1577,7 +1577,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->describe('A score value');
+        $unit = Validate::number()->withDescription('A score value');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1600,8 +1600,8 @@ class ValidateNumberTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -1612,7 +1612,7 @@ class ValidateNumberTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::number()->meta(['label' => 'Score']);
+        $unit = Validate::number()->withMeta(['label' => 'Score']);
 
         // ----------------------------------------------------------------
         // mock out any integrations

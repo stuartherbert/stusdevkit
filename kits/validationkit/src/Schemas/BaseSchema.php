@@ -160,7 +160,7 @@ abstract class BaseSchema implements ValidationSchema
         );
 
         if ($context->hasIssues()) {
-            // catch() provides a fallback on failure
+            // withCatch() provides a fallback on failure
             if ($this->hasCatch) {
                 /** @var TOutput $fallback */
                 $fallback = $this->catchFallback;
@@ -192,7 +192,7 @@ abstract class BaseSchema implements ValidationSchema
         );
 
         if ($context->hasIssues()) {
-            // catch() provides a fallback on failure
+            // withCatch() provides a fallback on failure
             if ($this->hasCatch) {
                 /** @var TOutput $catchFallback */
                 $catchFallback = $this->catchFallback;
@@ -243,8 +243,8 @@ abstract class BaseSchema implements ValidationSchema
     // ----------------------------------------------------------------
 
     /**
-     * validate the given data without applying default()
-     * or catch() fallbacks
+     * validate the given data without applying
+     * withDefault() or withCatch() fallbacks
      *
      * Used by Codec::encode() to ensure the encode path
      * does not silently substitute or swallow values.
@@ -274,9 +274,9 @@ abstract class BaseSchema implements ValidationSchema
     }
 
     /**
-     * validate the given data without applying default()
-     * or catch() fallbacks, returning a result object
-     * instead of throwing
+     * validate the given data without applying
+     * withDefault() or withCatch() fallbacks, returning
+     * a result object instead of throwing
      *
      * @return ParseResult<TOutput>
      */
@@ -347,7 +347,7 @@ abstract class BaseSchema implements ValidationSchema
     /**
      * run the encode pipeline with a given context
      *
-     * Like parseWithContext(), but skips the default()
+     * Like parseWithContext(), but skips the withDefault()
      * fallback for null values. Used by encode() and
      * safeEncode() to ensure the encode path does not
      * silently substitute values.

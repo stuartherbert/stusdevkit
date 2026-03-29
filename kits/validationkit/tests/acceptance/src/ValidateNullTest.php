@@ -455,8 +455,8 @@ class ValidateNullTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -467,7 +467,7 @@ class ValidateNullTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::null()->describe('A null sentinel');
+        $unit = Validate::null()->withDescription('A null sentinel');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -490,8 +490,8 @@ class ValidateNullTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -502,7 +502,7 @@ class ValidateNullTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::null()->meta(['label' => 'Sentinel']);
+        $unit = Validate::null()->withMeta(['label' => 'Sentinel']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -531,13 +531,13 @@ class ValidateNullTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('catch() provides fallback on validation failure')]
-    public function test_catch_provides_fallback(): void
+    #[TestDox('withCatch() provides fallback on validation failure')]
+    public function test_with_catch_provides_fallback(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that catch() returns the fallback
+        // this test proves that withCatch() returns the fallback
         // value instead of throwing when validation fails
 
         // ----------------------------------------------------------------
@@ -546,7 +546,7 @@ class ValidateNullTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::null()->catch(null);
+        $unit = Validate::null()->withCatch(null);
 
         // ----------------------------------------------------------------
         // mock out any integrations

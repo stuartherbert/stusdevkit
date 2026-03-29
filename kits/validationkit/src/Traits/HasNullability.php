@@ -42,11 +42,11 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Traits;
 
 /**
- * HasNullability provides the default() method for
+ * HasNullability provides the withDefault() method for
  * schemas.
  *
- * default() provides a fallback value when the input is
- * null or missing.
+ * withDefault() provides a fallback value when the input
+ * is null or missing.
  */
 trait HasNullability
 {
@@ -66,7 +66,7 @@ trait HasNullability
      * object schema), the default value is used instead.
      * The default value is not validated against the schema.
      */
-    public function default(mixed $value): static
+    public function withDefault(mixed $value): static
     {
         $clone = clone $this;
         $clone->hasDefault = true;

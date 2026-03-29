@@ -48,7 +48,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  * RefineStep wraps a callable boolean check as a
  * pipeline constraint.
  *
- * Used internally by the refine() builder method. The
+ * Used internally by the withRefine() builder method. The
  * callable receives the data and returns true if valid,
  * false if not. A false return adds a Custom issue with
  * the given message.

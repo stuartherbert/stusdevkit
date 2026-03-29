@@ -252,7 +252,7 @@ final class Validate
      * create a mixed validation schema
      *
      * Accepts any value including null. Useful as a
-     * passthrough or with refine() for custom validation.
+     * passthrough or with withRefine() for custom validation.
      */
     public static function mixed(): MixedSchema
     {

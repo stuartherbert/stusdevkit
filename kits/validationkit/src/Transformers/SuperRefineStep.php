@@ -48,7 +48,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  * SuperRefineStep wraps a callable that has full access
  * to the ValidationContext as a pipeline constraint.
  *
- * Used internally by the superRefine() builder method.
+ * Used internally by the withSuperRefine() builder method.
  * The callable can add multiple custom issues with
  * different codes and paths.
  *

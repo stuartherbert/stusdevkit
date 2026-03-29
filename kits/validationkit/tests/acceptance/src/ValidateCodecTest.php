@@ -882,7 +882,7 @@ class ValidateCodecTest extends TestCase
 
         $unit = Validate::codec(
             input: Validate::string(),
-            output: Validate::uuid()->refine(
+            output: Validate::uuid()->withRefine(
                 function (mixed $data): bool {
                     /** @var UuidInterface $data */
                     return $data->toString()
@@ -935,27 +935,27 @@ class ValidateCodecTest extends TestCase
 
         return [
             'transform' => [
-                fn() => $codec->transform(fn($x) => $x),
+                fn() => $codec->withTransform(fn($x) => $x),
             ],
             'refine' => [
-                fn() => $codec->refine(
+                fn() => $codec->withRefine(
                     fn($x) => true,
                     'msg',
                 ),
             ],
             'superRefine' => [
-                fn() => $codec->superRefine(
+                fn() => $codec->withSuperRefine(
                     fn($x, $ctx) => null,
                 ),
             ],
             'pipe' => [
-                fn() => $codec->pipe(Validate::string()),
+                fn() => $codec->withPipe(Validate::string()),
             ],
             'catch' => [
-                fn() => $codec->catch(null),
+                fn() => $codec->withCatch(null),
             ],
             'default' => [
-                fn() => $codec->default(null),
+                fn() => $codec->withDefault(null),
             ],
             'withConstraint' => [
                 fn() => $codec->withConstraint(
@@ -1014,13 +1014,13 @@ class ValidateCodecTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('describe() sets the description')]
-    public function test_describe_sets_description(): void
+    #[TestDox('withDescription() sets the description')]
+    public function test_with_description_sets_description(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that describe() is allowed on
+        // this test proves that withDescription() is allowed on
         // codecs and sets the description metadata
 
         // ----------------------------------------------------------------
@@ -1030,7 +1030,7 @@ class ValidateCodecTest extends TestCase
         // setup your test
 
         $unit = self::uuidCodec()
-            ->describe('A UUID codec');
+            ->withDescription('A UUID codec');
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1053,13 +1053,13 @@ class ValidateCodecTest extends TestCase
 
     }
 
-    #[TestDox('meta() sets the metadata')]
-    public function test_meta_sets_metadata(): void
+    #[TestDox('withMeta() sets the metadata')]
+    public function test_with_meta_sets_metadata(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that meta() is allowed on codecs
+        // this test proves that withMeta() is allowed on codecs
         // and sets arbitrary metadata
 
         // ----------------------------------------------------------------
@@ -1069,7 +1069,7 @@ class ValidateCodecTest extends TestCase
         // setup your test
 
         $unit = self::uuidCodec()
-            ->meta(['version' => 4]);
+            ->withMeta(['version' => 4]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
