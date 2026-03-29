@@ -111,8 +111,6 @@ abstract class BaseSchema implements ValidationSchema
     protected bool $hasCatch = false;
     protected mixed $catchFallback;
 
-    protected bool $isReadonly = false;
-
     public function __construct()
     {
         $this->coercion = new NoCoercion();
@@ -289,20 +287,6 @@ abstract class BaseSchema implements ValidationSchema
         $clone = clone $this;
         $clone->hasCatch = true;
         $clone->catchFallback = $fallback;
-
-        return $clone;
-    }
-
-    /**
-     * mark the output as readonly
-     *
-     * This is a metadata flag that signals to consumers
-     * the output should not be modified.
-     */
-    public function withReadonly(): static
-    {
-        $clone = clone $this;
-        $clone->isReadonly = true;
 
         return $clone;
     }

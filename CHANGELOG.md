@@ -77,9 +77,13 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ValidatorKit
+
+- drop ValidatorSchema readonly concept ([705243a](https://github.com/stuartherbert/stusdevkit/commit/705243a)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ValidationKit
 
-- absorb the traits into the BaseSchema ([6b6d649](https://github.com/stuartherbert/stusdevkit/commit/6b6d649)) — Stuart Herbert <stuart@stuartherbert.com>
+- absorb the traits into the BaseSchema ([cc7551c](https://github.com/stuartherbert/stusdevkit/commit/cc7551c)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve naming of custom constraints and custom transforms ([ea941f6](https://github.com/stuartherbert/stusdevkit/commit/ea941f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove `withStep()` from public API ([61b9ce1](https://github.com/stuartherbert/stusdevkit/commit/61b9ce1)) — Stuart Herbert <stuart@stuartherbert.com>
 - standardise naming of public API methods ([3f491d8](https://github.com/stuartherbert/stusdevkit/commit/3f491d8)) — Stuart Herbert <stuart@stuartherbert.com>

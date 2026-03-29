@@ -216,14 +216,6 @@ interface ValidationSchema
      */
     public function withDefault(mixed $value): static;
 
-    /**
-     * mark the output as readonly
-     *
-     * This is a metadata flag that signals to consumers
-     * the output should not be modified.
-     */
-    public function withReadonly(): static;
-
     // ================================================================
     //
     // Metadata
