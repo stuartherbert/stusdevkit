@@ -185,18 +185,6 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
-    public function withStep(PipelineStep $step): never
-    {
-        throw new BadMethodCallException(
-            'withStep() is not supported on Codec schemas'
-            . ' — add steps to the input or output schema'
-            . ' instead',
-        );
-    }
-
-    /**
-     * @throws BadMethodCallException always.
-     */
     public function withConstraint(PipelineStep $step): never
     {
         throw new BadMethodCallException(

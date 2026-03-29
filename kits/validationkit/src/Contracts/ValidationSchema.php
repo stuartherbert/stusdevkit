@@ -135,26 +135,12 @@ interface ValidationSchema
     // ----------------------------------------------------------------
 
     /**
-     * add a step to the pipeline
-     *
-     * Returns a new schema instance with the step
-     * appended. Steps run in the order they are added,
-     * after the type check and validateChildren have
-     * passed.
-     */
-    public function withStep(PipelineStep $step): static;
-
-    /**
      * add a validation constraint to this schema
-     *
-     * Convenience method — equivalent to withStep().
      */
     public function withConstraint(PipelineStep $step): static;
 
     /**
      * add a pre-constraint normaliser to this schema
-     *
-     * Convenience method — equivalent to withStep().
      */
     public function withNormaliser(PipelineStep $step): static;
 

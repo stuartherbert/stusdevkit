@@ -73,7 +73,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- standardise naming of public API methods ([6d6d90a](https://github.com/stuartherbert/stusdevkit/commit/6d6d90a)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove `withStep()` from public API ([c00950f](https://github.com/stuartherbert/stusdevkit/commit/c00950f)) — Stuart Herbert <stuart@stuartherbert.com>
+- standardise naming of public API methods ([3f491d8](https://github.com/stuartherbert/stusdevkit/commit/3f491d8)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up default error reporting ([9580045](https://github.com/stuartherbert/stusdevkit/commit/9580045)) — Stuart Herbert <stuart@stuartherbert.com>
 - reduce number of schemas that need unique parsing pipelines ([54d4bc3](https://github.com/stuartherbert/stusdevkit/commit/54d4bc3)) — Stuart Herbert <stuart@stuartherbert.com>
 - simplify transformers implementation ([db1e258](https://github.com/stuartherbert/stusdevkit/commit/db1e258)) — Stuart Herbert <stuart@stuartherbert.com>

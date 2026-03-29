@@ -109,7 +109,7 @@ abstract class BaseSchema implements ValidationSchema
      * passed. Steps with skipOnIssues() returning true
      * cause the pipeline to stop when prior issues exist.
      */
-    public function withStep(PipelineStep $step): static
+    protected function withStep(PipelineStep $step): static
     {
         $clone = clone $this;
         $clone->steps[] = $step;
