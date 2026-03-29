@@ -467,6 +467,66 @@ class ObjectSchema extends BaseSchema
         return $output;
     }
 
+    /**
+     * encode child values using the encode pipeline
+     *
+     * Like validateChildren(), but calls
+     * encodeWithContext() on each field schema so that
+     * codecs run their encode path (output → input).
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        assert(is_array($data));
+
+        $output = [];
+
+        foreach ($this->shape as $key => $fieldSchema) {
+            $childContext = $context->atPath($key);
+
+            $fieldValue = array_key_exists($key, $data)
+                ? $data[$key]
+                : null;
+
+            $validatedValue = $fieldSchema->encodeWithContext(
+                data: $fieldValue,
+                context: $childContext,
+            );
+
+            $output[$key] = $validatedValue;
+        }
+
+        // handle unknown keys
+        /** @var array<string, mixed> $unknownKeys */
+        $unknownKeys = array_diff_key($data, $this->shape);
+
+        if (count($unknownKeys) > 0) {
+            $this->handleUnknownKeys(
+                unknownKeys: $unknownKeys,
+                context: $context,
+            );
+
+            // passthrough or catchall: include unknown keys
+            // in the output
+            if ($this->unknownKeyPolicy === 'passthrough') {
+                $output = array_merge($output, $unknownKeys);
+            } elseif ($this->catchallSchema !== null) {
+                foreach ($unknownKeys as $key => $value) {
+                    $childContext = $context->atPath($key);
+                    $validatedValue = $this->catchallSchema
+                        ->encodeWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+                    $output[$key] = $validatedValue;
+                }
+            }
+        }
+
+        return $output;
+    }
+
     // ================================================================
     //
     // Helpers

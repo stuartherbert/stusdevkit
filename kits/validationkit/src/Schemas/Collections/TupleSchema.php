@@ -159,14 +159,57 @@ class TupleSchema extends BaseSchema
 
         // validate each position
         $values = array_values($data);
+        $output = [];
         foreach ($this->schemas as $index => $schema) {
             $childContext = $context->atPath($index);
-            $schema->parseWithContext(
+            $output[] = $schema->parseWithContext(
                 data: $values[$index],
                 context: $childContext,
             );
         }
 
-        return $data;
+        return $output;
+    }
+
+    /**
+     * encode each position using the encode pipeline
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        assert(is_array($data));
+
+        $expectedCount = count($this->schemas);
+        $actualCount = count($data);
+
+        if ($actualCount !== $expectedCount) {
+            /** @var non-falsy-string $message */
+            $message = 'Tuple must have exactly '
+                . $expectedCount . ' elements, received '
+                . $actualCount;
+            $context->addIssue(
+                type: $actualCount < $expectedCount
+                    ? 'https://stusdevkit.dev/errors/validation/too_small'
+                    : 'https://stusdevkit.dev/errors/validation/too_big',
+                input: $data,
+                message: $message,
+            );
+
+            return $data;
+        }
+
+        // encode each position
+        $values = array_values($data);
+        $output = [];
+        foreach ($this->schemas as $index => $schema) {
+            $childContext = $context->atPath($index);
+            $output[] = $schema->encodeWithContext(
+                data: $values[$index],
+                context: $childContext,
+            );
+        }
+
+        return $output;
     }
 }

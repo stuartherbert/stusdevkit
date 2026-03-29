@@ -145,4 +145,28 @@ class AllOfSchema extends BaseSchema
 
         return $result;
     }
+
+    /**
+     * encode against all schemas
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        $result = $data;
+        foreach ($this->schemas as $schema) {
+            $schemaResult = $schema->encodeWithContext(
+                data: $data,
+                context: $context,
+            );
+
+            // if both the current result and the schema
+            // result are arrays, merge them
+            $result = is_array($result) && is_array($schemaResult)
+                ? array_merge($result, $schemaResult)
+                : $schemaResult;
+        }
+
+        return $result;
+    }
 }

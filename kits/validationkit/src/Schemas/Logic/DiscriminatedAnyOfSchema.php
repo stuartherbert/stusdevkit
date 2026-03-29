@@ -221,6 +221,69 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         );
     }
 
+    /**
+     * select the correct schema by discriminator value
+     * and encode using it
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // must be an array to have a discriminator field
+        if (! is_array($data)) {
+            $this->invokeErrorCallback(
+                callback: $this->typeCheckError,
+                input: $data,
+                context: $context,
+            );
+
+            return $data;
+        }
+
+        // check discriminator field exists
+        if (! array_key_exists($this->discriminator, $data)) {
+            $context->addIssue(
+                type: 'https://stusdevkit.dev/errors/validation/invalid_union',
+                input: $data,
+                message: 'Missing discriminator field "'
+                    . $this->discriminator . '"',
+            );
+
+            return $data;
+        }
+
+        // O(1) lookup by discriminator value
+        $discriminatorValue = $data[$this->discriminator];
+        $key = is_string($discriminatorValue)
+            || is_int($discriminatorValue)
+            ? $discriminatorValue
+            : null;
+
+        $schema = $key !== null
+            ? ($this->schemaMap[$key] ?? null)
+            : null;
+
+        if ($schema === null) {
+            $described = is_string($discriminatorValue)
+                ? '"' . $discriminatorValue . '"'
+                : get_debug_type($discriminatorValue);
+            $context->addIssue(
+                type: 'https://stusdevkit.dev/errors/validation/invalid_union',
+                input: $data,
+                message: 'Unrecognised '
+                    . $this->discriminator
+                    . ' value: ' . $described,
+            );
+
+            return $data;
+        }
+
+        return $schema->encodeWithContext(
+            data: $data,
+            context: $context,
+        );
+    }
+
     // ================================================================
     //
     // Helpers

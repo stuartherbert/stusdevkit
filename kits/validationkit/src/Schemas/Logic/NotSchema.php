@@ -155,4 +155,34 @@ class NotSchema extends BaseSchema
         // return data unchanged regardless
         return $data;
     }
+
+    /**
+     * negate the inner schema's encode result
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // try the inner schema in a child context
+        $childContext = new ValidationContext(
+            $context->path(),
+        );
+        $this->schema->encodeWithContext(
+            data: $data,
+            context: $childContext,
+        );
+
+        // if the inner schema passed, the data is invalid
+        // for NotSchema
+        if (! $childContext->hasIssues()) {
+            $this->invokeErrorCallback(
+                callback: $this->typeCheckError,
+                input: $data,
+                context: $context,
+            );
+        }
+
+        // return data unchanged regardless
+        return $data;
+    }
 }

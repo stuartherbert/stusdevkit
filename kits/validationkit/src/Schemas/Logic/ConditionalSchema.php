@@ -158,4 +158,44 @@ class ConditionalSchema extends BaseSchema
 
         return $data;
     }
+
+    /**
+     * evaluate the if-schema condition, then encode using
+     * the then or else schema accordingly
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // evaluate the condition in a child context
+        // so that its issues do not propagate
+        $childContext = new ValidationContext(
+            $context->path(),
+        );
+        $this->if->encodeWithContext(
+            data: $data,
+            context: $childContext,
+        );
+
+        // apply the appropriate branch
+        if (! $childContext->hasIssues()) {
+            // condition passed — apply `then` if present
+            if ($this->then !== null) {
+                return $this->then->encodeWithContext(
+                    data: $data,
+                    context: $context,
+                );
+            }
+        } else {
+            // condition failed — apply `else` if present
+            if ($this->else !== null) {
+                return $this->else->encodeWithContext(
+                    data: $data,
+                    context: $context,
+                );
+            }
+        }
+
+        return $data;
+    }
 }

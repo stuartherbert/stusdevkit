@@ -159,4 +159,36 @@ class AnyOfSchema extends BaseSchema
 
         return $data;
     }
+
+    /**
+     * encode against schemas; the first one that succeeds
+     * wins
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        foreach ($this->schemas as $schema) {
+            $childContext = new ValidationContext(
+                $context->path(),
+            );
+            $result = $schema->encodeWithContext(
+                data: $data,
+                context: $childContext,
+            );
+
+            if (! $childContext->hasIssues()) {
+                return $result;
+            }
+        }
+
+        // none matched
+        $this->invokeErrorCallback(
+            callback: $this->typeCheckError,
+            input: $data,
+            context: $context,
+        );
+
+        return $data;
+    }
 }

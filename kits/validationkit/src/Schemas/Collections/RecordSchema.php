@@ -143,6 +143,7 @@ class RecordSchema extends BaseSchema
     ): mixed {
         assert(is_array($data));
 
+        $output = [];
         foreach ($data as $key => $value) {
             // validate the key
             $keyContext = $context->atPath($key);
@@ -153,12 +154,45 @@ class RecordSchema extends BaseSchema
 
             // validate the value
             $valueContext = $context->atPath($key);
-            $this->valueSchema->parseWithContext(
+            $validatedValue = $this->valueSchema->parseWithContext(
                 data: $value,
                 context: $valueContext,
             );
+
+            $output[$key] = $validatedValue;
         }
 
-        return $data;
+        return $output;
+    }
+
+    /**
+     * encode each key and value using the encode pipeline
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        assert(is_array($data));
+
+        $output = [];
+        foreach ($data as $key => $value) {
+            // encode the key
+            $keyContext = $context->atPath($key);
+            $this->keySchema->encodeWithContext(
+                data: $key,
+                context: $keyContext,
+            );
+
+            // encode the value
+            $valueContext = $context->atPath($key);
+            $encodedValue = $this->valueSchema->encodeWithContext(
+                data: $value,
+                context: $valueContext,
+            );
+
+            $output[$key] = $encodedValue;
+        }
+
+        return $output;
     }
 }

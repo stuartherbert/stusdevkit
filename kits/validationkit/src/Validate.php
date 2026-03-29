@@ -42,6 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit;
 
 use BackedEnum;
+use Closure;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
@@ -58,6 +59,7 @@ use StusDevKit\ValidationKit\Schemas\Builtins\NumberSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ObjectSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\OptionalSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\StringSchema;
+use StusDevKit\ValidationKit\Schemas\Codec;
 use StusDevKit\ValidationKit\Schemas\Collections\RecordSchema;
 use StusDevKit\ValidationKit\Schemas\Collections\TupleSchema;
 use StusDevKit\ValidationKit\Schemas\DevKit\WhenSchema;
@@ -619,6 +621,47 @@ final class Validate
         return new InstanceOfSchema(
             className: $class,
             typeCheckError: $error,
+        );
+    }
+
+    // ================================================================
+    //
+    // Codec Factories
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * create a bidirectional codec schema
+     *
+     * A codec bridges an input type and an output type,
+     * providing validated decode (input → output) and
+     * encode (output → input) operations.
+     *
+     * @template TInput
+     * @template TOutput
+     * @param BaseSchema<TInput> $input
+     * - schema that validates the serialised (input)
+     *   representation
+     * @param BaseSchema<TOutput> $output
+     * - schema that validates the native (output)
+     *   representation
+     * @param Closure(TInput): TOutput $decode
+     * - transforms input type to output type
+     * @param Closure(TOutput): TInput $encode
+     * - transforms output type to input type
+     * @return Codec<TInput, TOutput>
+     */
+    public static function codec(
+        BaseSchema $input,
+        BaseSchema $output,
+        Closure $decode,
+        Closure $encode,
+    ): Codec {
+        return new Codec(
+            inputSchema: $input,
+            outputSchema: $output,
+            decoder: $decode,
+            encoder: $encode,
         );
     }
 }

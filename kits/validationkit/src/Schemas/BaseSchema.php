@@ -214,6 +214,95 @@ abstract class BaseSchema implements Parseable
         return ParseResult::ok($validatedData);
     }
 
+    /**
+     * alias for parse()
+     *
+     * @return TOutput
+     * @throws ValidationException
+     *         if validation fails.
+     */
+    public function decode(mixed $data): mixed
+    {
+        return $this->parse($data);
+    }
+
+    /**
+     * alias for safeParse()
+     *
+     * @return ParseResult<TOutput>
+     */
+    public function safeDecode(mixed $data): ParseResult
+    {
+        return $this->safeParse($data);
+    }
+
+    // ================================================================
+    //
+    // Encode (strict validation without defaults or catch)
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * validate the given data without applying default()
+     * or catch() fallbacks
+     *
+     * Used by Codec::encode() to ensure the encode path
+     * does not silently substitute or swallow values.
+     * On non-codec schemas, this is equivalent to strict
+     * validation.
+     *
+     * @return TOutput
+     * @throws ValidationException
+     *         if validation fails.
+     */
+    public function encode(mixed $data): mixed
+    {
+        $context = new ValidationContext();
+        $result = $this->encodeWithContext(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            throw new ValidationException($context->issues());
+        }
+
+        /** @var TOutput $validatedResult */
+        $validatedResult = $result;
+
+        return $validatedResult;
+    }
+
+    /**
+     * validate the given data without applying default()
+     * or catch() fallbacks, returning a result object
+     * instead of throwing
+     *
+     * @return ParseResult<TOutput>
+     */
+    public function safeEncode(mixed $data): ParseResult
+    {
+        $context = new ValidationContext();
+        $result = $this->encodeWithContext(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            /** @var ParseResult<TOutput> $failResult */
+            $failResult = ParseResult::fail(
+                new ValidationException($context->issues()),
+            );
+
+            return $failResult;
+        }
+
+        /** @var TOutput $validatedData */
+        $validatedData = $result;
+
+        return ParseResult::ok($validatedData);
+    }
+
     // ================================================================
     //
     // Internal Parse Pipeline
@@ -249,6 +338,56 @@ abstract class BaseSchema implements Parseable
             }
         }
 
+        return $this->runDecodePipeline(
+            data: $data,
+            context: $context,
+        );
+    }
+
+    /**
+     * run the encode pipeline with a given context
+     *
+     * Like parseWithContext(), but skips the default()
+     * fallback for null values. Used by encode() and
+     * safeEncode() to ensure the encode path does not
+     * silently substitute values.
+     *
+     * @internal
+     */
+    public function encodeWithContext(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // step 1: null check — NO default fallback
+        if ($data === null && ! $this->acceptsNull()) {
+            $this->invokeErrorCallback(
+                callback: $this->typeCheckError,
+                input: $data,
+                context: $context,
+            );
+
+            return null;
+        }
+
+        return $this->runEncodePipeline(
+            data: $data,
+            context: $context,
+        );
+    }
+
+    /**
+     * run the shared validation pipeline
+     *
+     * Contains the common steps used by parseWithContext():
+     * coerce, type check, validate children, pipeline
+     * steps, and pipe.
+     *
+     * @internal
+     */
+    protected function runDecodePipeline(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
         // step 2: coerce
         $data = $this->coercion->coerce($data);
 
@@ -293,6 +432,71 @@ abstract class BaseSchema implements Parseable
         // step 6: pipe to another schema
         if ($this->pipeTarget !== null) {
             $data = $this->pipeTarget->parseWithContext(
+                data: $data,
+                context: $context,
+            );
+        }
+
+        return $data;
+    }
+
+    /**
+     * run the encode validation pipeline
+     *
+     * Like runDecodePipeline(), but calls encodeChildren()
+     * instead of validateChildren() so that child schemas
+     * use their encode path.
+     *
+     * @internal
+     */
+    protected function runEncodePipeline(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // step 2: coerce
+        $data = $this->coercion->coerce($data);
+
+        // step 3: type check
+        $typeCheckPassed = $this->checkType(
+            data: $data,
+            context: $context,
+        );
+
+        // if type check failed, skip the rest of the
+        // pipeline (it depends on the correct type)
+        if (! $typeCheckPassed) {
+            return $data;
+        }
+
+        // step 4: encode children
+        $data = $this->encodeChildren(
+            data: $data,
+            context: $context,
+        );
+
+        if ($context->hasIssues()) {
+            return $data;
+        }
+
+        // step 5: pipeline steps (normalisers, constraints,
+        // refinements, transforms — in order added)
+        foreach ($this->steps as $step) {
+            if ($step->skipOnIssues() && $context->hasIssues()) {
+                break;
+            }
+            $data = $step->process(
+                data: $data,
+                context: $context,
+            );
+        }
+
+        if ($context->hasIssues()) {
+            return $data;
+        }
+
+        // step 6: pipe to another schema
+        if ($this->pipeTarget !== null) {
+            $data = $this->pipeTarget->encodeWithContext(
                 data: $data,
                 context: $context,
             );
@@ -359,5 +563,26 @@ abstract class BaseSchema implements Parseable
         ValidationContext $context,
     ): mixed {
         return $data;
+    }
+
+    /**
+     * encode child values and optionally rebuild the data
+     *
+     * Called by the encode pipeline instead of
+     * validateChildren(). Override this in schemas that
+     * need to propagate encode context to nested
+     * structures (e.g. ObjectSchema encodes shape fields).
+     *
+     * By default, delegates to validateChildren() since
+     * most schemas have no children.
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        return $this->validateChildren(
+            data: $data,
+            context: $context,
+        );
     }
 }

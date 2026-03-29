@@ -183,4 +183,60 @@ class OneOfSchema extends BaseSchema
 
         return $data;
     }
+
+    /**
+     * encode against schemas; exactly one must match
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        // try every schema — we must count how many pass
+        $matchCount = 0;
+        $matchedResult = $data;
+
+        foreach ($this->schemas as $schema) {
+            $childContext = new ValidationContext(
+                $context->path(),
+            );
+            $result = $schema->encodeWithContext(
+                data: $data,
+                context: $childContext,
+            );
+
+            if (! $childContext->hasIssues()) {
+                $matchCount++;
+                $matchedResult = $result;
+            }
+        }
+
+        // exactly one schema must match
+        if ($matchCount === 1) {
+            return $matchedResult;
+        }
+
+        // zero or more than one matched — report error
+        if ($matchCount === 0) {
+            $this->invokeErrorCallback(
+                callback: $this->typeCheckError,
+                input: $data,
+                context: $context,
+            );
+        } else {
+            $this->invokeErrorCallback(
+                callback: static fn(mixed $input) => new ValidationIssue(
+                    type: 'https://stusdevkit.dev/errors/validation/custom',
+                    input: $input,
+                    path: [],
+                    message: 'Input matches ' . $matchCount
+                        . ' schemas in oneOf, but must match'
+                        . ' exactly one',
+                ),
+                input: $data,
+                context: $context,
+            );
+        }
+
+        return $data;
+    }
 }

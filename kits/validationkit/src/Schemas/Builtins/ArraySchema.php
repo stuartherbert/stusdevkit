@@ -232,16 +232,40 @@ class ArraySchema extends BaseSchema
     ): mixed {
         assert(is_array($data));
 
+        $output = [];
         $index = 0;
         foreach ($data as $element) {
             $childContext = $context->atPath($index);
-            $this->elementSchema->parseWithContext(
+            $output[] = $this->elementSchema->parseWithContext(
                 data: $element,
                 context: $childContext,
             );
             $index++;
         }
 
-        return $data;
+        return $output;
+    }
+
+    /**
+     * encode each element using the encode pipeline
+     */
+    protected function encodeChildren(
+        mixed $data,
+        ValidationContext $context,
+    ): mixed {
+        assert(is_array($data));
+
+        $output = [];
+        $index = 0;
+        foreach ($data as $element) {
+            $childContext = $context->atPath($index);
+            $output[] = $this->elementSchema->encodeWithContext(
+                data: $element,
+                context: $childContext,
+            );
+            $index++;
+        }
+
+        return $output;
     }
 }
