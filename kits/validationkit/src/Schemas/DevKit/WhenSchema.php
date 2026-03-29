@@ -88,7 +88,7 @@ class WhenSchema extends BaseSchema
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
-            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+            ?? $this->getDefaultTypeCheckError();
     }
 
     // ================================================================
@@ -97,7 +97,7 @@ class WhenSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    protected function getDefaultTypeCheckError(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
             type: 'https://stusdevkit.dev/errors/validation/invalid_date',
@@ -153,11 +153,6 @@ class WhenSchema extends BaseSchema
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
-
-    protected function expectedType(): string
-    {
-        return 'When';
-    }
 
     protected function checkType(
         mixed $data,

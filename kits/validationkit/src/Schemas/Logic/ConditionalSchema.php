@@ -99,11 +99,6 @@ class ConditionalSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function expectedType(): string
-    {
-        return 'conditional';
-    }
-
     /**
      * null is allowed through to the child schemas
      */

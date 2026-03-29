@@ -82,7 +82,7 @@ class AnyOfSchema extends BaseSchema
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
-            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+            ?? $this->getDefaultTypeCheckError();
     }
 
     // ================================================================
@@ -91,7 +91,7 @@ class AnyOfSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    protected function getDefaultTypeCheckError(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
             type: 'https://stusdevkit.dev/errors/validation/invalid_union',
@@ -107,11 +107,6 @@ class AnyOfSchema extends BaseSchema
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
-
-    protected function expectedType(): string
-    {
-        return 'union';
-    }
 
     /**
      * null is allowed through to the child schemas

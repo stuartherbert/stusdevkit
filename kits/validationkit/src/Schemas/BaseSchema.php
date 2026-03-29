@@ -512,16 +512,6 @@ abstract class BaseSchema implements ValidationSchema
     // ----------------------------------------------------------------
 
     /**
-     * return a human-readable name for the expected type
-     *
-     * Used in default error messages (e.g. "Expected string,
-     * received int").
-     *
-     * @return non-empty-string
-     */
-    abstract protected function expectedType(): string;
-
-    /**
      * check that the input matches the expected type
      *
      * Must add issues to the context if the type check

@@ -104,11 +104,6 @@ class OptionalSchema extends BaseSchema
         return true;
     }
 
-    protected function expectedType(): string
-    {
-        return 'optional';
-    }
-
     protected function checkType(
         mixed $data,
         ValidationContext $context,

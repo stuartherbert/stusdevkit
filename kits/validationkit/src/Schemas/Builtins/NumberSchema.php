@@ -81,7 +81,7 @@ class NumberSchema extends BaseSchema
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
-            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+            ?? $this->getDefaultTypeCheckError();
     }
 
     // ================================================================
@@ -90,7 +90,7 @@ class NumberSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    protected function getDefaultTypeCheckError(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
             type: 'https://stusdevkit.dev/errors/validation/invalid_type',
@@ -254,11 +254,6 @@ class NumberSchema extends BaseSchema
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
-
-    protected function expectedType(): string
-    {
-        return 'number';
-    }
 
     protected function checkType(
         mixed $data,

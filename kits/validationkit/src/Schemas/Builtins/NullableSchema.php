@@ -90,11 +90,6 @@ class NullableSchema extends BaseSchema
         return true;
     }
 
-    protected function expectedType(): string
-    {
-        return 'nullable';
-    }
-
     protected function checkType(
         mixed $data,
         ValidationContext $context,

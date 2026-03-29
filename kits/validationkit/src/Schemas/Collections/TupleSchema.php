@@ -81,7 +81,7 @@ class TupleSchema extends BaseSchema
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
-            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+            ?? $this->getDefaultTypeCheckError();
     }
 
     // ================================================================
@@ -90,7 +90,7 @@ class TupleSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    protected function getDefaultTypeCheckError(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
             type: 'https://stusdevkit.dev/errors/validation/invalid_type',
@@ -106,11 +106,6 @@ class TupleSchema extends BaseSchema
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
-
-    protected function expectedType(): string
-    {
-        return 'tuple';
-    }
 
     protected function checkType(
         mixed $data,

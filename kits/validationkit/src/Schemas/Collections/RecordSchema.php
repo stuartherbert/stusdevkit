@@ -87,7 +87,7 @@ class RecordSchema extends BaseSchema
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
-            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+            ?? $this->getDefaultTypeCheckError();
     }
 
     // ================================================================
@@ -96,7 +96,7 @@ class RecordSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    protected function getDefaultTypeCheckError(): callable
     {
         return static fn(mixed $data) => new ValidationIssue(
             type: 'https://stusdevkit.dev/errors/validation/invalid_type',
@@ -112,11 +112,6 @@ class RecordSchema extends BaseSchema
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
-
-    protected function expectedType(): string
-    {
-        return 'record';
-    }
 
     protected function checkType(
         mixed $data,

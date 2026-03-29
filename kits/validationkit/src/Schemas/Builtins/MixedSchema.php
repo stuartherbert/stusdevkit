@@ -77,11 +77,6 @@ class MixedSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function expectedType(): string
-    {
-        return 'mixed';
-    }
-
     protected function acceptsNull(): bool
     {
         return true;

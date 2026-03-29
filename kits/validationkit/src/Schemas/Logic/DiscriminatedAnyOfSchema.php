@@ -106,7 +106,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         parent::__construct();
 
         $this->typeCheckError = $typeCheckError
-            ?? $this->getDefaultTypeCheckErrorCallbackForConstructor();
+            ?? $this->getDefaultTypeCheckError();
 
         $this->schemaMap = $this->buildSchemaMap(
             schemas: $schemas,
@@ -119,7 +119,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function getDefaultTypeCheckErrorCallbackForConstructor(): callable
+    protected function getDefaultTypeCheckError(): callable
     {
         return fn(mixed $data) => new ValidationIssue(
             type: 'https://stusdevkit.dev/errors/validation/invalid_type',
@@ -137,11 +137,6 @@ class DiscriminatedAnyOfSchema extends BaseSchema
     // BaseSchema Implementation
     //
     // ----------------------------------------------------------------
-
-    protected function expectedType(): string
-    {
-        return 'discriminated union';
-    }
 
     /**
      * null is allowed through to the child schemas

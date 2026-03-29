@@ -101,11 +101,6 @@ class NullishSchema extends BaseSchema
         return true;
     }
 
-    protected function expectedType(): string
-    {
-        return 'nullish';
-    }
-
     protected function checkType(
         mixed $data,
         ValidationContext $context,

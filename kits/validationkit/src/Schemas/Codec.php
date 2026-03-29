@@ -375,11 +375,6 @@ class Codec extends BaseSchema
     //
     // ----------------------------------------------------------------
 
-    protected function expectedType(): string
-    {
-        return 'Codec';
-    }
-
     /**
      * not used — parseWithContext() is overridden
      */
