@@ -14,7 +14,7 @@ else
     PHPSTAN_XDEBUG := --xdebug
 endif
 
-CLAUDECODEKIT=$(realpath ../claudecodekit)
+CLAUDECODEKIT=$(realpath ../stusdevkit-claudecodekit)
 LINK_CCK_AGENT=$(CLAUDECODEKIT)/bin/link-agent.sh
 LINK_CCK_HOOK=$(CLAUDECODEKIT)/bin/link-hook.sh
 LINK_CCK_SKILL=$(CLAUDECODEKIT)/bin/link-skill.sh

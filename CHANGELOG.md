@@ -46,6 +46,10 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
+#### Tools
+
+- fix `make claudecodekit` ([984329b](https://github.com/stuartherbert/stusdevkit/commit/984329b)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ValidationKit
 
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -73,7 +77,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- remove `withStep()` from public API ([c00950f](https://github.com/stuartherbert/stusdevkit/commit/c00950f)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove `withStep()` from public API ([61b9ce1](https://github.com/stuartherbert/stusdevkit/commit/61b9ce1)) — Stuart Herbert <stuart@stuartherbert.com>
 - standardise naming of public API methods ([3f491d8](https://github.com/stuartherbert/stusdevkit/commit/3f491d8)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up default error reporting ([9580045](https://github.com/stuartherbert/stusdevkit/commit/9580045)) — Stuart Herbert <stuart@stuartherbert.com>
 - reduce number of schemas that need unique parsing pipelines ([54d4bc3](https://github.com/stuartherbert/stusdevkit/commit/54d4bc3)) — Stuart Herbert <stuart@stuartherbert.com>
