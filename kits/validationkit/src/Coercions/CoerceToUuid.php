@@ -47,20 +47,20 @@ use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 
 /**
  * CoerceToUuid attempts to convert the input to a
- * standard UUID string using Ramsey\Uuid.
+ * UuidInterface instance using Ramsey\Uuid.
  *
  * Coercion rules:
  * - strings parseable by Uuid::fromString()
- *   → standard 8-4-4-4-12 format
+ *   → UuidInterface instance
  * - everything else → returned unchanged
  *
  * Usage:
  *
  *     $coercion = new CoerceToUuid();
  *     $coercion->coerce(
- *         '550e8400e29b41d4a716446655440000',
+ *         '550e8400-e29b-41d4-a716-446655440000',
  *     );
- *     // → '550e8400-e29b-41d4-a716-446655440000'
+ *     // → UuidInterface instance
  */
 final class CoerceToUuid implements ValueCoercion
 {
@@ -68,7 +68,7 @@ final class CoerceToUuid implements ValueCoercion
     {
         if (is_string($data)) {
             try {
-                return Uuid::fromString($data)->toString();
+                return Uuid::fromString($data);
             } catch (InvalidUuidStringException) {
                 // could not parse — return the original
                 // string and let the type check handle it

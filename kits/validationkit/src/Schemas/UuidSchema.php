@@ -41,29 +41,34 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas;
 
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use StusDevKit\ValidationKit\Coercions\CoerceToUuid;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * UuidSchema validates that the input is a valid UUID
- * string.
+ * UuidSchema validates that the input is a
+ * UuidInterface instance.
  *
- * Accepts UUID v1-v8 in standard 8-4-4-4-12 format
- * (case-insensitive).
+ * Use coerce() to accept UUID strings and convert
+ * them to UuidInterface instances.
  *
  * Usage:
  *
+ *     use Ramsey\Uuid\Uuid;
  *     use StusDevKit\ValidationKit\Validate;
  *
  *     $schema = Validate::uuid();
- *     $schema->parse(
- *         '550e8400-e29b-41d4-a716-446655440000',
- *     ); // ok
+ *     $schema->parse(Uuid::uuid7()); // ok
  *     $schema->parse('not-a-uuid'); // throws
  *
- * @extends BaseSchema<string>
+ *     // accept UUID strings from API input
+ *     $schema = Validate::uuid()->coerce();
+ *     $schema->parse(
+ *         '550e8400-e29b-41d4-a716-446655440000',
+ *     ); // ok — returns UuidInterface
+ *
+ * @extends BaseSchema<UuidInterface>
  */
 class UuidSchema extends BaseSchema
 {
@@ -90,10 +95,8 @@ class UuidSchema extends BaseSchema
             type: 'https://stusdevkit.dev/errors/validation/invalid_uuid',
             input: $data,
             path: [],
-            message: is_string($data)
-                ? 'Invalid UUID'
-                : 'Expected UUID, received '
-                    . get_debug_type($data),
+            message: 'Expected UuidInterface, received '
+                . get_debug_type($data),
         );
     }
 
@@ -107,7 +110,7 @@ class UuidSchema extends BaseSchema
      * enable type coercion for this schema
      *
      * Strings parseable by Ramsey\Uuid\Uuid::fromString()
-     * are converted to standard 8-4-4-4-12 format.
+     * are converted to UuidInterface instances.
      */
     public function coerce(): static
     {
@@ -132,7 +135,7 @@ class UuidSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): bool {
-        if (is_string($data) && Uuid::isValid($data)) {
+        if ($data instanceof UuidInterface) {
             return true;
         }
 

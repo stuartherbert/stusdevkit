@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- added Validate::uuid() ([c3f965f](https://github.com/stuartherbert/stusdevkit/commit/c3f965f)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Validate::uuid() ([5981663](https://github.com/stuartherbert/stusdevkit/commit/5981663)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::when() ([a4e5e02](https://github.com/stuartherbert/stusdevkit/commit/a4e5e02)) — Stuart Herbert <stuart@stuartherbert.com>
 - added missing JSON schema logic/sub-schema support ([5950061](https://github.com/stuartherbert/stusdevkit/commit/5950061)) — Stuart Herbert <stuart@stuartherbert.com>
 - add Validate::nullish() ([f3e7be5](https://github.com/stuartherbert/stusdevkit/commit/f3e7be5)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -46,6 +46,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- Validate::uuid() now follows same principles as the other schemas ([421738e](https://github.com/stuartherbert/stusdevkit/commit/421738e)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
 

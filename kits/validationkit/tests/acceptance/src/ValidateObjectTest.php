@@ -2040,7 +2040,7 @@ class ValidateObjectTest extends TestCase
 
         $unit = Validate::allOf([
             Validate::object([
-                'order_id' => Validate::uuid(),
+                'order_id' => Validate::uuid()->coerce(),
             ]),
             Validate::oneOf([
                 Validate::object([
@@ -2051,7 +2051,7 @@ class ValidateObjectTest extends TestCase
                 ]),
                 Validate::object([
                     'zero_cost' => Validate::object([
-                        'confirm_token' => Validate::uuid(),
+                        'confirm_token' => Validate::uuid()->coerce(),
                         'expires_at' => Validate::dateTime()->coerce(),
                     ]),
                 ]),

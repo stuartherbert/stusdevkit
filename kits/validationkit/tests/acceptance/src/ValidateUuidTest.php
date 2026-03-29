@@ -45,6 +45,8 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 
@@ -57,14 +59,15 @@ class ValidateUuidTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('accepts a valid UUID')]
-    public function test_accepts_valid_uuid(): void
+    #[TestDox('accepts a UuidInterface instance')]
+    public function test_accepts_uuid_interface(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that Validate::uuid()->parse()
-        // accepts a valid UUID string
+        // accepts a UuidInterface instance and returns
+        // it unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -73,6 +76,9 @@ class ValidateUuidTest extends TestCase
         // setup your test
 
         $unit = Validate::uuid();
+        $uuid = Uuid::fromString(
+            '550e8400-e29b-41d4-a716-446655440000',
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -83,60 +89,12 @@ class ValidateUuidTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(
-            '550e8400-e29b-41d4-a716-446655440000',
-        );
+        $actualResult = $unit->parse($uuid);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            '550e8400-e29b-41d4-a716-446655440000',
-            $actualResult,
-        );
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('accepts UUIDs in uppercase')]
-    public function test_accepts_uppercase_uuid(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::uuid() accepts
-        // UUIDs with uppercase hex characters
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::uuid();
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = $unit->parse(
-            '550E8400-E29B-41D4-A716-446655440000',
-        );
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(
-            '550E8400-E29B-41D4-A716-446655440000',
-            $actualResult,
-        );
+        $this->assertSame($uuid, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -146,20 +104,21 @@ class ValidateUuidTest extends TestCase
     /**
      * @return array<string, array<mixed>>
      */
-    public static function provideNonStringValues(): array
+    public static function provideNonUuidInterfaceValues(): array
     {
         return [
-            'int'   => [ 42 ],
-            'float' => [ 3.14 ],
-            'bool'  => [ true ],
-            'array' => [ ['a'] ],
-            'null'  => [ null ],
+            'string' => [ '550e8400-e29b-41d4-a716-446655440000' ],
+            'int'    => [ 42 ],
+            'float'  => [ 3.14 ],
+            'bool'   => [ true ],
+            'array'  => [ ['a'] ],
+            'null'   => [ null ],
         ];
     }
 
-    #[DataProvider('provideNonStringValues')]
-    #[TestDox('rejects non-string values')]
-    public function test_rejects_non_string_values(
+    #[DataProvider('provideNonUuidInterfaceValues')]
+    #[TestDox('rejects non-UuidInterface values')]
+    public function test_rejects_non_uuid_interface_values(
         mixed $inputValue,
     ): void
     {
@@ -167,7 +126,8 @@ class ValidateUuidTest extends TestCase
         // explain your test
 
         // this test proves that Validate::uuid() rejects
-        // non-string values with an invalid_uuid error
+        // non-UuidInterface values with an invalid_uuid
+        // error
 
         // ----------------------------------------------------------------
         // shorthand
@@ -198,56 +158,8 @@ class ValidateUuidTest extends TestCase
             $issues[0]['type'],
         );
         $this->assertStringStartsWith(
-            'Expected UUID, received ',
+            'Expected UuidInterface, received ',
             $issues[0]['message'],
-        );
-
-        // ----------------------------------------------------------------
-        // clean up the database
-
-    }
-
-    #[TestDox('rejects an invalid UUID string')]
-    public function test_rejects_invalid_uuid_string(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that Validate::uuid() rejects
-        // strings that are not valid UUIDs
-
-        // ----------------------------------------------------------------
-        // shorthand
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = Validate::uuid();
-
-        // ----------------------------------------------------------------
-        // mock out any integrations
-
-        // ----------------------------------------------------------------
-        // pre-test checks
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->safeParse('not-a-uuid');
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($result->failed());
-        $this->assertSame(
-            [
-                [
-                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_uuid',
-                    'path'    => [],
-                    'message' => 'Invalid UUID',
-                ],
-            ],
-            $result->error()->issues()->jsonSerialize(),
         );
 
         // ----------------------------------------------------------------
@@ -261,14 +173,61 @@ class ValidateUuidTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerce() converts a dashless UUID to standard format')]
+    #[TestDox('coerce() converts a UUID string to UuidInterface')]
+    public function test_coerce_converts_uuid_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that coerce() converts a valid
+        // UUID string into a UuidInterface instance
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::uuid()->coerce();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(
+            '550e8400-e29b-41d4-a716-446655440000',
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(
+            UuidInterface::class,
+            $actualResult,
+        );
+        $this->assertSame(
+            '550e8400-e29b-41d4-a716-446655440000',
+            $actualResult->toString(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('coerce() converts a dashless UUID string to UuidInterface')]
     public function test_coerce_converts_dashless_uuid(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that coerce() normalises a UUID
-        // without dashes into standard 8-4-4-4-12 format
+        // this test proves that coerce() converts a dashless
+        // UUID string into a UuidInterface instance
 
         // ----------------------------------------------------------------
         // shorthand
@@ -294,9 +253,13 @@ class ValidateUuidTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
+        $this->assertInstanceOf(
+            UuidInterface::class,
+            $actualResult,
+        );
         $this->assertSame(
             '550e8400-e29b-41d4-a716-446655440000',
-            $actualResult,
+            $actualResult->toString(),
         );
 
         // ----------------------------------------------------------------
@@ -304,14 +267,14 @@ class ValidateUuidTest extends TestCase
 
     }
 
-    #[TestDox('coerce() passes through a standard UUID unchanged')]
-    public function test_coerce_passes_through_standard_uuid(): void
+    #[TestDox('coerce() passes through a UuidInterface unchanged')]
+    public function test_coerce_passes_through_uuid_interface(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that coerce() leaves a UUID that
-        // is already in standard format unchanged
+        // this test proves that coerce() leaves a
+        // UuidInterface instance unchanged
 
         // ----------------------------------------------------------------
         // shorthand
@@ -320,6 +283,9 @@ class ValidateUuidTest extends TestCase
         // setup your test
 
         $unit = Validate::uuid()->coerce();
+        $uuid = Uuid::fromString(
+            '550e8400-e29b-41d4-a716-446655440000',
+        );
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -330,17 +296,12 @@ class ValidateUuidTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(
-            '550e8400-e29b-41d4-a716-446655440000',
-        );
+        $actualResult = $unit->parse($uuid);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            '550e8400-e29b-41d4-a716-446655440000',
-            $actualResult,
-        );
+        $this->assertSame($uuid, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -379,15 +340,14 @@ class ValidateUuidTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+        $issues = $result->error()->issues()->jsonSerialize();
         $this->assertSame(
-            [
-                [
-                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_uuid',
-                    'path'    => [],
-                    'message' => 'Invalid UUID',
-                ],
-            ],
-            $result->error()->issues()->jsonSerialize(),
+            'https://stusdevkit.dev/errors/validation/invalid_uuid',
+            $issues[0]['type'],
+        );
+        $this->assertStringStartsWith(
+            'Expected UuidInterface, received ',
+            $issues[0]['message'],
         );
 
         // ----------------------------------------------------------------
@@ -430,7 +390,9 @@ class ValidateUuidTest extends TestCase
         // perform the change
 
         $result = $unit->safeParse(
-            '550e8400-e29b-41d4-a716-446655440000',
+            Uuid::fromString(
+                '550e8400-e29b-41d4-a716-446655440000',
+            ),
         );
 
         // ----------------------------------------------------------------
