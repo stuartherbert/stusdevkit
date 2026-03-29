@@ -151,6 +151,18 @@ interface ValidationSchema
     /**
      * add a data transformation step
      *
+     * The transformer receives the validated data and
+     * returns the transformed value. Transformers are
+     * skipped when prior pipeline steps have produced
+     * issues.
+     */
+    public function withTransformer(
+        ValueTransformer $transformer,
+    ): static;
+
+    /**
+     * add a data transformation step
+     *
      * The callable receives the validated data and returns
      * the transformed value. Transforms are skipped when
      * prior pipeline steps have produced issues.

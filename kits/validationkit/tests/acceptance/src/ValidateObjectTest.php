@@ -48,6 +48,7 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use StusDevKit\DateTimeKit\Now;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
+use StusDevKit\ValidationKit\Tests\Fixtures\CallableTransformer;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -1224,6 +1225,200 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertSame('Alice Smith', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via parse()')]
+    public function test_with_transformer_transforms_via_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'first' => Validate::string(),
+            'last' => Validate::string(),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['first' => 'Alice', 'last' => 'Smith']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('Alice Smith', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeParse()')]
+    public function test_with_transformer_transforms_via_safe_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'first' => Validate::string(),
+            'last' => Validate::string(),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeParse(['first' => 'Alice', 'last' => 'Smith']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame('Alice Smith', $actualResult->data());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via encode()')]
+    public function test_with_transformer_transforms_via_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'first' => Validate::string(),
+            'last' => Validate::string(),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->encode(['first' => 'Alice', 'last' => 'Smith']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('Alice Smith', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeEncode()')]
+    public function test_with_transformer_transforms_via_safe_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::object([
+            'first' => Validate::string(),
+            'last' => Validate::string(),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeEncode(['first' => 'Alice', 'last' => 'Smith']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame('Alice Smith', $actualResult->data());
 
         // ----------------------------------------------------------------
         // clean up the database

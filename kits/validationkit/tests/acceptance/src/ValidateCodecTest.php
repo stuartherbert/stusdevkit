@@ -967,6 +967,11 @@ class ValidateCodecTest extends TestCase
                     new \StusDevKit\ValidationKit\Transformers\TrimTransformer(),
                 ),
             ],
+            'withTransformer' => [
+                fn() => $codec->withTransformer(
+                    new \StusDevKit\ValidationKit\Transformers\TrimTransformer(),
+                ),
+            ],
         ];
     }
 

@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- added ValidationSchema::withTransformer() ([59957a0](https://github.com/stuartherbert/stusdevkit/commit/59957a0)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce ValidationSchema interface ([8e69224](https://github.com/stuartherbert/stusdevkit/commit/8e69224)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for codecs ([31e7fb9](https://github.com/stuartherbert/stusdevkit/commit/31e7fb9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::uuid() ([5981663](https://github.com/stuartherbert/stusdevkit/commit/5981663)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -48,7 +49,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- remove all mention of PipelineStep from the public API ([3c89724](https://github.com/stuartherbert/stusdevkit/commit/3c89724)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>

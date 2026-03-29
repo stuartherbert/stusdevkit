@@ -46,6 +46,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
+use StusDevKit\ValidationKit\Tests\Fixtures\CallableTransformer;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -514,6 +515,176 @@ class ValidateRecordTest extends TestCase
         // test the results
 
         $this->assertSame(185, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via parse()')]
+    public function test_with_transformer_transforms_via_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::record(Validate::string(), Validate::int())->withTransformer(
+            new CallableTransformer(
+                fn(mixed $data) => array_sum((array) $data),
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['alice' => 100, 'bob' => 85]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(185, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeParse()')]
+    public function test_with_transformer_transforms_via_safe_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::record(Validate::string(), Validate::int())->withTransformer(
+            new CallableTransformer(
+                fn(mixed $data) => array_sum((array) $data),
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeParse(['alice' => 100, 'bob' => 85]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame(185, $actualResult->data());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via encode()')]
+    public function test_with_transformer_transforms_via_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::record(Validate::string(), Validate::int())->withTransformer(
+            new CallableTransformer(
+                fn(mixed $data) => array_sum((array) $data),
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->encode(['alice' => 100, 'bob' => 85]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(185, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeEncode()')]
+    public function test_with_transformer_transforms_via_safe_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::record(Validate::string(), Validate::int())->withTransformer(
+            new CallableTransformer(
+                fn(mixed $data) => array_sum((array) $data),
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeEncode(['alice' => 100, 'bob' => 85]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame(185, $actualResult->data());
 
         // ----------------------------------------------------------------
         // clean up the database

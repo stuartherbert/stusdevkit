@@ -46,6 +46,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use StusDevKit\ValidationKit\Tests\Fixtures\CallableTransformer;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('Validate::nullish()')]
@@ -1222,6 +1223,194 @@ class ValidateNullishTest extends TestCase
             ],
             $result->maybeError()->issues()->jsonSerialize(),
         );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // Transformer
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('withTransformer() transforms data via parse()')]
+    public function test_with_transformer_transforms_via_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::string())->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var string $data */
+                    return strtoupper($data);
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('hello');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('HELLO', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeParse()')]
+    public function test_with_transformer_transforms_via_safe_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::string())->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var string $data */
+                    return strtoupper($data);
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeParse('hello');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame('HELLO', $actualResult->data());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via encode()')]
+    public function test_with_transformer_transforms_via_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::string())->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var string $data */
+                    return strtoupper($data);
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->encode('hello');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('HELLO', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeEncode()')]
+    public function test_with_transformer_transforms_via_safe_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::nullish(Validate::string())->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var string $data */
+                    return strtoupper($data);
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeEncode('hello');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame('HELLO', $actualResult->data());
 
         // ----------------------------------------------------------------
         // clean up the database

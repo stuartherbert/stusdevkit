@@ -141,6 +141,17 @@ abstract class BaseSchema implements ValidationSchema
         return $this->withStep($normaliser);
     }
 
+    /**
+     * add a data transformation step
+     *
+     * Convenience method — equivalent to withStep().
+     */
+    public function withTransformer(
+        ValueTransformer $transformer,
+    ): static {
+        return $this->withStep($transformer);
+    }
+
     // ================================================================
     //
     // ValidationSchema Interface

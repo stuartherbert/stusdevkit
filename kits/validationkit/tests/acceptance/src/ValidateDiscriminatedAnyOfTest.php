@@ -45,6 +45,7 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Exceptions\ValidationException;
+use StusDevKit\ValidationKit\Tests\Fixtures\CallableTransformer;
 use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -642,6 +643,224 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // test the results
 
         $this->assertSame('a', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via parse()')]
+    public function test_with_transformer_transforms_via_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::discriminatedAnyOf('type', [
+            Validate::object([
+                'type' => Validate::literal('a'),
+                'x' => Validate::int(),
+            ]),
+            Validate::object([
+                'type' => Validate::literal('b'),
+                'y' => Validate::string(),
+            ]),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array<string, mixed> $data */
+                    return $data['type'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['type' => 'a', 'x' => 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('a', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeParse()')]
+    public function test_with_transformer_transforms_via_safe_parse(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::discriminatedAnyOf('type', [
+            Validate::object([
+                'type' => Validate::literal('a'),
+                'x' => Validate::int(),
+            ]),
+            Validate::object([
+                'type' => Validate::literal('b'),
+                'y' => Validate::string(),
+            ]),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array<string, mixed> $data */
+                    return $data['type'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeParse(['type' => 'a', 'x' => 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame('a', $actualResult->data());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via encode()')]
+    public function test_with_transformer_transforms_via_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::discriminatedAnyOf('type', [
+            Validate::object([
+                'type' => Validate::literal('a'),
+                'x' => Validate::int(),
+            ]),
+            Validate::object([
+                'type' => Validate::literal('b'),
+                'y' => Validate::string(),
+            ]),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array<string, mixed> $data */
+                    return $data['type'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->encode(['type' => 'a', 'x' => 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('a', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('withTransformer() transforms data via safeEncode()')]
+    public function test_with_transformer_transforms_via_safe_encode(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // withTransformer() accepts a ValueTransformer object
+        // and adds it to the pipeline
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::discriminatedAnyOf('type', [
+            Validate::object([
+                'type' => Validate::literal('a'),
+                'x' => Validate::int(),
+            ]),
+            Validate::object([
+                'type' => Validate::literal('b'),
+                'y' => Validate::string(),
+            ]),
+        ])->withTransformer(
+            new CallableTransformer(
+                function (mixed $data) {
+                    /** @var array<string, mixed> $data */
+                    return $data['type'];
+                },
+            ),
+        );
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->safeEncode(['type' => 'a', 'x' => 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actualResult->succeeded());
+        $this->assertSame('a', $actualResult->data());
 
         // ----------------------------------------------------------------
         // clean up the database

@@ -212,6 +212,19 @@ class Codec extends BaseSchema
     /**
      * @throws BadMethodCallException always.
      */
+    public function withTransformer(
+        ValueTransformer $transformer,
+    ): never {
+        throw new BadMethodCallException(
+            'withTransformer() is not supported on Codec'
+            . ' schemas — add transformers to the input or'
+            . ' output schema instead',
+        );
+    }
+
+    /**
+     * @throws BadMethodCallException always.
+     */
     public function withTransform(callable $fn): never
     {
         throw new BadMethodCallException(
