@@ -89,6 +89,7 @@ To check which kits depend on other kits, search for cross-kit `use` statements 
 - When a fix requires the same workaround in many places (e.g. adding `@var` annotations to 20+ test files), **stop and discuss** — this is a strong signal that the root cause is elsewhere.
 - Present the problem and possible approaches before editing files. Walk through one concrete example together.
 - Prefer fixing the source design over patching symptoms in consuming code.
+- When making the same change across many files or locations, apply one representative example first and show it for approval before applying the rest.
 
 ### Before Writing Code
 1. **Always ask about file placement** - Don't assume directory structure
@@ -109,6 +110,8 @@ To check which kits depend on other kits, search for cross-kit `use` statements 
 - **No naming prefixes/suffixes** - Don't use `Abstract` prefix, `Interface`
   or `Trait` suffixes (PHPStan catches misuse). Exception classes **must** end
   with the `Exception` suffix (e.g. `NullValueNotAllowedException`).
+- **No PHPStan ignoreErrors** - Never use `ignoreErrors` in `phpstan.neon` to suppress warnings. Fix the code or type annotations instead. The project runs PHPStan at max level specifically to catch type errors; suppressing them defeats that goal.
+- **Heredoc for multiline strings** - JSON examples and any strings that don't fit comfortably on a single line must use heredoc format. Use single-quoted heredoc (`<<<'JSON'`) for strings that don't need variable interpolation.
 
 ### Code Patterns
 
@@ -150,6 +153,7 @@ Heavy use of generics for type safety:
 - **Never** use for() loops in tests - always create PHPUnit data providers instead
 - **Test explanations** - Keep concise, avoid redundant phrases. Word wrap at column 79.
 - **Test comments** - Word wrap all test explanation comments at column 79 for readability
+- **One condition per test** - Each test method must test one main condition. Do not combine "accepts valid input" and "rejects invalid input" in a single test. Write separate methods (e.g. `test_string_email_accepts_valid` and `test_string_email_rejects_invalid`).
 
 #### CRITICAL Testing Anti-Patterns to Avoid
 - **NEVER assume the method under test works correctly** - Write tests based on what the method SHOULD do according to business requirements, not what the current implementation happens to return. Tests should reveal bugs, not encode them.
@@ -179,7 +183,7 @@ Xdebug.
 - **Syntax checking**: `make syntax-check`
 - **Static analysis**: `make phpstan` (level 10)
 - **All linting**: `make static-checks` (runs syntax-check, cs-fix, phpstan)
-- **All tests**: `make all-checks`
+- **All tests**: `make all-checks` (always use this for verification, not individual commands)
 
 ### Test Commands
 - **Full test suite**: `make test`
