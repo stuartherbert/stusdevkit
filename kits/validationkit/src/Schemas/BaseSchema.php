@@ -92,7 +92,15 @@ abstract class BaseSchema implements ValidationSchema
      */
     protected mixed $typeCheckError;
 
+    protected ?string $title = null;
     protected ?string $description = null;
+
+    /** @var list<mixed> */
+    protected array $examples = [];
+
+    protected bool $deprecated = false;
+    protected bool $readOnly = false;
+    protected bool $writeOnly = false;
 
     /** @var SchemaMetadata */
     protected array $metadata = [];
@@ -139,10 +147,20 @@ abstract class BaseSchema implements ValidationSchema
     }
 
     /**
-     * add a human-readable description to this schema
+     * add a human-readable title to this schema
      *
-     * This is a convenience shorthand for setting the
-     * 'description' key in the metadata.
+     * @param non-empty-string $text
+     */
+    public function withTitle(string $text): static
+    {
+        $clone = clone $this;
+        $clone->title = $text;
+
+        return $clone;
+    }
+
+    /**
+     * add a human-readable description to this schema
      *
      * @param non-empty-string $text
      */
@@ -150,6 +168,55 @@ abstract class BaseSchema implements ValidationSchema
     {
         $clone = clone $this;
         $clone->description = $text;
+
+        return $clone;
+    }
+
+    /**
+     * add example values to this schema
+     *
+     * @param list<mixed> $values
+     */
+    public function withExamples(array $values): static
+    {
+        $clone = clone $this;
+        $clone->examples = $values;
+
+        return $clone;
+    }
+
+    /**
+     * mark this schema as deprecated
+     */
+    public function withDeprecated(
+        bool $deprecated = true,
+    ): static {
+        $clone = clone $this;
+        $clone->deprecated = $deprecated;
+
+        return $clone;
+    }
+
+    /**
+     * mark this schema as read-only
+     */
+    public function withReadOnly(
+        bool $readOnly = true,
+    ): static {
+        $clone = clone $this;
+        $clone->readOnly = $readOnly;
+
+        return $clone;
+    }
+
+    /**
+     * mark this schema as write-only
+     */
+    public function withWriteOnly(
+        bool $writeOnly = true,
+    ): static {
+        $clone = clone $this;
+        $clone->writeOnly = $writeOnly;
 
         return $clone;
     }
@@ -766,11 +833,53 @@ abstract class BaseSchema implements ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * return the title, or null if none was set
+     */
+    public function maybeTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    /**
      * return the description, or null if none was set
      */
     public function maybeDescription(): ?string
     {
         return $this->description;
+    }
+
+    /**
+     * return the example values
+     *
+     * @return list<mixed>
+     */
+    public function getExamples(): array
+    {
+        return $this->examples;
+    }
+
+    /**
+     * is this schema deprecated?
+     */
+    public function isDeprecated(): bool
+    {
+        return $this->deprecated;
+    }
+
+    /**
+     * is this schema read-only?
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->readOnly;
+    }
+
+    /**
+     * is this schema write-only?
+     */
+    public function isWriteOnly(): bool
+    {
+        return $this->writeOnly;
     }
 
     /**

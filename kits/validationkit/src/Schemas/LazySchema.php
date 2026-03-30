@@ -368,6 +368,26 @@ class LazySchema implements ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * add a human-readable title to this schema
+     *
+     * @param non-empty-string $text
+     */
+    public function withTitle(string $text): static
+    {
+        return $this->wrapResolved(
+            $this->resolve()->withTitle($text),
+        );
+    }
+
+    /**
+     * return the title, or null if none was set
+     */
+    public function maybeTitle(): ?string
+    {
+        return $this->resolve()->maybeTitle();
+    }
+
+    /**
      * add a human-readable description to this schema
      *
      * @param non-empty-string $text
@@ -385,6 +405,85 @@ class LazySchema implements ValidationSchema
     public function maybeDescription(): ?string
     {
         return $this->resolve()->maybeDescription();
+    }
+
+    /**
+     * add example values to this schema
+     *
+     * @param list<mixed> $values
+     */
+    public function withExamples(array $values): static
+    {
+        return $this->wrapResolved(
+            $this->resolve()->withExamples($values),
+        );
+    }
+
+    /**
+     * return the example values
+     *
+     * @return list<mixed>
+     */
+    public function getExamples(): array
+    {
+        return $this->resolve()->getExamples();
+    }
+
+    /**
+     * mark this schema as deprecated
+     */
+    public function withDeprecated(
+        bool $deprecated = true,
+    ): static {
+        return $this->wrapResolved(
+            $this->resolve()->withDeprecated($deprecated),
+        );
+    }
+
+    /**
+     * is this schema deprecated?
+     */
+    public function isDeprecated(): bool
+    {
+        return $this->resolve()->isDeprecated();
+    }
+
+    /**
+     * mark this schema as read-only
+     */
+    public function withReadOnly(
+        bool $readOnly = true,
+    ): static {
+        return $this->wrapResolved(
+            $this->resolve()->withReadOnly($readOnly),
+        );
+    }
+
+    /**
+     * is this schema read-only?
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->resolve()->isReadOnly();
+    }
+
+    /**
+     * mark this schema as write-only
+     */
+    public function withWriteOnly(
+        bool $writeOnly = true,
+    ): static {
+        return $this->wrapResolved(
+            $this->resolve()->withWriteOnly($writeOnly),
+        );
+    }
+
+    /**
+     * is this schema write-only?
+     */
+    public function isWriteOnly(): bool
+    {
+        return $this->resolve()->isWriteOnly();
     }
 
     /**

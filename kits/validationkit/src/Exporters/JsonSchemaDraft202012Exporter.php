@@ -148,6 +148,17 @@ use StusDevKit\ValidationKit\Schemas\UuidSchema;
  */
 class JsonSchemaDraft202012Exporter
 {
+    /**
+     * maps spl_object_id to definition name for $ref
+     * detection
+     *
+     * Built from the registry at the start of export()
+     * and cleared when done.
+     *
+     * @var array<int, string>
+     */
+    private array $refMap = [];
+
     // ================================================================
     //
     // Public API
@@ -159,15 +170,39 @@ class JsonSchemaDraft202012Exporter
      * 2020-12 object
      *
      * The returned object includes the `$schema` keyword
-     * identifying the JSON Schema dialect. Use
-     * json_encode() to produce JSON, or toArray() for
-     * test assertions.
+     * identifying the JSON Schema dialect. When a
+     * registry is provided, registered schemas are
+     * emitted as `$defs` and referenced via `$ref`.
      *
      * @param ValidationSchema<mixed> $schema
      */
-    public function export(ValidationSchema $schema): JsonSchema
-    {
+    public function export(
+        ValidationSchema $schema,
+        ?JsonSchemaRegistry $registry = null,
+    ): JsonSchema {
+        // build the $ref lookup from the registry
+        $this->refMap = [];
+        if ($registry !== null) {
+            foreach ($registry->all() as $name => $regSchema) {
+                $this->refMap[spl_object_id($regSchema)] = $name;
+            }
+        }
+
         $output = $this->exportSchema($schema);
+
+        // emit $defs for registered schemas
+        if ($registry !== null && ! $registry->all()->empty()) {
+            $defs = new stdClass();
+            foreach ($registry->all() as $name => $regSchema) {
+                // asRef: false so the def itself is inlined,
+                // but its children can still emit $ref
+                $defs->{$name} = $this->exportSchema(
+                    schema: $regSchema,
+                    asRef: false,
+                );
+            }
+            $output->{'$defs'} = $defs;
+        }
 
         // prepend the $schema keyword
         $wrapper = new stdClass();
@@ -175,6 +210,9 @@ class JsonSchemaDraft202012Exporter
         foreach (get_object_vars($output) as $key => $value) {
             $wrapper->{$key} = $value;
         }
+
+        // clean up state
+        $this->refMap = [];
 
         return new JsonSchema($wrapper);
     }
@@ -188,11 +226,29 @@ class JsonSchemaDraft202012Exporter
     /**
      * recursively export a schema to a JSON Schema object
      *
+     * When asRef is true (the default) and the schema is
+     * registered in the refMap, a `$ref` object is returned
+     * instead of the full inline schema. Pass asRef: false
+     * when exporting `$defs` entries to avoid circular
+     * references.
+     *
      * @param ValidationSchema<mixed> $schema
      */
     private function exportSchema(
         ValidationSchema $schema,
+        bool $asRef = true,
     ): stdClass {
+        // emit $ref for registered schemas
+        if ($asRef && $this->refMap !== []) {
+            $oid = spl_object_id($schema);
+            if (isset($this->refMap[$oid])) {
+                $ref = new stdClass();
+                $ref->{'$ref'} = '#/$defs/'
+                    . $this->refMap[$oid];
+                return $ref;
+            }
+        }
+
         // resolve wrappers and proxies first
         if ($schema instanceof LazySchema) {
             return $this->exportSchema(
@@ -685,7 +741,10 @@ class JsonSchemaDraft202012Exporter
     }
 
     /**
-     * apply metadata (description, default, user metadata)
+     * apply metadata to the output
+     *
+     * Exports title, description, examples, deprecated,
+     * readOnly, writeOnly, default, and user metadata.
      *
      * @param BaseSchema<mixed> $schema
      */
@@ -693,9 +752,31 @@ class JsonSchemaDraft202012Exporter
         stdClass $output,
         BaseSchema $schema,
     ): stdClass {
+        $title = $schema->maybeTitle();
+        if ($title !== null) {
+            $output->title = $title;
+        }
+
         $description = $schema->maybeDescription();
         if ($description !== null) {
             $output->description = $description;
+        }
+
+        $examples = $schema->getExamples();
+        if ($examples !== []) {
+            $output->examples = $examples;
+        }
+
+        if ($schema->isDeprecated()) {
+            $output->deprecated = true;
+        }
+
+        if ($schema->isReadOnly()) {
+            $output->readOnly = true;
+        }
+
+        if ($schema->isWriteOnly()) {
+            $output->writeOnly = true;
         }
 
         if ($schema->hasDefaultValue()) {

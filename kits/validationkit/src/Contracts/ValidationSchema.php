@@ -223,6 +223,18 @@ interface ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * add a human-readable title to this schema
+     *
+     * @param non-empty-string $text
+     */
+    public function withTitle(string $text): static;
+
+    /**
+     * return the title, or null if none was set
+     */
+    public function maybeTitle(): ?string;
+
+    /**
      * add a human-readable description to this schema
      *
      * @param non-empty-string $text
@@ -233,6 +245,56 @@ interface ValidationSchema
      * return the description, or null if none was set
      */
     public function maybeDescription(): ?string;
+
+    /**
+     * add example values to this schema
+     *
+     * @param list<mixed> $values
+     */
+    public function withExamples(array $values): static;
+
+    /**
+     * return the example values
+     *
+     * @return list<mixed>
+     */
+    public function getExamples(): array;
+
+    /**
+     * mark this schema as deprecated
+     */
+    public function withDeprecated(
+        bool $deprecated = true,
+    ): static;
+
+    /**
+     * is this schema deprecated?
+     */
+    public function isDeprecated(): bool;
+
+    /**
+     * mark this schema as read-only
+     */
+    public function withReadOnly(
+        bool $readOnly = true,
+    ): static;
+
+    /**
+     * is this schema read-only?
+     */
+    public function isReadOnly(): bool;
+
+    /**
+     * mark this schema as write-only
+     */
+    public function withWriteOnly(
+        bool $writeOnly = true,
+    ): static;
+
+    /**
+     * is this schema write-only?
+     */
+    public function isWriteOnly(): bool;
 
     /**
      * attach arbitrary metadata to this schema
