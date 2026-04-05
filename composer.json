@@ -43,6 +43,7 @@
         }
     ],
     "require": {
+        "ext-intl": "*",
         "phpstan/phpstan": "^2.1.38",
         "ramsey/uuid": "^4.9"
     },

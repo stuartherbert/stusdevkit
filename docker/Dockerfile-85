@@ -11,8 +11,10 @@ RUN apk add \
         icu-dev \
         $PHPIZE_DEPS && \
     docker-php-ext-install pcntl && \
+    docker-php-ext-install intl && \
     pecl install && \
     docker-php-ext-enable pcntl && \
+    docker-php-ext-enable intl && \
     rm -rf /var/cache/apk/*
 
 # Copy Composer from the official image
