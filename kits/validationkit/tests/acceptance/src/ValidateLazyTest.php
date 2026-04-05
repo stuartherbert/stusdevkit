@@ -354,26 +354,26 @@ class ValidateLazyTest extends TestCase
             'children' => Validate::array(
                 Validate::lazy(
                     function () use (&$treeNode) {
-                        /** @var \StusDevKit\ValidationKit\Contracts\ValidationSchema<array<string, mixed>> $treeNode */
+                        /** @var \StusDevKit\ValidationKit\Contracts\ValidationSchema<\stdClass> $treeNode */
                         return $treeNode;
                     },
                 ),
             ),
         ]);
 
-        $input = [
+        $input = (object) [
             'value' => 'root',
             'children' => [
-                [
+                (object) [
                     'value' => 'child-1',
                     'children' => [
-                        [
+                        (object) [
                             'value' => 'grandchild-1',
                             'children' => [],
                         ],
                     ],
                 ],
-                [
+                (object) [
                     'value' => 'child-2',
                     'children' => [],
                 ],
@@ -394,7 +394,7 @@ class ValidateLazyTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame($input, $actualResult);
+        $this->assertEquals($input, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -421,17 +421,17 @@ class ValidateLazyTest extends TestCase
             'children' => Validate::array(
                 Validate::lazy(
                     function () use (&$treeNode) {
-                        /** @var \StusDevKit\ValidationKit\Contracts\ValidationSchema<array<string, mixed>> $treeNode */
+                        /** @var \StusDevKit\ValidationKit\Contracts\ValidationSchema<\stdClass> $treeNode */
                         return $treeNode;
                     },
                 ),
             ),
         ]);
 
-        $input = [
+        $input = (object) [
             'value' => 'root',
             'children' => [
-                [
+                (object) [
                     'value' => 123,
                     'children' => [],
                 ],
@@ -490,20 +490,20 @@ class ValidateLazyTest extends TestCase
             'next' => Validate::nullable(
                 Validate::lazy(
                     function () use (&$linkedList) {
-                        /** @var \StusDevKit\ValidationKit\Contracts\ValidationSchema<array<string, mixed>> $linkedList */
+                        /** @var \StusDevKit\ValidationKit\Contracts\ValidationSchema<\stdClass> $linkedList */
                         return $linkedList;
                     },
                 ),
             ),
         ]);
 
-        $input = [
+        $input = (object) [
             'value' => 1,
-            'next' => [
+            'next' => (object) [
                 'value' => 2,
-                'next' => [
+                'next' => (object) [
                     'value' => 3,
-                    'next' => [
+                    'next' => (object) [
                         'value' => 4,
                         'next' => null,
                     ],
@@ -525,7 +525,7 @@ class ValidateLazyTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame($input, $actualResult);
+        $this->assertEquals($input, $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database

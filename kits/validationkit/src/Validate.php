@@ -47,6 +47,7 @@ use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\AssocArraySchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\BooleanSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\FloatSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\IntSchema;
@@ -305,6 +306,27 @@ final class Validate
     ): ArraySchema {
         return new ArraySchema(
             elementSchema: $element,
+            typeCheckError: $error,
+        );
+    }
+
+    /**
+     * create an associative array validation schema
+     *
+     * Validates an associative array against a defined
+     * shape where each key maps to a schema.
+     *
+     * @param array<string, ValidationSchema<mixed>> $shape
+     * - map of key names to their validation schemas
+     * @param ErrorCallback|null $error
+     * - optional error callback for type-check failures
+     */
+    public static function assocArray(
+        array $shape,
+        ?callable $error = null,
+    ): AssocArraySchema {
+        return new AssocArraySchema(
+            shape: $shape,
             typeCheckError: $error,
         );
     }

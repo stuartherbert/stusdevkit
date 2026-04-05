@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
-use stdClass;
 use StusDevKit\ValidationKit\Constraints\ObjectDependentRequiredConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMaxPropertiesConstraint;
@@ -54,25 +53,20 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
- * ObjectSchema validates PHP objects against a defined
- * shape where each property name maps to a schema.
- *
- * The shape is defined as an associative array of property
- * names to schemas. The input must be a PHP object (e.g.
- * stdClass). The output is a stdClass with the validated
- * properties.
+ * AssocArraySchema validates associative arrays against a
+ * defined shape where each key maps to a schema.
  *
  * Usage:
  *
  *     use StusDevKit\ValidationKit\Validate;
  *
- *     $userSchema = Validate::object([
+ *     $userSchema = Validate::assocArray([
  *         'name' => Validate::string()->min(length: 1),
  *         'age' => Validate::int()->gte(value: 0),
  *         'email' => Validate::string()->email(),
  *     ]);
  *
- *     $user = $userSchema->parse((object) [
+ *     $user = $userSchema->parse([
  *         'name' => 'Stuart',
  *         'age' => 42,
  *         'email' => 'stuart@example.com',
@@ -87,9 +81,9 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     $noEmail = $userSchema->omit('email');
  *     $allOptional = $userSchema->partial();
  *
- * @extends BaseSchema<stdClass>
+ * @extends BaseSchema<array<string, mixed>>
  */
-class ObjectSchema extends BaseSchema
+class AssocArraySchema extends BaseSchema
 {
     /**
      * how to handle keys in the input that are not in
@@ -132,7 +126,7 @@ class ObjectSchema extends BaseSchema
             type: 'https://stusdevkit.dev/errors/validation/invalid_type',
             input: $data,
             path: [],
-            message: 'Expected object, received '
+            message: 'Expected associative array, received '
                 . get_debug_type($data),
         );
     }
@@ -484,7 +478,7 @@ class ObjectSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): bool {
-        if (is_object($data)) {
+        if (is_array($data)) {
             return true;
         }
 
@@ -508,18 +502,15 @@ class ObjectSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_object($data));
+        assert(is_array($data));
 
-        /** @var array<string, mixed> $properties */
-        $properties = get_object_vars($data);
-
-        $output = new stdClass();
+        $output = [];
 
         foreach ($this->shape as $key => $fieldSchema) {
             $childContext = $context->atPath($key);
 
-            $fieldValue = array_key_exists($key, $properties)
-                ? $properties[$key]
+            $fieldValue = array_key_exists($key, $data)
+                ? $data[$key]
                 : null;
 
             $validatedValue = $fieldSchema->parseWithContext(
@@ -527,12 +518,12 @@ class ObjectSchema extends BaseSchema
                 context: $childContext,
             );
 
-            $output->$key = $validatedValue;
+            $output[$key] = $validatedValue;
         }
 
         // handle unknown keys
         /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key($properties, $this->shape);
+        $unknownKeys = array_diff_key($data, $this->shape);
 
         if (count($unknownKeys) > 0) {
             $this->handleUnknownKeys(
@@ -543,9 +534,7 @@ class ObjectSchema extends BaseSchema
             // passthrough or catchall: include unknown keys
             // in the output
             if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
-                foreach ($unknownKeys as $key => $value) {
-                    $output->$key = $value;
-                }
+                $output = array_merge($output, $unknownKeys);
             } elseif ($this->catchallSchema !== null) {
                 foreach ($unknownKeys as $key => $value) {
                     $childContext = $context->atPath($key);
@@ -554,7 +543,7 @@ class ObjectSchema extends BaseSchema
                             data: $value,
                             context: $childContext,
                         );
-                    $output->$key = $validatedValue;
+                    $output[$key] = $validatedValue;
                 }
             }
         }
@@ -573,18 +562,15 @@ class ObjectSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_object($data));
+        assert(is_array($data));
 
-        /** @var array<string, mixed> $properties */
-        $properties = get_object_vars($data);
-
-        $output = new stdClass();
+        $output = [];
 
         foreach ($this->shape as $key => $fieldSchema) {
             $childContext = $context->atPath($key);
 
-            $fieldValue = array_key_exists($key, $properties)
-                ? $properties[$key]
+            $fieldValue = array_key_exists($key, $data)
+                ? $data[$key]
                 : null;
 
             $validatedValue = $fieldSchema->encodeWithContext(
@@ -592,12 +578,12 @@ class ObjectSchema extends BaseSchema
                 context: $childContext,
             );
 
-            $output->$key = $validatedValue;
+            $output[$key] = $validatedValue;
         }
 
         // handle unknown keys
         /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key($properties, $this->shape);
+        $unknownKeys = array_diff_key($data, $this->shape);
 
         if (count($unknownKeys) > 0) {
             $this->handleUnknownKeys(
@@ -608,9 +594,7 @@ class ObjectSchema extends BaseSchema
             // passthrough or catchall: include unknown keys
             // in the output
             if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
-                foreach ($unknownKeys as $key => $value) {
-                    $output->$key = $value;
-                }
+                $output = array_merge($output, $unknownKeys);
             } elseif ($this->catchallSchema !== null) {
                 foreach ($unknownKeys as $key => $value) {
                     $childContext = $context->atPath($key);
@@ -619,7 +603,7 @@ class ObjectSchema extends BaseSchema
                             data: $value,
                             context: $childContext,
                         );
-                    $output->$key = $validatedValue;
+                    $output[$key] = $validatedValue;
                 }
             }
         }

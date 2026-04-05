@@ -20,12 +20,9 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
-#### MissingBitsKit
-
-- added `object_merge` function ([172f94c](https://github.com/stuartherbert/stusdevkit/commit/172f94c)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- added Validate::assocArray(); Validate::object() now works with actual objects ([09f28d6](https://github.com/stuartherbert/stusdevkit/commit/09f28d6)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for creating a validator from JSON schema ([2cc32b7](https://github.com/stuartherbert/stusdevkit/commit/2cc32b7)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for JSON schema export ([ca1257e](https://github.com/stuartherbert/stusdevkit/commit/ca1257e)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::lazy() ([b477726](https://github.com/stuartherbert/stusdevkit/commit/b477726)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -38,6 +35,10 @@ This CHANGELOG is automatically compiled.
 - add Validate::nullish() ([f3e7be5](https://github.com/stuartherbert/stusdevkit/commit/f3e7be5)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial code commit ([319c6f6](https://github.com/stuartherbert/stusdevkit/commit/319c6f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingBitsKit
+
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 

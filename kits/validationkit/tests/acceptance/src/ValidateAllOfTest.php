@@ -94,7 +94,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'name' => 'Stuart',
             'age' => 42,
         ]);
@@ -102,8 +102,8 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['name' => 'Stuart', 'age' => 42],
+        $this->assertEquals(
+            (object) ['name' => 'Stuart', 'age' => 42],
             $actualResult,
         );
 
@@ -150,7 +150,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'name' => 'Stuart',
             'age' => 42,
             'email' => 'stuart@example.com',
@@ -159,8 +159,8 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            [
+        $this->assertEquals(
+            (object) [
                 'name' => 'Stuart',
                 'age' => 42,
                 'email' => 'stuart@example.com',
@@ -211,7 +211,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 'Stuart',
             'age' => 42,
             'email' => 'not-an-email',
@@ -274,7 +274,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'name' => 'Stuart',
             'age' => 42,
         ]);
@@ -282,11 +282,12 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertIsArray($actualResult);
-        $this->assertArrayHasKey('name', $actualResult);
-        $this->assertArrayHasKey('age', $actualResult);
-        $this->assertSame('Stuart', $actualResult['name']);
-        $this->assertSame(42, $actualResult['age']);
+        $this->assertIsObject($actualResult);
+        $this->assertObjectHasProperty('name', $actualResult);
+        $this->assertObjectHasProperty('age', $actualResult);
+        /** @var object{name: string, age: int} $actualResult */
+        $this->assertSame('Stuart', $actualResult->name);
+        $this->assertSame(42, $actualResult->age);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -328,7 +329,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 123,
             'age' => 42,
         ]);
@@ -389,7 +390,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 'Stuart',
             'age' => 'not-an-int',
         ]);
@@ -459,7 +460,7 @@ class ValidateAllOfTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 'Stuart',
                 'age' => 'not-an-int',
             ]);
@@ -523,7 +524,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 'Stuart',
             'age' => 42,
         ]);
@@ -533,8 +534,8 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->succeeded());
         $this->assertFalse($result->failed());
-        $this->assertSame(
-            ['name' => 'Stuart', 'age' => 42],
+        $this->assertEquals(
+            (object) ['name' => 'Stuart', 'age' => 42],
             $result->data(),
         );
         $this->assertNull($result->maybeError());
@@ -579,7 +580,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 'Stuart',
             'age' => 'not-an-int',
         ]);
@@ -638,7 +639,7 @@ class ValidateAllOfTest extends TestCase
                     'age' => Validate::int(),
                 ]),
             ],
-        )->withDefault(['name' => 'default', 'age' => 0]);
+        )->withDefault((object) ['name' => 'default', 'age' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -654,8 +655,8 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['name' => 'default', 'age' => 0],
+        $this->assertEquals(
+            (object) ['name' => 'default', 'age' => 0],
             $actualResult,
         );
 
@@ -693,8 +694,8 @@ class ValidateAllOfTest extends TestCase
             ],
         )->withCustomTransform(
             function (mixed $data) {
-                /** @var array{name: string, age: int} $data */
-                return $data['name'] . ':' . $data['age'];
+                /** @var object{name: string, age: int} $data */
+                return $data->name . ':' . $data->age;
             },
         );
 
@@ -707,7 +708,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'name' => 'Stuart',
             'age' => 42,
         ]);
@@ -740,8 +741,8 @@ class ValidateAllOfTest extends TestCase
         $unit = Validate::allOf(schemas: [Validate::object(['name' => Validate::string()]), Validate::object(['age' => Validate::int()])])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array{name: string, age: int} $data */
-                    return $data['name'] . ':' . $data['age'];
+                    /** @var object{name: string, age: int} $data */
+                    return $data->name . ':' . $data->age;
                 },
             ),
         );
@@ -755,7 +756,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(['name' => 'Stuart', 'age' => 42]);
+        $actualResult = $unit->parse((object) ['name' => 'Stuart', 'age' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -785,8 +786,8 @@ class ValidateAllOfTest extends TestCase
         $unit = Validate::allOf(schemas: [Validate::object(['name' => Validate::string()]), Validate::object(['age' => Validate::int()])])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array{name: string, age: int} $data */
-                    return $data['name'] . ':' . $data['age'];
+                    /** @var object{name: string, age: int} $data */
+                    return $data->name . ':' . $data->age;
                 },
             ),
         );
@@ -800,7 +801,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->safeParse(['name' => 'Stuart', 'age' => 42]);
+        $actualResult = $unit->safeParse((object) ['name' => 'Stuart', 'age' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -831,8 +832,8 @@ class ValidateAllOfTest extends TestCase
         $unit = Validate::allOf(schemas: [Validate::object(['name' => Validate::string()]), Validate::object(['age' => Validate::int()])])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array{name: string, age: int} $data */
-                    return $data['name'] . ':' . $data['age'];
+                    /** @var object{name: string, age: int} $data */
+                    return $data->name . ':' . $data->age;
                 },
             ),
         );
@@ -846,7 +847,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->encode(['name' => 'Stuart', 'age' => 42]);
+        $actualResult = $unit->encode((object) ['name' => 'Stuart', 'age' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -876,8 +877,8 @@ class ValidateAllOfTest extends TestCase
         $unit = Validate::allOf(schemas: [Validate::object(['name' => Validate::string()]), Validate::object(['age' => Validate::int()])])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array{name: string, age: int} $data */
-                    return $data['name'] . ':' . $data['age'];
+                    /** @var object{name: string, age: int} $data */
+                    return $data->name . ':' . $data->age;
                 },
             ),
         );
@@ -891,7 +892,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->safeEncode(['name' => 'Stuart', 'age' => 42]);
+        $actualResult = $unit->safeEncode((object) ['name' => 'Stuart', 'age' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -930,8 +931,8 @@ class ValidateAllOfTest extends TestCase
             ],
         )->withCustomConstraint(
             function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['age'] >= 18
+                /** @var object{age: int} $data */
+                return $data->age >= 18
                     ? null
                     : 'Must be at least 18';
             },
@@ -946,7 +947,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 'Stuart',
             'age' => 10,
         ]);
@@ -991,8 +992,8 @@ class ValidateAllOfTest extends TestCase
             ],
         )
             ->withCustomTransform(function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['name'];
+                /** @var object{name: string} $data */
+                return $data->name;
             })
             ->withPipe(Validate::string()->min(length: 3));
 
@@ -1005,7 +1006,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'name' => 'Stuart',
             'age' => 42,
         ]);
@@ -1041,7 +1042,7 @@ class ValidateAllOfTest extends TestCase
                     'age' => Validate::int(),
                 ]),
             ],
-        )->withCatch(['name' => 'unknown', 'age' => 0]);
+        )->withCatch((object) ['name' => 'unknown', 'age' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1052,7 +1053,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'name' => 'Stuart',
             'age' => 'not-an-int',
         ]);
@@ -1060,8 +1061,8 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['name' => 'unknown', 'age' => 0],
+        $this->assertEquals(
+            (object) ['name' => 'unknown', 'age' => 0],
             $actualResult,
         );
 
@@ -1280,7 +1281,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'name' => 'Stuart',
             'age' => 42,
         ]);

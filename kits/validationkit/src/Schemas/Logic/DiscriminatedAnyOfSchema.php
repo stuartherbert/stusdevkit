@@ -188,8 +188,9 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // must be an array to have a discriminator field
-        if (! is_array($data)) {
+        // must be an array or object to have a
+        // discriminator field
+        if (! is_array($data) && ! is_object($data)) {
             $this->invokeErrorCallback(
                 callback: $this->typeCheckError,
                 input: $data,
@@ -199,8 +200,14 @@ class DiscriminatedAnyOfSchema extends BaseSchema
             return $data;
         }
 
+        // normalise to array for discriminator lookup
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
+
         // check discriminator field exists
-        if (! array_key_exists($this->discriminator, $data)) {
+        if (! array_key_exists($this->discriminator, $properties)) {
             $context->addIssue(
                 type: 'https://stusdevkit.dev/errors/validation/invalid_union',
                 input: $data,
@@ -212,7 +219,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         }
 
         // O(1) lookup by discriminator value
-        $discriminatorValue = $data[$this->discriminator];
+        $discriminatorValue = $properties[$this->discriminator];
         $key = is_string($discriminatorValue)
             || is_int($discriminatorValue)
             ? $discriminatorValue
@@ -251,8 +258,9 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        // must be an array to have a discriminator field
-        if (! is_array($data)) {
+        // must be an array or object to have a
+        // discriminator field
+        if (! is_array($data) && ! is_object($data)) {
             $this->invokeErrorCallback(
                 callback: $this->typeCheckError,
                 input: $data,
@@ -262,8 +270,14 @@ class DiscriminatedAnyOfSchema extends BaseSchema
             return $data;
         }
 
+        // normalise to array for discriminator lookup
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
+
         // check discriminator field exists
-        if (! array_key_exists($this->discriminator, $data)) {
+        if (! array_key_exists($this->discriminator, $properties)) {
             $context->addIssue(
                 type: 'https://stusdevkit.dev/errors/validation/invalid_union',
                 input: $data,
@@ -275,7 +289,7 @@ class DiscriminatedAnyOfSchema extends BaseSchema
         }
 
         // O(1) lookup by discriminator value
-        $discriminatorValue = $data[$this->discriminator];
+        $discriminatorValue = $properties[$this->discriminator];
         $key = is_string($discriminatorValue)
             || is_int($discriminatorValue)
             ? $discriminatorValue

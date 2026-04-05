@@ -143,7 +143,7 @@ class ErrorFormatterTreeifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 123,
                 'age' => 'not a number',
             ]);
@@ -211,9 +211,9 @@ class ErrorFormatterTreeifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 'Alice',
-                'address' => [
+                'address' => (object) [
                     'street' => 'Main St',
                     'zip' => 'ab',
                 ],
@@ -277,7 +277,7 @@ class ErrorFormatterTreeifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 42,
             ]);
         } catch (ValidationException $e) {
@@ -330,8 +330,8 @@ class ErrorFormatterTreeifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
-                'address' => [
+            $unit->parse((object) [
+                'address' => (object) [
                     'zip' => 'ab',
                 ],
             ]);

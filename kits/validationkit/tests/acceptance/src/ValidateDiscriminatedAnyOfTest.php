@@ -95,7 +95,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'type' => 'a',
             'x' => 42,
         ]);
@@ -103,8 +103,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['type' => 'a', 'x' => 42],
+        $this->assertEquals(
+            (object) ['type' => 'a', 'x' => 42],
             $actualResult,
         );
 
@@ -149,7 +149,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'type' => 'b',
             'y' => 'hello',
         ]);
@@ -157,8 +157,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['type' => 'b', 'y' => 'hello'],
+        $this->assertEquals(
+            (object) ['type' => 'b', 'y' => 'hello'],
             $actualResult,
         );
 
@@ -203,7 +203,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'x' => 42,
         ]);
 
@@ -263,7 +263,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'type' => 'c',
             'z' => true,
         ]);
@@ -452,7 +452,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'type' => 'a',
             'x' => 42,
         ]);
@@ -462,8 +462,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
 
         $this->assertTrue($result->succeeded());
         $this->assertFalse($result->failed());
-        $this->assertSame(
-            ['type' => 'a', 'x' => 42],
+        $this->assertEquals(
+            (object) ['type' => 'a', 'x' => 42],
             $result->data(),
         );
         $this->assertNull($result->maybeError());
@@ -565,7 +565,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->withDefault(['type' => 'a', 'x' => 0]);
+        ])->withDefault((object) ['type' => 'a', 'x' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -581,8 +581,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['type' => 'a', 'x' => 0],
+        $this->assertEquals(
+            (object) ['type' => 'a', 'x' => 0],
             $actualResult,
         );
 
@@ -620,8 +620,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
             ]),
         ])->withCustomTransform(
             function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['type'];
+                /** @var object{type: string} $data */
+                return $data->type;
             },
         );
 
@@ -634,7 +634,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'type' => 'a',
             'x' => 42,
         ]);
@@ -676,8 +676,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array<string, mixed> $data */
-                    return $data['type'];
+                    /** @var object{type: string} $data */
+                    return $data->type;
                 },
             ),
         );
@@ -691,7 +691,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(['type' => 'a', 'x' => 42]);
+        $actualResult = $unit->parse((object) ['type' => 'a', 'x' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -730,8 +730,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array<string, mixed> $data */
-                    return $data['type'];
+                    /** @var object{type: string} $data */
+                    return $data->type;
                 },
             ),
         );
@@ -745,7 +745,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->safeParse(['type' => 'a', 'x' => 42]);
+        $actualResult = $unit->safeParse((object) ['type' => 'a', 'x' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -785,8 +785,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array<string, mixed> $data */
-                    return $data['type'];
+                    /** @var object{type: string} $data */
+                    return $data->type;
                 },
             ),
         );
@@ -800,7 +800,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->encode(['type' => 'a', 'x' => 42]);
+        $actualResult = $unit->encode((object) ['type' => 'a', 'x' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -839,8 +839,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var array<string, mixed> $data */
-                    return $data['type'];
+                    /** @var object{type: string} $data */
+                    return $data->type;
                 },
             ),
         );
@@ -854,7 +854,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->safeEncode(['type' => 'a', 'x' => 42]);
+        $actualResult = $unit->safeEncode((object) ['type' => 'a', 'x' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -894,8 +894,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
             ]),
         ])->withCustomConstraint(
             function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['x'] > 0
+                /** @var object{x: int} $data */
+                return $data->x > 0
                     ? null
                     : 'x must be positive';
             },
@@ -910,7 +910,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'type' => 'a',
             'x' => -1,
         ]);
@@ -962,8 +962,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
             ]),
         ])
             ->withCustomTransform(function (mixed $data) {
-                /** @var array<string, mixed> $data */
-                return $data['type'];
+                /** @var object{type: string} $data */
+                return $data->type;
             })
             ->withPipe(Validate::string()->min(length: 1));
 
@@ -976,7 +976,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'type' => 'a',
             'x' => 42,
         ]);
@@ -1012,7 +1012,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
                 'type' => Validate::literal('b'),
                 'y' => Validate::string(),
             ]),
-        ])->withCatch(['type' => 'a', 'x' => 0]);
+        ])->withCatch((object) ['type' => 'a', 'x' => 0]);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1028,8 +1028,8 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(
-            ['type' => 'a', 'x' => 0],
+        $this->assertEquals(
+            (object) ['type' => 'a', 'x' => 0],
             $actualResult,
         );
 
@@ -1327,7 +1327,7 @@ class ValidateDiscriminatedAnyOfTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'type' => 'a',
             'x' => 42,
         ]);

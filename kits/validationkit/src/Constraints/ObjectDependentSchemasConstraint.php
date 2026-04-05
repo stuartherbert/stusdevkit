@@ -115,16 +115,21 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
      * dependent schema using the current context. Issues
      * propagate naturally.
      *
-     * @param array<mixed> $data
+     * @param array<mixed>|object $data
      */
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_array($data));
+        assert(is_array($data) || is_object($data));
+
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
 
         foreach ($this->dependencies as $propertyName => $schema) {
-            if (array_key_exists($propertyName, $data)) {
+            if (array_key_exists($propertyName, $properties)) {
                 $schema->parseWithContext(
                     data: $data,
                     context: $context,

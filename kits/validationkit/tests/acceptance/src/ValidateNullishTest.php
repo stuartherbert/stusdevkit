@@ -902,12 +902,12 @@ class ValidateNullishTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse(['name' => 'Stuart']);
+        $actualResult = $unit->parse((object) ['name' => 'Stuart']);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame(['name' => 'Stuart'], $actualResult);
+        $this->assertEquals((object) ['name' => 'Stuart'], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database

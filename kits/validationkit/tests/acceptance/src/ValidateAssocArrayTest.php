@@ -53,8 +53,8 @@ use StusDevKit\ValidationKit\Tests\Fixtures\RejectEverythingConstraint;
 use StusDevKit\ValidationKit\Validate;
 use StusDevKit\ValidationKit\ValidationIssue;
 
-#[TestDox('Validate::object()')]
-class ValidateObjectTest extends TestCase
+#[TestDox('Validate::assocArray()')]
+class ValidateAssocArrayTest extends TestCase
 {
     // ================================================================
     //
@@ -62,15 +62,15 @@ class ValidateObjectTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('accepts a PHP object')]
-    public function test_accepts_php_object(): void
+    #[TestDox('accepts an associative array')]
+    public function test_accepts_associative_array(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::object()->parse()
-        // accepts a valid PHP object matching the shape
-        // and returns the validated data as a stdClass
+        // this test proves that Validate::assocArray()->parse()
+        // accepts a valid associative array matching the
+        // shape and returns the validated data
 
         // ----------------------------------------------------------------
         // shorthand
@@ -78,7 +78,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
             'age' => Validate::int(),
         ]);
@@ -92,7 +92,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
             'age' => 30,
         ]);
@@ -100,7 +100,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) [
+        $this->assertSame([
             'name' => 'Alice',
             'age' => 30,
         ], $actualResult);
@@ -121,7 +121,6 @@ class ValidateObjectTest extends TestCase
             'null' => [ null ],
             'bool true' => [ true ],
             'float' => [ 3.14 ],
-            'array' => [ ['name' => 'Alice'] ],
         ];
     }
 
@@ -133,8 +132,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that Validate::object()->parse()
-        // throws a ValidationException for non-object input
+        // this test proves that Validate::assocArray()->parse()
+        // throws a ValidationException for non-array input
 
         // ----------------------------------------------------------------
         // shorthand
@@ -142,7 +141,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -187,7 +186,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
             'age' => Validate::int(),
         ]);
@@ -201,7 +200,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'name' => 42,
             'age' => 'not a number',
         ]);
@@ -248,7 +247,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
             'age' => Validate::int(),
         ]);
@@ -262,7 +261,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'name' => 'Alice',
         ]);
 
@@ -303,7 +302,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
             'bio' => Validate::optional(Validate::string()),
         ]);
@@ -317,15 +316,15 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
         ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertNull($actualResult->bio);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertNull($actualResult['bio']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -347,7 +346,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
             'role' => Validate::string()->withDefault('user'),
         ]);
@@ -361,15 +360,15 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
         ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertSame('user', $actualResult->role);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertSame('user', $actualResult['role']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -397,8 +396,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
-            'address' => Validate::object([
+        $unit = Validate::assocArray([
+            'address' => Validate::assocArray([
                 'zip' => Validate::string(),
             ]),
         ]);
@@ -412,8 +411,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
-            'address' => (object) [
+        $result = $unit->safeParse([
+            'address' => [
                 'zip' => 12345,
             ],
         ]);
@@ -454,9 +453,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
-            'user' => Validate::object([
-                'address' => Validate::object([
+        $unit = Validate::assocArray([
+            'user' => Validate::assocArray([
+                'address' => Validate::assocArray([
                     'city' => Validate::string(),
                 ]),
             ]),
@@ -471,9 +470,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
-            'user' => (object) [
-                'address' => (object) [
+        $result = $unit->safeParse([
+            'user' => [
+                'address' => [
                     'city' => 42,
                 ],
             ],
@@ -516,7 +515,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'tags' => Validate::array(Validate::string()),
         ]);
 
@@ -529,7 +528,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'tags' => [42],
         ]);
 
@@ -570,9 +569,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'items' => Validate::array(
-                Validate::object([
+                Validate::assocArray([
                     'price' => Validate::int(),
                 ]),
             ),
@@ -587,11 +586,11 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'items' => [
-                (object) ['price' => 10],
-                (object) ['price' => 20],
-                (object) ['price' => 'free'],
+                ['price' => 10],
+                ['price' => 20],
+                ['price' => 'free'],
             ],
         ]);
 
@@ -637,7 +636,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $base = Validate::object([
+        $base = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -654,7 +653,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
             'age' => 30,
         ]);
@@ -662,8 +661,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertSame(30, $actualResult->age);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertSame(30, $actualResult['age']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -685,7 +684,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $base = Validate::object([
+        $base = Validate::assocArray([
             'name' => Validate::string(),
             'age' => Validate::int(),
             'email' => Validate::string(),
@@ -702,7 +701,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
             'email' => 'alice@example.com',
         ]);
@@ -710,12 +709,12 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
+        $this->assertSame('Alice', $actualResult['name']);
         $this->assertSame(
             'alice@example.com',
-            $actualResult->email,
+            $actualResult['email'],
         );
-        $this->assertObjectNotHasProperty('age', $actualResult);
+        $this->assertArrayNotHasKey('age', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -737,7 +736,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $base = Validate::object([
+        $base = Validate::assocArray([
             'name' => Validate::string(),
             'age' => Validate::int(),
             'email' => Validate::string(),
@@ -754,7 +753,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
             'age' => 30,
         ]);
@@ -762,9 +761,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertSame(30, $actualResult->age);
-        $this->assertObjectNotHasProperty('email', $actualResult);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertSame(30, $actualResult['age']);
+        $this->assertArrayNotHasKey('email', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -787,7 +786,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $base = Validate::object([
+        $base = Validate::assocArray([
             'name' => Validate::string(),
             'age' => Validate::int(),
         ]);
@@ -803,15 +802,15 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
         ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertNull($actualResult->age);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertNull($actualResult['age']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -839,7 +838,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -852,7 +851,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
             'extra' => 'ignored',
         ]);
@@ -860,8 +859,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertObjectNotHasProperty('extra', $actualResult);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertArrayNotHasKey('extra', $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -883,7 +882,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->strict();
 
@@ -896,7 +895,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'name' => 'Alice',
             'extra' => 'not allowed',
         ]);
@@ -937,7 +936,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->passthrough();
 
@@ -950,7 +949,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Alice',
             'extra' => 'kept',
         ]);
@@ -958,8 +957,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('Alice', $actualResult->name);
-        $this->assertSame('kept', $actualResult->extra);
+        $this->assertSame('Alice', $actualResult['name']);
+        $this->assertSame('kept', $actualResult['extra']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -988,7 +987,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -1018,7 +1017,8 @@ class ValidateObjectTest extends TestCase
                 [
                     'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
-                    'message' => 'Expected object, received int',
+                    'message' => 'Expected associative array,'
+                        . ' received int',
                 ],
             ],
             $caughtException->issues()->jsonSerialize(),
@@ -1044,7 +1044,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -1057,15 +1057,15 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) ['name' => 'Alice']);
+        $result = $unit->safeParse(['name' => 'Alice']);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($result->succeeded());
         $this->assertFalse($result->failed());
-        $this->assertEquals(
-            (object) ['name' => 'Alice'],
+        $this->assertSame(
+            ['name' => 'Alice'],
             $result->data(),
         );
         $this->assertNull($result->maybeError());
@@ -1090,7 +1090,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -1121,7 +1121,8 @@ class ValidateObjectTest extends TestCase
                 [
                     'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
                     'path'    => [],
-                    'message' => 'Expected object, received int',
+                    'message' => 'Expected associative array,'
+                        . ' received int',
                 ],
             ],
             $result->maybeError()->issues()->jsonSerialize(),
@@ -1150,9 +1151,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
-        ])->withDefault((object) ['name' => 'anonymous']);
+        ])->withDefault(['name' => 'anonymous']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1168,8 +1169,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(
-            (object) ['name' => 'anonymous'],
+        $this->assertSame(
+            ['name' => 'anonymous'],
             $actualResult,
         );
 
@@ -1196,13 +1197,13 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'first' => Validate::string(),
             'last' => Validate::string(),
         ])->withCustomTransform(
             function (mixed $data) {
-                /** @var object{first: string, last: string} $data */
-                return $data->first . ' ' . $data->last;
+                /** @var array{first: string, last: string} $data */
+                return $data['first'] . ' ' . $data['last'];
             },
         );
 
@@ -1215,7 +1216,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'first' => 'Alice',
             'last' => 'Smith',
         ]);
@@ -1245,14 +1246,14 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'first' => Validate::string(),
             'last' => Validate::string(),
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var object{first: string, last: string} $data */
-                    return $data->first . ' ' . $data->last;
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
                 },
             ),
         );
@@ -1266,7 +1267,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) ['first' => 'Alice', 'last' => 'Smith']);
+        $actualResult = $unit->parse(['first' => 'Alice', 'last' => 'Smith']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1293,14 +1294,14 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'first' => Validate::string(),
             'last' => Validate::string(),
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var object{first: string, last: string} $data */
-                    return $data->first . ' ' . $data->last;
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
                 },
             ),
         );
@@ -1314,7 +1315,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->safeParse((object) ['first' => 'Alice', 'last' => 'Smith']);
+        $actualResult = $unit->safeParse(['first' => 'Alice', 'last' => 'Smith']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1342,14 +1343,14 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'first' => Validate::string(),
             'last' => Validate::string(),
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var object{first: string, last: string} $data */
-                    return $data->first . ' ' . $data->last;
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
                 },
             ),
         );
@@ -1363,7 +1364,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->encode((object) ['first' => 'Alice', 'last' => 'Smith']);
+        $actualResult = $unit->encode(['first' => 'Alice', 'last' => 'Smith']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1390,14 +1391,14 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'first' => Validate::string(),
             'last' => Validate::string(),
         ])->withTransformer(
             new CallableTransformer(
                 function (mixed $data) {
-                    /** @var object{first: string, last: string} $data */
-                    return $data->first . ' ' . $data->last;
+                    /** @var array{first: string, last: string} $data */
+                    return $data['first'] . ' ' . $data['last'];
                 },
             ),
         );
@@ -1411,7 +1412,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->safeEncode((object) ['first' => 'Alice', 'last' => 'Smith']);
+        $actualResult = $unit->safeEncode(['first' => 'Alice', 'last' => 'Smith']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1439,13 +1440,13 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'password' => Validate::string(),
             'confirm' => Validate::string(),
         ])->withCustomConstraint(
             function (mixed $data) {
-                /** @var \stdClass $data */
-                return $data->password === $data->confirm
+                /** @var array<string, mixed> $data */
+                return $data['password'] === $data['confirm']
                     ? null
                     : 'Passwords do not match';
             },
@@ -1460,7 +1461,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'password' => 'secret',
             'confirm' => 'different',
         ]);
@@ -1502,12 +1503,12 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->withCustomTransform(
             function (mixed $data) {
-                /** @var \stdClass $data */
-                return $data->name;
+                /** @var array<string, mixed> $data */
+                return $data['name'];
             },
         )->withPipe(
             Validate::string()->min(length: 3),
@@ -1522,7 +1523,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) ['name' => 'Alice']);
+        $actualResult = $unit->parse(['name' => 'Alice']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1546,9 +1547,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
-        ])->withCatch((object) ['name' => 'unknown']);
+        ])->withCatch(['name' => 'unknown']);
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -1564,7 +1565,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) ['name' => 'unknown'], $actualResult);
+        $this->assertSame(['name' => 'unknown'], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1592,7 +1593,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object(
+        $unit = Validate::assocArray(
             shape: [
                 'name' => Validate::string(),
             ],
@@ -1658,7 +1659,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ]);
 
@@ -1708,7 +1709,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->withDescription('A user profile');
 
@@ -1745,7 +1746,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->withMetadata(['label' => 'User']);
 
@@ -1792,7 +1793,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->withConstraint(new RejectEverythingConstraint());
 
@@ -1805,7 +1806,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) ['name' => 'test']);
+        $result = $unit->safeParse(['name' => 'test']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1850,7 +1851,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'name' => Validate::string(),
         ])->propertyNames(
             schema: Validate::string()->min(length: 1),
@@ -1865,12 +1866,12 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) ['name' => 'Stuart']);
+        $actualResult = $unit->parse(['name' => 'Stuart']);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) ['name' => 'Stuart'], $actualResult);
+        $this->assertSame(['name' => 'Stuart'], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1894,7 +1895,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'x' => Validate::string(),
         ])->propertyNames(
             schema: Validate::string()->min(length: 3),
@@ -1909,7 +1910,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) ['x' => 'val']);
+        $result = $unit->safeParse(['x' => 'val']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1958,7 +1959,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->patternProperties(
                 patterns: ['/^s_/' => Validate::string()],
@@ -1973,7 +1974,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             's_name' => 'Stuart',
             'age' => 42,
         ]);
@@ -1981,7 +1982,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) [
+        $this->assertSame([
             's_name' => 'Stuart',
             'age' => 42,
         ], $actualResult);
@@ -2008,7 +2009,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->patternProperties(
                 patterns: ['/^s_/' => Validate::string()],
@@ -2023,7 +2024,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) ['s_name' => 123]);
+        $result = $unit->safeParse(['s_name' => 123]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -2070,11 +2071,11 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->dependentSchemas(
                 dependencies: [
-                    'name' => Validate::object([
+                    'name' => Validate::assocArray([
                         'email' => Validate::string(),
                     ]),
                 ],
@@ -2089,7 +2090,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'Stuart',
             'email' => 'test@test.com',
         ]);
@@ -2097,7 +2098,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) [
+        $this->assertSame([
             'name' => 'Stuart',
             'email' => 'test@test.com',
         ], $actualResult);
@@ -2125,11 +2126,11 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->dependentSchemas(
                 dependencies: [
-                    'name' => Validate::object([
+                    'name' => Validate::assocArray([
                         'email' => Validate::string(),
                     ]),
                 ],
@@ -2144,7 +2145,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) ['name' => 'Stuart']);
+        $result = $unit->safeParse(['name' => 'Stuart']);
 
         // ----------------------------------------------------------------
         // test the results
@@ -2184,11 +2185,11 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->dependentSchemas(
                 dependencies: [
-                    'name' => Validate::object([
+                    'name' => Validate::assocArray([
                         'email' => Validate::string(),
                     ]),
                 ],
@@ -2203,12 +2204,12 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) ['age' => 42]);
+        $actualResult = $unit->parse(['age' => 42]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) ['age' => 42], $actualResult);
+        $this->assertSame(['age' => 42], $actualResult);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -2237,7 +2238,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'a' => Validate::string(),
             'b' => Validate::string(),
             'c' => Validate::string(),
@@ -2252,7 +2253,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'a' => 'one',
             'b' => 'two',
             'c' => 'three',
@@ -2261,7 +2262,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) [
+        $this->assertSame([
             'a' => 'one',
             'b' => 'two',
             'c' => 'three',
@@ -2290,7 +2291,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'a' => Validate::optional(Validate::string()),
         ])->passthrough()
           ->minProperties(count: 2);
@@ -2304,7 +2305,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'a' => 'one',
         ]);
 
@@ -2340,7 +2341,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'a' => Validate::string(),
             'b' => Validate::string(),
         ])->maxProperties(count: 3);
@@ -2354,7 +2355,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'a' => 'one',
             'b' => 'two',
         ]);
@@ -2362,7 +2363,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals((object) [
+        $this->assertSame([
             'a' => 'one',
             'b' => 'two',
         ], $actualResult);
@@ -2390,7 +2391,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([
+        $unit = Validate::assocArray([
             'a' => Validate::string(),
             'b' => Validate::string(),
         ])->passthrough()
@@ -2405,7 +2406,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'a' => 'one',
             'b' => 'two',
             'c' => 'three',
@@ -2452,7 +2453,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->dependentRequired(['email' => ['name']]);
 
@@ -2465,14 +2466,14 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'test',
         ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('test', $actualResult->name);
+        $this->assertSame('test', $actualResult['name']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -2497,7 +2498,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->dependentRequired(['email' => ['name']]);
 
@@ -2510,7 +2511,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse((object) [
+        $actualResult = $unit->parse([
             'name' => 'test',
             'email' => 'a@b.com',
         ]);
@@ -2518,8 +2519,8 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('test', $actualResult->name);
-        $this->assertSame('a@b.com', $actualResult->email);
+        $this->assertSame('test', $actualResult['name']);
+        $this->assertSame('a@b.com', $actualResult['email']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -2544,7 +2545,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::object([])
+        $unit = Validate::assocArray([])
             ->passthrough()
             ->dependentRequired(['email' => ['name']]);
 
@@ -2557,7 +2558,7 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'email' => 'a@b.com',
         ]);
 
@@ -2596,18 +2597,18 @@ class ValidateObjectTest extends TestCase
         Now::init();
 
         $unit = Validate::allOf([
-            Validate::object([
+            Validate::assocArray([
                 'order_id' => Validate::uuid()->coerce(),
             ]),
             Validate::oneOf([
-                Validate::object([
-                    'stripe' => Validate::object([
+                Validate::assocArray([
+                    'stripe' => Validate::assocArray([
                         'payment_intent' => Validate::string(),
                         'client_secret' => Validate::string(),
                     ]),
                 ]),
-                Validate::object([
-                    'zero_cost' => Validate::object([
+                Validate::assocArray([
+                    'zero_cost' => Validate::assocArray([
                         'confirm_token' => Validate::uuid()->coerce(),
                         'expires_at' => Validate::dateTime()->coerce(),
                     ]),
@@ -2628,9 +2629,9 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse((object) [
+        $result = $unit->safeParse([
             'order_id' => (string)Uuid::uuid7(),
-            'zero_cost' => (object) [
+            'zero_cost' => [
                 'confirm_token' => (string)Uuid::uuid7(),
                 'expires_at' => Now::asFormat()->http()->rfc9110(),
             ],

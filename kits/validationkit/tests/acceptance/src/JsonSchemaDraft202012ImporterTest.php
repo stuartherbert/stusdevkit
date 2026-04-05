@@ -1473,13 +1473,13 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var array{name: string, age: int} $parsed */
-        $parsed = $schema->parse([
+        $parsed = $schema->parse((object) [
             'name' => 'Alice',
             'age' => 30,
         ]);
-        $this->assertSame('Alice', $parsed['name']);
-        $this->assertSame(30, $parsed['age']);
+        /** @var object{name: string, age: int} $parsed */
+        $this->assertSame('Alice', $parsed->name);
+        $this->assertSame(30, $parsed->age);
     }
 
     #[TestDox('object accepts missing optional field')]
@@ -1516,9 +1516,9 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var array{name: string} $parsed */
-        $parsed = $schema->parse(['name' => 'Bob']);
-        $this->assertSame('Bob', $parsed['name']);
+        $parsed = $schema->parse((object) ['name' => 'Bob']);
+        /** @var object{name: string} $parsed */
+        $this->assertSame('Bob', $parsed->name);
     }
 
     #[TestDox('object rejects missing required field')]
@@ -1550,7 +1550,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // perform the change
 
         $schema = $unit->import($jsonSchema);
-        $result = $schema->safeParse([]);
+        $result = $schema->safeParse((object) []);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1591,13 +1591,13 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var array{name: string, extra: string} $parsed */
-        $parsed = $schema->parse([
+        $parsed = $schema->parse((object) [
             'name' => 'Alice',
             'extra' => 'kept',
         ]);
-        $this->assertSame('Alice', $parsed['name']);
-        $this->assertSame('kept', $parsed['extra']);
+        /** @var object{name: string, extra: string} $parsed */
+        $this->assertSame('Alice', $parsed->name);
+        $this->assertSame('kept', $parsed->extra);
     }
 
     #[TestDox('object with catchall schema accepts matching extras')]
@@ -1633,13 +1633,13 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var array{name: string, score: int} $parsed */
-        $parsed = $schema->parse([
+        $parsed = $schema->parse((object) [
             'name' => 'Alice',
             'score' => 100,
         ]);
-        $this->assertSame('Alice', $parsed['name']);
-        $this->assertSame(100, $parsed['score']);
+        /** @var object{name: string, score: int} $parsed */
+        $this->assertSame('Alice', $parsed->name);
+        $this->assertSame(100, $parsed->score);
     }
 
     #[TestDox('object with catchall schema rejects non-matching extras')]
@@ -1671,7 +1671,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // perform the change
 
         $schema = $unit->import($jsonSchema);
-        $result = $schema->safeParse([
+        $result = $schema->safeParse((object) [
             'name' => 'Alice',
             'score' => 'not-int',
         ]);
@@ -1784,7 +1784,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // perform the change
 
         $schema = $unit->import($jsonSchema);
-        $result = $schema->safeParse(['a' => 1]);
+        $result = $schema->safeParse((object) ['a' => 1]);
 
         // ----------------------------------------------------------------
         // test the results
@@ -2425,13 +2425,13 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var array{address: array{street: string}} $result */
-        $result = $schema->parse([
-            'address' => ['street' => '123 Main St'],
+        $result = $schema->parse((object) [
+            'address' => (object) ['street' => '123 Main St'],
         ]);
+        /** @var object{address: object{street: string}} $result */
         $this->assertSame(
             '123 Main St',
-            $result['address']['street'],
+            $result->address->street,
         );
     }
 
@@ -2474,8 +2474,8 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // perform the change
 
         $schema = $unit->import($jsonSchema);
-        $result = $schema->safeParse([
-            'address' => ['street' => 123],
+        $result = $schema->safeParse((object) [
+            'address' => (object) ['street' => 123],
         ]);
 
         // ----------------------------------------------------------------
@@ -2797,7 +2797,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
             )->uniqueItems(),
         ])->strict();
 
-        $validData = [
+        $validData = (object) [
             'name' => 'Alice',
             'age' => 30,
             'tags' => ['admin', 'user'],
@@ -2812,18 +2812,18 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var array{name: string, age: int} $originalResult */
         $originalResult = $original->parse($validData);
-        /** @var array{name: string, age: int} $importedResult */
         $importedResult = $imported->parse($validData);
 
+        /** @var object{name: string, age: int} $originalResult */
+        /** @var object{name: string, age: int} $importedResult */
         $this->assertSame(
-            $originalResult['name'],
-            $importedResult['name'],
+            $originalResult->name,
+            $importedResult->name,
         );
         $this->assertSame(
-            $originalResult['age'],
-            $importedResult['age'],
+            $originalResult->age,
+            $importedResult->age,
         );
     }
 
@@ -2855,7 +2855,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
             )->uniqueItems(),
         ])->strict();
 
-        $invalidData = [
+        $invalidData = (object) [
             'name' => '',
             'age' => -1,
             'tags' => ['a', 'a'],

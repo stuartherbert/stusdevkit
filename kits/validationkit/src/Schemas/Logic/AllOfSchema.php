@@ -46,6 +46,8 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\ValidationIssue;
 
+use function StusDevKit\MissingBitsKit\object_merge;
+
 /**
  * AllOfSchema validates that the input matches all of
  * the given schemas ("and" logic).
@@ -141,18 +143,23 @@ class AllOfSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        $result = $data;
+        // clone objects to avoid mutating the original input
+        $result = is_object($data) ? clone $data : $data;
         foreach ($this->schemas as $schema) {
             $schemaResult = $schema->parseWithContext(
                 data: $data,
                 context: $context,
             );
 
-            // if both the current result and the schema
-            // result are arrays, merge them
-            $result = is_array($result) && is_array($schemaResult)
-                ? array_merge($result, $schemaResult)
-                : $schemaResult;
+            // merge results when both are the same
+            // collection type (array or object)
+            if (is_array($result) && is_array($schemaResult)) {
+                $result = array_merge($result, $schemaResult);
+            } elseif (is_object($result) && is_object($schemaResult)) {
+                object_merge($result, $schemaResult);
+            } else {
+                $result = $schemaResult;
+            }
         }
 
         return $result;
@@ -165,18 +172,23 @@ class AllOfSchema extends BaseSchema
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        $result = $data;
+        // clone objects to avoid mutating the original input
+        $result = is_object($data) ? clone $data : $data;
         foreach ($this->schemas as $schema) {
             $schemaResult = $schema->encodeWithContext(
                 data: $data,
                 context: $context,
             );
 
-            // if both the current result and the schema
-            // result are arrays, merge them
-            $result = is_array($result) && is_array($schemaResult)
-                ? array_merge($result, $schemaResult)
-                : $schemaResult;
+            // merge results when both are the same
+            // collection type (array or object)
+            if (is_array($result) && is_array($schemaResult)) {
+                $result = array_merge($result, $schemaResult);
+            } elseif (is_object($result) && is_object($schemaResult)) {
+                object_merge($result, $schemaResult);
+            } else {
+                $result = $schemaResult;
+            }
         }
 
         return $result;

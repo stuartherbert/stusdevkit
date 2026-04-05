@@ -547,7 +547,7 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'id' => '550e8400-e29b-41d4-a716-446655440000',
             'name' => 'test',
         ]);
@@ -557,13 +557,13 @@ class ValidateCodecTest extends TestCase
 
         $this->assertInstanceOf(
             UuidInterface::class,
-            $actualResult['id'],
+            $actualResult->id,
         );
         $this->assertSame(
             '550e8400-e29b-41d4-a716-446655440000',
-            $actualResult['id']->toString(),
+            $actualResult->id->toString(),
         );
-        $this->assertSame('test', $actualResult['name']);
+        $this->assertSame('test', $actualResult->name);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -599,7 +599,7 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $result = $unit->safeParse([
+        $result = $unit->safeParse((object) [
             'id' => 42,
         ]);
 
@@ -651,7 +651,7 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->encode([
+        $actualResult = $unit->encode((object) [
             'id' => $uuid,
             'name' => 'test',
         ]);
@@ -661,12 +661,12 @@ class ValidateCodecTest extends TestCase
 
         // the codec's encode should have converted
         // UuidInterface → string
-        $this->assertIsString($actualResult['id']);
+        $this->assertIsString($actualResult->id);
         $this->assertSame(
             '550e8400-e29b-41d4-a716-446655440000',
-            $actualResult['id'],
+            $actualResult->id,
         );
-        $this->assertSame('test', $actualResult['name']);
+        $this->assertSame('test', $actualResult->name);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -708,13 +708,13 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->parse([
+        $actualResult = $unit->parse((object) [
             'items' => [
-                [
+                (object) [
                     'id' => '550e8400-e29b-41d4-a716-446655440000',
                     'name' => 'first',
                 ],
-                [
+                (object) [
                     'id' => '660f9500-f39c-52e5-b827-557766550000',
                     'name' => 'second',
                 ],
@@ -724,20 +724,20 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var list<array{id: UuidInterface, name: string}> $items */
-        $items = $actualResult['items'];
+        /** @var list<object{id: UuidInterface, name: string}> $items */
+        $items = $actualResult->items;
 
         $this->assertInstanceOf(
             UuidInterface::class,
-            $items[0]['id'],
+            $items[0]->id,
         );
         $this->assertSame(
             '550e8400-e29b-41d4-a716-446655440000',
-            $items[0]['id']->toString(),
+            $items[0]->id->toString(),
         );
         $this->assertInstanceOf(
             UuidInterface::class,
-            $items[1]['id'],
+            $items[1]->id,
         );
 
         // ----------------------------------------------------------------
@@ -787,25 +787,25 @@ class ValidateCodecTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = $unit->encode([
+        $actualResult = $unit->encode((object) [
             'items' => [
-                ['id' => $uuid1, 'name' => 'first'],
-                ['id' => $uuid2, 'name' => 'second'],
+                (object) ['id' => $uuid1, 'name' => 'first'],
+                (object) ['id' => $uuid2, 'name' => 'second'],
             ],
         ]);
 
         // ----------------------------------------------------------------
         // test the results
 
-        /** @var list<array{id: string, name: string}> $items */
-        $items = $actualResult['items'];
+        /** @var list<object{id: string, name: string}> $items */
+        $items = $actualResult->items;
 
-        $this->assertIsString($items[0]['id']);
+        $this->assertIsString($items[0]->id);
         $this->assertSame(
             '550e8400-e29b-41d4-a716-446655440000',
-            $items[0]['id'],
+            $items[0]->id,
         );
-        $this->assertIsString($items[1]['id']);
+        $this->assertIsString($items[1]->id);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -1148,11 +1148,11 @@ class ValidateCodecTest extends TestCase
         ]);
 
         // server-side native data
-        $apiServerData = [
+        $apiServerData = (object) [
             'order_id' => Uuid::fromString(
                 '550e8400-e29b-41d4-a716-446655440000',
             ),
-            'zero_cost' => [
+            'zero_cost' => (object) [
                 'confirm_token' => Uuid::fromString(
                     '660f9500-f39c-52e5-b827-557766550000',
                 ),
@@ -1177,7 +1177,7 @@ class ValidateCodecTest extends TestCase
         // simulate the wire: JSON round-trip
         $json = json_encode($encoded);
         $this->assertIsString($json);
-        $wire = json_decode($json, associative: true);
+        $wire = json_decode($json);
 
         // client: decode serializable array → native types
         $apiClientData = $apiSchema->decode($wire);

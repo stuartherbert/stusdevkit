@@ -109,18 +109,23 @@ final class ObjectDependentRequiredConstraint implements ValidationConstraint
      * also present. For each missing required property, a
      * validation issue is added.
      *
-     * @param array<mixed> $data
+     * @param array<mixed>|object $data
      */
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_array($data));
+        assert(is_array($data) || is_object($data));
+
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
 
         foreach ($this->dependencies as $propertyName => $requiredProperties) {
-            if (array_key_exists($propertyName, $data)) {
+            if (array_key_exists($propertyName, $properties)) {
                 foreach ($requiredProperties as $requiredProperty) {
-                    if (! array_key_exists($requiredProperty, $data)) {
+                    if (! array_key_exists($requiredProperty, $properties)) {
                         $context->addIssue(
                             type: 'https://stusdevkit.dev/errors/validation/custom',
                             input: $data,

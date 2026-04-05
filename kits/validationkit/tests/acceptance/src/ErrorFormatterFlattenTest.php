@@ -143,7 +143,7 @@ class ErrorFormatterFlattenTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 123,
                 'age' => 'not a number',
             ]);
@@ -198,7 +198,7 @@ class ErrorFormatterFlattenTest extends TestCase
         $caughtException = null;
         try {
             // passing an int will fail both string type check
-            $unit->parse([
+            $unit->parse((object) [
                 'email' => 42,
             ]);
         } catch (ValidationException $e) {
@@ -260,9 +260,9 @@ class ErrorFormatterFlattenTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 'Alice',
-                'address' => [
+                'address' => (object) [
                     'street' => 'Main St',
                     'zip' => 'ab',
                 ],
@@ -329,7 +329,7 @@ class ErrorFormatterFlattenTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 42,
                 'age' => 25,
             ]);

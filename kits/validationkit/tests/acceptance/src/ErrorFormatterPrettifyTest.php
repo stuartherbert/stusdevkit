@@ -196,7 +196,7 @@ class ErrorFormatterPrettifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 123,
                 'age' => 'not a number',
             ]);
@@ -259,7 +259,7 @@ class ErrorFormatterPrettifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'email' => 42,
             ]);
         } catch (ValidationException $e) {
@@ -369,7 +369,7 @@ class ErrorFormatterPrettifyTest extends TestCase
 
         $caughtException = null;
         try {
-            $unit->parse([
+            $unit->parse((object) [
                 'name' => 123,
                 'age' => 'not a number',
             ]);

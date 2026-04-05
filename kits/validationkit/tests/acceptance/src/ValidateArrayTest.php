@@ -341,8 +341,8 @@ class ValidateArrayTest extends TestCase
         // perform the change
 
         $result = $unit->safeParse([
-            ['name' => 'Alice'],
-            ['name' => 42],
+            (object) ['name' => 'Alice'],
+            (object) ['name' => 42],
         ]);
 
         // ----------------------------------------------------------------

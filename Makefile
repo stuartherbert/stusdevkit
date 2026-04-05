@@ -112,6 +112,9 @@ unit-validationkit: ## Run unit tests for the ValidationKit
 unit-exceptionskit: ## Run unit tests for the ExceptionsKit
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-exceptionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
+unit-missingbitskit: ## Run unit tests for the MissingBitsKit
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-missingbitskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+
 unit-changelogtool: ## Run unit tests for the ChangelogTool
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-changelogtool --display-all-issues --testdox --testdox-summary ${OPTS}"
 

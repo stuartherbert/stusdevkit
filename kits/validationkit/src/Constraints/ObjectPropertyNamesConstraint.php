@@ -130,15 +130,20 @@ final class ObjectPropertyNamesConstraint implements ValidationConstraint
      * fails validation, the error callback is invoked and
      * the check returns immediately.
      *
-     * @param array<mixed> $data
+     * @param array<mixed>|object $data
      */
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_array($data));
+        assert(is_array($data) || is_object($data));
 
-        foreach (array_keys($data) as $key) {
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
+
+        foreach (array_keys($properties) as $key) {
             $freshContext = new ValidationContext();
             $this->schema->parseWithContext(
                 data: $key,

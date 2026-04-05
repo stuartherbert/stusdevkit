@@ -113,16 +113,21 @@ final class ObjectPatternPropertiesConstraint implements ValidationConstraint
      * validated against the schema using a child context at
      * that key's path. Issues propagate to the main context.
      *
-     * @param array<mixed> $data
+     * @param array<mixed>|object $data
      */
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_array($data));
+        assert(is_array($data) || is_object($data));
+
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
 
         foreach ($this->patterns as $pattern => $schema) {
-            foreach ($data as $key => $value) {
+            foreach ($properties as $key => $value) {
                 $keyString = (string) $key;
                 if (preg_match($pattern, $keyString)) {
                     $childContext = $context->atPath($keyString);

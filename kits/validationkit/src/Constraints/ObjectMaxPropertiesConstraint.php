@@ -126,15 +126,20 @@ final class ObjectMaxPropertiesConstraint implements ValidationConstraint
      * Adds a validation issue to the context if the object
      * has more properties than allowed.
      *
-     * @param array<mixed> $data
+     * @param array<mixed>|object $data
      */
     public function process(
         mixed $data,
         ValidationContext $context,
     ): mixed {
-        assert(is_array($data));
+        assert(is_array($data) || is_object($data));
 
-        if (count($data) > $this->count) {
+        /** @var array<string, mixed> $properties */
+        $properties = is_object($data)
+            ? get_object_vars($data)
+            : $data;
+
+        if (count($properties) > $this->count) {
             $issue = ($this->error)($data);
             $context->addExistingIssue(
                 $issue->withPath($context->path()),
