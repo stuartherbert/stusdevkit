@@ -58,7 +58,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([32fd8a2](https://github.com/stuartherbert/stusdevkit/commit/32fd8a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- PHP associative array schemas can now be exported as JSON schema ([57bbc3e](https://github.com/stuartherbert/stusdevkit/commit/57bbc3e)) — Stuart Herbert <stuart@stuartherbert.com>
+- add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([b599573](https://github.com/stuartherbert/stusdevkit/commit/b599573)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>

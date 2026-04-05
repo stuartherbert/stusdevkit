@@ -1193,6 +1193,128 @@ class JsonSchemaDraft202012ExporterTest extends TestCase
 
     // ================================================================
     //
+    // AssocArray (exports as object)
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('exports assocArray with properties and required')]
+    public function test_exports_assoc_array_with_properties_and_required(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::assocArray()
+        // exports identically to Validate::object(), since
+        // JSON Schema has no distinction between PHP objects
+        // and associative arrays
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::assocArray([
+                'name' => Validate::string(),
+                'age' => Validate::int(),
+                'nickname' => Validate::optional(
+                    Validate::string(),
+                ),
+            ]),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'object',
+                'properties' => (object) [
+                    'name' => (object) ['type' => 'string'],
+                    'age' => (object) ['type' => 'integer'],
+                    'nickname' => (object) [
+                        'type' => 'string',
+                    ],
+                ],
+                'required' => ['name', 'age'],
+                'additionalProperties' => false,
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('exports assocArray with passthrough policy')]
+    public function test_exports_assoc_array_passthrough_policy(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that assocArray with passthrough
+        // exports additionalProperties as true
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::assocArray([
+                'name' => Validate::string(),
+            ])->passthrough(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'object',
+                'properties' => (object) [
+                    'name' => (object) ['type' => 'string'],
+                ],
+                'required' => ['name'],
+                'additionalProperties' => true,
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // Nullable
     //
     // ----------------------------------------------------------------

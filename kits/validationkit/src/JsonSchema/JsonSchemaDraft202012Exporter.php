@@ -79,6 +79,7 @@ use StusDevKit\ValidationKit\Schemas\BaseSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
+use StusDevKit\ValidationKit\Schemas\Builtins\AssocArraySchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\BooleanSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\FloatSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\IntSchema;
@@ -392,6 +393,10 @@ class JsonSchemaDraft202012Exporter
             return $this->exportObjectSchema($schema);
         }
 
+        if ($schema instanceof AssocArraySchema) {
+            return $this->exportObjectSchema($schema);
+        }
+
         if ($schema instanceof TupleSchema) {
             return $this->exportTupleSchema($schema);
         }
@@ -530,9 +535,14 @@ class JsonSchemaDraft202012Exporter
     /**
      * export an object schema with properties, required,
      * additionalProperties, and object-level constraints
+     *
+     * Handles both ObjectSchema (stdClass output) and
+     * AssocArraySchema (associative array output) since
+     * they share the same shape structure and both map
+     * to JSON Schema's "object" type.
      */
     private function exportObjectSchema(
-        ObjectSchema $schema,
+        ObjectSchema|AssocArraySchema $schema,
     ): stdClass {
         $output = new stdClass();
         $output->type = 'object';
