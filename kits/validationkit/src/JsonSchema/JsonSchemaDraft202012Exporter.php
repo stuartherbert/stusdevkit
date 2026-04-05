@@ -65,12 +65,21 @@ use StusDevKit\ValidationKit\Constraints\StringDurationConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
 use StusDevKit\ValidationKit\Constraints\StringExactLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringHostnameConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIdnEmailConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIdnHostnameConstraint;
 use StusDevKit\ValidationKit\Constraints\StringIpv4Constraint;
 use StusDevKit\ValidationKit\Constraints\StringIpv6Constraint;
+use StusDevKit\ValidationKit\Constraints\StringIriConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIriReferenceConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIsRegexConstraint;
+use StusDevKit\ValidationKit\Constraints\StringJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMinLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
+use StusDevKit\ValidationKit\Constraints\StringRelativeJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringTimeConstraint;
+use StusDevKit\ValidationKit\Constraints\StringUriReferenceConstraint;
+use StusDevKit\ValidationKit\Constraints\StringUriTemplateConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
 use StusDevKit\ValidationKit\Contracts\PipelineStep;
@@ -902,6 +911,51 @@ class JsonSchemaDraft202012Exporter
 
         if ($step instanceof StringHostnameConstraint) {
             $output->format = 'hostname';
+            return $output;
+        }
+
+        if ($step instanceof StringUriReferenceConstraint) {
+            $output->format = 'uri-reference';
+            return $output;
+        }
+
+        if ($step instanceof StringIdnEmailConstraint) {
+            $output->format = 'idn-email';
+            return $output;
+        }
+
+        if ($step instanceof StringIdnHostnameConstraint) {
+            $output->format = 'idn-hostname';
+            return $output;
+        }
+
+        if ($step instanceof StringIriConstraint) {
+            $output->format = 'iri';
+            return $output;
+        }
+
+        if ($step instanceof StringIriReferenceConstraint) {
+            $output->format = 'iri-reference';
+            return $output;
+        }
+
+        if ($step instanceof StringUriTemplateConstraint) {
+            $output->format = 'uri-template';
+            return $output;
+        }
+
+        if ($step instanceof StringJsonPointerConstraint) {
+            $output->format = 'json-pointer';
+            return $output;
+        }
+
+        if ($step instanceof StringRelativeJsonPointerConstraint) {
+            $output->format = 'relative-json-pointer';
+            return $output;
+        }
+
+        if ($step instanceof StringIsRegexConstraint) {
+            $output->format = 'regex';
             return $output;
         }
 

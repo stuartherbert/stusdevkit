@@ -49,14 +49,23 @@ use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEndsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringExactLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringHostnameConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIdnEmailConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIdnHostnameConstraint;
 use StusDevKit\ValidationKit\Constraints\StringIncludesConstraint;
 use StusDevKit\ValidationKit\Constraints\StringIpv4Constraint;
 use StusDevKit\ValidationKit\Constraints\StringIpv6Constraint;
+use StusDevKit\ValidationKit\Constraints\StringIriConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIriReferenceConstraint;
+use StusDevKit\ValidationKit\Constraints\StringIsRegexConstraint;
+use StusDevKit\ValidationKit\Constraints\StringJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMinLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
+use StusDevKit\ValidationKit\Constraints\StringRelativeJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
 use StusDevKit\ValidationKit\Constraints\StringTimeConstraint;
+use StusDevKit\ValidationKit\Constraints\StringUriReferenceConstraint;
+use StusDevKit\ValidationKit\Constraints\StringUriTemplateConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUrlConstraint;
 use StusDevKit\ValidationKit\Constraints\StringUuidConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
@@ -389,6 +398,146 @@ class StringSchema extends BaseSchema
     {
         return $this->withConstraint(
             new StringHostnameConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid URI reference
+     *
+     * Accepts both absolute URIs and relative references
+     * per RFC 3986.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function uriReference(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringUriReferenceConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid internationalised
+     * email address
+     *
+     * Validates against RFC 6531 using PHP's
+     * FILTER_VALIDATE_EMAIL with FILTER_FLAG_EMAIL_UNICODE.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function idnEmail(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringIdnEmailConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid internationalised
+     * hostname
+     *
+     * Validates against RFC 5890 using the intl extension's
+     * idn_to_ascii() for IDNA conversion.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function idnHostname(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringIdnHostnameConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid IRI
+     *
+     * Validates an absolute Internationalised Resource
+     * Identifier per RFC 3987.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function iri(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringIriConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid IRI reference
+     *
+     * Accepts both absolute IRIs and relative references
+     * per RFC 3987.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function iriReference(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringIriReferenceConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid URI template
+     *
+     * Validates against RFC 6570 URI Template syntax.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function uriTemplate(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringUriTemplateConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid JSON Pointer
+     *
+     * Validates against RFC 6901 JSON Pointer syntax.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function jsonPointer(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringJsonPointerConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid relative JSON
+     * Pointer
+     *
+     * Validates against the IETF relative JSON Pointer
+     * draft specification.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function relativeJsonPointer(
+        ?callable $error = null,
+    ): static {
+        return $this->withConstraint(
+            new StringRelativeJsonPointerConstraint(
+                error: $error,
+            ),
+        );
+    }
+
+    /**
+     * require the string to be a valid regular expression
+     *
+     * Validates that the string is a valid PCRE pattern.
+     * The JSON Schema "regex" format specifies ECMA-262,
+     * but PCRE is used as PHP's native regex engine.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function isRegex(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringIsRegexConstraint(error: $error),
         );
     }
 

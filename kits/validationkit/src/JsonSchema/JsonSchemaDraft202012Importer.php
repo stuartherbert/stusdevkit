@@ -97,16 +97,25 @@ class JsonSchemaDraft202012Importer
      * @var array<string, string>
      */
     private const FORMAT_METHODS = [
-        'email'     => 'email',
-        'uri'       => 'url',
-        'uuid'      => 'uuid',
-        'ipv4'      => 'ipv4',
-        'ipv6'      => 'ipv6',
-        'date'      => 'date',
-        'date-time' => 'dateTime',
-        'time'      => 'time',
-        'duration'  => 'duration',
-        'hostname'  => 'hostname',
+        'email'                 => 'email',
+        'uri'                   => 'url',
+        'uuid'                  => 'uuid',
+        'ipv4'                  => 'ipv4',
+        'ipv6'                  => 'ipv6',
+        'date'                  => 'date',
+        'date-time'             => 'dateTime',
+        'time'                  => 'time',
+        'duration'              => 'duration',
+        'hostname'              => 'hostname',
+        'uri-reference'         => 'uriReference',
+        'idn-email'             => 'idnEmail',
+        'idn-hostname'          => 'idnHostname',
+        'iri'                   => 'iri',
+        'iri-reference'         => 'iriReference',
+        'uri-template'          => 'uriTemplate',
+        'json-pointer'          => 'jsonPointer',
+        'relative-json-pointer' => 'relativeJsonPointer',
+        'regex'                 => 'isRegex',
     ];
 
     // ================================================================

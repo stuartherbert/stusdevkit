@@ -3116,6 +3116,756 @@ class ValidateStringTest extends TestCase
 
     // ================================================================
     //
+    // uriReference
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidUriReferences(): array
+    {
+        return [
+            'absolute URI'      => ['https://example.com/path'],
+            'relative path'     => ['/path/to/resource'],
+            'relative segment'  => ['../other'],
+            'query only'        => ['?query=1'],
+            'fragment only'     => ['#fragment'],
+            'empty string'      => [''],
+        ];
+    }
+
+    #[DataProvider('provideValidUriReferences')]
+    #[TestDox('uriReference() accepts valid URI references')]
+    public function test_uri_reference_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uriReference() accepts
+        // valid URIs and relative references per RFC 3986
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->uriReference();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    #[TestDox('uriReference() rejects malformed URI')]
+    public function test_uri_reference_rejects_malformed(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uriReference() rejects a
+        // structurally invalid URI reference
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->uriReference();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // a scheme-like prefix with port :// and spaces
+        // causes parse_url to fail
+        $result = $unit->safeParse('http:///');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // idnEmail
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidIdnEmails(): array
+    {
+        return [
+            'ascii email'     => ['user@example.com'],
+            'unicode local'   => ['üser@example.com'],
+        ];
+    }
+
+    #[DataProvider('provideValidIdnEmails')]
+    #[TestDox('idnEmail() accepts valid internationalised emails')]
+    public function test_idn_email_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that idnEmail() accepts valid
+        // internationalised email addresses per RFC 6531
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->idnEmail();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidIdnEmails(): array
+    {
+        return [
+            'no at sign'    => ['not-an-email'],
+            'double at'     => ['user@@example.com'],
+            'empty'         => [''],
+        ];
+    }
+
+    #[DataProvider('provideInvalidIdnEmails')]
+    #[TestDox('idnEmail() rejects invalid emails')]
+    public function test_idn_email_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that idnEmail() rejects strings
+        // that are not valid email addresses
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->idnEmail();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // idnHostname
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidIdnHostnames(): array
+    {
+        return [
+            'ascii hostname'   => ['example.com'],
+            'unicode hostname' => ['münchen.de'],
+            'chinese hostname' => ['中文.com'],
+        ];
+    }
+
+    #[DataProvider('provideValidIdnHostnames')]
+    #[TestDox('idnHostname() accepts valid internationalised hostnames')]
+    public function test_idn_hostname_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that idnHostname() accepts
+        // valid internationalised hostnames per RFC 5890
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->idnHostname();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidIdnHostnames(): array
+    {
+        return [
+            'empty string'   => [''],
+            'just a dot'     => ['.'],
+            'leading hyphen' => ['-example.com'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidIdnHostnames')]
+    #[TestDox('idnHostname() rejects invalid hostnames')]
+    public function test_idn_hostname_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that idnHostname() rejects
+        // strings that are not valid hostnames
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->idnHostname();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // iri
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidIris(): array
+    {
+        return [
+            'https URI'     => ['https://example.com/path'],
+            'unicode path'  => ['https://example.com/données'],
+            'unicode host'  => ['https://münchen.de/'],
+            'mailto'        => ['mailto:user@example.com'],
+        ];
+    }
+
+    #[DataProvider('provideValidIris')]
+    #[TestDox('iri() accepts valid IRIs')]
+    public function test_iri_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iri() accepts valid
+        // absolute IRIs per RFC 3987
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->iri();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidIris(): array
+    {
+        return [
+            'relative path'  => ['/just/a/path'],
+            'no scheme'      => ['example.com'],
+            'empty string'   => [''],
+        ];
+    }
+
+    #[DataProvider('provideInvalidIris')]
+    #[TestDox('iri() rejects non-absolute IRIs')]
+    public function test_iri_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iri() rejects strings
+        // that are not absolute IRIs (missing scheme)
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->iri();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // iriReference
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidIriReferences(): array
+    {
+        return [
+            'absolute IRI'    => ['https://example.com/données'],
+            'relative path'   => ['/chemin/données'],
+            'fragment only'   => ['#fragment'],
+            'empty string'    => [''],
+        ];
+    }
+
+    #[DataProvider('provideValidIriReferences')]
+    #[TestDox('iriReference() accepts valid IRI references')]
+    public function test_iri_reference_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iriReference() accepts
+        // both absolute IRIs and relative references
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->iriReference();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    #[TestDox('iriReference() rejects malformed IRI')]
+    public function test_iri_reference_rejects_malformed(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iriReference() rejects a
+        // structurally invalid IRI reference
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->iriReference();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('http:///');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // uriTemplate
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidUriTemplates(): array
+    {
+        return [
+            'simple variable'    => ['/users/{id}'],
+            'multiple variables' => ['/users/{id}/posts/{postId}'],
+            'operator prefix'    => ['/search{?query,lang}'],
+            'fragment expansion' => ['/page{#section}'],
+            'path expansion'     => ['{/path,file}'],
+            'no variables'       => ['/static/path'],
+            'explode modifier'   => ['/users/{ids*}'],
+            'prefix modifier'    => ['/users/{name:5}'],
+        ];
+    }
+
+    #[DataProvider('provideValidUriTemplates')]
+    #[TestDox('uriTemplate() accepts valid URI templates')]
+    public function test_uri_template_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uriTemplate() accepts valid
+        // RFC 6570 URI templates
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->uriTemplate();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidUriTemplates(): array
+    {
+        return [
+            'unclosed brace'   => ['/users/{id'],
+            'empty expression' => ['/users/{}'],
+            'nested braces'    => ['/users/{{id}}'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidUriTemplates')]
+    #[TestDox('uriTemplate() rejects invalid URI templates')]
+    public function test_uri_template_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that uriTemplate() rejects
+        // strings that are not valid URI templates
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->uriTemplate();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // jsonPointer
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidJsonPointers(): array
+    {
+        return [
+            'empty (root)'    => [''],
+            'single token'    => ['/foo'],
+            'nested tokens'   => ['/foo/bar/0'],
+            'escaped tilde'   => ['/foo~0bar'],
+            'escaped slash'   => ['/foo~1bar'],
+            'numeric index'   => ['/0'],
+        ];
+    }
+
+    #[DataProvider('provideValidJsonPointers')]
+    #[TestDox('jsonPointer() accepts valid JSON Pointers')]
+    public function test_json_pointer_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that jsonPointer() accepts
+        // valid RFC 6901 JSON Pointers
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->jsonPointer();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidJsonPointers(): array
+    {
+        return [
+            'no leading slash'  => ['foo/bar'],
+            'bare tilde'        => ['/foo~bar'],
+            'tilde wrong digit' => ['/foo~2bar'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidJsonPointers')]
+    #[TestDox('jsonPointer() rejects invalid JSON Pointers')]
+    public function test_json_pointer_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that jsonPointer() rejects
+        // strings that are not valid JSON Pointers
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->jsonPointer();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // relativeJsonPointer
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidRelativeJsonPointers(): array
+    {
+        return [
+            'zero with pointer' => ['0/foo'],
+            'index only'        => ['0#'],
+            'up one level'      => ['1/bar'],
+            'up two levels'     => ['2/baz/0'],
+            'zero root'         => ['0'],
+        ];
+    }
+
+    #[DataProvider('provideValidRelativeJsonPointers')]
+    #[TestDox('relativeJsonPointer() accepts valid relative JSON Pointers')]
+    public function test_relative_json_pointer_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that relativeJsonPointer()
+        // accepts valid relative JSON Pointers
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->relativeJsonPointer();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidRelativeJsonPointers(): array
+    {
+        return [
+            'missing integer'     => ['/foo'],
+            'negative integer'    => ['-1/foo'],
+            'leading zero'        => ['01/foo'],
+            'just text'           => ['foo'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidRelativeJsonPointers')]
+    #[TestDox('relativeJsonPointer() rejects invalid values')]
+    public function test_relative_json_pointer_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that relativeJsonPointer()
+        // rejects strings that are not valid relative
+        // JSON Pointers
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->relativeJsonPointer();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
+    // isRegex
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidRegexPatterns(): array
+    {
+        return [
+            'simple literal'     => ['abc'],
+            'character class'    => ['[a-z]+'],
+            'anchored pattern'   => ['^start.*end$'],
+            'alternation'        => ['foo|bar'],
+            'quantifiers'        => ['a{1,3}'],
+            'groups'             => ['(foo)(bar)'],
+            'empty pattern'      => [''],
+        ];
+    }
+
+    #[DataProvider('provideValidRegexPatterns')]
+    #[TestDox('isRegex() accepts valid regex patterns')]
+    public function test_is_regex_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that isRegex() accepts strings
+        // that are valid PCRE regular expressions
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->isRegex();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidRegexPatterns(): array
+    {
+        return [
+            'unbalanced paren'   => ['(unclosed'],
+            'bad quantifier'     => ['*'],
+            'unbalanced bracket' => ['[unclosed'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidRegexPatterns')]
+    #[TestDox('isRegex() rejects invalid regex patterns')]
+    public function test_is_regex_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that isRegex() rejects strings
+        // that are not valid PCRE patterns
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->isRegex();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
     // Custom Constraints
     //
     // ----------------------------------------------------------------

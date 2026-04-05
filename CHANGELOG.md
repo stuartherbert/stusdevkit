@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- add a bunch more JSON Schema string formats ([f1281a0](https://github.com/stuartherbert/stusdevkit/commit/f1281a0)) — Stuart Herbert <stuart@stuartherbert.com>
 - support JsonSchema `$comment` ([333df90](https://github.com/stuartherbert/stusdevkit/commit/333df90)) — Stuart Herbert <stuart@stuartherbert.com>
 - add Validation::string()->dateTime() format support ([ad044c4](https://github.com/stuartherbert/stusdevkit/commit/ad044c4)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::assocArray(); Validate::object() now works with actual objects ([6318797](https://github.com/stuartherbert/stusdevkit/commit/6318797)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -91,7 +92,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- now requires the PHP intl extension ([665ffac](https://github.com/stuartherbert/stusdevkit/commit/665ffac)) — Stuart Herbert <stuart@stuartherbert.com>
+- now requires the PHP intl extension ([10d40a0](https://github.com/stuartherbert/stusdevkit/commit/10d40a0)) — Stuart Herbert <stuart@stuartherbert.com>
 - move the JsonSchema support into a dedicated namespace ([33a9afb](https://github.com/stuartherbert/stusdevkit/commit/33a9afb)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::array()->nonempty() is now Validate::array->notEmpty() ([4fc09ab](https://github.com/stuartherbert/stusdevkit/commit/4fc09ab)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up ValidationSchema metadata API ([c5d6a97](https://github.com/stuartherbert/stusdevkit/commit/c5d6a97)) — Stuart Herbert <stuart@stuartherbert.com>
