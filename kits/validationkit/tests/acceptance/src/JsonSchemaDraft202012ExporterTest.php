@@ -45,8 +45,8 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use StusDevKit\ValidationKit\Exporters\JsonSchema;
-use StusDevKit\ValidationKit\Exporters\JsonSchemaDraft202012Exporter;
+use StusDevKit\ValidationKit\JsonSchema\JsonSchema;
+use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Exporter;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('JsonSchemaDraft202012Exporter')]

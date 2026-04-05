@@ -47,10 +47,10 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use StusDevKit\ValidationKit\Exceptions\InvalidJsonSchemaException;
-use StusDevKit\ValidationKit\Exporters\JsonSchema;
-use StusDevKit\ValidationKit\Exporters\JsonSchemaDraft202012Exporter;
-use StusDevKit\ValidationKit\Exporters\JsonSchemaDraft202012Importer;
-use StusDevKit\ValidationKit\Exporters\JsonSchemaRegistry;
+use StusDevKit\ValidationKit\JsonSchema\JsonSchema;
+use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Exporter;
+use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Importer;
+use StusDevKit\ValidationKit\JsonSchema\JsonSchemaRegistry;
 use StusDevKit\ValidationKit\Validate;
 
 #[TestDox('JsonSchemaDraft202012Importer')]

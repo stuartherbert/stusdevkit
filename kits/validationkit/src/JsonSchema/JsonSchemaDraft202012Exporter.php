@@ -39,7 +39,7 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Exporters;
+namespace StusDevKit\ValidationKit\JsonSchema;
 
 use BackedEnum;
 use stdClass;
@@ -115,7 +115,7 @@ use StusDevKit\ValidationKit\Schemas\UuidSchema;
  *
  * Usage:
  *
- *     use StusDevKit\ValidationKit\Exporters\JsonSchemaDraft202012Exporter;
+ *     use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Exporter;
  *     use StusDevKit\ValidationKit\Validate;
  *
  *     $schema = Validate::object([

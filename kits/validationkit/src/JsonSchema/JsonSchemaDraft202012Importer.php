@@ -39,7 +39,7 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Exporters;
+namespace StusDevKit\ValidationKit\JsonSchema;
 
 use stdClass;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
@@ -62,8 +62,8 @@ use StusDevKit\ValidationKit\Validate;
  *
  * Usage:
  *
- *     use StusDevKit\ValidationKit\Exporters\JsonSchema;
- *     use StusDevKit\ValidationKit\Exporters\JsonSchemaDraft202012Importer;
+ *     use StusDevKit\ValidationKit\JsonSchema\JsonSchema;
+ *     use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Importer;
  *
  *     $json = '{"type":"string","minLength":1}';
  *     $jsonSchema = new JsonSchema(

@@ -39,7 +39,7 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Exporters;
+namespace StusDevKit\ValidationKit\JsonSchema;
 
 use JsonSerializable;
 use stdClass;

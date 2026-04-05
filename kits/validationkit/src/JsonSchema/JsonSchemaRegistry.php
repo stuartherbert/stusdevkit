@@ -39,7 +39,7 @@
 
 declare(strict_types=1);
 
-namespace StusDevKit\ValidationKit\Exporters;
+namespace StusDevKit\ValidationKit\JsonSchema;
 
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Exceptions\InvalidJsonSchemaException;
