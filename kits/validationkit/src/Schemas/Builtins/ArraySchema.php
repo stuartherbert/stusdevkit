@@ -173,7 +173,7 @@ class ArraySchema extends BaseSchema
      *
      * @param ErrorCallback|null $error
      */
-    public function nonempty(?callable $error = null): static
+    public function notEmpty(?callable $error = null): static
     {
         return $this->min(length: 1, error: $error);
     }

@@ -630,13 +630,13 @@ class ValidateArrayTest extends TestCase
 
     }
 
-    #[TestDox('nonempty() rejects empty arrays')]
-    public function test_nonempty_rejects_empty(): void
+    #[TestDox('notEmpty() rejects empty arrays')]
+    public function test_notEmpty_rejects_empty(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that nonempty() rejects an empty
+        // this test proves that notEmpty() rejects an empty
         // array and reports TooSmall
 
         // ----------------------------------------------------------------
@@ -645,7 +645,7 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::array(Validate::string())->nonempty();
+        $unit = Validate::array(Validate::string())->notEmpty();
 
         // ----------------------------------------------------------------
         // mock out any integrations
@@ -678,13 +678,13 @@ class ValidateArrayTest extends TestCase
 
     }
 
-    #[TestDox('nonempty() accepts non-empty arrays')]
-    public function test_nonempty_accepts_non_empty(): void
+    #[TestDox('notEmpty() accepts non-empty arrays')]
+    public function test_notEmpty_accepts_non_empty(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that nonempty() passes when the
+        // this test proves that notEmpty() passes when the
         // array has at least one element
 
         // ----------------------------------------------------------------
@@ -693,7 +693,7 @@ class ValidateArrayTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = Validate::array(Validate::string())->nonempty();
+        $unit = Validate::array(Validate::string())->notEmpty();
 
         // ----------------------------------------------------------------
         // mock out any integrations

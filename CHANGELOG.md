@@ -82,6 +82,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- Validate::array()->nonempty() is now Validate::array->notEmpty() ([f1d626f](https://github.com/stuartherbert/stusdevkit/commit/f1d626f)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up ValidationSchema metadata API ([c5d6a97](https://github.com/stuartherbert/stusdevkit/commit/c5d6a97)) — Stuart Herbert <stuart@stuartherbert.com>
 - absorb the traits into the BaseSchema ([cc7551c](https://github.com/stuartherbert/stusdevkit/commit/cc7551c)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve naming of custom constraints and custom transforms ([ea941f6](https://github.com/stuartherbert/stusdevkit/commit/ea941f6)) — Stuart Herbert <stuart@stuartherbert.com>
