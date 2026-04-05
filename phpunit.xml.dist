@@ -31,6 +31,7 @@
             <directory suffix="Test.php">kits/collectionskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/datetimekit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
+            <directory suffix="Test.php">kits/missingbitskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/validationkit/tests/unit/src</directory>
             <directory suffix="Test.php">tools/ChangelogTool/tests/unit/src</directory>
         </testsuite>
@@ -46,6 +47,9 @@
         <testsuite name="unit-exceptionskit">
             <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
         </testsuite>
+        <testsuite name="unit-missingbitskit">
+            <directory suffix="Test.php">kits/missingbitskit/tests/unit/src</directory>
+        </testsuite>
         <testsuite name="unit-validationkit">
             <directory suffix="Test.php">kits/validationkit/tests/unit/src</directory>
         </testsuite>
@@ -59,6 +63,7 @@
             <directory suffix=".php">kits/collectionskit/src</directory>
             <directory suffix=".php">kits/datetimekit/src</directory>
             <directory suffix=".php">kits/exceptionskit/src</directory>
+            <directory suffix=".php">kits/missingbitskit/src</directory>
             <directory suffix=".php">kits/validationkit/src</directory>
             <directory suffix=".php">tools/ChangelogTool/src</directory>
         </include>

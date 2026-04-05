@@ -40,6 +40,7 @@ Kit Name       | Namespace | Description
 [CollectionsKit](./kits/collectionskit/README.md) | `StusDevKit\Collections` | Collection classes (dictionaries, lists and indexes)
 [DateTimeKit](./kits/datetimekit/README.md) | `StusDevKit\DateTimeKit` | `Now` and `When`, with test clock support
 [ExceptionsKit](./kits/exceptionskit/README.md) | `StusDevKit\ExceptionsKit` | Common exceptions built on an RFC-compliant Problem Details base.
+[MissingBitsKit](./kits/missingbitskit/README.md) | `StusDevKit\MissingBitsKit` | Standalone functions that fill gaps in PHP's standard library
 
 "Tools" are utilities that can be run from a Terminal. Each one has its own clear scope:
 
