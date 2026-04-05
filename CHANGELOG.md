@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- support JsonSchema `$comment` ([ce17508](https://github.com/stuartherbert/stusdevkit/commit/ce17508)) — Stuart Herbert <stuart@stuartherbert.com>
 - add Validation::string()->dateTime() format support ([ad044c4](https://github.com/stuartherbert/stusdevkit/commit/ad044c4)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::assocArray(); Validate::object() now works with actual objects ([6318797](https://github.com/stuartherbert/stusdevkit/commit/6318797)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for creating a validator from JSON schema ([2cc32b7](https://github.com/stuartherbert/stusdevkit/commit/2cc32b7)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -58,7 +59,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- PHP associative array schemas can now be exported as JSON schema ([57bbc3e](https://github.com/stuartherbert/stusdevkit/commit/57bbc3e)) — Stuart Herbert <stuart@stuartherbert.com>
+- PHP associative array schemas can now be exported as JSON schema ([7c0bd28](https://github.com/stuartherbert/stusdevkit/commit/7c0bd28)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([b599573](https://github.com/stuartherbert/stusdevkit/commit/b599573)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>

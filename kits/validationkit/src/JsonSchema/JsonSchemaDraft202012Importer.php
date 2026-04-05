@@ -1376,6 +1376,16 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        if (
+            isset($jsonSchema->{'$comment'})
+            && is_string($jsonSchema->{'$comment'})
+            && $jsonSchema->{'$comment'} !== ''
+        ) {
+            $schema = $schema->withMetadata(
+                data: ['$comment' => $jsonSchema->{'$comment'}],
+            );
+        }
+
         return $schema;
     }
 

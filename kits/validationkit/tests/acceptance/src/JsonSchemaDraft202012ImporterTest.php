@@ -2808,6 +2808,41 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         );
     }
 
+    #[TestDox('imports $comment as metadata')]
+    public function test_imports_comment_as_metadata(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the $comment keyword is
+        // imported and stored as metadata on the schema
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "string",
+                "$comment": "internal note for devs"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            ['$comment' => 'internal note for devs'],
+            $schema->getMetadata(),
+        );
+    }
+
     #[TestDox('imports examples')]
     public function test_imports_examples(): void
     {

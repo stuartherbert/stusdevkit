@@ -1580,6 +1580,55 @@ class JsonSchemaDraft202012ExporterTest extends TestCase
 
     }
 
+    #[TestDox('exports $comment from metadata')]
+    public function test_exports_comment_from_metadata(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that withMetadata(['$comment'
+        // => ...]) exports as the $comment keyword
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::string()->withMetadata(
+                data: ['$comment' => 'internal note'],
+            ),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'string',
+                '$comment' => 'internal note',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
     #[TestDox('exports default value')]
     public function test_exports_default_value(): void
     {
