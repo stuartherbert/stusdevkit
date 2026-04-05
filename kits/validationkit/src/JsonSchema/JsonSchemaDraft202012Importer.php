@@ -306,6 +306,15 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        // type as array (e.g. ["string", "null"] for
+        // nullable in OAS 3.1)
+        if (isset($schema->type) && is_array($schema->type)) {
+            return $this->importTypeArraySchema(
+                schema: $schema,
+                registry: $registry,
+            );
+        }
+
         // no type, no composition — true schema
         return $this->applyMetadata(
             schema: Validate::mixed(),
@@ -350,6 +359,108 @@ class JsonSchemaDraft202012Importer
                 type: $schema->type ?: 'empty',
             ),
         };
+    }
+
+    /**
+     * import a schema whose `type` is an array of types
+     *
+     * JSON Schema Draft 2020-12 and OpenAPI 3.1 allow
+     * `type` to be an array, e.g. `["string", "null"]`
+     * for nullable values.
+     *
+     * - Single-element array: treated as that type.
+     * - Two-element array containing "null": imported as
+     *   nullable wrapper around the non-null type.
+     * - Other multi-type arrays: imported as anyOf with
+     *   one branch per type.
+     *
+     * All non-type keywords (constraints, metadata) from
+     * the original schema are preserved by cloning the
+     * schema object and setting its `type` to the resolved
+     * single-type string before delegating to
+     * importTypedSchema().
+     *
+     * @return ValidationSchema<mixed>
+     */
+    private function importTypeArraySchema(
+        stdClass $schema,
+        JsonSchemaRegistry $registry,
+    ): ValidationSchema {
+        assert(
+            isset($schema->type) && is_array($schema->type),
+        );
+
+        /** @var list<string> $types */
+        $types = array_values($schema->type);
+
+        // single-element array — treat as scalar type
+        if (count($types) === 1) {
+            $clone = clone $schema;
+            $clone->type = $types[0];
+
+            return $this->importTypedSchema(
+                schema: $clone,
+                registry: $registry,
+            );
+        }
+
+        // two-element array with "null" — nullable pattern
+        $nullIndex = array_search('null', $types, true);
+        if (count($types) === 2 && $nullIndex !== false) {
+            $innerType = $types[$nullIndex === 0 ? 1 : 0];
+
+            // clone the schema with the inner type so that
+            // constraints (minLength, pattern, etc.) are
+            // applied to the inner schema, not lost
+            $clone = clone $schema;
+            $clone->type = $innerType;
+
+            $innerSchema = $this->importTypedSchema(
+                schema: $clone,
+                registry: $registry,
+            );
+
+            return $this->applyMetadata(
+                schema: Validate::nullable(
+                    schema: $innerSchema,
+                ),
+                jsonSchema: $schema,
+            );
+        }
+
+        // multi-type array — build an anyOf with one
+        // branch per type
+        $hasNull = false;
+        $members = [];
+        foreach ($types as $type) {
+            if ($type === 'null') {
+                $hasNull = true;
+                continue;
+            }
+
+            $clone = clone $schema;
+            $clone->type = $type;
+
+            $members[] = $this->importTypedSchema(
+                schema: $clone,
+                registry: $registry,
+            );
+        }
+
+        $innerSchema = count($members) === 1
+            ? $members[0]
+            : Validate::anyOf(schemas: $members);
+
+        if ($hasNull) {
+            $innerSchema = Validate::nullable(
+                schema: $innerSchema,
+            );
+        }
+
+        return $this->applyMetadata(
+            schema: $innerSchema,
+            jsonSchema: $schema,
+        );
     }
 
     // ================================================================

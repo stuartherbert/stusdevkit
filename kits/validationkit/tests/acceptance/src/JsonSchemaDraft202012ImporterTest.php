@@ -1794,6 +1794,284 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
 
     // ================================================================
     //
+    // Type Arrays (OAS 3.1 nullable pattern)
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('type array ["string", "null"] accepts string')]
+    public function test_type_array_nullable_string_accepts_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the OAS 3.1 nullable
+        // pattern (type as array with "null") imports
+        // correctly and accepts the inner type
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string", "null"]
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $schema->parse('hello'));
+    }
+
+    #[TestDox('type array ["string", "null"] accepts null')]
+    public function test_type_array_nullable_string_accepts_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the OAS 3.1 nullable
+        // pattern accepts null values
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string", "null"]
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNull($schema->parse(null));
+    }
+
+    #[TestDox('type array ["string", "null"] rejects non-matching type')]
+    public function test_type_array_nullable_string_rejects_int(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the OAS 3.1 nullable
+        // pattern rejects values that don't match the
+        // inner type or null
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string", "null"]
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+        $result = $schema->safeParse(123);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    #[TestDox('type array ["string", "null"] preserves constraints')]
+    public function test_type_array_nullable_preserves_constraints(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that constraints like minLength
+        // are applied to the inner type when type is an
+        // array with "null"
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string", "null"],
+                "minLength": 1
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $schema->parse('hello'));
+        $this->assertNull($schema->parse(null));
+
+        $result = $schema->safeParse('');
+        $this->assertTrue($result->failed());
+    }
+
+    #[TestDox('type array ["null", "integer"] handles null-first order')]
+    public function test_type_array_nullable_null_first(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the nullable pattern works
+        // regardless of the order of types in the array
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["null", "integer"]
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(42, $schema->parse(42));
+        $this->assertNull($schema->parse(null));
+    }
+
+    #[TestDox('type array with single element works as scalar type')]
+    public function test_type_array_single_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a single-element type array
+        // is treated as a plain scalar type
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string"],
+                "minLength": 1
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $schema->parse('hello'));
+
+        $result = $schema->safeParse('');
+        $this->assertTrue($result->failed());
+    }
+
+    #[TestDox('type array with multiple non-null types creates anyOf')]
+    public function test_type_array_multi_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a multi-type array without
+        // null creates an anyOf schema accepting any of the
+        // listed types
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string", "integer"]
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $schema->parse('hello'));
+        $this->assertSame(42, $schema->parse(42));
+
+        $result = $schema->safeParse(true);
+        $this->assertTrue($result->failed());
+    }
+
+    #[TestDox('type array with multiple types plus null creates nullable anyOf')]
+    public function test_type_array_multi_type_with_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a type array with multiple
+        // non-null types plus null creates a nullable anyOf
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": ["string", "integer", "null"]
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello', $schema->parse('hello'));
+        $this->assertSame(42, $schema->parse(42));
+        $this->assertNull($schema->parse(null));
+
+        $result = $schema->safeParse(true);
+        $this->assertTrue($result->failed());
+    }
+
+    // ================================================================
+    //
     // Composition Schemas
     //
     // ----------------------------------------------------------------

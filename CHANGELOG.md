@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- add Validation::string()->dateTime() format support ([bc6af37](https://github.com/stuartherbert/stusdevkit/commit/bc6af37)) — Stuart Herbert <stuart@stuartherbert.com>
+- add Validation::string()->dateTime() format support ([ad044c4](https://github.com/stuartherbert/stusdevkit/commit/ad044c4)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::assocArray(); Validate::object() now works with actual objects ([6318797](https://github.com/stuartherbert/stusdevkit/commit/6318797)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for creating a validator from JSON schema ([2cc32b7](https://github.com/stuartherbert/stusdevkit/commit/2cc32b7)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for JSON schema export ([ca1257e](https://github.com/stuartherbert/stusdevkit/commit/ca1257e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -58,6 +58,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([32fd8a2](https://github.com/stuartherbert/stusdevkit/commit/32fd8a2)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
