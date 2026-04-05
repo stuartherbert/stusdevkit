@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- add Validation::string()->dateTime() format support ([bc6af37](https://github.com/stuartherbert/stusdevkit/commit/bc6af37)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Validate::assocArray(); Validate::object() now works with actual objects ([6318797](https://github.com/stuartherbert/stusdevkit/commit/6318797)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for creating a validator from JSON schema ([2cc32b7](https://github.com/stuartherbert/stusdevkit/commit/2cc32b7)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial support for JSON schema export ([ca1257e](https://github.com/stuartherbert/stusdevkit/commit/ca1257e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -87,7 +88,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- move the JsonSchema support into a dedicated namespace ([70a5341](https://github.com/stuartherbert/stusdevkit/commit/70a5341)) — Stuart Herbert <stuart@stuartherbert.com>
+- move the JsonSchema support into a dedicated namespace ([33a9afb](https://github.com/stuartherbert/stusdevkit/commit/33a9afb)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::array()->nonempty() is now Validate::array->notEmpty() ([4fc09ab](https://github.com/stuartherbert/stusdevkit/commit/4fc09ab)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up ValidationSchema metadata API ([c5d6a97](https://github.com/stuartherbert/stusdevkit/commit/c5d6a97)) — Stuart Herbert <stuart@stuartherbert.com>
 - absorb the traits into the BaseSchema ([cc7551c](https://github.com/stuartherbert/stusdevkit/commit/cc7551c)) — Stuart Herbert <stuart@stuartherbert.com>

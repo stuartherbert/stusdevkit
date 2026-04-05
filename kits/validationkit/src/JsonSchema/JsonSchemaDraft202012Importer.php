@@ -81,8 +81,8 @@ use StusDevKit\ValidationKit\Validate;
  * - Only `#/$defs/<name>` format `$ref` values are
  *   supported. External references and other JSON
  *   Pointer forms are not.
- * - `format: date-time` is stored as metadata because
- *   there is no StringDateTimeConstraint.
+ * - `format: date-time` maps to the `dateTime()` builder
+ *   method on StringSchema.
  * - `$id`, `$anchor`, `$vocabulary`, `$dynamicRef`,
  *   `$dynamicAnchor` are not supported.
  * - `unevaluatedProperties`, `unevaluatedItems`,
@@ -97,15 +97,16 @@ class JsonSchemaDraft202012Importer
      * @var array<string, string>
      */
     private const FORMAT_METHODS = [
-        'email'    => 'email',
-        'uri'      => 'url',
-        'uuid'     => 'uuid',
-        'ipv4'     => 'ipv4',
-        'ipv6'     => 'ipv6',
-        'date'     => 'date',
-        'time'     => 'time',
-        'duration' => 'duration',
-        'hostname' => 'hostname',
+        'email'     => 'email',
+        'uri'       => 'url',
+        'uuid'      => 'uuid',
+        'ipv4'      => 'ipv4',
+        'ipv6'      => 'ipv6',
+        'date'      => 'date',
+        'date-time' => 'dateTime',
+        'time'      => 'time',
+        'duration'  => 'duration',
+        'hostname'  => 'hostname',
     ];
 
     // ================================================================

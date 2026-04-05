@@ -2715,6 +2715,134 @@ class ValidateStringTest extends TestCase
 
     // ================================================================
     //
+    // dateTime
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideValidDateTimes(): array
+    {
+        return [
+            'UTC Z'              => ['2024-03-15T14:30:00Z'],
+            'positive offset'    => ['2024-03-15T14:30:00+05:30'],
+            'negative offset'    => ['2024-03-15T14:30:00-08:00'],
+            'fractional seconds' => ['2024-03-15T14:30:00.123456Z'],
+            'lowercase t'        => ['2024-03-15t14:30:00Z'],
+            'lowercase z'        => ['2024-03-15T14:30:00z'],
+            'midnight'           => ['2024-01-01T00:00:00Z'],
+            'end of day'         => ['2024-12-31T23:59:59Z'],
+        ];
+    }
+
+    #[DataProvider('provideValidDateTimes')]
+    #[TestDox('dateTime() accepts valid RFC 3339 date-times')]
+    public function test_date_time_accepts_valid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dateTime() accepts valid
+        // RFC 3339 date-time strings in various formats
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->dateTime();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($inputValue, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideInvalidDateTimes(): array
+    {
+        return [
+            'date only'          => ['2024-03-15'],
+            'missing timezone'   => ['2024-03-15T14:30:00'],
+            'invalid calendar'   => ['2024-02-30T14:30:00Z'],
+            'not a date-time'    => ['not-a-date-time'],
+            'month 13'           => ['2024-13-01T00:00:00Z'],
+            'day 32'             => ['2024-01-32T00:00:00Z'],
+        ];
+    }
+
+    #[DataProvider('provideInvalidDateTimes')]
+    #[TestDox('dateTime() rejects invalid date-time strings')]
+    public function test_date_time_rejects_invalid(
+        string $inputValue,
+    ): void {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that dateTime() rejects strings
+        // that are not valid RFC 3339 date-times
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->dateTime();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse($inputValue);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_string',
+                    'path'    => [],
+                    'message' => 'Invalid date-time',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // hostname
     //
     // ----------------------------------------------------------------

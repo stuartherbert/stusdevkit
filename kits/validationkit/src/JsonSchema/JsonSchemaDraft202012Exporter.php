@@ -60,6 +60,7 @@ use StusDevKit\ValidationKit\Constraints\ObjectMinPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Constraints\StringDateConstraint;
+use StusDevKit\ValidationKit\Constraints\StringDateTimeConstraint;
 use StusDevKit\ValidationKit\Constraints\StringDurationConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
 use StusDevKit\ValidationKit\Constraints\StringExactLengthConstraint;
@@ -871,6 +872,11 @@ class JsonSchemaDraft202012Exporter
 
         if ($step instanceof StringDateConstraint) {
             $output->format = 'date';
+            return $output;
+        }
+
+        if ($step instanceof StringDateTimeConstraint) {
+            $output->format = 'date-time';
             return $output;
         }
 

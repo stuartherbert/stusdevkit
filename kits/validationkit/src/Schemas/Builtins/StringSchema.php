@@ -43,6 +43,7 @@ namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Coercions\CoerceToString;
 use StusDevKit\ValidationKit\Constraints\StringDateConstraint;
+use StusDevKit\ValidationKit\Constraints\StringDateTimeConstraint;
 use StusDevKit\ValidationKit\Constraints\StringDurationConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEmailConstraint;
 use StusDevKit\ValidationKit\Constraints\StringEndsWithConstraint;
@@ -358,6 +359,22 @@ class StringSchema extends BaseSchema
     {
         return $this->withConstraint(
             new StringDurationConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the string to be a valid RFC 3339 date-time
+     *
+     * Accepts YYYY-MM-DDTHH:MM:SS with optional fractional
+     * seconds and a required timezone designator
+     * (Z or +/-HH:MM).
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function dateTime(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new StringDateTimeConstraint(error: $error),
         );
     }
 
