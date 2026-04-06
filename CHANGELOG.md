@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- upgrade JsonSchemaRegistry capabilities ([03d1aa5](https://github.com/stuartherbert/stusdevkit/commit/03d1aa5)) — Stuart Herbert <stuart@stuartherbert.com>
+- add support for resolving references during JSON schema import ([6ac42ae](https://github.com/stuartherbert/stusdevkit/commit/6ac42ae)) — Stuart Herbert <stuart@stuartherbert.com>
+- upgrade JsonSchemaRegistry capabilities ([61a7de2](https://github.com/stuartherbert/stusdevkit/commit/61a7de2)) — Stuart Herbert <stuart@stuartherbert.com>
 - added JsonSchemaLoader ([726a4f3](https://github.com/stuartherbert/stusdevkit/commit/726a4f3)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for `contentEncoding`, `contentMediaType` and `contentSchema` ([69ed395](https://github.com/stuartherbert/stusdevkit/commit/69ed395)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for unevaluatedProperties and unevaluatedItems ([0191c78](https://github.com/stuartherbert/stusdevkit/commit/0191c78)) — Stuart Herbert <stuart@stuartherbert.com>

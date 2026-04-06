@@ -55,6 +55,8 @@ use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
 use StusDevKit\ValidationKit\Validate;
 
+use function StusDevKit\MissingBitsKit\uri_resolve_reference;
+
 /**
  * JsonSchemaDraft202012Importer converts a JSON Schema
  * Draft 2020-12 document into a ValidationKit schema.
@@ -142,6 +144,22 @@ class JsonSchemaDraft202012Importer
         $root = $jsonSchema->toObject();
         $registry = new JsonSchemaRegistry();
 
+        // push root $id as base URI before registering
+        // $defs, so that anchors inside $defs resolve
+        // against the correct base. We push here (not
+        // in importSchema) because $defs registration
+        // must happen after the base URI is established
+        // but before importSchema processes the root.
+        $hasRootId = isset($root->{'$id'})
+            && is_string($root->{'$id'})
+            && $root->{'$id'} !== '';
+
+        if ($hasRootId) {
+            /** @var non-empty-string $rootId */
+            $rootId = $root->{'$id'};
+            $registry->pushBaseUri(uri: $rootId);
+        }
+
         // register $defs for $ref resolution
         if (
             isset($root->{'$defs'})
@@ -153,10 +171,18 @@ class JsonSchemaDraft202012Importer
             );
         }
 
-        return $this->importSchema(
+        // import the root schema body directly — skip
+        // importSchema() to avoid double-pushing the $id
+        $result = $this->importSchemaBody(
             schema: $root,
             registry: $registry,
         );
+
+        if ($hasRootId) {
+            $registry->popBaseUri();
+        }
+
+        return $result;
     }
 
     // ================================================================
@@ -201,7 +227,8 @@ class JsonSchemaDraft202012Importer
             );
         }
 
-        // pass 2: import each definition body
+        // pass 2: import each definition body and register
+        // anchors
         foreach (get_object_vars($defs) as $name => $defBody) {
             if (! $defBody instanceof stdClass) {
                 throw InvalidJsonSchemaException::malformed(
@@ -210,10 +237,25 @@ class JsonSchemaDraft202012Importer
                 );
             }
 
-            $resolved[$name] = $this->importSchema(
+            $importedSchema = $this->importSchema(
                 schema: $defBody,
                 registry: $registry,
             );
+
+            $resolved[$name] = $importedSchema;
+
+            // register $anchor if present
+            if (
+                isset($defBody->{'$anchor'})
+                && is_string($defBody->{'$anchor'})
+                && $defBody->{'$anchor'} !== ''
+            ) {
+                $registry->registerAnchor(
+                    baseUri: $registry->currentBaseUri(),
+                    anchor: $defBody->{'$anchor'},
+                    schema: $importedSchema,
+                );
+            }
         }
     }
 
@@ -233,14 +275,59 @@ class JsonSchemaDraft202012Importer
         stdClass $schema,
         JsonSchemaRegistry $registry,
     ): ValidationSchema {
+        // handle $id — establishes a new base URI scope
+        $hasId = isset($schema->{'$id'})
+            && is_string($schema->{'$id'})
+            && $schema->{'$id'} !== '';
+
+        if ($hasId) {
+            /** @var non-empty-string $id */
+            $id = $schema->{'$id'};
+            $baseUri = $registry->currentBaseUri();
+
+            // resolve relative $id against current base
+            if ($baseUri !== '') {
+                /** @var non-empty-string $id */
+                $id = uri_resolve_reference(
+                    base: $baseUri,
+                    ref: $id,
+                );
+            }
+
+            $registry->pushBaseUri(uri: $id);
+        }
+
+        try {
+            return $this->importSchemaBody(
+                schema: $schema,
+                registry: $registry,
+            );
+        } finally {
+            if ($hasId) {
+                $registry->popBaseUri();
+            }
+        }
+    }
+
+    /**
+     * import the body of a schema after $id has been
+     * handled
+     *
+     * @return ValidationSchema<mixed>
+     */
+    private function importSchemaBody(
+        stdClass $schema,
+        JsonSchemaRegistry $registry,
+    ): ValidationSchema {
         // $ref takes precedence over all other keywords
         if (
             isset($schema->{'$ref'})
             && is_string($schema->{'$ref'})
             && $schema->{'$ref'} !== ''
         ) {
-            return $registry->resolveRef(
+            return $this->resolveRef(
                 ref: $schema->{'$ref'},
+                registry: $registry,
             );
         }
 
@@ -1584,6 +1671,44 @@ class JsonSchemaDraft202012Importer
         }
 
         return $result;
+    }
+
+    /**
+     * resolve a $ref to a validation schema
+     *
+     * Handles three ref formats:
+     *
+     * 1. `#/$defs/<name>` — JSON Pointer to a $defs entry
+     * 2. `#<anchor>` — plain-name fragment (no `/`)
+     *    resolved against the current base URI
+     * 3. Other formats — delegated to the registry's
+     *    existing resolveRef()
+     *
+     * @param non-empty-string $ref
+     * @return ValidationSchema<mixed>
+     */
+    private function resolveRef(
+        string $ref,
+        JsonSchemaRegistry $registry,
+    ): ValidationSchema {
+        // plain-name fragment (anchor) — starts with #
+        // but not #/ (which is a JSON Pointer)
+        if (
+            str_starts_with($ref, '#')
+            && ! str_starts_with($ref, '#/')
+        ) {
+            /** @var non-empty-string $anchor */
+            $anchor = substr($ref, offset: 1);
+            $baseUri = $registry->currentBaseUri();
+
+            return $registry->resolveAnchor(
+                baseUri: $baseUri,
+                anchor: $anchor,
+            );
+        }
+
+        // JSON Pointer format (#/$defs/...) or other
+        return $registry->resolveRef(ref: $ref);
     }
 
     /**

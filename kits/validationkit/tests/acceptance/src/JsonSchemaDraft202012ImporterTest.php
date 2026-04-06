@@ -4024,4 +4024,241 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         );
 
     }
+
+    // ================================================================
+    //
+    // $id — schema identification
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('$id on root schema is used as base URI for $ref resolution')]
+    public function test_id_on_root_resolves_defs_ref(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that when the root schema has
+        // an $id, the importer uses it as the base URI.
+        // A $ref to #/$defs/Name still resolves correctly
+        // because $defs registration is independent of
+        // $id.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "$id": "https://example.com/schemas/person",
+                "type": "object",
+                "properties": {
+                    "name": { "$ref": "#/$defs/Name" }
+                },
+                "$defs": {
+                    "Name": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => 'Stuart',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+    }
+
+    #[TestDox('$id on root schema rejects empty name via $defs ref')]
+    public function test_id_on_root_rejects_via_defs_ref(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that validation constraints
+        // from a $defs schema are applied when the root
+        // schema has an $id. The Name def requires
+        // minLength: 1, so an empty string should fail.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "$id": "https://example.com/schemas/person",
+                "type": "object",
+                "properties": {
+                    "name": { "$ref": "#/$defs/Name" }
+                },
+                "$defs": {
+                    "Name": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => '',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
+                    'path'    => ['name'],
+                    'message' => 'String must be at least 1'
+                        . ' characters',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
+    }
+
+    // ================================================================
+    //
+    // $anchor — named anchors
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('$anchor can be referenced via fragment-only $ref')]
+    public function test_anchor_ref_resolves(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a schema with $anchor can
+        // be referenced via a plain-name fragment $ref
+        // (e.g. #name-def) instead of the JSON Pointer
+        // format (#/$defs/Name).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "$id": "https://example.com/schemas/person",
+                "type": "object",
+                "properties": {
+                    "name": { "$ref": "#name-def" }
+                },
+                "$defs": {
+                    "Name": {
+                        "$anchor": "name-def",
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $validResult = $schema->safeParse((object) [
+            'name' => 'Stuart',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($validResult->failed());
+
+    }
+
+    #[TestDox('$anchor ref rejects invalid data')]
+    public function test_anchor_ref_rejects_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that validation constraints
+        // from an anchor-referenced schema are applied.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "$id": "https://example.com/schemas/person",
+                "type": "object",
+                "properties": {
+                    "name": { "$ref": "#name-def" }
+                },
+                "$defs": {
+                    "Name": {
+                        "$anchor": "name-def",
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => '',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_small',
+                    'path'    => ['name'],
+                    'message' => 'String must be at least 1'
+                        . ' characters',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
+    }
 }
