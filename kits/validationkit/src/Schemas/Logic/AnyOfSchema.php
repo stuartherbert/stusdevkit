@@ -70,6 +70,12 @@ use StusDevKit\ValidationKit\ValidationIssue;
  */
 class AnyOfSchema extends BaseSchema
 {
+    /** @var ValidationSchema<mixed>|false|null */
+    private ValidationSchema|false|null $unevaluatedPropertiesSchema = null;
+
+    /** @var ValidationSchema<mixed>|false|null */
+    private ValidationSchema|false|null $unevaluatedItemsSchema = null;
+
     /**
      * @param list<ValidationSchema<mixed>> $schemas
      * - the schemas to try, in order
@@ -118,6 +124,46 @@ class AnyOfSchema extends BaseSchema
         return $this->schemas;
     }
 
+    /**
+     * @return ValidationSchema<mixed>|false|null
+     */
+    public function maybeUnevaluatedPropertiesSchema(): ValidationSchema|false|null
+    {
+        return $this->unevaluatedPropertiesSchema;
+    }
+
+    /**
+     * @param ValidationSchema<mixed>|false $schema
+     */
+    public function unevaluatedProperties(
+        ValidationSchema|false $schema,
+    ): static {
+        $clone = clone $this;
+        $clone->unevaluatedPropertiesSchema = $schema;
+
+        return $clone;
+    }
+
+    /**
+     * @return ValidationSchema<mixed>|false|null
+     */
+    public function maybeUnevaluatedItemsSchema(): ValidationSchema|false|null
+    {
+        return $this->unevaluatedItemsSchema;
+    }
+
+    /**
+     * @param ValidationSchema<mixed>|false $schema
+     */
+    public function unevaluatedItems(
+        ValidationSchema|false $schema,
+    ): static {
+        $clone = clone $this;
+        $clone->unevaluatedItemsSchema = $schema;
+
+        return $clone;
+    }
+
     // ================================================================
     //
     // BaseSchema Implementation
@@ -143,6 +189,10 @@ class AnyOfSchema extends BaseSchema
     /**
      * try each schema in order; the first one that
      * succeeds wins
+     *
+     * Evaluations from the winning branch are merged back
+     * to the parent context so that unevaluatedProperties
+     * and unevaluatedItems can see what was evaluated.
      */
     protected function validateChildren(
         mixed $data,
@@ -158,7 +208,14 @@ class AnyOfSchema extends BaseSchema
             );
 
             if (! $childContext->hasIssues()) {
-                return $result;
+                $context->mergeEvaluatedKeys($childContext);
+
+                return $this->checkUnevaluated(
+                    data: $data,
+                    result: $result,
+                    context: $context,
+                    encode: false,
+                );
             }
         }
 
@@ -190,7 +247,14 @@ class AnyOfSchema extends BaseSchema
             );
 
             if (! $childContext->hasIssues()) {
-                return $result;
+                $context->mergeEvaluatedKeys($childContext);
+
+                return $this->checkUnevaluated(
+                    data: $data,
+                    result: $result,
+                    context: $context,
+                    encode: true,
+                );
             }
         }
 
@@ -202,5 +266,104 @@ class AnyOfSchema extends BaseSchema
         );
 
         return $data;
+    }
+
+    // ================================================================
+    //
+    // Unevaluated Helpers
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * check for unevaluated properties and items
+     */
+    private function checkUnevaluated(
+        mixed $data,
+        mixed $result,
+        ValidationContext $context,
+        bool $encode,
+    ): mixed {
+        if (
+            $this->unevaluatedPropertiesSchema !== null
+            && (is_array($data) || is_object($data))
+        ) {
+            /** @var array<string, mixed> $properties */
+            $properties = is_object($data)
+                ? get_object_vars($data)
+                : $data;
+
+            foreach ($properties as $key => $value) {
+                if ($context->isEvaluated($key)) {
+                    continue;
+                }
+
+                if ($this->unevaluatedPropertiesSchema === false) {
+                    $context->addIssue(
+                        type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                        input: $value,
+                        message: 'Unevaluated property: '
+                            . $key,
+                    );
+                } else {
+                    $childContext = $context->atPath($key);
+                    $validatedValue = $encode
+                        ? $this->unevaluatedPropertiesSchema
+                            ->encodeWithContext(
+                                data: $value,
+                                context: $childContext,
+                            )
+                        : $this->unevaluatedPropertiesSchema
+                            ->parseWithContext(
+                                data: $value,
+                                context: $childContext,
+                            );
+                    $context->markEvaluated($key);
+
+                    if (is_object($result)) {
+                        $result->$key = $validatedValue;
+                    } elseif (is_array($result)) {
+                        $result[$key] = $validatedValue;
+                    }
+                }
+            }
+        }
+
+        if (
+            $this->unevaluatedItemsSchema !== null
+            && is_array($data)
+        ) {
+            assert(is_array($result));
+            foreach ($data as $index => $value) {
+                if ($context->isEvaluated($index)) {
+                    continue;
+                }
+
+                if ($this->unevaluatedItemsSchema === false) {
+                    $context->addIssue(
+                        type: 'https://stusdevkit.dev/errors/validation/too_big',
+                        input: $value,
+                        message: 'Unevaluated item at index: '
+                            . $index,
+                    );
+                } else {
+                    $childContext = $context->atPath($index);
+                    $validatedValue = $encode
+                        ? $this->unevaluatedItemsSchema
+                            ->encodeWithContext(
+                                data: $value,
+                                context: $childContext,
+                            )
+                        : $this->unevaluatedItemsSchema
+                            ->parseWithContext(
+                                data: $value,
+                                context: $childContext,
+                            );
+                    $context->markEvaluated($index);
+                    $result[$index] = $validatedValue;
+                }
+            }
+        }
+
+        return $result;
     }
 }

@@ -260,6 +260,9 @@ class ArraySchema extends BaseSchema
 
     /**
      * validate each element against the element schema
+     *
+     * All indices are marked as evaluated because the
+     * `items` keyword evaluates every element.
      */
     protected function validateChildren(
         mixed $data,
@@ -270,6 +273,7 @@ class ArraySchema extends BaseSchema
         $output = [];
         $index = 0;
         foreach ($data as $element) {
+            $context->markEvaluated($index);
             $childContext = $context->atPath($index);
             $output[] = $this->elementSchema->parseWithContext(
                 data: $element,
@@ -293,6 +297,7 @@ class ArraySchema extends BaseSchema
         $output = [];
         $index = 0;
         foreach ($data as $element) {
+            $context->markEvaluated($index);
             $childContext = $context->atPath($index);
             $output[] = $this->elementSchema->encodeWithContext(
                 data: $element,

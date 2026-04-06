@@ -154,6 +154,15 @@ class ConditionalSchema extends BaseSchema
     /**
      * evaluate the if-schema condition, then apply the
      * then or else schema accordingly
+     *
+     * Per JSON Schema 2020-12, the `if` keyword produces
+     * annotations (evaluated keys) regardless of whether
+     * the condition passes. Its evaluated keys are always
+     * merged to the parent context. Issues are NOT
+     * propagated — only evaluations.
+     *
+     * The `then` and `else` schemas run in the parent
+     * context, so their evaluations propagate naturally.
      */
     protected function validateChildren(
         mixed $data,
@@ -168,6 +177,11 @@ class ConditionalSchema extends BaseSchema
             data: $data,
             context: $childContext,
         );
+
+        // always merge evaluations from the if-schema
+        // (per spec, if produces annotations regardless
+        // of outcome)
+        $context->mergeEvaluatedKeys($childContext);
 
         // apply the appropriate branch
         if (! $childContext->hasIssues()) {
@@ -208,6 +222,9 @@ class ConditionalSchema extends BaseSchema
             data: $data,
             context: $childContext,
         );
+
+        // always merge evaluations from the if-schema
+        $context->mergeEvaluatedKeys($childContext);
 
         // apply the appropriate branch
         if (! $childContext->hasIssues()) {

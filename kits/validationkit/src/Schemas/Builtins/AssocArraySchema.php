@@ -42,10 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Constraints\ObjectDependentRequiredConstraint;
-use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMaxPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMinPropertiesConstraint;
-use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
@@ -98,6 +96,29 @@ class AssocArraySchema extends BaseSchema
      * @var ValidationSchema<mixed>|null
      */
     private ?ValidationSchema $catchallSchema = null;
+
+    /**
+     * regex patterns mapped to schemas for validating
+     * properties whose names match the pattern
+     *
+     * @var array<string, ValidationSchema<mixed>>
+     */
+    private array $patternPropertiesMap = [];
+
+    /**
+     * schemas that must be satisfied when certain
+     * properties are present
+     *
+     * @var array<string, ValidationSchema<mixed>>
+     */
+    private array $dependentSchemasMap = [];
+
+    /**
+     * schema for unevaluated properties
+     *
+     * @var ValidationSchema<mixed>|false|null
+     */
+    private ValidationSchema|false|null $unevaluatedPropertiesSchema = null;
 
     /**
      * @param array<string, ValidationSchema<mixed>> $shape
@@ -347,6 +368,50 @@ class AssocArraySchema extends BaseSchema
         return $this->catchallSchema;
     }
 
+    /**
+     * return the pattern-to-schema map
+     *
+     * @return array<string, ValidationSchema<mixed>>
+     */
+    public function patternPropertiesMap(): array
+    {
+        return $this->patternPropertiesMap;
+    }
+
+    /**
+     * return the dependent schemas map
+     *
+     * @return array<string, ValidationSchema<mixed>>
+     */
+    public function dependentSchemasMap(): array
+    {
+        return $this->dependentSchemasMap;
+    }
+
+    /**
+     * return the unevaluated properties schema
+     *
+     * @return ValidationSchema<mixed>|false|null
+     */
+    public function maybeUnevaluatedPropertiesSchema(): ValidationSchema|false|null
+    {
+        return $this->unevaluatedPropertiesSchema;
+    }
+
+    /**
+     * set how unevaluated properties are handled
+     *
+     * @param ValidationSchema<mixed>|false $schema
+     */
+    public function unevaluatedProperties(
+        ValidationSchema|false $schema,
+    ): static {
+        $clone = clone $this;
+        $clone->unevaluatedPropertiesSchema = $schema;
+
+        return $clone;
+    }
+
     // ================================================================
     //
     // JSON Schema Constraint Builder Methods
@@ -382,20 +447,15 @@ class AssocArraySchema extends BaseSchema
     public function patternProperties(
         array $patterns,
     ): static {
-        return $this->withConstraint(
-            new ObjectPatternPropertiesConstraint(
-                patterns: $patterns,
-            ),
-        );
+        $clone = clone $this;
+        $clone->patternPropertiesMap = $patterns;
+
+        return $clone;
     }
 
     /**
      * apply additional schemas when certain properties
      * are present
-     *
-     * When a property named in $dependencies exists in
-     * the input, the corresponding schema is applied to
-     * the entire object.
      *
      * @param array<string, ValidationSchema<mixed>> $dependencies
      * - maps property names to schemas
@@ -403,11 +463,10 @@ class AssocArraySchema extends BaseSchema
     public function dependentSchemas(
         array $dependencies,
     ): static {
-        return $this->withConstraint(
-            new ObjectDependentSchemasConstraint(
-                dependencies: $dependencies,
-            ),
-        );
+        $clone = clone $this;
+        $clone->dependentSchemasMap = $dependencies;
+
+        return $clone;
     }
 
     /**
@@ -492,11 +551,11 @@ class AssocArraySchema extends BaseSchema
     }
 
     /**
-     * validate shape fields and rebuild the output array
+     * validate shape fields, pattern properties, dependent
+     * schemas, and handle unknown keys
      *
-     * Each field in the shape is validated against its
-     * schema. Unknown keys are handled according to the
-     * unknownKeyPolicy or catchall schema.
+     * Mirrors ObjectSchema::validateChildren() but works
+     * with associative arrays instead of stdClass objects.
      */
     protected function validateChildren(
         mixed $data,
@@ -506,7 +565,9 @@ class AssocArraySchema extends BaseSchema
 
         $output = [];
 
+        // step 1: validate shape fields
         foreach ($this->shape as $key => $fieldSchema) {
+            $context->markEvaluated($key);
             $childContext = $context->atPath($key);
 
             $fieldValue = array_key_exists($key, $data)
@@ -521,9 +582,43 @@ class AssocArraySchema extends BaseSchema
             $output[$key] = $validatedValue;
         }
 
-        // handle unknown keys
+        // step 2: pattern properties — validate and include
+        // matched keys in the output
+        /** @var array<string, true> $patternMatchedKeys */
+        $patternMatchedKeys = [];
+        if ($this->patternPropertiesMap !== []) {
+            foreach ($this->patternPropertiesMap as $pattern => $patternSchema) {
+                foreach ($data as $key => $value) {
+                    $keyString = (string) $key;
+                    if (preg_match($pattern, $keyString)) {
+                        $patternMatchedKeys[$keyString] = true;
+                        $context->markEvaluated($keyString);
+                        $childContext = $context->atPath(
+                            $keyString,
+                        );
+                        $patternSchema->parseWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+
+                        // include in output if not already
+                        // from the shape
+                        if (! isset($this->shape[$keyString])) {
+                            $output[$keyString] = $value;
+                        }
+                    }
+                }
+            }
+        }
+
+        // step 3: handle unknown keys — excluding
+        // patternProperties matches
         /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key($data, $this->shape);
+        $unknownKeys = array_diff_key(
+            $data,
+            $this->shape,
+            $patternMatchedKeys,
+        );
 
         if (count($unknownKeys) > 0) {
             $this->handleUnknownKeys(
@@ -531,8 +626,15 @@ class AssocArraySchema extends BaseSchema
                 context: $context,
             );
 
-            // passthrough or catchall: include unknown keys
-            // in the output
+            if (
+                $this->catchallSchema !== null
+                || $this->unknownKeyPolicy !== UnknownKeyPolicy::Strip
+            ) {
+                foreach ($unknownKeys as $key => $value) {
+                    $context->markEvaluated($key);
+                }
+            }
+
             if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
                 $output = array_merge($output, $unknownKeys);
             } elseif ($this->catchallSchema !== null) {
@@ -548,15 +650,54 @@ class AssocArraySchema extends BaseSchema
             }
         }
 
+        // step 4: dependent schemas
+        if ($this->dependentSchemasMap !== []) {
+            foreach ($this->dependentSchemasMap as $triggerKey => $depSchema) {
+                if (array_key_exists($triggerKey, $data)) {
+                    $depSchema->parseWithContext(
+                        data: $data,
+                        context: $context,
+                    );
+                }
+            }
+        }
+
+        // step 5: unevaluated properties check
+        if ($this->unevaluatedPropertiesSchema !== null) {
+            foreach ($data as $key => $value) {
+                if ($context->isEvaluated($key)) {
+                    continue;
+                }
+
+                if ($this->unevaluatedPropertiesSchema === false) {
+                    $context->addIssue(
+                        type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                        input: $value,
+                        message: 'Unevaluated property: '
+                            . $key,
+                    );
+                } else {
+                    $childContext = $context->atPath($key);
+                    $validatedValue = $this->unevaluatedPropertiesSchema
+                        ->parseWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+                    $output[$key] = $validatedValue;
+                    $context->markEvaluated($key);
+                }
+            }
+        }
+
         return $output;
     }
 
     /**
      * encode child values using the encode pipeline
      *
-     * Like validateChildren(), but calls
-     * encodeWithContext() on each field schema so that
-     * codecs run their encode path (output → input).
+     * Mirrors validateChildren() but calls
+     * encodeWithContext() so that codecs run their encode
+     * path (output → input).
      */
     protected function encodeChildren(
         mixed $data,
@@ -566,7 +707,9 @@ class AssocArraySchema extends BaseSchema
 
         $output = [];
 
+        // step 1: encode shape fields
         foreach ($this->shape as $key => $fieldSchema) {
+            $context->markEvaluated($key);
             $childContext = $context->atPath($key);
 
             $fieldValue = array_key_exists($key, $data)
@@ -581,9 +724,39 @@ class AssocArraySchema extends BaseSchema
             $output[$key] = $validatedValue;
         }
 
-        // handle unknown keys
+        // step 2: pattern properties
+        /** @var array<string, true> $patternMatchedKeys */
+        $patternMatchedKeys = [];
+        if ($this->patternPropertiesMap !== []) {
+            foreach ($this->patternPropertiesMap as $pattern => $patternSchema) {
+                foreach ($data as $key => $value) {
+                    $keyString = (string) $key;
+                    if (preg_match($pattern, $keyString)) {
+                        $patternMatchedKeys[$keyString] = true;
+                        $context->markEvaluated($keyString);
+                        $childContext = $context->atPath(
+                            $keyString,
+                        );
+                        $patternSchema->encodeWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+
+                        if (! isset($this->shape[$keyString])) {
+                            $output[$keyString] = $value;
+                        }
+                    }
+                }
+            }
+        }
+
+        // step 3: handle unknown keys
         /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key($data, $this->shape);
+        $unknownKeys = array_diff_key(
+            $data,
+            $this->shape,
+            $patternMatchedKeys,
+        );
 
         if (count($unknownKeys) > 0) {
             $this->handleUnknownKeys(
@@ -591,8 +764,15 @@ class AssocArraySchema extends BaseSchema
                 context: $context,
             );
 
-            // passthrough or catchall: include unknown keys
-            // in the output
+            if (
+                $this->catchallSchema !== null
+                || $this->unknownKeyPolicy !== UnknownKeyPolicy::Strip
+            ) {
+                foreach ($unknownKeys as $key => $value) {
+                    $context->markEvaluated($key);
+                }
+            }
+
             if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
                 $output = array_merge($output, $unknownKeys);
             } elseif ($this->catchallSchema !== null) {
@@ -604,6 +784,45 @@ class AssocArraySchema extends BaseSchema
                             context: $childContext,
                         );
                     $output[$key] = $validatedValue;
+                }
+            }
+        }
+
+        // step 4: dependent schemas
+        if ($this->dependentSchemasMap !== []) {
+            foreach ($this->dependentSchemasMap as $triggerKey => $depSchema) {
+                if (array_key_exists($triggerKey, $data)) {
+                    $depSchema->encodeWithContext(
+                        data: $data,
+                        context: $context,
+                    );
+                }
+            }
+        }
+
+        // step 5: unevaluated properties check
+        if ($this->unevaluatedPropertiesSchema !== null) {
+            foreach ($data as $key => $value) {
+                if ($context->isEvaluated($key)) {
+                    continue;
+                }
+
+                if ($this->unevaluatedPropertiesSchema === false) {
+                    $context->addIssue(
+                        type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                        input: $value,
+                        message: 'Unevaluated property: '
+                            . $key,
+                    );
+                } else {
+                    $childContext = $context->atPath($key);
+                    $validatedValue = $this->unevaluatedPropertiesSchema
+                        ->encodeWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+                    $output[$key] = $validatedValue;
+                    $context->markEvaluated($key);
                 }
             }
         }

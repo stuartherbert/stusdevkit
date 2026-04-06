@@ -3345,4 +3345,435 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         $this->assertArrayHasKey('Address', $defs);
         $this->assertSame('object', $defs['Address']['type']);
     }
+
+    // ================================================================
+    //
+    // unevaluatedProperties — import + validate
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('imported allOf with unevaluatedProperties: false rejects unknown properties')]
+    public function test_allof_unevaluated_properties_false_rejects(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the importer correctly
+        // handles the common OpenAPI pattern: allOf with
+        // unevaluatedProperties: false. Properties from
+        // all allOf members are accepted, but any
+        // additional property is rejected.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": { "type": "string" }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "age": { "type": "integer" }
+                        }
+                    }
+                ],
+                "unevaluatedProperties": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+            'extra' => 'should fail',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    #[TestDox('imported allOf with unevaluatedProperties: false accepts all member properties')]
+    public function test_allof_unevaluated_properties_false_accepts(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that properties from all allOf
+        // members are accepted when
+        // unevaluatedProperties: false is set.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": { "type": "string" }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "age": { "type": "integer" }
+                        }
+                    }
+                ],
+                "unevaluatedProperties": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+    }
+
+    #[TestDox('imported object with unevaluatedProperties: false on plain object')]
+    public function test_plain_object_unevaluated_properties_false(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties on
+        // a plain object (no composition) rejects
+        // unevaluated properties.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" }
+                },
+                "unevaluatedProperties": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'extra' => 'should fail',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    // ================================================================
+    //
+    // unevaluatedProperties — import + export round-trip
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('unevaluatedProperties: false round-trips through import and export')]
+    public function test_unevaluated_properties_false_round_trip(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties:
+        // false survives an import → export round-trip.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": { "type": "string" }
+                        },
+                        "additionalProperties": false
+                    }
+                ],
+                "unevaluatedProperties": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $encoded = json_encode($exported);
+        assert(is_string($encoded));
+
+        /** @var array<string, mixed> $result */
+        $result = json_decode(
+            $encoded,
+            associative: true,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertArrayHasKey(
+            'unevaluatedProperties',
+            $result,
+        );
+        $this->assertFalse(
+            $result['unevaluatedProperties'],
+        );
+
+    }
+
+    // ================================================================
+    //
+    // unevaluatedItems — import + validate
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('imported tuple with items: false rejects extra elements')]
+    public function test_tuple_items_false_rejects_extra(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that items: false on a tuple
+        // is correctly imported and rejects extra elements.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "array",
+                "prefixItems": [
+                    { "type": "string" }
+                ],
+                "items": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse(['hello', 'extra']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    #[TestDox('imported tuple with items schema validates extra elements')]
+    public function test_tuple_items_schema_validates_extra(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that items with a schema on a
+        // tuple validates extra elements against that
+        // schema.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "array",
+                "prefixItems": [
+                    { "type": "string" }
+                ],
+                "items": { "type": "integer" }
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $schema->parse(['hello', 1, 2]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            ['hello', 1, 2],
+            $actualResult,
+        );
+
+    }
+
+    // ================================================================
+    //
+    // Combined properties + allOf + unevaluatedProperties
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('imported schema with properties + allOf + unevaluatedProperties: false')]
+    public function test_properties_plus_allof_unevaluated(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the importer correctly
+        // handles a schema with both top-level properties
+        // and allOf combined with unevaluatedProperties:
+        // false. Properties from both the top-level and
+        // allOf members are accepted.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" }
+                },
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "age": { "type": "integer" }
+                        }
+                    }
+                ],
+                "unevaluatedProperties": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change — accepts both properties
+
+        $validResult = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($validResult->failed());
+
+    }
+
+    #[TestDox('imported schema with properties + allOf + unevaluatedProperties: false rejects unknown')]
+    public function test_properties_plus_allof_unevaluated_rejects(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that properties not in the
+        // top-level properties or any allOf member are
+        // rejected.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" }
+                },
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "age": { "type": "integer" }
+                        }
+                    }
+                ],
+                "unevaluatedProperties": false
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+            'extra' => 'should fail',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
 }

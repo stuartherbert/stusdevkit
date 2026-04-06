@@ -50,6 +50,9 @@ use StusDevKit\ValidationKit\Schemas\Builtins\NumberSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ObjectSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\StringSchema;
 use StusDevKit\ValidationKit\Schemas\LazySchema;
+use StusDevKit\ValidationKit\Schemas\Logic\AllOfSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
+use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
 use StusDevKit\ValidationKit\Validate;
 
 /**
@@ -85,8 +88,7 @@ use StusDevKit\ValidationKit\Validate;
  *   method on StringSchema.
  * - `$id`, `$anchor`, `$vocabulary`, `$dynamicRef`,
  *   `$dynamicAnchor` are not supported.
- * - `unevaluatedProperties`, `unevaluatedItems`,
- *   `contentEncoding`, `contentMediaType` are stored
+ * - `contentEncoding`, `contentMediaType` are stored
  *   as metadata.
  */
 class JsonSchemaDraft202012Importer
@@ -765,6 +767,9 @@ class JsonSchemaDraft202012Importer
     /**
      * import a tuple schema from prefixItems
      *
+     * Handles the `items` keyword as a rest schema for
+     * elements beyond the prefix positions.
+     *
      * @return ValidationSchema<mixed>
      */
     private function importTupleSchema(
@@ -791,8 +796,44 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        $result = Validate::tuple(schemas: $schemas);
+
+        // items keyword — rest schema for elements beyond
+        // the prefix positions
+        if (isset($schema->items)) {
+            if ($schema->items === false) {
+                $result = $result->items(schema: false);
+            } elseif ($schema->items instanceof stdClass) {
+                $result = $result->items(
+                    schema: $this->importSchema(
+                        schema: $schema->items,
+                        registry: $registry,
+                    ),
+                );
+            }
+            // items: true is a no-op (all items accepted)
+        }
+
+        // unevaluatedItems on tuple schemas
+        if (isset($schema->unevaluatedItems)) {
+            if ($schema->unevaluatedItems === false) {
+                $result = $result->unevaluatedItems(
+                    schema: false,
+                );
+            } elseif (
+                $schema->unevaluatedItems instanceof stdClass
+            ) {
+                $result = $result->unevaluatedItems(
+                    schema: $this->importSchema(
+                        schema: $schema->unevaluatedItems,
+                        registry: $registry,
+                    ),
+                );
+            }
+        }
+
         return $this->applyMetadata(
-            schema: Validate::tuple(schemas: $schemas),
+            schema: $result,
             jsonSchema: $schema,
         );
     }
@@ -956,6 +997,24 @@ class JsonSchemaDraft202012Importer
             jsonSchema: $schema,
             registry: $registry,
         );
+
+        // unevaluatedProperties on plain object schemas
+        if (isset($schema->unevaluatedProperties)) {
+            if ($schema->unevaluatedProperties === false) {
+                $result = $result->unevaluatedProperties(
+                    schema: false,
+                );
+            } elseif (
+                $schema->unevaluatedProperties instanceof stdClass
+            ) {
+                $result = $result->unevaluatedProperties(
+                    schema: $this->importSchema(
+                        schema: $schema->unevaluatedProperties,
+                        registry: $registry,
+                    ),
+                );
+            }
+        }
 
         return $this->applyMetadata(
             schema: $result,
@@ -1183,14 +1242,25 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        $result = Validate::anyOf(schemas: $members);
+        $result = $this->applyUnevaluatedKeywords(
+            result: $result,
+            schema: $schema,
+            registry: $registry,
+        );
+
         return $this->applyMetadata(
-            schema: Validate::anyOf(schemas: $members),
+            schema: $result,
             jsonSchema: $schema,
         );
     }
 
     /**
      * import an allOf schema
+     *
+     * If the root schema also has `properties`, they are
+     * wrapped into an additional allOf member so that the
+     * unevaluatedProperties check can see them.
      *
      * @return ValidationSchema<mixed>
      */
@@ -1203,6 +1273,25 @@ class JsonSchemaDraft202012Importer
         );
 
         $members = [];
+
+        // if the root schema has properties alongside
+        // allOf, wrap them as an additional member
+        if (
+            isset($schema->properties)
+            && $schema->properties instanceof stdClass
+        ) {
+            $propsClone = clone $schema;
+            unset(
+                $propsClone->allOf,
+                $propsClone->unevaluatedProperties,
+                $propsClone->unevaluatedItems,
+            );
+            $members[] = $this->importObjectSchema(
+                schema: $propsClone,
+                registry: $registry,
+            );
+        }
+
         foreach ($schema->allOf as $memberBody) {
             if (! $memberBody instanceof stdClass) {
                 throw InvalidJsonSchemaException::malformed(
@@ -1217,8 +1306,15 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        $result = Validate::allOf(schemas: $members);
+        $result = $this->applyUnevaluatedKeywords(
+            result: $result,
+            schema: $schema,
+            registry: $registry,
+        );
+
         return $this->applyMetadata(
-            schema: Validate::allOf(schemas: $members),
+            schema: $result,
             jsonSchema: $schema,
         );
     }
@@ -1251,8 +1347,15 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        $result = Validate::oneOf(schemas: $members);
+        $result = $this->applyUnevaluatedKeywords(
+            result: $result,
+            schema: $schema,
+            registry: $registry,
+        );
+
         return $this->applyMetadata(
-            schema: Validate::oneOf(schemas: $members),
+            schema: $result,
             jsonSchema: $schema,
         );
     }
@@ -1403,6 +1506,52 @@ class JsonSchemaDraft202012Importer
     // Helpers
     //
     // ----------------------------------------------------------------
+
+    /**
+     * apply unevaluatedProperties and unevaluatedItems
+     * to a composition schema
+     */
+    private function applyUnevaluatedKeywords(
+        AllOfSchema|AnyOfSchema|OneOfSchema $result,
+        stdClass $schema,
+        JsonSchemaRegistry $registry,
+    ): AllOfSchema|AnyOfSchema|OneOfSchema {
+        if (isset($schema->unevaluatedProperties)) {
+            if ($schema->unevaluatedProperties === false) {
+                $result = $result->unevaluatedProperties(
+                    schema: false,
+                );
+            } elseif (
+                $schema->unevaluatedProperties instanceof stdClass
+            ) {
+                $result = $result->unevaluatedProperties(
+                    schema: $this->importSchema(
+                        schema: $schema->unevaluatedProperties,
+                        registry: $registry,
+                    ),
+                );
+            }
+        }
+
+        if (isset($schema->unevaluatedItems)) {
+            if ($schema->unevaluatedItems === false) {
+                $result = $result->unevaluatedItems(
+                    schema: false,
+                );
+            } elseif (
+                $schema->unevaluatedItems instanceof stdClass
+            ) {
+                $result = $result->unevaluatedItems(
+                    schema: $this->importSchema(
+                        schema: $schema->unevaluatedItems,
+                        registry: $registry,
+                    ),
+                );
+            }
+        }
+
+        return $result;
+    }
 
     /**
      * find the index of the {"type": "null"} branch

@@ -48,10 +48,17 @@ use StusDevKit\ValidationKit\ValidationIssuesList;
  * ValidationContext is an internal object that tracks the
  * current validation state during a parse operation.
  *
- * It accumulates validation issues and tracks the current
- * path through nested data structures. Collection schemas
- * (object, array) use this to pass path context to child
- * schemas.
+ * It accumulates validation issues, tracks the current
+ * path through nested data structures, and records which
+ * keys/indices have been evaluated at the current level.
+ * Collection schemas (object, array) use this to pass
+ * path context to child schemas.
+ *
+ * Evaluation tracking supports the JSON Schema 2020-12
+ * `unevaluatedProperties` and `unevaluatedItems`
+ * keywords. Each schema marks the keys/indices it
+ * evaluates; composition schemas aggregate evaluations
+ * from their sub-schemas.
  *
  * This class is not part of the public API and should not
  * be used directly by consumers of the library.
@@ -62,6 +69,18 @@ final class ValidationContext
 {
     /** @var list<ValidationIssue> */
     private array $issues = [];
+
+    /**
+     * keys or indices evaluated at the current level
+     *
+     * NOT shared by reference via atPath() — evaluation
+     * tracking is per-level, not per-path-depth. Each
+     * nesting level tracks its own evaluated keys
+     * independently.
+     *
+     * @var array<string|int, true>
+     */
+    private array $evaluatedKeys = [];
 
     /**
      * @param list<string|int> $path
@@ -104,6 +123,61 @@ final class ValidationContext
     public function path(): array
     {
         return $this->path;
+    }
+
+    // ================================================================
+    //
+    // Evaluation Tracking
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * mark a key or index as evaluated at the current level
+     *
+     * Called by schemas that validate specific keys or
+     * indices (ObjectSchema marks shape keys,
+     * TupleSchema marks positional indices, etc.).
+     * Composition schemas aggregate evaluations from
+     * their sub-schemas via shared or merged contexts.
+     */
+    public function markEvaluated(string|int $key): void
+    {
+        $this->evaluatedKeys[$key] = true;
+    }
+
+    /**
+     * has the given key or index been evaluated at the
+     * current level?
+     */
+    public function isEvaluated(string|int $key): bool
+    {
+        return isset($this->evaluatedKeys[$key]);
+    }
+
+    /**
+     * return all evaluated keys at the current level
+     *
+     * @return list<string|int>
+     */
+    public function evaluatedKeys(): array
+    {
+        return array_keys($this->evaluatedKeys);
+    }
+
+    /**
+     * merge evaluated keys from another context into
+     * this one
+     *
+     * Used by AnyOfSchema, OneOfSchema, and
+     * ConditionalSchema to propagate evaluations from
+     * the matching branch back to the parent context.
+     */
+    public function mergeEvaluatedKeys(
+        self $other,
+    ): void {
+        foreach ($other->evaluatedKeys as $key => $v) {
+            $this->evaluatedKeys[$key] = true;
+        }
     }
 
     // ================================================================

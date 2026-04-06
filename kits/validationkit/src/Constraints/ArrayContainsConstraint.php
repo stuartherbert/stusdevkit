@@ -200,11 +200,10 @@ final class ArrayContainsConstraint implements ValidationConstraint
      * the expected bounds
      *
      * Iterates through all array elements and counts how
-     * many match the schema. Then checks the count against
-     * the configured bounds:
-     * - no bounds: at least 1 match required
-     * - minContains: at least that many matches required
-     * - maxContains: at most that many matches allowed
+     * many match the schema. Matching indices are marked
+     * as evaluated on the context so that
+     * unevaluatedItems can identify which items were
+     * covered by contains.
      *
      * @param array<mixed> $data
      */
@@ -215,6 +214,7 @@ final class ArrayContainsConstraint implements ValidationConstraint
         assert(is_array($data));
 
         $matchCount = 0;
+        $index = 0;
 
         foreach ($data as $element) {
             $elementContext = new ValidationContext();
@@ -225,7 +225,10 @@ final class ArrayContainsConstraint implements ValidationConstraint
 
             if (! $elementContext->hasIssues()) {
                 $matchCount++;
+                $context->markEvaluated($index);
             }
+
+            $index++;
         }
 
         $hasIssue = false;

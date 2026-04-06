@@ -43,10 +43,8 @@ namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use stdClass;
 use StusDevKit\ValidationKit\Constraints\ObjectDependentRequiredConstraint;
-use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMaxPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMinPropertiesConstraint;
-use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
@@ -104,6 +102,42 @@ class ObjectSchema extends BaseSchema
      * @var ValidationSchema<mixed>|null
      */
     private ?ValidationSchema $catchallSchema = null;
+
+    /**
+     * regex patterns mapped to schemas for validating
+     * properties whose names match the pattern
+     *
+     * Stored here (not as a pipeline constraint) so that
+     * pattern-matched keys are correctly excluded from
+     * unknown-key detection and marked as evaluated.
+     *
+     * @var array<string, ValidationSchema<mixed>>
+     */
+    private array $patternPropertiesMap = [];
+
+    /**
+     * schemas that must be satisfied when certain
+     * properties are present
+     *
+     * Stored here (not as a pipeline constraint) so that
+     * dependent schemas' evaluated keys are tracked.
+     *
+     * @var array<string, ValidationSchema<mixed>>
+     */
+    private array $dependentSchemasMap = [];
+
+    /**
+     * schema for properties not evaluated by any other
+     * keyword (properties, patternProperties,
+     * additionalProperties, or composition sub-schemas)
+     *
+     * When false, unevaluated properties are rejected.
+     * When a schema, they are validated against it.
+     * When null, no check is performed.
+     *
+     * @var ValidationSchema<mixed>|false|null
+     */
+    private ValidationSchema|false|null $unevaluatedPropertiesSchema = null;
 
     /**
      * @param array<string, ValidationSchema<mixed>> $shape
@@ -353,6 +387,62 @@ class ObjectSchema extends BaseSchema
         return $this->catchallSchema;
     }
 
+    /**
+     * return the pattern-to-schema map
+     *
+     * @return array<string, ValidationSchema<mixed>>
+     */
+    public function patternPropertiesMap(): array
+    {
+        return $this->patternPropertiesMap;
+    }
+
+    /**
+     * return the dependent schemas map
+     *
+     * @return array<string, ValidationSchema<mixed>>
+     */
+    public function dependentSchemasMap(): array
+    {
+        return $this->dependentSchemasMap;
+    }
+
+    /**
+     * return the unevaluated properties schema
+     *
+     * Returns false when unevaluated properties are
+     * rejected, null when no check is performed, or
+     * a schema when unevaluated properties are validated.
+     *
+     * @return ValidationSchema<mixed>|false|null
+     */
+    public function maybeUnevaluatedPropertiesSchema(): ValidationSchema|false|null
+    {
+        return $this->unevaluatedPropertiesSchema;
+    }
+
+    /**
+     * set how unevaluated properties are handled
+     *
+     * Unevaluated properties are those not covered by
+     * `properties`, `patternProperties`,
+     * `additionalProperties`, or any composition
+     * sub-schema.
+     *
+     * Pass `false` to reject unevaluated properties.
+     * Pass a schema to validate them against it.
+     *
+     * @param ValidationSchema<mixed>|false $schema
+     */
+    public function unevaluatedProperties(
+        ValidationSchema|false $schema,
+    ): static {
+        $clone = clone $this;
+        $clone->unevaluatedPropertiesSchema = $schema;
+
+        return $clone;
+    }
+
     // ================================================================
     //
     // JSON Schema Constraint Builder Methods
@@ -382,17 +472,21 @@ class ObjectSchema extends BaseSchema
      * validate properties whose names match regex patterns
      * against corresponding schemas
      *
+     * Pattern-matched keys are marked as evaluated and
+     * excluded from unknown-key detection, fixing the
+     * interaction with additionalProperties per the
+     * JSON Schema spec.
+     *
      * @param array<string, ValidationSchema<mixed>> $patterns
      * - maps regex patterns to validation schemas
      */
     public function patternProperties(
         array $patterns,
     ): static {
-        return $this->withConstraint(
-            new ObjectPatternPropertiesConstraint(
-                patterns: $patterns,
-            ),
-        );
+        $clone = clone $this;
+        $clone->patternPropertiesMap = $patterns;
+
+        return $clone;
     }
 
     /**
@@ -401,7 +495,9 @@ class ObjectSchema extends BaseSchema
      *
      * When a property named in $dependencies exists in
      * the input, the corresponding schema is applied to
-     * the entire object.
+     * the entire object. Evaluated keys from the
+     * dependent schemas are tracked for
+     * unevaluatedProperties.
      *
      * @param array<string, ValidationSchema<mixed>> $dependencies
      * - maps property names to schemas
@@ -409,11 +505,10 @@ class ObjectSchema extends BaseSchema
     public function dependentSchemas(
         array $dependencies,
     ): static {
-        return $this->withConstraint(
-            new ObjectDependentSchemasConstraint(
-                dependencies: $dependencies,
-            ),
-        );
+        $clone = clone $this;
+        $clone->dependentSchemasMap = $dependencies;
+
+        return $clone;
     }
 
     /**
@@ -498,11 +593,21 @@ class ObjectSchema extends BaseSchema
     }
 
     /**
-     * validate shape fields and rebuild the output array
+     * validate shape fields, pattern properties, dependent
+     * schemas, and handle unknown keys
      *
-     * Each field in the shape is validated against its
-     * schema. Unknown keys are handled according to the
-     * unknownKeyPolicy or catchall schema.
+     * Applies JSON Schema applicator keywords in the
+     * correct order:
+     *
+     * 1. `properties` — validate shape fields
+     * 2. `patternProperties` — validate pattern-matched
+     *    keys
+     * 3. `additionalProperties` — handle keys not covered
+     *    by properties or patternProperties
+     * 4. `dependentSchemas` — apply conditional schemas
+     *
+     * All processed keys are marked as evaluated for
+     * unevaluatedProperties tracking.
      */
     protected function validateChildren(
         mixed $data,
@@ -515,7 +620,9 @@ class ObjectSchema extends BaseSchema
 
         $output = new stdClass();
 
+        // step 1: validate shape fields (properties)
         foreach ($this->shape as $key => $fieldSchema) {
+            $context->markEvaluated($key);
             $childContext = $context->atPath($key);
 
             $fieldValue = array_key_exists($key, $properties)
@@ -530,15 +637,65 @@ class ObjectSchema extends BaseSchema
             $output->$key = $validatedValue;
         }
 
-        // handle unknown keys
+        // step 2: validate pattern properties and collect
+        // which keys matched any pattern
+        /** @var array<string, true> $patternMatchedKeys */
+        $patternMatchedKeys = [];
+        if ($this->patternPropertiesMap !== []) {
+            foreach ($this->patternPropertiesMap as $pattern => $patternSchema) {
+                foreach ($properties as $key => $value) {
+                    $keyString = (string) $key;
+                    if (preg_match($pattern, $keyString)) {
+                        $patternMatchedKeys[$keyString] = true;
+                        $context->markEvaluated($keyString);
+                        $childContext = $context->atPath(
+                            $keyString,
+                        );
+                        $patternSchema->parseWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+
+                        // include in output if not already
+                        // from the shape
+                        if (! isset($this->shape[$keyString])) {
+                            $output->$keyString = $value;
+                        }
+                    }
+                }
+            }
+        }
+
+        // step 3: handle unknown keys — keys not in the
+        // shape AND not matched by patternProperties
         /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key($properties, $this->shape);
+        $unknownKeys = array_diff_key(
+            $properties,
+            $this->shape,
+            $patternMatchedKeys,
+        );
 
         if (count($unknownKeys) > 0) {
             $this->handleUnknownKeys(
                 unknownKeys: $unknownKeys,
                 context: $context,
             );
+
+            // mark unknown keys as evaluated only when an
+            // explicit additionalProperties policy is active.
+            // The default Strip policy is a ValidationKit
+            // concept with no JSON Schema equivalent — it
+            // must NOT mark keys as evaluated, or
+            // unevaluatedProperties would incorrectly
+            // consider them handled.
+            if (
+                $this->catchallSchema !== null
+                || $this->unknownKeyPolicy !== UnknownKeyPolicy::Strip
+            ) {
+                foreach ($unknownKeys as $key => $value) {
+                    $context->markEvaluated($key);
+                }
+            }
 
             // passthrough or catchall: include unknown keys
             // in the output
@@ -559,15 +716,55 @@ class ObjectSchema extends BaseSchema
             }
         }
 
+        // step 4: dependent schemas — apply schemas when
+        // trigger properties are present
+        if ($this->dependentSchemasMap !== []) {
+            foreach ($this->dependentSchemasMap as $triggerKey => $depSchema) {
+                if (array_key_exists($triggerKey, $properties)) {
+                    $depSchema->parseWithContext(
+                        data: $data,
+                        context: $context,
+                    );
+                }
+            }
+        }
+
+        // step 5: unevaluated properties check
+        if ($this->unevaluatedPropertiesSchema !== null) {
+            foreach ($properties as $key => $value) {
+                if ($context->isEvaluated($key)) {
+                    continue;
+                }
+
+                if ($this->unevaluatedPropertiesSchema === false) {
+                    $context->addIssue(
+                        type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                        input: $value,
+                        message: 'Unevaluated property: '
+                            . $key,
+                    );
+                } else {
+                    $childContext = $context->atPath($key);
+                    $validatedValue = $this->unevaluatedPropertiesSchema
+                        ->parseWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+                    $output->$key = $validatedValue;
+                    $context->markEvaluated($key);
+                }
+            }
+        }
+
         return $output;
     }
 
     /**
      * encode child values using the encode pipeline
      *
-     * Like validateChildren(), but calls
-     * encodeWithContext() on each field schema so that
-     * codecs run their encode path (output → input).
+     * Mirrors validateChildren() but calls
+     * encodeWithContext() so that codecs run their encode
+     * path (output → input).
      */
     protected function encodeChildren(
         mixed $data,
@@ -580,7 +777,9 @@ class ObjectSchema extends BaseSchema
 
         $output = new stdClass();
 
+        // step 1: encode shape fields
         foreach ($this->shape as $key => $fieldSchema) {
+            $context->markEvaluated($key);
             $childContext = $context->atPath($key);
 
             $fieldValue = array_key_exists($key, $properties)
@@ -595,9 +794,39 @@ class ObjectSchema extends BaseSchema
             $output->$key = $validatedValue;
         }
 
-        // handle unknown keys
+        // step 2: pattern properties
+        /** @var array<string, true> $patternMatchedKeys */
+        $patternMatchedKeys = [];
+        if ($this->patternPropertiesMap !== []) {
+            foreach ($this->patternPropertiesMap as $pattern => $patternSchema) {
+                foreach ($properties as $key => $value) {
+                    $keyString = (string) $key;
+                    if (preg_match($pattern, $keyString)) {
+                        $patternMatchedKeys[$keyString] = true;
+                        $context->markEvaluated($keyString);
+                        $childContext = $context->atPath(
+                            $keyString,
+                        );
+                        $patternSchema->encodeWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+
+                        if (! isset($this->shape[$keyString])) {
+                            $output->$keyString = $value;
+                        }
+                    }
+                }
+            }
+        }
+
+        // step 3: handle unknown keys
         /** @var array<string, mixed> $unknownKeys */
-        $unknownKeys = array_diff_key($properties, $this->shape);
+        $unknownKeys = array_diff_key(
+            $properties,
+            $this->shape,
+            $patternMatchedKeys,
+        );
 
         if (count($unknownKeys) > 0) {
             $this->handleUnknownKeys(
@@ -605,8 +834,15 @@ class ObjectSchema extends BaseSchema
                 context: $context,
             );
 
-            // passthrough or catchall: include unknown keys
-            // in the output
+            if (
+                $this->catchallSchema !== null
+                || $this->unknownKeyPolicy !== UnknownKeyPolicy::Strip
+            ) {
+                foreach ($unknownKeys as $key => $value) {
+                    $context->markEvaluated($key);
+                }
+            }
+
             if ($this->unknownKeyPolicy === UnknownKeyPolicy::Passthrough) {
                 foreach ($unknownKeys as $key => $value) {
                     $output->$key = $value;
@@ -620,6 +856,45 @@ class ObjectSchema extends BaseSchema
                             context: $childContext,
                         );
                     $output->$key = $validatedValue;
+                }
+            }
+        }
+
+        // step 4: dependent schemas
+        if ($this->dependentSchemasMap !== []) {
+            foreach ($this->dependentSchemasMap as $triggerKey => $depSchema) {
+                if (array_key_exists($triggerKey, $properties)) {
+                    $depSchema->encodeWithContext(
+                        data: $data,
+                        context: $context,
+                    );
+                }
+            }
+        }
+
+        // step 5: unevaluated properties check
+        if ($this->unevaluatedPropertiesSchema !== null) {
+            foreach ($properties as $key => $value) {
+                if ($context->isEvaluated($key)) {
+                    continue;
+                }
+
+                if ($this->unevaluatedPropertiesSchema === false) {
+                    $context->addIssue(
+                        type: 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                        input: $value,
+                        message: 'Unevaluated property: '
+                            . $key,
+                    );
+                } else {
+                    $childContext = $context->atPath($key);
+                    $validatedValue = $this->unevaluatedPropertiesSchema
+                        ->encodeWithContext(
+                            data: $value,
+                            context: $childContext,
+                        );
+                    $output->$key = $validatedValue;
+                    $context->markEvaluated($key);
                 }
             }
         }

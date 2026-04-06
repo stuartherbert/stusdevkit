@@ -1269,4 +1269,142 @@ class ValidateTupleTest extends TestCase
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // items() rest schema
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('items() allows extra elements validated by rest schema')]
+    public function test_items_allows_extra_elements(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that items() sets a rest schema
+        // for elements beyond the prefix positions. Here,
+        // the tuple has one string prefix, and any extra
+        // elements must be integers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::tuple(schemas: [
+            Validate::string(),
+        ])->items(schema: Validate::int());
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(['hello', 1, 2, 3]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            ['hello', 1, 2, 3],
+            $actualResult,
+        );
+
+    }
+
+    #[TestDox('items() rejects extra elements that fail the rest schema')]
+    public function test_items_rejects_invalid_extra_elements(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that items() rejects extra
+        // elements that don't match the rest schema.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::tuple(schemas: [
+            Validate::string(),
+        ])->items(schema: Validate::int());
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(
+            ['hello', 'not-an-int'],
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    #[TestDox('items(false) rejects extra elements')]
+    public function test_items_false_rejects_extra_elements(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that items(false) explicitly
+        // forbids any elements beyond the prefix. This
+        // is equivalent to JSON Schema items: false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::tuple(schemas: [
+            Validate::string(),
+        ])->items(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(['hello', 'extra']);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    // ================================================================
+    //
+    // unevaluatedItems
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('unevaluatedItems(false) rejects unevaluated items')]
+    public function test_unevaluated_items_false_rejects(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedItems(false)
+        // on a tuple rejects items not covered by
+        // prefixItems or items.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::tuple(schemas: [
+            Validate::string(),
+        ])
+            ->items(schema: Validate::mixed())
+            ->unevaluatedItems(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // prefix item is evaluated, but the rest item
+        // at index 1 is evaluated by items(), so it's
+        // fine. This should pass.
+        $result = $unit->safeParse(['hello', 42]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+    }
 }

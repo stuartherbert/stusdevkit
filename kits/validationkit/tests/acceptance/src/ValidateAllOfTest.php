@@ -1301,4 +1301,206 @@ class ValidateAllOfTest extends TestCase
         // clean up the database
 
     }
+
+    // ================================================================
+    //
+    // unevaluatedProperties
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('unevaluatedProperties(false) rejects properties not in any allOf member')]
+    public function test_unevaluated_properties_false_rejects_unknown(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves the most common OpenAPI pattern:
+        // allOf combining two object schemas with
+        // unevaluatedProperties: false. Properties defined
+        // in either allOf member are accepted, but any
+        // property not defined in any member is rejected.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // allOf members use the default Strip policy (no
+        // explicit additionalProperties), so unknown keys
+        // are NOT marked as evaluated. Only shape keys are.
+        $unit = Validate::allOf(schemas: [
+            Validate::object([
+                'name' => Validate::string(),
+            ]),
+            Validate::object([
+                'age' => Validate::int(),
+            ]),
+        ])->unevaluatedProperties(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+            'extra' => 'should fail',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    #[TestDox('unevaluatedProperties(false) accepts properties from all allOf members')]
+    public function test_unevaluated_properties_false_accepts_all_members(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that properties defined in any
+        // allOf member are considered evaluated and
+        // accepted by unevaluatedProperties(false).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::allOf(schemas: [
+            Validate::object([
+                'name' => Validate::string(),
+            ]),
+            Validate::object([
+                'age' => Validate::int(),
+            ]),
+        ])->unevaluatedProperties(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+    }
+
+    #[TestDox('unevaluatedProperties with schema validates unevaluated keys in allOf')]
+    public function test_unevaluated_properties_schema_validates_in_allof(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties with
+        // a schema validates any properties not covered by
+        // allOf members against that schema. Here, 'extra'
+        // is not in any member, so it must be an int.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // default Strip policy — 'extra' is not evaluated
+        // by any member, so unevaluatedProperties applies
+        $unit = Validate::allOf(schemas: [
+            Validate::object([
+                'name' => Validate::string(),
+            ]),
+        ])->unevaluatedProperties(
+            schema: Validate::int(),
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse((object) [
+            'name' => 'Stuart',
+            'extra' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+    }
+
+    // ================================================================
+    //
+    // unevaluatedItems
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('unevaluatedItems(false) rejects unevaluated items on mixed data')]
+    public function test_unevaluated_items_false_rejects_on_mixed(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedItems(false)
+        // on an allOf rejects items not evaluated by any
+        // sub-schema. Here, a mixed schema does not
+        // evaluate any individual items, so all items
+        // are unevaluated.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::allOf(schemas: [
+            Validate::mixed(),
+        ])->unevaluatedItems(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'hello',
+            42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+    }
+
+    #[TestDox('unevaluatedItems(false) accepts items evaluated by allOf members')]
+    public function test_unevaluated_items_false_accepts_evaluated(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that items evaluated by allOf
+        // members (via ArraySchema which evaluates all
+        // indices) are not rejected by
+        // unevaluatedItems(false).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // ArraySchema evaluates all indices, so
+        // unevaluatedItems has nothing to reject
+        $unit = Validate::allOf(schemas: [
+            Validate::array(
+                element: Validate::mixed(),
+            ),
+        ])->unevaluatedItems(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'hello',
+            42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+    }
 }

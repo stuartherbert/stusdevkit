@@ -54,10 +54,8 @@ use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectDependentRequiredConstraint;
-use StusDevKit\ValidationKit\Constraints\ObjectDependentSchemasConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMaxPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectMinPropertiesConstraint;
-use StusDevKit\ValidationKit\Constraints\ObjectPatternPropertiesConstraint;
 use StusDevKit\ValidationKit\Constraints\ObjectPropertyNamesConstraint;
 use StusDevKit\ValidationKit\Constraints\StringDateConstraint;
 use StusDevKit\ValidationKit\Constraints\StringDateTimeConstraint;
@@ -497,6 +495,13 @@ class JsonSchemaDraft202012Exporter
 
     /**
      * export a tuple schema with prefixItems
+     *
+     * Emits `items` based on the rest schema:
+     * - null: items: false (closed tuple, default)
+     * - false: items: false (explicitly closed)
+     * - schema: items: {schema}
+     *
+     * Also emits `unevaluatedItems` when set.
      */
     private function exportTupleSchema(
         TupleSchema $schema,
@@ -509,7 +514,26 @@ class JsonSchemaDraft202012Exporter
         $output = new stdClass();
         $output->type = 'array';
         $output->prefixItems = $prefixItems;
-        $output->items = false;
+
+        // rest schema → items keyword
+        $restSchema = $schema->maybeRestSchema();
+        if (
+            $restSchema instanceof ValidationSchema
+        ) {
+            $output->items = $this->exportSchema($restSchema);
+        } else {
+            $output->items = false;
+        }
+
+        // unevaluatedItems
+        $unevalItems = $schema->maybeUnevaluatedItemsSchema();
+        if ($unevalItems === false) {
+            $output->unevaluatedItems = false;
+        } elseif ($unevalItems !== null) {
+            $output->unevaluatedItems = $this->exportSchema(
+                $unevalItems,
+            );
+        }
 
         return $this->applyAll(
             output: $output,
@@ -543,7 +567,8 @@ class JsonSchemaDraft202012Exporter
 
     /**
      * export an object schema with properties, required,
-     * additionalProperties, and object-level constraints
+     * additionalProperties, patternProperties,
+     * dependentSchemas, and object-level constraints
      *
      * Handles both ObjectSchema (stdClass output) and
      * AssocArraySchema (associative array output) since
@@ -581,6 +606,18 @@ class JsonSchemaDraft202012Exporter
             $output->required = $required;
         }
 
+        // patternProperties — from schema property
+        $patternMap = $schema->patternPropertiesMap();
+        if ($patternMap !== []) {
+            $patternProperties = new stdClass();
+            foreach ($patternMap as $pattern => $patternSchema) {
+                $patternProperties->{$pattern} = $this->exportSchema(
+                    $patternSchema,
+                );
+            }
+            $output->patternProperties = $patternProperties;
+        }
+
         // unknown key policy → additionalProperties
         $catchall = $schema->maybeCatchallSchema();
         if ($catchall !== null) {
@@ -594,6 +631,28 @@ class JsonSchemaDraft202012Exporter
                 UnknownKeyPolicy::Strip,
                 UnknownKeyPolicy::Strict => false,
             };
+        }
+
+        // dependentSchemas — from schema property
+        $depSchemasMap = $schema->dependentSchemasMap();
+        if ($depSchemasMap !== []) {
+            $dependentSchemas = new stdClass();
+            foreach ($depSchemasMap as $key => $depSchema) {
+                $dependentSchemas->{$key} = $this->exportSchema(
+                    $depSchema,
+                );
+            }
+            $output->dependentSchemas = $dependentSchemas;
+        }
+
+        // unevaluatedProperties
+        $unevalProps = $schema->maybeUnevaluatedPropertiesSchema();
+        if ($unevalProps === false) {
+            $output->unevaluatedProperties = false;
+        } elseif ($unevalProps !== null) {
+            $output->unevaluatedProperties = $this->exportSchema(
+                $unevalProps,
+            );
         }
 
         return $this->applyAll(
@@ -646,6 +705,31 @@ class JsonSchemaDraft202012Exporter
 
         $output = new stdClass();
         $output->{$keyword} = $members;
+
+        // emit unevaluatedProperties / unevaluatedItems
+        if (
+            $schema instanceof AllOfSchema
+            || $schema instanceof AnyOfSchema
+            || $schema instanceof OneOfSchema
+        ) {
+            $unevalProps = $schema
+                ->maybeUnevaluatedPropertiesSchema();
+            if ($unevalProps === false) {
+                $output->unevaluatedProperties = false;
+            } elseif ($unevalProps !== null) {
+                $output->unevaluatedProperties = $this
+                    ->exportSchema($unevalProps);
+            }
+
+            $unevalItems = $schema
+                ->maybeUnevaluatedItemsSchema();
+            if ($unevalItems === false) {
+                $output->unevaluatedItems = false;
+            } elseif ($unevalItems !== null) {
+                $output->unevaluatedItems = $this
+                    ->exportSchema($unevalItems);
+            }
+        }
 
         if ($schema instanceof BaseSchema) {
             $output = $this->applyAll(
@@ -1037,28 +1121,6 @@ class JsonSchemaDraft202012Exporter
             $output->propertyNames = $this->exportSchema(
                 $step->schema(),
             );
-            return $output;
-        }
-
-        if ($step instanceof ObjectPatternPropertiesConstraint) {
-            $patternProperties = new stdClass();
-            foreach ($step->patterns() as $pattern => $patternSchema) {
-                $patternProperties->{$pattern} = $this->exportSchema(
-                    $patternSchema,
-                );
-            }
-            $output->patternProperties = $patternProperties;
-            return $output;
-        }
-
-        if ($step instanceof ObjectDependentSchemasConstraint) {
-            $dependentSchemas = new stdClass();
-            foreach ($step->dependencies() as $key => $depSchema) {
-                $dependentSchemas->{$key} = $this->exportSchema(
-                    $depSchema,
-                );
-            }
-            $output->dependentSchemas = $dependentSchemas;
             return $output;
         }
 
