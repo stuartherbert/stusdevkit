@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- schema $id is now exported to JSON schema ([2bdc49d](https://github.com/stuartherbert/stusdevkit/commit/2bdc49d)) — Stuart Herbert <stuart@stuartherbert.com>
+- schema $id is now exported to JSON schema ([ba71e0a](https://github.com/stuartherbert/stusdevkit/commit/ba71e0a)) — Stuart Herbert <stuart@stuartherbert.com>
 - add further JSON schema constraints ([3f35f37](https://github.com/stuartherbert/stusdevkit/commit/3f35f37)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for resolving references during JSON schema import ([ce6db71](https://github.com/stuartherbert/stusdevkit/commit/ce6db71)) — Stuart Herbert <stuart@stuartherbert.com>
 - upgrade JsonSchemaRegistry capabilities ([61a7de2](https://github.com/stuartherbert/stusdevkit/commit/61a7de2)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -71,18 +71,19 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
-#### CollectionsKit
-
-- StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- $ref handling now matches JSON Schema Draft 2020-12 behaviour ([d9ba5e3](https://github.com/stuartherbert/stusdevkit/commit/d9ba5e3)) — Stuart Herbert <stuart@stuartherbert.com>
 - PHP associative array schemas can now be exported as JSON schema ([7c0bd28](https://github.com/stuartherbert/stusdevkit/commit/7c0bd28)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([b599573](https://github.com/stuartherbert/stusdevkit/commit/b599573)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### Tools
 

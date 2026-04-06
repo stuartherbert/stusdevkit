@@ -88,8 +88,8 @@ use function StusDevKit\MissingBitsKit\uri_resolve_reference;
  *   Pointer forms are not.
  * - `format: date-time` maps to the `dateTime()` builder
  *   method on StringSchema.
- * - `$id`, `$anchor`, `$vocabulary`, `$dynamicRef`,
- *   `$dynamicAnchor` are not supported.
+ * - `$vocabulary`, `$dynamicRef`, `$dynamicAnchor` are
+ *   not supported.
  * - `contentEncoding`, `contentMediaType`,
  *   `contentSchema` are stored as metadata (annotation
  *   only, no content validation).
@@ -142,6 +142,39 @@ class JsonSchemaDraft202012Importer
     private const NUMBER_FORMAT_METHODS = [
         'float'  => 'float',
         'double' => 'double',
+    ];
+
+    /**
+     * keywords that are NOT validation applicators
+     *
+     * When these appear alongside `$ref`, they do not
+     * require allOf wrapping — they are either identity
+     * keywords or annotation-only keywords that can be
+     * applied directly to the resolved schema.
+     *
+     * @var array<string, true>
+     */
+    private const REF_ANNOTATION_KEYWORDS = [
+        // identity keywords
+        '$ref'        => true,
+        '$id'         => true,
+        '$anchor'     => true,
+        '$schema'     => true,
+        '$defs'       => true,
+        '$vocabulary' => true,
+        // annotation keywords
+        '$comment'    => true,
+        'title'       => true,
+        'description' => true,
+        'examples'    => true,
+        'deprecated'  => true,
+        'readOnly'    => true,
+        'writeOnly'   => true,
+        'default'     => true,
+        // content vocabulary (annotation only)
+        'contentEncoding'  => true,
+        'contentMediaType' => true,
+        'contentSchema'    => true,
     ];
 
     // ================================================================
@@ -352,14 +385,14 @@ class JsonSchemaDraft202012Importer
         stdClass $schema,
         JsonSchemaRegistry $registry,
     ): ValidationSchema {
-        // $ref takes precedence over all other keywords
+        // $ref — Draft 2020-12 allows sibling keywords
         if (
             isset($schema->{'$ref'})
             && is_string($schema->{'$ref'})
             && $schema->{'$ref'} !== ''
         ) {
-            return $this->resolveRef(
-                ref: $schema->{'$ref'},
+            return $this->importRefWithSiblings(
+                schema: $schema,
                 registry: $registry,
             );
         }
@@ -592,6 +625,81 @@ class JsonSchemaDraft202012Importer
         return $this->applyMetadata(
             schema: $innerSchema,
             jsonSchema: $schema,
+        );
+    }
+
+    // ================================================================
+    //
+    // $ref With Siblings (Draft 2020-12)
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * import a schema that has `$ref` alongside other
+     * keywords
+     *
+     * Draft 2020-12 changed `$ref` from a replacement
+     * keyword (where all siblings were ignored) to a
+     * regular applicator. All keywords in the schema
+     * object now apply independently.
+     *
+     * When only annotation siblings are present (title,
+     * description, etc.), they are applied directly to
+     * the resolved reference. When validation or
+     * applicator siblings are present, the ref and the
+     * siblings are combined via allOf.
+     *
+     * @return ValidationSchema<mixed>
+     */
+    private function importRefWithSiblings(
+        stdClass $schema,
+        JsonSchemaRegistry $registry,
+    ): ValidationSchema {
+        /** @var non-empty-string $ref */
+        $ref = $schema->{'$ref'};
+
+        $refSchema = $this->resolveRef(
+            ref: $ref,
+            registry: $registry,
+        );
+
+        // check if any sibling is a validation keyword
+        $hasValidationSiblings = false;
+        foreach (
+            array_keys(get_object_vars($schema)) as $key
+        ) {
+            if (
+                ! isset(self::REF_ANNOTATION_KEYWORDS[$key])
+            ) {
+                $hasValidationSiblings = true;
+                break;
+            }
+        }
+
+        if (! $hasValidationSiblings) {
+            // annotation-only siblings — apply directly
+            // to the resolved ref
+            return $this->applyMetadata(
+                schema: $refSchema,
+                jsonSchema: $schema,
+            );
+        }
+
+        // validation siblings — combine with allOf
+        //
+        // Clone the schema, remove $ref, and import the
+        // remainder as a separate schema. Then wrap both
+        // in allOf so that all keywords apply.
+        $siblingObj = clone $schema;
+        unset($siblingObj->{'$ref'});
+
+        $siblingSchema = $this->importSchemaBody(
+            schema: $siblingObj,
+            registry: $registry,
+        );
+
+        return Validate::allOf(
+            schemas: [$refSchema, $siblingSchema],
         );
     }
 

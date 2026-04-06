@@ -3009,6 +3009,140 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         $this->assertTrue($result->failed());
     }
 
+    #[TestDox('$ref with description sibling preserves description')]
+    public function test_ref_with_description_sibling(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // Draft 2020-12 allows keywords alongside $ref.
+        // This test proves that annotation siblings like
+        // description are preserved on the imported schema
+        // and survive a round-trip through the exporter.
+        //
+        // The export won't match the input exactly because
+        // import resolves $ref (inlining the referenced
+        // schema and consuming $defs). The expected output
+        // is the resolved form with the sibling description
+        // merged in.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $exporter = new JsonSchemaDraft202012Exporter();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "$ref": "#/$defs/Name",
+                        "description": "The user's full name"
+                    }
+                },
+                "$defs": {
+                    "Name": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $importer->import($jsonSchema);
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // the ref is resolved inline, so the name property
+        // should contain the full string schema with the
+        // sibling description merged in
+        $this->assertEquals(
+            (object) [
+                '$schema' => 'https://json-schema.org/draft/2020-12/schema',
+                'type' => 'object',
+                'properties' => (object) [
+                    'name' => (object) [
+                        'type' => 'string',
+                        'minLength' => 1,
+                        'description' => 'The user\'s full name',
+                    ],
+                ],
+                'additionalProperties' => false,
+            ],
+            $exported->toObject(),
+        );
+    }
+
+    #[TestDox('$ref with validation siblings applies both')]
+    public function test_ref_with_validation_siblings(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // Draft 2020-12 allows validation keywords alongside
+        // $ref. This test proves that both the referenced
+        // schema and the sibling validation keywords are
+        // applied. The $defs Name allows minLength: 1, but
+        // the sibling tightens it to minLength: 5.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "object",
+                "properties": {
+                    "nickname": {
+                        "$ref": "#/$defs/Name",
+                        "type": "string",
+                        "maxLength": 20
+                    }
+                },
+                "$defs": {
+                    "Name": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // valid: satisfies both ref (minLength: 1) and
+        // sibling (maxLength: 20)
+        $validResult = $schema->safeParse((object) [
+            'nickname' => 'Stu',
+        ]);
+        $this->assertFalse($validResult->failed());
+
+        // invalid: fails ref's minLength: 1
+        $emptyResult = $schema->safeParse((object) [
+            'nickname' => '',
+        ]);
+        $this->assertTrue($emptyResult->failed());
+
+        // invalid: fails sibling's maxLength: 20
+        $longResult = $schema->safeParse((object) [
+            'nickname' => str_repeat('a', 21),
+        ]);
+        $this->assertTrue($longResult->failed());
+    }
+
     // ================================================================
     //
     // Metadata
