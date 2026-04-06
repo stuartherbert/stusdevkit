@@ -1664,6 +1664,344 @@ class ValidateIntTest extends TestCase
 
     // ================================================================
     //
+    // int32 Format
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('int32() accepts a value within 32-bit signed range')]
+    public function test_int32_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int32() accepts values in
+        // the range -2^31 to 2^31-1
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int32();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(0);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('int32() accepts the minimum 32-bit value')]
+    public function test_int32_accepts_min_boundary(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int32() accepts the minimum
+        // 32-bit signed integer value (-2,147,483,648)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int32();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(-2_147_483_648);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(-2_147_483_648, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('int32() accepts the maximum 32-bit value')]
+    public function test_int32_accepts_max_boundary(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int32() accepts the maximum
+        // 32-bit signed integer value (2,147,483,647)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int32();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(2_147_483_647);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(2_147_483_647, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('int32() rejects a value above the 32-bit maximum')]
+    public function test_int32_rejects_above_max(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int32() rejects values
+        // above the 32-bit signed integer maximum
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int32();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(2_147_483_648);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/out_of_range',
+                    'path'    => [],
+                    'message' => 'Value must fit in a 32-bit signed integer (-2147483648 to 2147483647)',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('int32() rejects a value below the 32-bit minimum')]
+    public function test_int32_rejects_below_min(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int32() rejects values
+        // below the 32-bit signed integer minimum
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int32();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(-2_147_483_649);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/out_of_range',
+                    'path'    => [],
+                    'message' => 'Value must fit in a 32-bit signed integer (-2147483648 to 2147483647)',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // int64 Format
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('int64() accepts a value within 64-bit signed range')]
+    public function test_int64_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int64() accepts values in
+        // the 64-bit signed integer range. On 64-bit PHP
+        // this is effectively a no-op since PHP_INT_MIN
+        // and PHP_INT_MAX define the native range.
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int64();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(42);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(42, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('int64() accepts PHP_INT_MAX')]
+    public function test_int64_accepts_php_int_max(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int64() accepts the maximum
+        // PHP integer value (PHP_INT_MAX)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int64();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(PHP_INT_MAX);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(PHP_INT_MAX, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('int64() accepts PHP_INT_MIN')]
+    public function test_int64_accepts_php_int_min(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int64() accepts the minimum
+        // PHP integer value (PHP_INT_MIN)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::int()->int64();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(PHP_INT_MIN);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(PHP_INT_MIN, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // Custom Constraints
     //
     // ----------------------------------------------------------------

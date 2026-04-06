@@ -1822,6 +1822,295 @@ class ValidateNumberTest extends TestCase
 
     // ================================================================
     //
+    // float Format
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('float() accepts a value within single-precision range')]
+    public function test_float_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that float() accepts values in
+        // the IEEE 754 single-precision float range
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->float();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(3.14);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(3.14, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('float() accepts zero')]
+    public function test_float_accepts_zero(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that float() accepts zero
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->float();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(0);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('float() accepts an integer within single-precision range')]
+    public function test_float_accepts_integer(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that float() accepts integer
+        // values that fit in the single-precision range
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->float();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(42);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(42, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('float() rejects a value exceeding single-precision range')]
+    public function test_float_rejects_out_of_range(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that float() rejects values
+        // that exceed the IEEE 754 single-precision
+        // maximum magnitude (~3.4028235E+38)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->float();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(3.5E+38);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/out_of_range',
+                    'path'    => [],
+                    'message' => 'Value must fit in an IEEE 754 single-precision (32-bit) float',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('float() rejects NAN')]
+    public function test_float_rejects_nan(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that float() rejects NAN
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->float();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse(NAN);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
+    // double Format
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('double() accepts a float value')]
+    public function test_double_accepts_float(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that double() accepts any PHP
+        // float value since PHP floats are already IEEE 754
+        // double-precision
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->double();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(3.14159265358979);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(3.14159265358979, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('double() accepts an integer value')]
+    public function test_double_accepts_integer(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that double() accepts integer
+        // values (PHP's number type covers both int and
+        // float)
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::number()->double();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse(42);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(42, $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // Custom Constraints
     //
     // ----------------------------------------------------------------

@@ -1150,6 +1150,253 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
 
     // ================================================================
     //
+    // OAS Format Values
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('integer with format int32 accepts in-range value')]
+    public function test_integer_int32_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "int32" on an integer
+        // schema is imported as the int32() constraint
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "integer",
+                "format": "int32"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            42,
+            $schema->parse(42),
+        );
+    }
+
+    #[TestDox('integer with format int32 rejects out-of-range value')]
+    public function test_integer_int32_rejects_out_of_range(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "int32" rejects values
+        // outside the 32-bit signed integer range
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "integer",
+                "format": "int32"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+        $result = $schema->safeParse(3_000_000_000);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    #[TestDox('integer with format int64 accepts value')]
+    public function test_integer_int64_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "int64" on an integer
+        // schema is imported as the int64() constraint
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "integer",
+                "format": "int64"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            PHP_INT_MAX,
+            $schema->parse(PHP_INT_MAX),
+        );
+    }
+
+    #[TestDox('number with format float accepts in-range value')]
+    public function test_number_float_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "float" on a number
+        // schema is imported as the float() constraint
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "number",
+                "format": "float"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            3.14,
+            $schema->parse(3.14),
+        );
+    }
+
+    #[TestDox('number with format float rejects out-of-range value')]
+    public function test_number_float_rejects_out_of_range(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "float" rejects values
+        // outside the IEEE 754 single-precision range
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "number",
+                "format": "float"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+        $result = $schema->safeParse(3.5E+38);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+    }
+
+    #[TestDox('number with format double accepts value')]
+    public function test_number_double_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "double" on a number
+        // schema is imported as the double() constraint
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "number",
+                "format": "double"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            1.7976931348623E+308,
+            $schema->parse(1.7976931348623E+308),
+        );
+    }
+
+    #[TestDox('string with format password accepts any string')]
+    public function test_string_password_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that format "password" on a string
+        // schema is imported as the password() marker
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "string",
+                "format": "password"
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            's3cret!',
+            $schema->parse('s3cret!'),
+        );
+    }
+
+    // ================================================================
+    //
     // Array and Tuple Schemas
     //
     // ----------------------------------------------------------------

@@ -42,7 +42,9 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Schemas\Builtins;
 
 use StusDevKit\ValidationKit\Coercions\CoerceToNumber;
+use StusDevKit\ValidationKit\Constraints\NumericDoubleConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericFiniteConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericFloatConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
@@ -246,6 +248,38 @@ class NumberSchema extends BaseSchema
     {
         return $this->withConstraint(
             new NumericFiniteConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the value to fit in an IEEE 754
+     * single-precision (32-bit) float
+     *
+     * Corresponds to the OpenAPI `format: float` keyword.
+     * Valid range: approximately +/-3.4028235E+38.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function float(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new NumericFloatConstraint(error: $error),
+        );
+    }
+
+    /**
+     * require the value to fit in an IEEE 754
+     * double-precision (64-bit) float
+     *
+     * Corresponds to the OpenAPI `format: double` keyword.
+     * On PHP all floats are double-precision, so this is
+     * effectively a no-op. The constraint exists to
+     * support round-trip JSON Schema / OpenAPI export.
+     */
+    public function double(): static
+    {
+        return $this->withConstraint(
+            new NumericDoubleConstraint(),
         );
     }
 

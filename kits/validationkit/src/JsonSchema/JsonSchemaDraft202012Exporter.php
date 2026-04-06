@@ -48,8 +48,12 @@ use StusDevKit\ValidationKit\Constraints\ArrayExactLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayMinLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\ArrayUniqueItemsConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericDoubleConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericFloatConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericInt32Constraint;
+use StusDevKit\ValidationKit\Constraints\NumericInt64Constraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
@@ -73,6 +77,7 @@ use StusDevKit\ValidationKit\Constraints\StringIsRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMinLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\StringPasswordConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRelativeJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringTimeConstraint;
@@ -1040,6 +1045,32 @@ class JsonSchemaDraft202012Exporter
 
         if ($step instanceof StringIsRegexConstraint) {
             $output->format = 'regex';
+            return $output;
+        }
+
+        if ($step instanceof StringPasswordConstraint) {
+            $output->format = 'password';
+            return $output;
+        }
+
+        // numeric format constraints
+        if ($step instanceof NumericInt32Constraint) {
+            $output->format = 'int32';
+            return $output;
+        }
+
+        if ($step instanceof NumericInt64Constraint) {
+            $output->format = 'int64';
+            return $output;
+        }
+
+        if ($step instanceof NumericFloatConstraint) {
+            $output->format = 'float';
+            return $output;
+        }
+
+        if ($step instanceof NumericDoubleConstraint) {
+            $output->format = 'double';
             return $output;
         }
 

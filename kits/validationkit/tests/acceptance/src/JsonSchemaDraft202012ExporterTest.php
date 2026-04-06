@@ -798,6 +798,247 @@ class JsonSchemaDraft202012ExporterTest extends TestCase
 
     // ================================================================
     //
+    // OAS Format Values
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('exports int32 format')]
+    public function test_exports_int32_format(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int32() exports as
+        // format: int32
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::int()->int32(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'integer',
+                'format' => 'int32',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('exports int64 format')]
+    public function test_exports_int64_format(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that int64() exports as
+        // format: int64
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::int()->int64(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'integer',
+                'format' => 'int64',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('exports float format')]
+    public function test_exports_float_format(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that float() exports as
+        // format: float
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::number()->float(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'number',
+                'format' => 'float',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('exports double format')]
+    public function test_exports_double_format(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that double() exports as
+        // format: double
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::number()->double(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'number',
+                'format' => 'double',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('exports password format')]
+    public function test_exports_password_format(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that password() exports as
+        // format: password
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::string()->password(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            (object) [
+                '$schema' => self::SCHEMA_URI,
+                'type' => 'string',
+                'format' => 'password',
+            ],
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // Array schema
     //
     // ----------------------------------------------------------------

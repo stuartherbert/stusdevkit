@@ -3866,6 +3866,89 @@ class ValidateStringTest extends TestCase
 
     // ================================================================
     //
+    // password Format
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('password() accepts any string value')]
+    public function test_password_accepts_any_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that password() is a no-op marker
+        // that accepts any string — it is purely a UI hint
+        // for the OpenAPI format: password annotation
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->password();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('s3cret!');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('s3cret!', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('password() accepts an empty string')]
+    public function test_password_accepts_empty_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that password() does not impose
+        // any length or content restrictions
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::string()->password();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('', $actualResult);
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // Custom Constraints
     //
     // ----------------------------------------------------------------

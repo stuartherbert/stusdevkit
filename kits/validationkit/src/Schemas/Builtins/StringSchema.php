@@ -60,6 +60,7 @@ use StusDevKit\ValidationKit\Constraints\StringIsRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMaxLengthConstraint;
 use StusDevKit\ValidationKit\Constraints\StringMinLengthConstraint;
+use StusDevKit\ValidationKit\Constraints\StringPasswordConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRegexConstraint;
 use StusDevKit\ValidationKit\Constraints\StringRelativeJsonPointerConstraint;
 use StusDevKit\ValidationKit\Constraints\StringStartsWithConstraint;
@@ -538,6 +539,21 @@ class StringSchema extends BaseSchema
     {
         return $this->withConstraint(
             new StringIsRegexConstraint(error: $error),
+        );
+    }
+
+    /**
+     * mark this string as a password field
+     *
+     * Corresponds to the OpenAPI `format: password`
+     * annotation. This is a UI hint only — no validation
+     * is performed. The marker constraint allows the
+     * JSON Schema exporter to emit `format: password`.
+     */
+    public function password(): static
+    {
+        return $this->withConstraint(
+            new StringPasswordConstraint(),
         );
     }
 

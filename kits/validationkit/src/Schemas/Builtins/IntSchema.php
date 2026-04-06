@@ -44,6 +44,8 @@ namespace StusDevKit\ValidationKit\Schemas\Builtins;
 use StusDevKit\ValidationKit\Coercions\CoerceToInt;
 use StusDevKit\ValidationKit\Constraints\NumericGtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericGteConstraint;
+use StusDevKit\ValidationKit\Constraints\NumericInt32Constraint;
+use StusDevKit\ValidationKit\Constraints\NumericInt64Constraint;
 use StusDevKit\ValidationKit\Constraints\NumericLtConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericLteConstraint;
 use StusDevKit\ValidationKit\Constraints\NumericMultipleOfConstraint;
@@ -222,6 +224,37 @@ class IntSchema extends BaseSchema
                 value: $value,
                 error: $error,
             ),
+        );
+    }
+
+    /**
+     * require the value to fit in a 32-bit signed integer
+     *
+     * Corresponds to the OpenAPI `format: int32` keyword.
+     * Valid range: -2,147,483,648 to 2,147,483,647.
+     *
+     * @param ErrorCallback|null $error
+     */
+    public function int32(?callable $error = null): static
+    {
+        return $this->withConstraint(
+            new NumericInt32Constraint(error: $error),
+        );
+    }
+
+    /**
+     * require the value to fit in a 64-bit signed integer
+     *
+     * Corresponds to the OpenAPI `format: int64` keyword.
+     * On 64-bit PHP this is effectively a no-op because
+     * PHP's native int type is already 64-bit. The
+     * constraint exists to support round-trip JSON
+     * Schema / OpenAPI export.
+     */
+    public function int64(): static
+    {
+        return $this->withConstraint(
+            new NumericInt64Constraint(),
         );
     }
 

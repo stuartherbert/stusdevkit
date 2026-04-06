@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- add further JSON schema constraints ([67c6824](https://github.com/stuartherbert/stusdevkit/commit/67c6824)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for resolving references during JSON schema import ([ce6db71](https://github.com/stuartherbert/stusdevkit/commit/ce6db71)) — Stuart Herbert <stuart@stuartherbert.com>
 - upgrade JsonSchemaRegistry capabilities ([61a7de2](https://github.com/stuartherbert/stusdevkit/commit/61a7de2)) — Stuart Herbert <stuart@stuartherbert.com>
 - added JsonSchemaLoader ([726a4f3](https://github.com/stuartherbert/stusdevkit/commit/726a4f3)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -71,7 +72,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- StackOfStrings::toArray() now returns the internal data in LIFO order ([2692652](https://github.com/stuartherbert/stusdevkit/commit/2692652)) — Stuart Herbert <stuart@stuartherbert.com>
+- StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 

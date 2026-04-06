@@ -101,7 +101,7 @@ class JsonSchemaDraft202012Importer
      *
      * @var array<string, string>
      */
-    private const FORMAT_METHODS = [
+    private const STRING_FORMAT_METHODS = [
         'email'                 => 'email',
         'uri'                   => 'url',
         'uuid'                  => 'uuid',
@@ -121,6 +121,27 @@ class JsonSchemaDraft202012Importer
         'json-pointer'          => 'jsonPointer',
         'relative-json-pointer' => 'relativeJsonPointer',
         'regex'                 => 'isRegex',
+        'password'              => 'password',
+    ];
+
+    /**
+     * integer format values that map to builder methods
+     *
+     * @var array<string, string>
+     */
+    private const INT_FORMAT_METHODS = [
+        'int32' => 'int32',
+        'int64' => 'int64',
+    ];
+
+    /**
+     * number format values that map to builder methods
+     *
+     * @var array<string, string>
+     */
+    private const NUMBER_FORMAT_METHODS = [
+        'float'  => 'float',
+        'double' => 'double',
     ];
 
     // ================================================================
@@ -632,7 +653,53 @@ class JsonSchemaDraft202012Importer
         StringSchema $schema,
         string $format,
     ): StringSchema {
-        $method = self::FORMAT_METHODS[$format] ?? null;
+        $method = self::STRING_FORMAT_METHODS[$format] ?? null;
+
+        if ($method !== null) {
+            return $schema->{$method}();
+        }
+
+        // unknown format — store as metadata so it
+        // survives a round-trip
+        return $schema->withMetadata(
+            data: ['format' => $format],
+        );
+    }
+
+    /**
+     * apply a format keyword to an integer schema
+     *
+     * Known formats (int32, int64) are mapped to builder
+     * methods. Unknown formats are stored as metadata.
+     */
+    private function applyIntFormat(
+        IntSchema $schema,
+        string $format,
+    ): IntSchema {
+        $method = self::INT_FORMAT_METHODS[$format] ?? null;
+
+        if ($method !== null) {
+            return $schema->{$method}();
+        }
+
+        // unknown format — store as metadata so it
+        // survives a round-trip
+        return $schema->withMetadata(
+            data: ['format' => $format],
+        );
+    }
+
+    /**
+     * apply a format keyword to a number schema
+     *
+     * Known formats (float, double) are mapped to builder
+     * methods. Unknown formats are stored as metadata.
+     */
+    private function applyNumberFormat(
+        NumberSchema $schema,
+        string $format,
+    ): NumberSchema {
+        $method = self::NUMBER_FORMAT_METHODS[$format] ?? null;
 
         if ($method !== null) {
             return $schema->{$method}();
@@ -657,6 +724,17 @@ class JsonSchemaDraft202012Importer
             jsonSchema: $schema,
         );
 
+        // format (int32, int64)
+        if (
+            isset($schema->format)
+            && is_string($schema->format)
+        ) {
+            $result = $this->applyIntFormat(
+                schema: $result,
+                format: $schema->format,
+            );
+        }
+
         return $this->applyMetadata(
             schema: $result,
             jsonSchema: $schema,
@@ -678,6 +756,17 @@ class JsonSchemaDraft202012Importer
             schema: $result,
             jsonSchema: $schema,
         );
+
+        // format (float, double)
+        if (
+            isset($schema->format)
+            && is_string($schema->format)
+        ) {
+            $result = $this->applyNumberFormat(
+                schema: $result,
+                format: $schema->format,
+            );
+        }
 
         return $this->applyMetadata(
             schema: $result,
