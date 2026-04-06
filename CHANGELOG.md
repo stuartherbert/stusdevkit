@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- add support for resolving references during JSON schema import ([6ac42ae](https://github.com/stuartherbert/stusdevkit/commit/6ac42ae)) — Stuart Herbert <stuart@stuartherbert.com>
+- add support for resolving references during JSON schema import ([ce6db71](https://github.com/stuartherbert/stusdevkit/commit/ce6db71)) — Stuart Herbert <stuart@stuartherbert.com>
 - upgrade JsonSchemaRegistry capabilities ([61a7de2](https://github.com/stuartherbert/stusdevkit/commit/61a7de2)) — Stuart Herbert <stuart@stuartherbert.com>
 - added JsonSchemaLoader ([726a4f3](https://github.com/stuartherbert/stusdevkit/commit/726a4f3)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for `contentEncoding`, `contentMediaType` and `contentSchema` ([69ed395](https://github.com/stuartherbert/stusdevkit/commit/69ed395)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -68,6 +68,10 @@ This CHANGELOG is automatically compiled.
 
 ### Bug Fixes
 
+
+#### CollectionsKit
+
+- StackOfStrings::toArray() now returns the internal data in LIFO order ([2692652](https://github.com/stuartherbert/stusdevkit/commit/2692652)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 

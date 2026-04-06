@@ -156,6 +156,16 @@ class CollectionAsStack extends CollectionOfAnything
         return $this->data[array_key_last($this->data)];
     }
 
+    /**
+     * return the stack values as an array in LIFO order
+     *
+     * @return array<int, TValue>
+     */
+    public function toArray(): array
+    {
+        return array_reverse($this->data);
+    }
+
     // ================================================================
     //
     // IteratorAggregate interface (LIFO override)

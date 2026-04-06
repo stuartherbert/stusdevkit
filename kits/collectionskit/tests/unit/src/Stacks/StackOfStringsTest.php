@@ -482,6 +482,38 @@ class StackOfStringsTest extends TestCase
 
     }
 
+    #[TestDox('toArray returns values in LIFO order')]
+    public function test_to_array_returns_lifo_order(): void
+    {
+        // -----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that toArray() returns the elements in
+        // LIFO order (last pushed first), mirroring the behavior
+        // of pop() and the iterator
+
+        // -----------------------------------------------------------------
+        // setup your test
+
+        $unit = new StackOfStrings();
+        $unit->push('first');
+        $unit->push('second');
+        $unit->push('third');
+
+        // -----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->toArray();
+
+        // -----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            ['third', 'second', 'first'],
+            $result,
+        );
+    }
+
     #[TestDox('iteration does not modify the stack')]
     public function test_iteration_does_not_modify(): void
     {
