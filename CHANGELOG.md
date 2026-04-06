@@ -20,13 +20,9 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
-#### MissingBitsKit
-
-- added uri_resolve_reference ([ec21e20](https://github.com/stuartherbert/stusdevkit/commit/ec21e20)) — Stuart Herbert <stuart@stuartherbert.com>
-- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- added JsonSchemaLoader ([4604eae](https://github.com/stuartherbert/stusdevkit/commit/4604eae)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for `contentEncoding`, `contentMediaType` and `contentSchema` ([69ed395](https://github.com/stuartherbert/stusdevkit/commit/69ed395)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for unevaluatedProperties and unevaluatedItems ([0191c78](https://github.com/stuartherbert/stusdevkit/commit/0191c78)) — Stuart Herbert <stuart@stuartherbert.com>
 - add a bunch more JSON Schema string formats ([0111ce5](https://github.com/stuartherbert/stusdevkit/commit/0111ce5)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -45,6 +41,11 @@ This CHANGELOG is automatically compiled.
 - add Validate::nullish() ([f3e7be5](https://github.com/stuartherbert/stusdevkit/commit/f3e7be5)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial code commit ([319c6f6](https://github.com/stuartherbert/stusdevkit/commit/319c6f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingBitsKit
+
+- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 
