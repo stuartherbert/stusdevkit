@@ -41,7 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\CollectionsKit\Lists;
 
-use StusDevKit\CollectionsKit\CollectionOfAnything;
+use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Validators\RejectNullValue;
 
 /**
@@ -77,9 +77,9 @@ use StusDevKit\CollectionsKit\Validators\RejectNullValue;
  * @see https://github.com/phpstan/phpstan/discussions/6731
  *
  * @template TValue of array|bool|callable|float|int|object|string
- * @extends CollectionOfAnything<int, TValue>
+ * @extends AccessibleCollection<int, TValue>
  */
-class CollectionAsList extends CollectionOfAnything
+class CollectionAsList extends AccessibleCollection
 {
     // ================================================================
     //

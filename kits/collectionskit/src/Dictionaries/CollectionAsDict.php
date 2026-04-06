@@ -42,7 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
 use RuntimeException;
-use StusDevKit\CollectionsKit\CollectionOfAnything;
+use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Validators\RejectNullValue;
 
 /**
@@ -79,9 +79,9 @@ use StusDevKit\CollectionsKit\Validators\RejectNullValue;
  *
  * @template TKey of array-key
  * @template TValue of array|bool|callable|float|int|object|string
- * @extends CollectionOfAnything<TKey,TValue>
+ * @extends AccessibleCollection<TKey,TValue>
  */
-class CollectionAsDict extends CollectionOfAnything
+class CollectionAsDict extends AccessibleCollection
 {
     // ================================================================
     //

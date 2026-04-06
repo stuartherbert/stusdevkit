@@ -42,11 +42,8 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Stacks;
 
 use ArrayIterator;
-use Countable;
-use IteratorAggregate;
+use StusDevKit\CollectionsKit\CollectionOfAnything;
 use StusDevKit\CollectionsKit\Exceptions\EmptyStackException;
-
-use function StusDevKit\MissingBitsKit\get_class_basename;
 
 /**
  * CollectionAsStack holds a collection of data as a
@@ -62,18 +59,10 @@ use function StusDevKit\MissingBitsKit\get_class_basename;
  * without modifying the stack.
  *
  * @template TValue of array|bool|callable|float|int|object|string
- * @implements IteratorAggregate<int, TValue>
+ * @extends CollectionOfAnything<int, TValue>
  */
-class CollectionAsStack implements Countable, IteratorAggregate
+class CollectionAsStack extends CollectionOfAnything
 {
-    /**
-     * @param array<int, TValue> $data
-     */
-    public function __construct(
-        protected array $data = [],
-    ) {
-    }
-
     // ================================================================
     //
     // Data Management
@@ -169,18 +158,7 @@ class CollectionAsStack implements Countable, IteratorAggregate
 
     // ================================================================
     //
-    // Countable interface
-    //
-    // ----------------------------------------------------------------
-
-    public function count(): int
-    {
-        return count($this->data);
-    }
-
-    // ================================================================
-    //
-    // IteratorAggregate interface
+    // IteratorAggregate interface (LIFO override)
     //
     // ----------------------------------------------------------------
 
@@ -194,30 +172,5 @@ class CollectionAsStack implements Countable, IteratorAggregate
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator(array_reverse($this->data));
-    }
-
-    // ================================================================
-    //
-    // Logic helpers
-    //
-    // ----------------------------------------------------------------
-
-    public function empty(): bool
-    {
-        return $this->data === [];
-    }
-
-    // ================================================================
-    //
-    // Internal helpers
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * @return non-empty-string
-     */
-    protected function getCollectionTypeAsString(): string
-    {
-        return get_class_basename(static::class);
     }
 }

@@ -40,6 +40,7 @@ namespace StusDevKit\CollectionsKit\Tests\Unit\Stacks;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use StusDevKit\CollectionsKit\CollectionOfAnything;
 use StusDevKit\CollectionsKit\Exceptions\EmptyStackException;
 use StusDevKit\CollectionsKit\Stacks\StackOfStrings;
 
@@ -71,6 +72,10 @@ class StackOfStringsTest extends TestCase
 
         $this->assertInstanceOf(
             StackOfStrings::class,
+            $unit,
+        );
+        $this->assertInstanceOf(
+            CollectionOfAnything::class,
             $unit,
         );
         $this->assertCount(0, $unit);

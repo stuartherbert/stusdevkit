@@ -44,41 +44,38 @@ namespace StusDevKit\CollectionsKit;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use RuntimeException;
 use StusDevKit\CollectionsKit\Contracts\Arrayable;
 use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
 
+use function StusDevKit\MissingBitsKit\get_class_basename;
+
 /**
- * CollectionOfAnything is the base class for all CollectionsKit collections.
+ * CollectionOfAnything is the base class for all
+ * CollectionsKit collections.
  *
- * Most of the time, you should not extend this class directly. Extend
- * CollectionAsList, CollectionAsDict, or one of their child classes.
+ * It provides storage, counting, iteration, and array
+ * conversion. Extend AccessibleCollection (not this
+ * class directly) for collections that need full
+ * element access (first/last/merge/copy). Extend
+ * CollectionAsStack for LIFO collections.
  *
  * NOTES:
  *
  * - you cannot store NULL values in any collection
- * - if you add methods to this class, make sure you write unit tests
- *   in `CollectionOfAnythingTest`
- * - if you add methods to this class, make sure you write new unit tests
- *   for all the child classes too
  *
  * PHPSTAN NOTE:
  *
- * This class has template parameters (TKey, TValue). When you
- * create an empty instance (e.g. `new CollectionOfAnything()`),
- * PHPStan resolves these templates as `*NEVER*` because the
- * empty array `[]` has no elements to infer types from. This
- * causes false errors on subsequent method calls like
- * `mergeArray()` or `get()`.
+ * This class has template parameters (TKey, TValue).
+ * When you create an empty instance (e.g.
+ * `new CollectionOfAnything()`), PHPStan resolves
+ * these templates as `*NEVER*` because the empty
+ * array `[]` has no elements to infer types from.
  *
- * To work around this, add a `@var` annotation when creating
- * empty instances:
+ * To work around this, add a `@var` annotation when
+ * creating empty instances:
  *
  *     // @var CollectionOfAnything<int, string> $unit
  *     $unit = new CollectionOfAnything();
- *
- * This is a known PHPStan limitation. There is no support for
- * template default types yet.
  *
  * @see https://github.com/phpstan/phpstan/issues/5065
  * @see https://github.com/phpstan/phpstan/issues/4801
@@ -145,125 +142,6 @@ class CollectionOfAnything implements Arrayable, Countable, IteratorAggregate
 
     // ================================================================
     //
-    // Data Management
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * @param static|array<TKey, TValue> $input
-     */
-    public function merge(self|array $input): static
-    {
-        // special case
-        if (is_array($input)) {
-            return $this->mergeArray($input);
-        }
-
-        // general case
-        return $this->mergeSelf($input);
-    }
-
-    /**
-     * @param array<TKey, TValue> $input
-     */
-    public function mergeArray(array $input): static
-    {
-        RejectNullArrayValues::check(
-            data: $input,
-            collectionType: $this->getCollectionTypeAsString(),
-        );
-
-        $this->data = [
-            ...$this->data,
-            ...$input,
-        ];
-
-        return $this;
-    }
-
-    /**
-     * @param CollectionOfAnything<TKey,TValue> $input
-     */
-    public function mergeSelf(self $input): static
-    {
-        $this->data = [
-            ...$this->data,
-            ...$input->toArray(),
-        ];
-
-        return $this;
-    }
-
-    // ================================================================
-    //
-    // Accessors
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * @return TValue|null
-     */
-    public function maybeFirst(): mixed
-    {
-        $firstKey = array_key_first($this->data);
-        if ($firstKey === null) {
-            return null;
-        }
-
-        return $this->data[$firstKey];
-    }
-
-    /**
-     * @return TValue
-     */
-    public function first(): mixed
-    {
-        $firstValue = $this->maybeFirst();
-        if ($firstValue !== null) {
-            return $firstValue;
-        }
-
-        // uh oh - we're an empty collection
-        throw new RuntimeException($this->getCollectionTypeAsString() . " is empty");
-    }
-
-    /**
-     * @return TValue|null
-     */
-    public function maybeLast(): mixed
-    {
-        $firstKey = array_key_last($this->data);
-        if ($firstKey === null) {
-            return null;
-        }
-
-        return $this->data[$firstKey];
-    }
-
-    /**
-     * @return TValue
-     */
-    public function last(): mixed
-    {
-        $firstValue = $this->maybeLast();
-        if ($firstValue !== null) {
-            return $firstValue;
-        }
-
-        // uh oh - we're an empty collection
-        throw new RuntimeException($this->getCollectionTypeAsString() . " is empty");
-    }
-
-    /**
-     * @return static<TKey,TValue>
-     */
-    public function copy(): static
-    {
-        return new static($this->data);
-    }
-
-    // ================================================================
-    //
     // Logic helpers
     //
     // ----------------------------------------------------------------
@@ -279,8 +157,11 @@ class CollectionOfAnything implements Arrayable, Countable, IteratorAggregate
     //
     // ----------------------------------------------------------------
 
+    /**
+     * @return non-empty-string
+     */
     public function getCollectionTypeAsString(): string
     {
-        return basename(str_replace("\\", "/", static::class));
+        return get_class_basename(static::class);
     }
 }

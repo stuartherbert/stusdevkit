@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- added CollectionAsStack and StackOfStrings ([d73f966](https://github.com/stuartherbert/stusdevkit/commit/d73f966)) — Stuart Herbert <stuart@stuartherbert.com>
+- added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
 
@@ -98,6 +98,10 @@ This CHANGELOG is automatically compiled.
 ### Refactoring
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- introduce AccessibleCollection intermediate class ([86e61e8](https://github.com/stuartherbert/stusdevkit/commit/86e61e8)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 

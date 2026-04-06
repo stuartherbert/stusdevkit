@@ -42,11 +42,11 @@ use ArrayIterator;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use StusDevKit\CollectionsKit\CollectionOfAnything;
+use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
-#[TestDox('CollectionOfAnything')]
-class CollectionOfAnythingTest extends TestCase
+#[TestDox('AccessibleCollection')]
+class AccessibleCollectionTest extends TestCase
 {
     // ================================================================
     //
@@ -71,12 +71,12 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(CollectionOfAnything::class, $unit);
+        $this->assertInstanceOf(AccessibleCollection::class, $unit);
         $this->assertCount(0, $unit);
     }
 
@@ -97,7 +97,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
 
         // ----------------------------------------------------------------
         // test the results
@@ -127,7 +127,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
 
         // ----------------------------------------------------------------
         // test the results
@@ -154,7 +154,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -180,7 +180,7 @@ class CollectionOfAnythingTest extends TestCase
         // setup your test
 
         $expectedData = ['alpha', 'bravo', 'charlie'];
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -211,7 +211,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -236,7 +236,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -261,7 +261,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -292,7 +292,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo']);
+        $unit = new AccessibleCollection(['alpha', 'bravo']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -318,7 +318,7 @@ class CollectionOfAnythingTest extends TestCase
         // setup your test
 
         $expectedData = ['alpha', 'bravo', 'charlie'];
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
         $actualData = [];
 
         // ----------------------------------------------------------------
@@ -346,7 +346,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
         $iterationCount = 0;
 
         // ----------------------------------------------------------------
@@ -378,7 +378,7 @@ class CollectionOfAnythingTest extends TestCase
             'first' => 'alpha',
             'second' => 'bravo',
         ];
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
         $actualData = [];
 
         // ----------------------------------------------------------------
@@ -412,7 +412,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo']);
+        $unit = new AccessibleCollection(['alpha', 'bravo']);
         $toMerge = ['charlie', 'delta'];
 
         // ----------------------------------------------------------------
@@ -442,8 +442,8 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo']);
-        $other = new CollectionOfAnything(['charlie', 'delta']);
+        $unit = new AccessibleCollection(['alpha', 'bravo']);
+        $other = new AccessibleCollection(['charlie', 'delta']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -478,7 +478,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
+        $unit = new AccessibleCollection(['alpha']);
         $toMerge = ['bravo', 'charlie'];
 
         // ----------------------------------------------------------------
@@ -508,8 +508,8 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        /** @var CollectionOfAnything<int, string> $unit */
-        $unit = new CollectionOfAnything();
+        /** @var AccessibleCollection<int, string> $unit */
+        $unit = new AccessibleCollection();
         $toMerge = ['alpha', 'bravo'];
 
         // ----------------------------------------------------------------
@@ -536,7 +536,7 @@ class CollectionOfAnythingTest extends TestCase
         // setup your test
 
         $expectedData = ['alpha', 'bravo'];
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -562,7 +562,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything([
+        $unit = new AccessibleCollection([
             'name' => 'alpha',
             'value' => 100,
         ]);
@@ -593,7 +593,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
+        $unit = new AccessibleCollection(['alpha']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -624,8 +624,8 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
-        $other = new CollectionOfAnything(['bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha']);
+        $other = new AccessibleCollection(['bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -654,8 +654,8 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
-        $other = new CollectionOfAnything(['bravo']);
+        $unit = new AccessibleCollection(['alpha']);
+        $other = new AccessibleCollection(['bravo']);
         $expectedOtherData = ['bravo'];
 
         // ----------------------------------------------------------------
@@ -682,8 +682,8 @@ class CollectionOfAnythingTest extends TestCase
         // setup your test
 
         $expectedData = ['alpha', 'bravo'];
-        $unit = new CollectionOfAnything($expectedData);
-        $other = new CollectionOfAnything();
+        $unit = new AccessibleCollection($expectedData);
+        $other = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -714,7 +714,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -739,7 +739,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -765,7 +765,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything([
+        $unit = new AccessibleCollection([
             'x' => 'alpha',
             'y' => 'bravo',
         ]);
@@ -799,7 +799,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -824,13 +824,13 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('CollectionOfAnything is empty');
+        $this->expectExceptionMessage('AccessibleCollection is empty');
 
         $unit->first();
     }
@@ -853,7 +853,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -878,7 +878,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -904,7 +904,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything([
+        $unit = new AccessibleCollection([
             'x' => 'alpha',
             'y' => 'bravo',
         ]);
@@ -938,7 +938,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha', 'bravo', 'charlie']);
+        $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -963,13 +963,13 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('CollectionOfAnything is empty');
+        $this->expectExceptionMessage('AccessibleCollection is empty');
 
         $unit->last();
     }
@@ -993,7 +993,7 @@ class CollectionOfAnythingTest extends TestCase
         // setup your test
 
         $expectedData = ['alpha', 'bravo', 'charlie'];
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1003,7 +1003,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(CollectionOfAnything::class, $copy);
+        $this->assertInstanceOf(AccessibleCollection::class, $copy);
         $this->assertNotSame($unit, $copy);
         $this->assertSame($expectedData, $copy->toArray());
     }
@@ -1021,7 +1021,7 @@ class CollectionOfAnythingTest extends TestCase
         // setup your test
 
         $originalData = ['alpha', 'bravo'];
-        $unit = new CollectionOfAnything($originalData);
+        $unit = new AccessibleCollection($originalData);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1051,7 +1051,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1084,7 +1084,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1109,7 +1109,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
+        $unit = new AccessibleCollection(['alpha']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1140,7 +1140,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything();
+        $unit = new AccessibleCollection();
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1150,7 +1150,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertSame('CollectionOfAnything', $actualResult);
+        $this->assertSame('AccessibleCollection', $actualResult);
     }
 
     // ================================================================
@@ -1171,7 +1171,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['only-item']);
+        $unit = new AccessibleCollection(['only-item']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1215,7 +1215,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new CollectionOfAnything($expectedData);
+        $unit = new AccessibleCollection($expectedData);
 
         // ----------------------------------------------------------------
         // test the results
@@ -1242,8 +1242,8 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
-        $other = new CollectionOfAnything(['delta']);
+        $unit = new AccessibleCollection(['alpha']);
+        $other = new AccessibleCollection(['delta']);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1285,7 +1285,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        new CollectionOfAnything(['alpha', null, 'bravo']); // @phpstan-ignore argument.type
+        new AccessibleCollection(['alpha', null, 'bravo']); // @phpstan-ignore argument.type
     }
 
     #[TestDox('mergeArray() rejects array containing null')]
@@ -1302,7 +1302,7 @@ class CollectionOfAnythingTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit = new CollectionOfAnything(['alpha']);
+        $unit = new AccessibleCollection(['alpha']);
 
         // ----------------------------------------------------------------
         // perform the change
