@@ -88,8 +88,9 @@ use StusDevKit\ValidationKit\Validate;
  *   method on StringSchema.
  * - `$id`, `$anchor`, `$vocabulary`, `$dynamicRef`,
  *   `$dynamicAnchor` are not supported.
- * - `contentEncoding`, `contentMediaType` are stored
- *   as metadata.
+ * - `contentEncoding`, `contentMediaType`,
+ *   `contentSchema` are stored as metadata (annotation
+ *   only, no content validation).
  */
 class JsonSchemaDraft202012Importer
 {
@@ -1488,14 +1489,46 @@ class JsonSchemaDraft202012Importer
             );
         }
 
+        // collect passthrough metadata into a single map
+        // so that multiple keywords don't overwrite each
+        // other (withMetadata replaces, not merges)
+        /** @var array<string, mixed> $metadata */
+        $metadata = [];
+
         if (
             isset($jsonSchema->{'$comment'})
             && is_string($jsonSchema->{'$comment'})
             && $jsonSchema->{'$comment'} !== ''
         ) {
-            $schema = $schema->withMetadata(
-                data: ['$comment' => $jsonSchema->{'$comment'}],
-            );
+            $metadata['$comment'] = $jsonSchema->{'$comment'};
+        }
+
+        if (
+            isset($jsonSchema->contentEncoding)
+            && is_string($jsonSchema->contentEncoding)
+        ) {
+            $metadata['contentEncoding']
+                = $jsonSchema->contentEncoding;
+        }
+
+        if (
+            isset($jsonSchema->contentMediaType)
+            && is_string($jsonSchema->contentMediaType)
+        ) {
+            $metadata['contentMediaType']
+                = $jsonSchema->contentMediaType;
+        }
+
+        if (
+            isset($jsonSchema->contentSchema)
+            && $jsonSchema->contentSchema instanceof stdClass
+        ) {
+            $metadata['contentSchema']
+                = $jsonSchema->contentSchema;
+        }
+
+        if ($metadata !== []) {
+            $schema = $schema->withMetadata(data: $metadata);
         }
 
         return $schema;

@@ -3776,4 +3776,252 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         $this->assertTrue($result->failed());
 
     }
+
+    // ================================================================
+    //
+    // Content vocabulary — round-trip as metadata
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('contentEncoding round-trips through import and export')]
+    public function test_content_encoding_round_trip(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contentEncoding survives
+        // an import → export round-trip as metadata.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "string",
+                "contentEncoding": "base64"
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $encoded = json_encode($exported);
+        assert(is_string($encoded));
+
+        /** @var array<string, mixed> $result */
+        $result = json_decode(
+            $encoded,
+            associative: true,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertArrayHasKey(
+            'contentEncoding',
+            $result,
+        );
+        $this->assertSame(
+            'base64',
+            $result['contentEncoding'],
+        );
+
+    }
+
+    #[TestDox('contentMediaType round-trips through import and export')]
+    public function test_content_media_type_round_trip(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contentMediaType survives
+        // an import → export round-trip as metadata.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "string",
+                "contentMediaType": "image/png"
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $encoded = json_encode($exported);
+        assert(is_string($encoded));
+
+        /** @var array<string, mixed> $result */
+        $result = json_decode(
+            $encoded,
+            associative: true,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertArrayHasKey(
+            'contentMediaType',
+            $result,
+        );
+        $this->assertSame(
+            'image/png',
+            $result['contentMediaType'],
+        );
+
+    }
+
+    #[TestDox('contentSchema round-trips through import and export')]
+    public function test_content_schema_round_trip(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that contentSchema survives
+        // an import → export round-trip as metadata. The
+        // contentSchema value is stored as a raw stdClass
+        // object, not imported as a ValidationSchema.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "string",
+                "contentMediaType": "application/json",
+                "contentSchema": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" }
+                    }
+                }
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $encoded = json_encode($exported);
+        assert(is_string($encoded));
+
+        /** @var array<string, mixed> $result */
+        $result = json_decode(
+            $encoded,
+            associative: true,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertArrayHasKey(
+            'contentMediaType',
+            $result,
+        );
+        $this->assertSame(
+            'application/json',
+            $result['contentMediaType'],
+        );
+
+        $this->assertArrayHasKey(
+            'contentSchema',
+            $result,
+        );
+        /** @var array<string, mixed> $contentSchema */
+        $contentSchema = $result['contentSchema'];
+        $this->assertSame(
+            'object',
+            $contentSchema['type'],
+        );
+
+    }
+
+    #[TestDox('content vocabulary keywords coexist with $comment metadata')]
+    public function test_content_keywords_coexist_with_comment(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that content vocabulary keywords
+        // and $comment can coexist on the same schema
+        // without overwriting each other in metadata.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "string",
+                "$comment": "base64 encoded PNG",
+                "contentEncoding": "base64",
+                "contentMediaType": "image/png"
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $encoded = json_encode($exported);
+        assert(is_string($encoded));
+
+        /** @var array<string, mixed> $result */
+        $result = json_decode(
+            $encoded,
+            associative: true,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            'base64 encoded PNG',
+            $result['$comment'],
+        );
+        $this->assertSame(
+            'base64',
+            $result['contentEncoding'],
+        );
+        $this->assertSame(
+            'image/png',
+            $result['contentMediaType'],
+        );
+
+    }
 }

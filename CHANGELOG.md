@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- add support for `contentEncoding`, `contentMediaType` and `contentSchema` ([434ea5f](https://github.com/stuartherbert/stusdevkit/commit/434ea5f)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for unevaluatedProperties and unevaluatedItems ([0191c78](https://github.com/stuartherbert/stusdevkit/commit/0191c78)) — Stuart Herbert <stuart@stuartherbert.com>
 - add a bunch more JSON Schema string formats ([0111ce5](https://github.com/stuartherbert/stusdevkit/commit/0111ce5)) — Stuart Herbert <stuart@stuartherbert.com>
 - support JsonSchema `$comment` ([333df90](https://github.com/stuartherbert/stusdevkit/commit/333df90)) — Stuart Herbert <stuart@stuartherbert.com>
