@@ -25,6 +25,7 @@ list:
 init: configure-githooks docker-rebuild composer-install ## Initialize Docker dev environment
 
 claudecodekit: ## Link in Claude Code agents, skills, and hooks
+	@$(LINK_CCK_AGENT) $(CLAUDECODEKIT)/claude/all-agents/thinking-hats.md
 	@$(LINK_CCK_AGENT) $(CLAUDECODEKIT)/claude/php/agents/all-tests.md
 	@$(LINK_CCK_AGENT) $(CLAUDECODEKIT)/claude/php/agents/php-all-checks.md
 	@$(LINK_CCK_AGENT) $(CLAUDECODEKIT)/claude/php/agents/php-code-formatter.md
