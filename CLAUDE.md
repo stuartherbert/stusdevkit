@@ -78,6 +78,7 @@ To check which kits depend on other kits, search for cross-kit `use` statements 
 - `kits/*/src/Dictionaries/` - Collections that have a given identity / primary key
 - `kits/*/src/Exceptions/` - Exceptions thrown by this code library
 - `kits/*/src/Indexes/` - Collections where the stored data provides its own identity
+- `kits/*/src/Stacks/` - LIFO stack collections
 - `kits/*/src/Lists/` - Collections that have no obvious identity / primary key
 - `kits/*/src/Traits/` - Code that's shared across multiple classes
 - `kits/*/src/Validators/` - Validation helpers

@@ -119,6 +119,45 @@ $users->getIds();                        // array of UuidInterface objects
 | `IndexOfEntitiesWithStringIds` | Entities implementing `EntityWithStringId`, keyed by `getId()`. |
 | `IndexOfEntitiesWithUuids` | Entities implementing `EntityWithUuid`, keyed by `getId()`. |
 
+### Stacks
+
+A **Stack** is a last-in-first-out (LIFO) collection. Items are added with `push()` and removed with `pop()`. Only the top element is accessible — there is no random access or iteration.
+
+Use a Stack when you need to track nested scopes, undo history, or any situation where you process items in reverse order.
+
+```php
+use StusDevKit\CollectionsKit\Stacks\StackOfStrings;
+
+$stack = new StackOfStrings();
+$stack->push('first');
+$stack->push('second');
+$stack->push('third');
+
+$stack->peek();  // 'third' (does not remove)
+$stack->pop();   // 'third'
+$stack->pop();   // 'second'
+$stack->pop();   // 'first'
+```
+
+**Available classes:**
+
+| Class | Description |
+|-------|-------------|
+| `CollectionAsStack` | Base class for all stacks. Extend this to create your own. |
+| `StackOfStrings` | A LIFO stack of string values. |
+
+**Stack API:**
+
+| Method | Description |
+|--------|-------------|
+| `push($value)` | Add a value to the top of the stack. Returns `$this` for chaining. |
+| `pop()` | Remove and return the top value, or throw if empty. |
+| `maybePop()` | Remove and return the top value, or `null` if empty. |
+| `peek()` | Return the top value without removing it, or throw if empty. |
+| `maybePeek()` | Return the top value without removing it, or `null` if empty. |
+| `count()` | Number of items in the stack. |
+| `empty()` | Returns `true` if the stack has no items. |
+
 ## Choosing the Right Type
 
 | Question | Use |
@@ -126,6 +165,7 @@ $users->getIds();                        // array of UuidInterface objects
 | Does the data have no natural key? | **List** |
 | Do you want to control the key yourself? | **Dictionary** |
 | Should the key come from the data itself? | **Index** |
+| Do you need last-in-first-out access? | **Stack** |
 
 ## Common API
 
@@ -204,6 +244,17 @@ use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
  * @extends CollectionAsDict<string, MyEntity>
  */
 class DictOfMyEntities extends CollectionAsDict
+{
+}
+```
+
+```php
+use StusDevKit\CollectionsKit\Stacks\CollectionAsStack;
+
+/**
+ * @extends CollectionAsStack<MyUri>
+ */
+class StackOfUris extends CollectionAsStack
 {
 }
 ```

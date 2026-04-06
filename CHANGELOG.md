@@ -20,9 +20,13 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### CollectionsKit
+
+- added CollectionAsStack and StackOfStrings ([d73f966](https://github.com/stuartherbert/stusdevkit/commit/d73f966)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
-- added get_class_basename() ([6aeb209](https://github.com/stuartherbert/stusdevkit/commit/6aeb209)) — Stuart Herbert <stuart@stuartherbert.com>
+- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
 - added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
 - added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
