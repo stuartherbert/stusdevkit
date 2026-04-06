@@ -4701,6 +4701,62 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
 
     }
 
+    #[TestDox('$anchor on inline subschema resolves via $ref')]
+    public function test_anchor_on_inline_subschema(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // JSON Schema 2020-12 allows $anchor on any
+        // subschema, not just $defs entries. This test
+        // proves that an $anchor on a property subschema
+        // can be referenced via $ref from a sibling.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "$anchor": "name-type",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "nickname": {
+                        "$ref": "#name-type"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import($jsonSchema);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // valid: both name and nickname satisfy minLength: 1
+        $validResult = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'nickname' => 'Stu',
+        ]);
+        $this->assertFalse($validResult->failed());
+
+        // invalid: nickname fails the referenced schema's
+        // minLength: 1 constraint
+        $failResult = $schema->safeParse((object) [
+            'name' => 'Stuart',
+            'nickname' => '',
+        ]);
+        $this->assertTrue($failResult->failed());
+    }
+
     // ================================================================
     //
     // $id — round-trip export

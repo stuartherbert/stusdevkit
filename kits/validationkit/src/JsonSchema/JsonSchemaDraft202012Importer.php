@@ -97,6 +97,18 @@ use function StusDevKit\MissingBitsKit\uri_resolve_reference;
 class JsonSchemaDraft202012Importer
 {
     /**
+     * imported schemas for anchors discovered during
+     * pre-scan
+     *
+     * Keyed by `baseUri#anchor`. Populated during the
+     * import pass; read by the LazySchema closures
+     * registered during pre-scan.
+     *
+     * @var array<string, ValidationSchema<mixed>>
+     */
+    private array $anchorSchemas = [];
+
+    /**
      * string format values that map to builder methods
      *
      * @var array<string, string>
@@ -205,11 +217,8 @@ class JsonSchemaDraft202012Importer
         $registry ??= new JsonSchemaRegistry();
 
         // push root $id as base URI before registering
-        // $defs, so that anchors inside $defs resolve
-        // against the correct base. We push here (not
-        // in importSchema) because $defs registration
-        // must happen after the base URI is established
-        // but before importSchema processes the root.
+        // $defs and anchors, so that anchors resolve
+        // against the correct base.
         $hasRootId = isset($root->{'$id'})
             && is_string($root->{'$id'})
             && $root->{'$id'} !== '';
@@ -219,6 +228,15 @@ class JsonSchemaDraft202012Importer
             $rootId = $root->{'$id'};
             $registry->pushBaseUri(uri: $rootId);
         }
+
+        // pre-scan: register all $anchor declarations as
+        // lazy placeholders so that $ref can resolve them
+        // regardless of document order
+        $this->anchorSchemas = [];
+        $this->preRegisterAnchors(
+            schema: $root,
+            registry: $registry,
+        );
 
         // register $defs for $ref resolution
         if (
@@ -247,6 +265,174 @@ class JsonSchemaDraft202012Importer
         }
 
         return $result;
+    }
+
+    // ================================================================
+    //
+    // Anchor Pre-Scan
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * pre-register all `$anchor` declarations in the
+     * schema tree as lazy placeholders
+     *
+     * Walks the entire JSON tree before the main import
+     * pass, finding every `$anchor` keyword and
+     * registering it as a LazySchema in the registry.
+     * The lazy closures read from `$this->anchorSchemas`,
+     * which is populated during the import pass when each
+     * subschema is actually imported.
+     *
+     * This enables `$ref` to resolve anchors regardless
+     * of where they appear in the document (not just in
+     * `$defs`).
+     */
+    private function preRegisterAnchors(
+        stdClass $schema,
+        JsonSchemaRegistry $registry,
+    ): void {
+        // track $id for base URI scoping
+        $hasId = isset($schema->{'$id'})
+            && is_string($schema->{'$id'})
+            && $schema->{'$id'} !== '';
+
+        if ($hasId) {
+            /** @var non-empty-string $id */
+            $id = $schema->{'$id'};
+            $baseUri = $registry->currentBaseUri();
+
+            if ($baseUri !== '') {
+                /** @var non-empty-string $id */
+                $id = uri_resolve_reference(
+                    base: $baseUri,
+                    ref: $id,
+                );
+            }
+
+            $registry->pushBaseUri(uri: $id);
+        }
+
+        // register $anchor if present
+        if (
+            isset($schema->{'$anchor'})
+            && is_string($schema->{'$anchor'})
+            && $schema->{'$anchor'} !== ''
+        ) {
+            /** @var non-empty-string $anchor */
+            $anchor = $schema->{'$anchor'};
+            $baseUri = $registry->currentBaseUri();
+            $key = $baseUri . '#' . $anchor;
+
+            $registry->registerAnchor(
+                baseUri: $baseUri,
+                anchor: $anchor,
+                schema: new LazySchema(
+                    function () use ($key) {
+                        /** @var ValidationSchema<mixed> $schema */
+                        $schema = $this->anchorSchemas[$key];
+                        return $schema;
+                    },
+                ),
+            );
+        }
+
+        // recurse into all subschema locations
+        $this->preRegisterAnchorsInSubschemas(
+            schema: $schema,
+            registry: $registry,
+        );
+
+        if ($hasId) {
+            $registry->popBaseUri();
+        }
+    }
+
+    /**
+     * recurse into all JSON Schema keywords that contain
+     * subschemas
+     */
+    private function preRegisterAnchorsInSubschemas(
+        stdClass $schema,
+        JsonSchemaRegistry $registry,
+    ): void {
+        // object keywords: properties, patternProperties,
+        // dependentSchemas, $defs
+        foreach (
+            [
+                'properties',
+                'patternProperties',
+                'dependentSchemas',
+                '$defs',
+            ] as $keyword
+        ) {
+            if (
+                isset($schema->{$keyword})
+                && $schema->{$keyword} instanceof stdClass
+            ) {
+                $children = get_object_vars(
+                    $schema->{$keyword},
+                );
+                foreach ($children as $child) {
+                    if ($child instanceof stdClass) {
+                        $this->preRegisterAnchors(
+                            schema: $child,
+                            registry: $registry,
+                        );
+                    }
+                }
+            }
+        }
+
+        // array keywords: allOf, anyOf, oneOf, prefixItems
+        foreach (
+            [
+                'allOf',
+                'anyOf',
+                'oneOf',
+                'prefixItems',
+            ] as $keyword
+        ) {
+            if (
+                isset($schema->{$keyword})
+                && is_array($schema->{$keyword})
+            ) {
+                foreach ($schema->{$keyword} as $child) {
+                    if ($child instanceof stdClass) {
+                        $this->preRegisterAnchors(
+                            schema: $child,
+                            registry: $registry,
+                        );
+                    }
+                }
+            }
+        }
+
+        // single-subschema keywords
+        foreach (
+            [
+                'items',
+                'additionalProperties',
+                'unevaluatedProperties',
+                'unevaluatedItems',
+                'contains',
+                'not',
+                'if',
+                'then',
+                'else',
+                'propertyNames',
+            ] as $keyword
+        ) {
+            if (
+                isset($schema->{$keyword})
+                && $schema->{$keyword} instanceof stdClass
+            ) {
+                $this->preRegisterAnchors(
+                    schema: $schema->{$keyword},
+                    registry: $registry,
+                );
+            }
+        }
     }
 
     // ================================================================
@@ -308,17 +494,17 @@ class JsonSchemaDraft202012Importer
 
             $resolved[$name] = $importedSchema;
 
-            // register $anchor if present
+            // wire $anchor to the imported schema
+            // (anchor was pre-registered as a lazy
+            // placeholder by preRegisterAnchors)
             if (
                 isset($defBody->{'$anchor'})
                 && is_string($defBody->{'$anchor'})
                 && $defBody->{'$anchor'} !== ''
             ) {
-                $registry->registerAnchor(
-                    baseUri: $registry->currentBaseUri(),
-                    anchor: $defBody->{'$anchor'},
-                    schema: $importedSchema,
-                );
+                $key = $registry->currentBaseUri()
+                    . '#' . $defBody->{'$anchor'};
+                $this->anchorSchemas[$key] = $importedSchema;
             }
         }
     }
@@ -371,6 +557,19 @@ class JsonSchemaDraft202012Importer
             // survives a round-trip through the exporter
             if ($hasId) {
                 $result = $result->withSchemaId($id);
+            }
+
+            // wire $anchor to the imported schema
+            // (anchor was pre-registered as a lazy
+            // placeholder by preRegisterAnchors)
+            if (
+                isset($schema->{'$anchor'})
+                && is_string($schema->{'$anchor'})
+                && $schema->{'$anchor'} !== ''
+            ) {
+                $key = $registry->currentBaseUri()
+                    . '#' . $schema->{'$anchor'};
+                $this->anchorSchemas[$key] = $result;
             }
 
             return $result;
