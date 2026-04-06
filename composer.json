@@ -5,7 +5,8 @@
     "license": "BSD-3-Clause",
     "autoload": {
         "files": [
-            "kits/missingbitskit/src/object_merge.php"
+            "kits/missingbitskit/src/object_merge.php",
+            "kits/missingbitskit/src/uri_resolve_reference.php"
         ],
         "psr-4": {
             "StusDevKit\\ChangelogTool\\": "tools/ChangelogTool/src/",
