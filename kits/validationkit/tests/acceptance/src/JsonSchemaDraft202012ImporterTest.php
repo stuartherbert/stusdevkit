@@ -3009,7 +3009,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         $this->assertTrue($result->failed());
     }
 
-    #[TestDox('$ref with description sibling preserves description')]
+    #[TestDox('$ref with description sibling round-trips')]
     public function test_ref_with_description_sibling(): void
     {
         // ----------------------------------------------------------------
@@ -3017,14 +3017,8 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
 
         // Draft 2020-12 allows keywords alongside $ref.
         // This test proves that annotation siblings like
-        // description are preserved on the imported schema
-        // and survive a round-trip through the exporter.
-        //
-        // The export won't match the input exactly because
-        // import resolves $ref (inlining the referenced
-        // schema and consuming $defs). The expected output
-        // is the resolved form with the sibling description
-        // merged in.
+        // description are preserved alongside $ref through
+        // a full import → export round-trip.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -3034,6 +3028,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
 
         $jsonSchema = $this->jsonToSchema(<<<'JSON'
             {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
                 "type": "object",
                 "properties": {
                     "name": {
@@ -3041,6 +3036,7 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
                         "description": "The user's full name"
                     }
                 },
+                "additionalProperties": false,
                 "$defs": {
                     "Name": {
                         "type": "string",
@@ -3053,30 +3049,29 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $schema = $importer->import($jsonSchema);
-        $exported = $exporter->export($schema);
+        $registry = new JsonSchemaRegistry();
+        $schema = $importer->import(
+            jsonSchema: $jsonSchema,
+            registry: $registry,
+        );
+        $result = $exporter->export(
+            schema: $schema,
+            registry: $registry,
+        );
 
         // ----------------------------------------------------------------
         // test the results
 
-        // the ref is resolved inline, so the name property
-        // should contain the full string schema with the
-        // sibling description merged in
         $this->assertEquals(
-            (object) [
-                '$schema' => 'https://json-schema.org/draft/2020-12/schema',
-                'type' => 'object',
-                'properties' => (object) [
-                    'name' => (object) [
-                        'type' => 'string',
-                        'minLength' => 1,
-                        'description' => 'The user\'s full name',
-                    ],
-                ],
-                'additionalProperties' => false,
-            ],
-            $exported->toObject(),
+            $jsonSchema->toObject(),
+            $result->toObject(),
         );
+
+        // the ref's constraint must still validate
+        $failResult = $schema->safeParse((object) [
+            'name' => '',
+        ]);
+        $this->assertTrue($failResult->failed());
     }
 
     #[TestDox('$ref with validation siblings applies both')]
@@ -3725,6 +3720,69 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         $defs = $result['$defs'];
         $this->assertArrayHasKey('Address', $defs);
         $this->assertSame('object', $defs['Address']['type']);
+    }
+
+    #[TestDox('$ref round-trips through import and export')]
+    public function test_ref_round_trips(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that $ref and $defs survive a
+        // full import → export round-trip. The input and
+        // output should be identical (the exporter adds
+        // $schema and additionalProperties: false, so
+        // the expected JSON includes those).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $exporter = new JsonSchemaDraft202012Exporter();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "home": {"$ref": "#/$defs/Address"},
+                    "work": {"$ref": "#/$defs/Address"}
+                },
+                "additionalProperties": false,
+                "$defs": {
+                    "Address": {
+                        "type": "object",
+                        "properties": {
+                            "street": {"type": "string"}
+                        },
+                        "required": ["street"],
+                        "additionalProperties": false
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $registry = new JsonSchemaRegistry();
+        $schema = $importer->import(
+            jsonSchema: $jsonSchema,
+            registry: $registry,
+        );
+
+        $result = $exporter->export(
+            schema: $schema,
+            registry: $registry,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            $jsonSchema->toObject(),
+            $result->toObject(),
+        );
     }
 
     // ================================================================

@@ -368,6 +368,28 @@ class LazySchema implements ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * record the `$ref` target this schema was resolved
+     * from
+     *
+     * @param non-empty-string $ref
+     */
+    public function withRefTarget(string $ref): static
+    {
+        return $this->wrapResolved(
+            $this->resolve()->withRefTarget($ref),
+        );
+    }
+
+    /**
+     * return the `$ref` target, or null if not from a
+     * `$ref`
+     */
+    public function maybeRefTarget(): ?string
+    {
+        return $this->resolve()->maybeRefTarget();
+    }
+
+    /**
      * set the schema identifier ($id)
      *
      * @param non-empty-string $id

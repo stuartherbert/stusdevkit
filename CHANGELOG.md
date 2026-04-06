@@ -73,7 +73,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- $ref handling now matches JSON Schema Draft 2020-12 behaviour ([d9ba5e3](https://github.com/stuartherbert/stusdevkit/commit/d9ba5e3)) — Stuart Herbert <stuart@stuartherbert.com>
+- improve round-trip JSON Schema import and export ([3b69aec](https://github.com/stuartherbert/stusdevkit/commit/3b69aec)) — Stuart Herbert <stuart@stuartherbert.com>
+- $ref handling now matches JSON Schema Draft 2020-12 behaviour ([d45f497](https://github.com/stuartherbert/stusdevkit/commit/d45f497)) — Stuart Herbert <stuart@stuartherbert.com>
 - PHP associative array schemas can now be exported as JSON schema ([7c0bd28](https://github.com/stuartherbert/stusdevkit/commit/7c0bd28)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([b599573](https://github.com/stuartherbert/stusdevkit/commit/b599573)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>

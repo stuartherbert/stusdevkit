@@ -92,6 +92,7 @@ abstract class BaseSchema implements ValidationSchema
      */
     protected mixed $typeCheckError;
 
+    protected ?string $refTarget = null;
     protected ?string $schemaId = null;
     protected ?string $title = null;
     protected ?string $description = null;
@@ -143,6 +144,20 @@ abstract class BaseSchema implements ValidationSchema
         $clone = clone $this;
         $clone->hasDefault = true;
         $clone->defaultValue = $value;
+
+        return $clone;
+    }
+
+    /**
+     * record the `$ref` target this schema was resolved
+     * from
+     *
+     * @param non-empty-string $ref
+     */
+    public function withRefTarget(string $ref): static
+    {
+        $clone = clone $this;
+        $clone->refTarget = $ref;
 
         return $clone;
     }
@@ -849,6 +864,15 @@ abstract class BaseSchema implements ValidationSchema
     // Metadata Getters
     //
     // ----------------------------------------------------------------
+
+    /**
+     * return the `$ref` target, or null if this schema
+     * was not resolved from a `$ref`
+     */
+    public function maybeRefTarget(): ?string
+    {
+        return $this->refTarget;
+    }
 
     /**
      * return the schema ID, or null if none was set

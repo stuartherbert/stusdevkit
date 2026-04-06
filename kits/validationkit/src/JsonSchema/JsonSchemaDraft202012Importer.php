@@ -191,12 +191,18 @@ class JsonSchemaDraft202012Importer
      * `$defs` section is registered in a schema registry
      * to support `$ref` resolution.
      *
+     * Pass a registry to capture `$defs` entries. The
+     * same registry can then be passed to the exporter
+     * to preserve `$ref` and `$defs` during round-trip.
+     *
      * @return ValidationSchema<mixed>
      */
-    public function import(JsonSchema $jsonSchema): ValidationSchema
-    {
+    public function import(
+        JsonSchema $jsonSchema,
+        ?JsonSchemaRegistry $registry = null,
+    ): ValidationSchema {
         $root = $jsonSchema->toObject();
-        $registry = new JsonSchemaRegistry();
+        $registry ??= new JsonSchemaRegistry();
 
         // push root $id as base URI before registering
         // $defs, so that anchors inside $defs resolve
@@ -662,6 +668,10 @@ class JsonSchemaDraft202012Importer
             ref: $ref,
             registry: $registry,
         );
+
+        // store the ref target so the exporter can emit
+        // $ref instead of inlining
+        $refSchema = $refSchema->withRefTarget($ref);
 
         // check if any sibling is a validation keyword
         $hasValidationSiblings = false;

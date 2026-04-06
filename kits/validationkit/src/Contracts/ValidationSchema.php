@@ -223,6 +223,23 @@ interface ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * record the `$ref` target this schema was resolved
+     * from
+     *
+     * Stored during JSON Schema import so that the
+     * exporter can emit `$ref` instead of inlining.
+     *
+     * @param non-empty-string $ref
+     */
+    public function withRefTarget(string $ref): static;
+
+    /**
+     * return the `$ref` target, or null if this schema
+     * was not resolved from a `$ref`
+     */
+    public function maybeRefTarget(): ?string;
+
+    /**
      * set the schema identifier ($id)
      *
      * The schema ID is an absolute URI that identifies

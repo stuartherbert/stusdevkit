@@ -252,7 +252,7 @@ class JsonSchemaDraft202012Exporter
         ValidationSchema $schema,
         bool $asRef = true,
     ): stdClass {
-        // emit $ref for registered schemas
+        // emit $ref for registered schemas (object identity)
         if ($asRef && $this->refMap !== []) {
             $oid = spl_object_id($schema);
             if (isset($this->refMap[$oid])) {
@@ -268,6 +268,28 @@ class JsonSchemaDraft202012Exporter
             return $this->exportSchema(
                 $schema->resolvedSchema(),
             );
+        }
+
+        // emit $ref from stored ref target (survives
+        // cloning from withDescription etc.) — only when
+        // a registry was provided, so $defs are emitted
+        if (
+            $asRef
+            && $this->refMap !== []
+            && $schema instanceof BaseSchema
+        ) {
+            $refTarget = $schema->maybeRefTarget();
+            if ($refTarget !== null) {
+                $output = new stdClass();
+                $output->{'$ref'} = $refTarget;
+
+                // Draft 2020-12 allows annotation siblings
+                // alongside $ref — emit them
+                return $this->applyMetadata(
+                    output: $output,
+                    schema: $schema,
+                );
+            }
         }
 
         if ($schema instanceof Codec) {
