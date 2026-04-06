@@ -1349,6 +1349,17 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                    'path'    => [],
+                    'message' => 'Unevaluated property: extra',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
     }
 
     #[TestDox('unevaluatedProperties(false) accepts properties from all allOf members')]
@@ -1385,6 +1396,11 @@ class ValidateAllOfTest extends TestCase
         // test the results
 
         $this->assertFalse($result->failed());
+
+        $this->assertEquals((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+        ], $result->data());
 
     }
 
@@ -1424,6 +1440,11 @@ class ValidateAllOfTest extends TestCase
         // test the results
 
         $this->assertFalse($result->failed());
+
+        $this->assertEquals((object) [
+            'name' => 'Stuart',
+            'extra' => 42,
+        ], $result->data());
 
     }
 
@@ -1465,6 +1486,22 @@ class ValidateAllOfTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_big',
+                    'path'    => [],
+                    'message' => 'Unevaluated item at index: 0',
+                ],
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/too_big',
+                    'path'    => [],
+                    'message' => 'Unevaluated item at index: 1',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
     }
 
     #[TestDox('unevaluatedItems(false) accepts items evaluated by allOf members')]
@@ -1500,6 +1537,7 @@ class ValidateAllOfTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
+        // no unevaluated items issues should be reported
         $this->assertFalse($result->failed());
 
     }

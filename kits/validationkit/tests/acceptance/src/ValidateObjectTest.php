@@ -2692,6 +2692,11 @@ class ValidateObjectTest extends TestCase
 
         $this->assertFalse($result->failed());
 
+        $this->assertEquals((object) [
+            'name' => 'Stuart',
+            'x_custom' => 'hello',
+        ], $result->data());
+
     }
 
     #[TestDox('strict() still rejects non-pattern, non-shape keys')]
@@ -2727,6 +2732,17 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                    'path'    => [],
+                    'message' => 'Unrecognized keys: unknown',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
 
     }
 
@@ -2772,10 +2788,23 @@ class ValidateObjectTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        // both name AND x_val should produce issues
         $this->assertTrue($result->failed());
-        $issues = $result->error()->issues()->jsonSerialize();
-        $this->assertCount(2, $issues);
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
+                    'path'    => ['name'],
+                    'message' => 'Expected string, received int',
+                ],
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
+                    'path'    => ['x_val'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
 
     }
 
@@ -2816,6 +2845,17 @@ class ValidateObjectTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                    'path'    => [],
+                    'message' => 'Unevaluated property: extra',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
     }
 
     #[TestDox('unevaluatedProperties(false) accepts evaluated keys')]
@@ -2849,6 +2889,11 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertFalse($result->failed());
+
+        $this->assertEquals((object) [
+            'name' => 'Stuart',
+            'age' => 42,
+        ], $result->data());
 
     }
 
@@ -2887,6 +2932,11 @@ class ValidateObjectTest extends TestCase
 
         $this->assertFalse($result->failed());
 
+        $this->assertEquals((object) [
+            'name' => 'Stuart',
+            'extra' => 42,
+        ], $result->data());
+
     }
 
     #[TestDox('unevaluatedProperties with schema rejects invalid unevaluated keys')]
@@ -2924,6 +2974,17 @@ class ValidateObjectTest extends TestCase
 
         $this->assertTrue($result->failed());
 
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
+                    'path'    => ['extra'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
     }
 
     #[TestDox('unevaluatedProperties(false) considers patternProperties as evaluated')]
@@ -2959,6 +3020,11 @@ class ValidateObjectTest extends TestCase
         // test the results
 
         $this->assertFalse($result->failed());
+
+        $this->assertEquals((object) [
+            'name' => 'Stuart',
+            'x_custom' => 'hello',
+        ], $result->data());
 
     }
 }

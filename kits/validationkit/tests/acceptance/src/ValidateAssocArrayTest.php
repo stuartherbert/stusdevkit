@@ -2648,4 +2648,396 @@ class ValidateAssocArrayTest extends TestCase
 
 
     }
+
+    // ================================================================
+    //
+    // Bug Fix: strict() + patternProperties interaction
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('strict() does not reject pattern-matched keys')]
+    public function test_strict_does_not_reject_pattern_matched_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that when strict() (i.e.
+        // additionalProperties: false) is combined with
+        // patternProperties, keys matching a pattern are
+        // NOT rejected by strict(). Per JSON Schema,
+        // additionalProperties only applies to keys not
+        // in properties AND not matched by
+        // patternProperties.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->strict()
+            ->patternProperties(
+                patterns: ['/^x_/' => Validate::string()],
+            );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'x_custom' => 'hello',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+        $this->assertSame(
+            [
+                'name' => 'Stuart',
+                'x_custom' => 'hello',
+            ],
+            $result->data(),
+        );
+
+    }
+
+    #[TestDox('strict() still rejects non-pattern, non-shape keys')]
+    public function test_strict_rejects_non_pattern_non_shape_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that strict() still rejects keys
+        // that are not in the shape AND not matched by any
+        // patternProperties pattern.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->strict()
+            ->patternProperties(
+                patterns: ['/^x_/' => Validate::string()],
+            );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'unknown' => 'should fail',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                    'path'    => [],
+                    'message' => 'Unrecognized keys: unknown',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
+    }
+
+    // ================================================================
+    //
+    // Bug Fix: patternProperties runs despite shape issues
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('patternProperties validates even when shape fields fail')]
+    public function test_pattern_properties_validates_even_when_shape_fails(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that patternProperties validation
+        // still runs even when a shape field validation
+        // fails. Previously, patternProperties was a
+        // pipeline step that was skipped when
+        // validateChildren() produced issues.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->passthrough()
+            ->patternProperties(
+                patterns: ['/^x_/' => Validate::int()],
+            );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // name is invalid (int instead of string), and
+        // x_val is also invalid (string instead of int)
+        $result = $unit->safeParse([
+            'name' => 123,
+            'x_val' => 'not-an-int',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
+                    'path'    => ['name'],
+                    'message' => 'Expected string, received int',
+                ],
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
+                    'path'    => ['x_val'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
+    }
+
+    // ================================================================
+    //
+    // unevaluatedProperties
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('unevaluatedProperties(false) rejects unevaluated keys')]
+    public function test_unevaluated_properties_false_rejects(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties(false)
+        // rejects any property not evaluated by properties,
+        // patternProperties, or additionalProperties.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->unevaluatedProperties(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'extra' => 'should fail',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/unrecognized_keys',
+                    'path'    => [],
+                    'message' => 'Unevaluated property: extra',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
+    }
+
+    #[TestDox('unevaluatedProperties(false) accepts evaluated keys')]
+    public function test_unevaluated_properties_false_accepts_evaluated(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties(false)
+        // does not reject properties that have been
+        // evaluated by the properties keyword.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+            'age' => Validate::int(),
+        ])
+            ->unevaluatedProperties(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'age' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+        $this->assertSame(
+            [
+                'name' => 'Stuart',
+                'age' => 42,
+            ],
+            $result->data(),
+        );
+
+    }
+
+    #[TestDox('unevaluatedProperties with schema validates unevaluated keys')]
+    public function test_unevaluated_properties_schema_validates(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties with
+        // a schema validates any unevaluated properties
+        // against that schema.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->unevaluatedProperties(
+                schema: Validate::int(),
+            );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // 'extra' is unevaluated and should be validated
+        // as int — 42 passes
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'extra' => 42,
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+        $this->assertSame(
+            [
+                'name' => 'Stuart',
+                'extra' => 42,
+            ],
+            $result->data(),
+        );
+
+    }
+
+    #[TestDox('unevaluatedProperties with schema rejects invalid unevaluated keys')]
+    public function test_unevaluated_properties_schema_rejects_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that unevaluatedProperties with
+        // a schema rejects unevaluated properties that
+        // don't match the schema.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->unevaluatedProperties(
+                schema: Validate::int(),
+            );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // 'extra' is unevaluated and should be validated
+        // as int — 'not-an-int' fails
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'extra' => 'not-an-int',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://stusdevkit.dev/errors/validation/invalid_type',
+                    'path'    => ['extra'],
+                    'message' => 'Expected int, received string',
+                ],
+            ],
+            $result->error()->issues()->jsonSerialize(),
+        );
+
+    }
+
+    #[TestDox('unevaluatedProperties(false) considers patternProperties as evaluated')]
+    public function test_unevaluated_properties_considers_pattern_properties(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that properties matched by
+        // patternProperties are considered evaluated and
+        // not rejected by unevaluatedProperties(false).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = Validate::assocArray([
+            'name' => Validate::string(),
+        ])
+            ->patternProperties(
+                patterns: ['/^x_/' => Validate::string()],
+            )
+            ->unevaluatedProperties(schema: false);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse([
+            'name' => 'Stuart',
+            'x_custom' => 'hello',
+        ]);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($result->failed());
+
+        $this->assertSame(
+            [
+                'name' => 'Stuart',
+                'x_custom' => 'hello',
+            ],
+            $result->data(),
+        );
+
+    }
 }
