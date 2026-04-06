@@ -4508,4 +4508,100 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
         );
 
     }
+
+    // ================================================================
+    //
+    // $id — round-trip export
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('$id on root schema round-trips through import and export')]
+    public function test_id_on_root_round_trips(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the root schema's $id
+        // survives an import → export round-trip
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "$id": "https://example.com/schemas/person",
+                "type": "string"
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $exported->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertObjectHasProperty(
+            '$id',
+            $result,
+        );
+        $this->assertSame(
+            'https://example.com/schemas/person',
+            $result->{'$id'},
+        );
+
+    }
+
+    #[TestDox('schema without $id does not emit $id on export')]
+    public function test_no_id_does_not_emit_id(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that when a schema has no $id,
+        // the exported JSON Schema does not include an
+        // $id keyword
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $json = <<<'JSON'
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "string"
+            }
+            JSON;
+
+        $importer = new JsonSchemaDraft202012Importer();
+        $schema = $importer->import(
+            $this->jsonToSchema($json),
+        );
+
+        $exporter = new JsonSchemaDraft202012Exporter();
+        $exported = $exporter->export($schema);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $exported->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertObjectNotHasProperty(
+            '$id',
+            $result,
+        );
+
+    }
 }

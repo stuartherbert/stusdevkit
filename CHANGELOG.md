@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- add further JSON schema constraints ([67c6824](https://github.com/stuartherbert/stusdevkit/commit/67c6824)) — Stuart Herbert <stuart@stuartherbert.com>
+- schema $id is now exported to JSON schema ([2bdc49d](https://github.com/stuartherbert/stusdevkit/commit/2bdc49d)) — Stuart Herbert <stuart@stuartherbert.com>
+- add further JSON schema constraints ([3f35f37](https://github.com/stuartherbert/stusdevkit/commit/3f35f37)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for resolving references during JSON schema import ([ce6db71](https://github.com/stuartherbert/stusdevkit/commit/ce6db71)) — Stuart Herbert <stuart@stuartherbert.com>
 - upgrade JsonSchemaRegistry capabilities ([61a7de2](https://github.com/stuartherbert/stusdevkit/commit/61a7de2)) — Stuart Herbert <stuart@stuartherbert.com>
 - added JsonSchemaLoader ([726a4f3](https://github.com/stuartherbert/stusdevkit/commit/726a4f3)) — Stuart Herbert <stuart@stuartherbert.com>

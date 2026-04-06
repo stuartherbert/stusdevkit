@@ -861,6 +861,11 @@ class JsonSchemaDraft202012Exporter
         stdClass $output,
         BaseSchema $schema,
     ): stdClass {
+        $schemaId = $schema->maybeSchemaId();
+        if ($schemaId !== null) {
+            $output->{'$id'} = $schemaId;
+        }
+
         $title = $schema->maybeTitle();
         if ($title !== null) {
             $output->title = $title;

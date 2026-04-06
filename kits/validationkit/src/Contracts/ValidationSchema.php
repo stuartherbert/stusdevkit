@@ -223,6 +223,22 @@ interface ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * set the schema identifier ($id)
+     *
+     * The schema ID is an absolute URI that identifies
+     * this schema. It is emitted as the `$id` keyword
+     * in JSON Schema exports.
+     *
+     * @param non-empty-string $id
+     */
+    public function withSchemaId(string $id): static;
+
+    /**
+     * return the schema ID, or null if none was set
+     */
+    public function maybeSchemaId(): ?string;
+
+    /**
      * add a human-readable title to this schema
      *
      * @param non-empty-string $text

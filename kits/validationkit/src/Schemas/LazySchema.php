@@ -368,6 +368,26 @@ class LazySchema implements ValidationSchema
     // ----------------------------------------------------------------
 
     /**
+     * set the schema identifier ($id)
+     *
+     * @param non-empty-string $id
+     */
+    public function withSchemaId(string $id): static
+    {
+        return $this->wrapResolved(
+            $this->resolve()->withSchemaId($id),
+        );
+    }
+
+    /**
+     * return the schema ID, or null if none was set
+     */
+    public function maybeSchemaId(): ?string
+    {
+        return $this->resolve()->maybeSchemaId();
+    }
+
+    /**
      * add a human-readable title to this schema
      *
      * @param non-empty-string $text

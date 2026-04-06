@@ -1770,6 +1770,108 @@ class JsonSchemaDraft202012ExporterTest extends TestCase
 
     // ================================================================
     //
+    // $id — schema identification
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('exports $id when withSchemaId() is set')]
+    public function test_exports_schema_id(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that withSchemaId() exports as
+        // the $id keyword
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::string()->withSchemaId(
+                'https://example.com/schemas/name',
+            ),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertObjectHasProperty(
+            '$id',
+            $actualResult,
+        );
+        $this->assertSame(
+            'https://example.com/schemas/name',
+            $actualResult->{'$id'},
+        );
+        $this->assertSame(
+            'string',
+            $actualResult->type,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    #[TestDox('does not emit $id when withSchemaId() is not called')]
+    public function test_does_not_export_schema_id_when_not_set(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the $id keyword is omitted
+        // when no schema ID has been set
+
+        // ----------------------------------------------------------------
+        // shorthand
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Exporter();
+
+        // ----------------------------------------------------------------
+        // mock out any integrations
+
+        // ----------------------------------------------------------------
+        // pre-test checks
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->export(
+            Validate::string(),
+        )->toObject();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertObjectNotHasProperty(
+            '$id',
+            $actualResult,
+        );
+
+        // ----------------------------------------------------------------
+        // clean up the database
+
+    }
+
+    // ================================================================
+    //
     // Metadata
     //
     // ----------------------------------------------------------------

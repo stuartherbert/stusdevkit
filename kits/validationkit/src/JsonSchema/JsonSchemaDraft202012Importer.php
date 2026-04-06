@@ -201,6 +201,10 @@ class JsonSchemaDraft202012Importer
 
         if ($hasRootId) {
             $registry->popBaseUri();
+
+            // store the $id on the schema so it survives
+            // a round-trip through the exporter
+            $result = $result->withSchemaId($rootId);
         }
 
         return $result;
@@ -319,10 +323,18 @@ class JsonSchemaDraft202012Importer
         }
 
         try {
-            return $this->importSchemaBody(
+            $result = $this->importSchemaBody(
                 schema: $schema,
                 registry: $registry,
             );
+
+            // store the resolved $id on the schema so it
+            // survives a round-trip through the exporter
+            if ($hasId) {
+                $result = $result->withSchemaId($id);
+            }
+
+            return $result;
         } finally {
             if ($hasId) {
                 $registry->popBaseUri();

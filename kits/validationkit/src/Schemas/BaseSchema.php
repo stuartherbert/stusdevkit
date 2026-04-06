@@ -92,6 +92,7 @@ abstract class BaseSchema implements ValidationSchema
      */
     protected mixed $typeCheckError;
 
+    protected ?string $schemaId = null;
     protected ?string $title = null;
     protected ?string $description = null;
 
@@ -142,6 +143,23 @@ abstract class BaseSchema implements ValidationSchema
         $clone = clone $this;
         $clone->hasDefault = true;
         $clone->defaultValue = $value;
+
+        return $clone;
+    }
+
+    /**
+     * set the schema identifier ($id)
+     *
+     * The schema ID is an absolute URI that identifies
+     * this schema. It is emitted as the `$id` keyword
+     * in JSON Schema exports.
+     *
+     * @param non-empty-string $id
+     */
+    public function withSchemaId(string $id): static
+    {
+        $clone = clone $this;
+        $clone->schemaId = $id;
 
         return $clone;
     }
@@ -831,6 +849,14 @@ abstract class BaseSchema implements ValidationSchema
     // Metadata Getters
     //
     // ----------------------------------------------------------------
+
+    /**
+     * return the schema ID, or null if none was set
+     */
+    public function maybeSchemaId(): ?string
+    {
+        return $this->schemaId;
+    }
 
     /**
      * return the title, or null if none was set
