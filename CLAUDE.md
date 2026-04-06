@@ -92,6 +92,25 @@ To check which kits depend on other kits, search for cross-kit `use` statements 
 - Prefer fixing the source design over patching symptoms in consuming code.
 - When making the same change across many files or locations, apply one representative example first and show it for approval before applying the rest.
 
+### Work in Small, Commitable Chunks
+Break work into small, focused pieces that can each be committed separately with a clear commit message. Each chunk should be one logical change — a single bug fix, a single refactoring step, or a single new feature. Do not combine unrelated changes.
+
+**After completing each chunk:**
+1. Run `make all-checks` to verify the chunk is green.
+2. **Stop and tell the user** what was done, so they can review and commit before the next chunk begins.
+3. Do not start the next chunk until the user says to continue.
+
+**What constitutes a chunk:**
+- A bug fix with its tests (write the failing test first, then the fix).
+- A refactoring that changes internal structure without changing behaviour, with any test updates needed.
+- A new feature with its tests (write the failing tests first, then the implementation).
+- An importer/exporter change for a new keyword, with round-trip tests.
+
+**What is NOT a chunk:**
+- Multiple unrelated bug fixes combined together.
+- A refactoring bundled with a new feature that depends on it — these are two separate chunks (refactor first, then feature).
+- Implementation without tests, followed by tests as a separate chunk — tests and implementation belong together.
+
 ### Before Writing Code
 1. **Always ask about file placement** - Don't assume directory structure
 2. **Ask about naming conventions** - Follow project patterns
@@ -145,6 +164,11 @@ Heavy use of generics for type safety:
 - `@phpstan-consistent-constructor`
 
 ### Testing Practices
+- **Test-driven development** - Always write failing tests before implementing changes:
+  - For **bug fixes**: write a test that reproduces the bug first. It must fail against the current code, proving the bug exists. Then implement the fix and verify the test passes.
+  - For **new features**: write tests that exercise the new behaviour first. They must fail before the implementation and pass after.
+  - For **pre-existing bugs** discovered during other work: write the failing test to prove the bug exists before fixing it. The failing test is the evidence.
+  - This applies to every change, no exceptions. Tests written after implementation only prove the code works as written — they don't prove the bug existed or that the fix solved it.
 - **Follow ListOfStringsTest style** - Use `kits/collectionskit/tests/unit/src/Lists/ListOfStringsTest.php` as template for new tests
 - **Test method naming** - Use snake_case: `test_can_instantiate_empty_list()`
 - **Test structure**: explain test → setup → perform change → test results
