@@ -41,28 +41,40 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\JsonSchema;
 
+use StusDevKit\CollectionsKit\Stacks\StackOfStrings;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Exceptions\InvalidJsonSchemaException;
 
 /**
- * JsonSchemaRegistry maps definition names to validation
- * schemas, enabling `$ref` / `$defs` support in both
- * the JSON Schema importer and exporter.
+ * JsonSchemaRegistry maps definition names, URIs, and
+ * anchors to validation schemas, enabling `$ref`,
+ * `$defs`, `$id`, and `$anchor` support in both the
+ * JSON Schema importer and exporter.
  *
- * The importer populates the registry from the `$defs`
- * section of a JSON Schema document and resolves `$ref`
- * during import. The exporter reads the registry to emit
- * `$defs` and replace inline schemas with `$ref`.
+ * The registry provides three independent lookup
+ * mechanisms:
  *
- * Definition names correspond to the keys inside the
- * JSON Schema `$defs` object. `$ref` values follow the
- * JSON Pointer format `#/$defs/<name>`.
+ * 1. **Definition names** — `register()` / `get()` for
+ *    `$defs`-based `$ref` resolution (e.g.
+ *    `#/$defs/Address`).
+ *
+ * 2. **URIs** — `registerByUri()` / `resolveByUri()`
+ *    for `$id`-based resolution and external `$ref`.
+ *
+ * 3. **Anchors** — `registerAnchor()` /
+ *    `resolveAnchor()` for `$anchor`-based resolution
+ *    (e.g. `#my-anchor`). Anchors are scoped to the
+ *    base URI of the schema that declares them.
+ *
+ * A base URI stack (`pushBaseUri()` / `popBaseUri()`)
+ * tracks the current `$id` scope during import, so
+ * that relative URIs and anchors resolve correctly.
  *
  * Usage:
  *
  *     $registry = new JsonSchemaRegistry();
  *
- *     // register a named schema
+ *     // register a named schema ($defs)
  *     $registry->register(
  *         name: 'Address',
  *         schema: Validate::object([...]),
@@ -71,6 +83,19 @@ use StusDevKit\ValidationKit\Exceptions\InvalidJsonSchemaException;
  *     // resolve a $ref
  *     $schema = $registry->resolveRef(
  *         ref: '#/$defs/Address',
+ *     );
+ *
+ *     // register by URI ($id)
+ *     $registry->registerByUri(
+ *         uri: 'https://example.com/address',
+ *         schema: $addressSchema,
+ *     );
+ *
+ *     // register an anchor ($anchor)
+ *     $registry->registerAnchor(
+ *         baseUri: 'https://example.com/person',
+ *         anchor: 'name-def',
+ *         schema: $nameSchema,
  *     );
  */
 class JsonSchemaRegistry
@@ -82,6 +107,21 @@ class JsonSchemaRegistry
      */
     private JsonSchemaIndex $schemas;
 
+    /**
+     * schemas keyed by absolute URI (from $id)
+     */
+    private JsonSchemaIndex $uriSchemas;
+
+    /**
+     * schemas keyed by "baseUri#anchor" (from $anchor)
+     */
+    private JsonSchemaIndex $anchorSchemas;
+
+    /**
+     * stack of base URIs tracking $id scope during import
+     */
+    private StackOfStrings $baseUriStack;
+
     // ================================================================
     //
     // Constructor
@@ -91,6 +131,9 @@ class JsonSchemaRegistry
     public function __construct()
     {
         $this->schemas = new JsonSchemaIndex();
+        $this->uriSchemas = new JsonSchemaIndex();
+        $this->anchorSchemas = new JsonSchemaIndex();
+        $this->baseUriStack = new StackOfStrings();
     }
 
     // ================================================================
@@ -177,6 +220,156 @@ class JsonSchemaRegistry
     public function all(): JsonSchemaIndex
     {
         return $this->schemas;
+    }
+
+    // ================================================================
+    //
+    // URI-Based Registration ($id)
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * register a schema by its absolute URI
+     *
+     * Used when a schema declares an `$id` keyword. The
+     * URI should be absolute (no fragment).
+     *
+     * @param non-empty-string $uri
+     * @param ValidationSchema<mixed> $schema
+     */
+    public function registerByUri(
+        string $uri,
+        ValidationSchema $schema,
+    ): void {
+        $this->uriSchemas->set(key: $uri, value: $schema);
+    }
+
+    /**
+     * resolve a schema by its absolute URI
+     *
+     * @param non-empty-string $uri
+     * @return ValidationSchema<mixed>
+     * @throws InvalidJsonSchemaException
+     *         if no schema is registered with this URI.
+     */
+    public function resolveByUri(string $uri): ValidationSchema
+    {
+        $schema = $this->uriSchemas->maybeGet(key: $uri);
+
+        if ($schema === null) {
+            throw InvalidJsonSchemaException::unresolvedRef(
+                ref: $uri,
+            );
+        }
+
+        return $schema;
+    }
+
+    /**
+     * is a schema registered for this URI?
+     *
+     * @param non-empty-string $uri
+     */
+    public function hasByUri(string $uri): bool
+    {
+        return $this->uriSchemas->has(key: $uri);
+    }
+
+    // ================================================================
+    //
+    // Anchor Registration ($anchor)
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * register an anchor scoped to a base URI
+     *
+     * Anchors are identified by the combination of the
+     * declaring schema's base URI and the anchor name.
+     *
+     * @param string $baseUri
+     * - the absolute URI of the schema that declares
+     *   the anchor (from `$id`)
+     * @param non-empty-string $anchor
+     * - the anchor name (without the `#` prefix)
+     * @param ValidationSchema<mixed> $schema
+     */
+    public function registerAnchor(
+        string $baseUri,
+        string $anchor,
+        ValidationSchema $schema,
+    ): void {
+        $key = $baseUri . '#' . $anchor;
+        $this->anchorSchemas->set(
+            key: $key,
+            value: $schema,
+        );
+    }
+
+    /**
+     * resolve an anchor within a base URI scope
+     *
+     * @param non-empty-string $anchor
+     * @return ValidationSchema<mixed>
+     * @throws InvalidJsonSchemaException
+     *         if the anchor is not registered.
+     */
+    public function resolveAnchor(
+        string $baseUri,
+        string $anchor,
+    ): ValidationSchema {
+        $key = $baseUri . '#' . $anchor;
+        $schema = $this->anchorSchemas->maybeGet(key: $key);
+
+        if ($schema === null) {
+            throw InvalidJsonSchemaException::unresolvedRef(
+                ref: $key,
+            );
+        }
+
+        return $schema;
+    }
+
+    // ================================================================
+    //
+    // Base URI Stack
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * push a new base URI onto the stack
+     *
+     * Called when the importer encounters an `$id`
+     * keyword. The pushed URI becomes the current base
+     * for resolving relative URIs and anchors.
+     *
+     * @param non-empty-string $uri
+     */
+    public function pushBaseUri(string $uri): void
+    {
+        $this->baseUriStack->push($uri);
+    }
+
+    /**
+     * pop the most recent base URI from the stack
+     *
+     * Called when the importer leaves a schema scope
+     * that had an `$id`.
+     */
+    public function popBaseUri(): void
+    {
+        $this->baseUriStack->pop();
+    }
+
+    /**
+     * return the current base URI
+     *
+     * Returns the most recently pushed base URI, or an
+     * empty string if the stack is empty.
+     */
+    public function currentBaseUri(): string
+    {
+        return $this->baseUriStack->maybePeek() ?? '';
     }
 
     // ================================================================

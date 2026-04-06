@@ -20,18 +20,9 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
-#### CollectionsKit
-
-- added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
-- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
-- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- upgrade JsonSchemaRegistry capabilities ([03d1aa5](https://github.com/stuartherbert/stusdevkit/commit/03d1aa5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added JsonSchemaLoader ([726a4f3](https://github.com/stuartherbert/stusdevkit/commit/726a4f3)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for `contentEncoding`, `contentMediaType` and `contentSchema` ([69ed395](https://github.com/stuartherbert/stusdevkit/commit/69ed395)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for unevaluatedProperties and unevaluatedItems ([0191c78](https://github.com/stuartherbert/stusdevkit/commit/0191c78)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -51,6 +42,16 @@ This CHANGELOG is automatically compiled.
 - add Validate::nullish() ([f3e7be5](https://github.com/stuartherbert/stusdevkit/commit/f3e7be5)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial code commit ([319c6f6](https://github.com/stuartherbert/stusdevkit/commit/319c6f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingBitsKit
+
+- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
+- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 
@@ -101,7 +102,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- introduce AccessibleCollection intermediate class ([86e61e8](https://github.com/stuartherbert/stusdevkit/commit/86e61e8)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
