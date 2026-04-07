@@ -45,6 +45,7 @@ use BackedEnum;
 use Closure;
 use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
+use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
@@ -74,6 +75,7 @@ use StusDevKit\ValidationKit\Schemas\Logic\EnumSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\NotSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
 use StusDevKit\ValidationKit\Schemas\UuidSchema;
+use StusDevKit\ValidationKit\Transformers\CallableTransformer;
 use StusDevKit\ValidationKit\Transformers\CustomConstraint;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -758,5 +760,41 @@ final class Validate
         callable $fn,
     ): ValidationConstraint {
         return new CustomConstraint($fn);
+    }
+
+    /**
+     * create a reusable transformer from a callable
+     *
+     * This bridges the gap between inline transformation
+     * (`withCustomTransform(fn(...))`) and a full
+     * transformer class. The returned transformer can be
+     * shared across multiple schemas.
+     *
+     * The callable receives the data and returns the
+     * transformed value. The transformer always runs
+     * (even when prior issues exist), making it suitable
+     * for use as a normaliser via `withNormaliser()`.
+     *
+     * Usage:
+     *
+     *     $slugify = Validate::transformerFrom(
+     *         fn(mixed $data) => strtolower(
+     *             preg_replace('/[^a-z0-9]+/i', '-', $data),
+     *         ),
+     *     );
+     *
+     *     $title = Validate::string()
+     *         ->withNormaliser($slugify);
+     *     $tag = Validate::string()
+     *         ->withNormaliser($slugify)
+     *         ->max(length: 50);
+     *
+     * @param callable(mixed): mixed $fn
+     * - receives data, returns transformed data
+     */
+    public static function transformerFrom(
+        callable $fn,
+    ): ValueTransformer {
+        return new CallableTransformer($fn);
     }
 }

@@ -46,6 +46,7 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Constraints\BaseConstraint;
+use StusDevKit\ValidationKit\Constraints\SimpleConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\Transformers\BaseTransformer;
 use StusDevKit\ValidationKit\Validate;
@@ -327,5 +328,193 @@ class ValidateExtensibilityTest extends TestCase
 
         $this->assertTrue($ageResult->failed());
         $this->assertFalse($priceResult->failed());
+    }
+
+    // ================================================================
+    //
+    // SimpleConstraint
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('SimpleConstraint subclass accepts valid data')]
+    public function test_simple_constraint_accepts_valid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a custom constraint extending
+        // SimpleConstraint works in the validation pipeline
+        // and accepts data when check() returns null
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $constraint = new class extends SimpleConstraint {
+            protected function getType(): string
+            {
+                return 'https://example.com/errors/no-at';
+            }
+
+            protected function check(mixed $data): ?string
+            {
+                assert(is_string($data));
+                return str_contains($data, '@')
+                    ? null
+                    : 'Must contain @';
+            }
+        };
+
+        $unit = Validate::string()->withConstraint($constraint);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult = $unit->parse('user@example.com');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('user@example.com', $actualResult);
+    }
+
+    #[TestDox('SimpleConstraint subclass rejects invalid data')]
+    public function test_simple_constraint_rejects_invalid(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a custom constraint extending
+        // SimpleConstraint reports issues with the correct
+        // type URI from getType()
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $constraint = new class extends SimpleConstraint {
+            protected function getType(): string
+            {
+                return 'https://example.com/errors/no-at';
+            }
+
+            protected function check(mixed $data): ?string
+            {
+                assert(is_string($data));
+                return str_contains($data, '@')
+                    ? null
+                    : 'Must contain @';
+            }
+        };
+
+        $unit = Validate::string()->withConstraint($constraint);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $result = $unit->safeParse('no-at-sign');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($result->failed());
+        $this->assertSame(
+            [
+                [
+                    'type'    => 'https://example.com/errors/no-at',
+                    'path'    => [],
+                    'message' => 'Must contain @',
+                ],
+            ],
+            $result->maybeError()->issues()->jsonSerialize(),
+        );
+    }
+
+    // ================================================================
+    //
+    // Validate::transformerFrom()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('transformerFrom() creates reusable transformer')]
+    public function test_transformer_from_transforms(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that Validate::transformerFrom()
+        // creates a reusable transformer that can be shared
+        // across schemas
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $slugify = Validate::transformerFrom(
+            function (mixed $data): string {
+                assert(is_string($data));
+                $replaced = preg_replace(
+                    '/[^a-z0-9]+/i',
+                    '-',
+                    $data,
+                );
+                assert(is_string($replaced));
+                return strtolower($replaced);
+            },
+        );
+
+        $title = Validate::string()
+            ->withNormaliser($slugify);
+        $tag = Validate::string()
+            ->withNormaliser($slugify)
+            ->max(length: 50);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $titleResult = $title->parse('Hello World!');
+        $tagResult = $tag->parse('My Tag');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('hello-world-', $titleResult);
+        $this->assertSame('my-tag', $tagResult);
+    }
+
+    #[TestDox('transformerFrom() transformer is shared across schemas')]
+    public function test_transformer_from_shared(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a single transformer created
+        // via transformerFrom() can be reused across multiple
+        // schemas independently
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $trim = Validate::transformerFrom(
+            function (mixed $data): string {
+                assert(is_string($data));
+                return trim($data);
+            },
+        );
+
+        $name = Validate::string()
+            ->withNormaliser($trim);
+        $label = Validate::string()
+            ->withNormaliser($trim)
+            ->max(length: 10);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $nameResult = $name->parse('  Stuart  ');
+        $labelResult = $label->safeParse('  too long label  ');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame('Stuart', $nameResult);
+        $this->assertTrue($labelResult->failed());
     }
 }

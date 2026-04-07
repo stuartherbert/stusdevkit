@@ -113,7 +113,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- existing transformers now use BaseTransformer to simplify implementation ([93b817d](https://github.com/stuartherbert/stusdevkit/commit/93b817d)) — Stuart Herbert <stuart@stuartherbert.com>
+- more work to make custom validators easier to create ([98feeae](https://github.com/stuartherbert/stusdevkit/commit/98feeae)) — Stuart Herbert <stuart@stuartherbert.com>
+- existing transformers now use BaseTransformer to simplify implementation ([0ede17e](https://github.com/stuartherbert/stusdevkit/commit/0ede17e)) — Stuart Herbert <stuart@stuartherbert.com>
 - built-in constraints now use the BaseConstraint to simplify the code ([cf0172b](https://github.com/stuartherbert/stusdevkit/commit/cf0172b)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce BaseConstraint and BaseTransformer to simplify custom validator classes ([50c5b16](https://github.com/stuartherbert/stusdevkit/commit/50c5b16)) — Stuart Herbert <stuart@stuartherbert.com>
 - now requires the PHP intl extension ([10d40a0](https://github.com/stuartherbert/stusdevkit/commit/10d40a0)) — Stuart Herbert <stuart@stuartherbert.com>
