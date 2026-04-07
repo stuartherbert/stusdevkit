@@ -54,13 +54,13 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *     try {
  *         $schema->parse($input);
  *     } catch (ValidationException $e) {
- *         // flat format for form handling
+ *         // flat format for form & API handlers
  *         $flat = ErrorFormatter::flatten($e);
- *         echo $flat->fieldErrors()['email'][0];
+ *         echo $flat->getFieldErrors()['email'][0];
  *
  *         // tree format for nested data
  *         $tree = ErrorFormatter::treeify($e);
- *         $addrErrors = $tree->maybeChild('address');
+ *         $addrErrors = $tree->maybeGetChild('address');
  *
  *         // human-readable string
  *         echo ErrorFormatter::prettify($e);
@@ -88,7 +88,7 @@ final class ErrorFormatter
     public static function flatten(
         ValidationException $exception,
     ): FlatError {
-        $formErrors = [];
+        $rootErrors = [];
         /** @var array<string, list<string>> $fieldErrors */
         $fieldErrors = [];
 
@@ -96,7 +96,7 @@ final class ErrorFormatter
             $path = $issue->pathAsString();
 
             if ($path === '') {
-                $formErrors[] = $issue->message;
+                $rootErrors[] = $issue->message;
             } else {
                 if (! isset($fieldErrors[$path])) {
                     $fieldErrors[$path] = [];
@@ -106,7 +106,7 @@ final class ErrorFormatter
         }
 
         return new FlatError(
-            formErrors: $formErrors,
+            rootErrors: $rootErrors,
             fieldErrors: $fieldErrors,
         );
     }

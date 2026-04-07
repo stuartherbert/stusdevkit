@@ -58,14 +58,14 @@ class ErrorFormatterTreeifyTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('root-level errors appear in the errors() array')]
+    #[TestDox('root-level errors appear in the getErrors() array')]
     public function test_root_level_errors_in_errors_array(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that validation errors with no
-        // path are placed in the root TreeError's errors()
+        // path are placed in the root TreeError's getErrors()
         // array
 
         // ----------------------------------------------------------------
@@ -98,8 +98,8 @@ class ErrorFormatterTreeifyTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertNotEmpty($tree->errors());
-        $this->assertEmpty($tree->children());
+        $this->assertNotEmpty($tree->getErrors());
+        $this->assertEmpty($tree->getChildren());
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -157,13 +157,13 @@ class ErrorFormatterTreeifyTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $nameChild = $tree->maybeChild('name');
+        $nameChild = $tree->maybeGetChild('name');
         $this->assertNotNull($nameChild);
-        $this->assertNotEmpty($nameChild->errors());
+        $this->assertNotEmpty($nameChild->getErrors());
 
-        $ageChild = $tree->maybeChild('age');
+        $ageChild = $tree->maybeGetChild('age');
         $this->assertNotNull($ageChild);
-        $this->assertNotEmpty($ageChild->errors());
+        $this->assertNotEmpty($ageChild->getErrors());
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -176,14 +176,14 @@ class ErrorFormatterTreeifyTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('deep nesting navigates via chained maybeChild()')]
+    #[TestDox('deep nesting navigates via chained maybeGetChild()')]
     public function test_deep_nesting_via_maybe_child(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that deeply nested validation
-        // errors can be accessed by chaining maybeChild()
+        // errors can be accessed by chaining maybeGetChild()
         // calls, e.g. address -> zip
 
         // ----------------------------------------------------------------
@@ -228,12 +228,12 @@ class ErrorFormatterTreeifyTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $addressChild = $tree->maybeChild('address');
+        $addressChild = $tree->maybeGetChild('address');
         $this->assertNotNull($addressChild);
 
-        $zipChild = $addressChild->maybeChild('zip');
+        $zipChild = $addressChild->maybeGetChild('zip');
         $this->assertNotNull($zipChild);
-        $this->assertNotEmpty($zipChild->errors());
+        $this->assertNotEmpty($zipChild->getErrors());
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -348,7 +348,7 @@ class ErrorFormatterTreeifyTest extends TestCase
         // root has no direct errors, but hasErrors()
         // should still return true because child nodes
         // have errors
-        $this->assertEmpty($tree->errors());
+        $this->assertEmpty($tree->getErrors());
         $this->assertTrue($tree->hasErrors());
 
         // ----------------------------------------------------------------

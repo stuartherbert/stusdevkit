@@ -43,26 +43,26 @@ namespace StusDevKit\ValidationKit\ErrorFormatting;
 
 /**
  * FlatError holds validation errors in a flat structure
- * with form-level and field-level error groups.
+ * with root-level and field-level error groups.
  *
  * Usage:
  *
  *     $flat = ErrorFormatter::flatten($exception);
- *     $flat->formErrors();  // top-level errors
- *     $flat->fieldErrors(); // errors keyed by field path
+ *     $flat->getRootErrors();  // top-level errors
+ *     $flat->getFieldErrors(); // errors keyed by field path
  *
  * @phpstan-type FieldErrors array<string, list<string>>
  */
 final class FlatError
 {
     /**
-     * @param list<string> $formErrors
+     * @param list<string> $rootErrors
      * - errors not associated with a specific field
      * @param FieldErrors $fieldErrors
      * - errors keyed by dot-path field name
      */
     public function __construct(
-        private readonly array $formErrors,
+        private readonly array $rootErrors,
         private readonly array $fieldErrors,
     ) {
     }
@@ -78,9 +78,9 @@ final class FlatError
      *
      * @return list<string>
      */
-    public function formErrors(): array
+    public function getRootErrors(): array
     {
-        return $this->formErrors;
+        return $this->rootErrors;
     }
 
     /**
@@ -88,7 +88,7 @@ final class FlatError
      *
      * @return FieldErrors
      */
-    public function fieldErrors(): array
+    public function getFieldErrors(): array
     {
         return $this->fieldErrors;
     }

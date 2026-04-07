@@ -51,9 +51,9 @@ namespace StusDevKit\ValidationKit\ErrorFormatting;
  * Usage:
  *
  *     $tree = ErrorFormatter::treeify($exception);
- *     $tree->errors();                 // this node's errors
- *     $tree->children();               // nested nodes
- *     $tree->maybeChild('address');     // specific child
+ *     $tree->getErrors();                  // this node's errors
+ *     $tree->getChildren();                // nested nodes
+ *     $tree->maybeGetChild('address');      // specific child
  */
 final class TreeError
 {
@@ -80,7 +80,7 @@ final class TreeError
      *
      * @return list<string>
      */
-    public function errors(): array
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -90,7 +90,7 @@ final class TreeError
      *
      * @return array<string|int, TreeError>
      */
-    public function children(): array
+    public function getChildren(): array
     {
         return $this->children;
     }
@@ -99,7 +99,7 @@ final class TreeError
      * return a specific child node, or null if it does
      * not exist
      */
-    public function maybeChild(string|int $key): ?self
+    public function maybeGetChild(string|int $key): ?self
     {
         return $this->children[$key] ?? null;
     }

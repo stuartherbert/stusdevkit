@@ -57,15 +57,15 @@ class ErrorFormatterFlattenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('top-level error with no path goes to formErrors')]
+    #[TestDox('top-level error with no path goes to getRootErrors')]
     public function test_top_level_error_goes_to_form_errors(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that a validation error with no
-        // path (root-level) is placed in formErrors, not
-        // fieldErrors
+        // path (root-level) is placed in getRootErrors, not
+        // getFieldErrors
 
         // ----------------------------------------------------------------
         // shorthand
@@ -97,8 +97,8 @@ class ErrorFormatterFlattenTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertNotEmpty($flat->formErrors());
-        $this->assertEmpty($flat->fieldErrors());
+        $this->assertNotEmpty($flat->getRootErrors());
+        $this->assertEmpty($flat->getFieldErrors());
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -111,14 +111,14 @@ class ErrorFormatterFlattenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('field errors go to fieldErrors keyed by dot-path')]
+    #[TestDox('field errors go to getFieldErrors keyed by dot-path')]
     public function test_field_errors_keyed_by_dot_path(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that validation errors on object
-        // fields are placed in fieldErrors, keyed by the
+        // fields are placed in getFieldErrors, keyed by the
         // field name
 
         // ----------------------------------------------------------------
@@ -157,9 +157,9 @@ class ErrorFormatterFlattenTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEmpty($flat->formErrors());
-        $this->assertArrayHasKey('name', $flat->fieldErrors());
-        $this->assertArrayHasKey('age', $flat->fieldErrors());
+        $this->assertEmpty($flat->getRootErrors());
+        $this->assertArrayHasKey('name', $flat->getFieldErrors());
+        $this->assertArrayHasKey('age', $flat->getFieldErrors());
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -174,7 +174,7 @@ class ErrorFormatterFlattenTest extends TestCase
 
         // this test proves that when a single field produces
         // multiple validation errors, they are all collected
-        // in the same fieldErrors array entry
+        // in the same getFieldErrors array entry
 
         // ----------------------------------------------------------------
         // shorthand
@@ -211,8 +211,8 @@ class ErrorFormatterFlattenTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertArrayHasKey('email', $flat->fieldErrors());
-        $this->assertNotEmpty($flat->fieldErrors()['email']);
+        $this->assertArrayHasKey('email', $flat->getFieldErrors());
+        $this->assertNotEmpty($flat->getFieldErrors()['email']);
 
         // ----------------------------------------------------------------
         // clean up the database
@@ -277,10 +277,10 @@ class ErrorFormatterFlattenTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEmpty($flat->formErrors());
+        $this->assertEmpty($flat->getRootErrors());
         $this->assertArrayHasKey(
             'address.zip',
-            $flat->fieldErrors(),
+            $flat->getFieldErrors(),
         );
 
         // ----------------------------------------------------------------
@@ -344,7 +344,7 @@ class ErrorFormatterFlattenTest extends TestCase
         // test the results
 
         // the 'name' field has a type error (field error)
-        $this->assertArrayHasKey('name', $flat->fieldErrors());
+        $this->assertArrayHasKey('name', $flat->getFieldErrors());
 
         // ----------------------------------------------------------------
         // clean up the database

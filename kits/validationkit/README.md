@@ -16,70 +16,59 @@ ValidationKit uses a fluent builder API inspired by [Zod](https://zod.dev/), str
 - **Codecs** to use the same validator in API handlers _and_ SDK clients
 - **JSON Schema interop** for importing and exporting validation rules
 
-## Quick Start
+## Getting Started
+
+Define a schema, validate incoming data, and handle errors:
 
 ```php
 use StusDevKit\ValidationKit\Validate;
+use StusDevKit\ValidationKit\ErrorFormatting\ErrorFormatter;
 
-// define a schema
-$userSchema = Validate::object([
+// 1. define a schema
+$createUserSchema = Validate::object([
     'name'  => Validate::string()->min(1)->max(100),
     'email' => Validate::string()->email(),
-    'age'   => Validate::optional(
-        Validate::int()->gte(0),
-    ),
+    'age'   => Validate::int()->gte(0)->coerce(),
 ]);
 
-// validate data — throws on failure
-$user = $userSchema->parse($requestData);
+// 2. validate the decoded JSON request body
+$result = $createUserSchema->safeParse($requestBody);
 
-// or validate without throwing
-$result = $userSchema->safeParse($requestData);
+// 3. handle the result
 if ($result->failed()) {
-    $errors = $result->error()->issues();
-    // handle errors
+    // structured errors, ready for a 422 response
+    $flat = ErrorFormatter::flatten($result->error());
+
+    // root-level errors (e.g. "Expected object, received string")
+    $flat->getRootErrors();
+
+    // field-level errors (e.g. ['email' => ['Invalid email address']])
+    $flat->getFieldErrors();
 }
+
+// on success, use the validated data
+$user = $result->data();
 ```
+
+Note: `json_decode()` returns strings for JSON numbers. The `->coerce()` call on the `age` field tells ValidationKit to convert numeric strings to integers before validating.
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
 - [Core Validation API](#core-validation-api)
+- [Error Handling](#error-handling)
 - [Primitive Schemas](#primitive-schemas)
+- [Coercion](#coercion)
 - [Collection Schemas](#collection-schemas)
 - [Composition](#composition)
 - [Custom Validation](#custom-validation)
-- [Error Handling](#error-handling)
-- [Coercion](#coercion)
 - [Codecs](#codecs)
 - [JSON Schema Integration](#json-schema-integration)
 - [Advanced Features](#advanced-features)
 - [Design Principles](#design-principles)
 
-## Getting Started
-
-To create a validator for your API handler:
-
-```php
-use StusDevsKit\ValidationKit\Validate;
-
-// create a validator
-$validator = Validate::object([
-    'customer_id' => Validate::uuid(),
-    'name' => Validate::string()->min(1)->max(100),
-    'age' => Validate::int()->gte(18),
-]);
-
-// use it
-// $data is the decoded JSON from the HTTP request body
-//
-// throws an exception if the data fails validation
-$validator->parse($data);
-```
-
 ## Core Validation API
 
-Every schema provides two pairs of validation methods — one for decoding (incoming data) and one for encoding (outgoing data):
+Every schema provides two pairs of validation methods -- one for decoding (incoming data) and one for encoding (outgoing data):
 
 ```php
 // decoding: validate incoming data
@@ -91,7 +80,7 @@ $data = $schema->decode($input);
 $result = $schema->safeDecode($input);
 
 // encoding: validate outgoing data
-// (skips withDefault() and withCatch() — data should
+// (skips withDefault() and withCatch() -- data should
 // already be valid when encoding)
 $data = $schema->encode($input);
 $result = $schema->safeEncode($input);
@@ -101,17 +90,19 @@ The decode/encode distinction matters when using [Codecs](#codecs) for bidirecti
 
 ### ParseResult
 
-`safeParse()` returns a `ParseResult` object:
+`safeParse()`, `safeDecode()` and `safeEncode()` return a `ParseResult` object:
 
 ```php
 $result = $schema->safeParse($input);
 
-$result->succeeded();    // bool
-$result->failed();       // bool
-$result->data();         // validated data (throws if failed)
-$result->maybeData();    // validated data or null
-$result->error();        // ValidationException (throws if succeeded)
-$result->maybeError();   // ValidationException or null
+$result->succeeded();    // returns true if `$input` passed validation
+$result->failed();       // returns true if `$input` did not pass validation
+$result->data();         // returns validated data
+                         // (throws if validation failed)
+$result->maybeData();    // returns validated data or `null`
+$result->error();        // returns ValidationException
+                         // (throws if validation succeeded)
+$result->maybeError();   // returns ValidationException or `null`
 ```
 
 ### Validation Pipeline
@@ -128,7 +119,7 @@ When you call `parse()` (or `decode()`), the data flows through a pipeline in th
 | 6. **Pipe** | If `withPipe()` is set, pass the result to the next schema | No |
 | 7. **Catch** | If any step failed and `withCatch()` is set, return the fallback value | Returns fallback |
 
-Steps 5 deserves a closer look. Normalisers, constraints, and transforms all run as pipeline steps in the order you add them:
+Step 5 deserves a closer look. Normalisers, constraints, and transforms all run as pipeline steps in the order you add them:
 
 ```php
 $schema = Validate::string()
@@ -140,20 +131,122 @@ $schema = Validate::string()
     );
 ```
 
-When you call `encode()` (or `safeEncode()`), the pipeline is slightly different — outgoing data should already be valid, so:
+When you call `encode()` (or `safeEncode()`), the pipeline is slightly different -- outgoing data should already be valid, so:
 
 - defaults are not applied, and
 - fallbacks are skipped:
 
 | Step | What Happens | Stops Pipeline On Failure? |
 |------|-------------|---------------------------|
-| 1. ~~Default~~ | Skipped — encode does not substitute defaults | — |
+| 1. ~~Default~~ | Skipped -- encode does not substitute defaults | -- |
 | 2. **Coercion** | If `coerce()` is enabled, attempt to convert the input to the expected type | No |
 | 3. **Type check** | Verify the input is the correct PHP type | Yes |
 | 4. **Children** | Validate child schemas (using their encode path) | Yes |
 | 5. **Pipeline steps** | Run normalisers, constraints, and transforms in the order they were added | Transforms skip if prior issues exist |
 | 6. **Pipe** | If `withPipe()` is set, pass the result to the next schema (using its encode path) | No |
-| 7. ~~Catch~~ | Skipped — encode does not suppress errors | — |
+| 7. ~~Catch~~ | Skipped -- encode does not suppress errors | -- |
+
+## Error Handling
+
+Validation errors are structured following [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (Problem Details for HTTP APIs).
+
+### ValidationIssue
+
+Each validation failure is a `ValidationIssue` with:
+
+| Property | Description |
+|----------|-------------|
+| `type` | RFC 9457 URI identifying the error type |
+| `message` | Human-readable description |
+| `path` | Location in the data structure (e.g., `['address', 'zip']`) |
+| `input` | The value that failed validation |
+
+### Error Formatters
+
+`ErrorFormatter` reshapes validation issues into three formats.
+All three take a `ValidationException` (from `parse()`) or the
+error from `safeParse()`.
+
+Given this schema and invalid input:
+
+```php
+use StusDevKit\ValidationKit\ErrorFormatting\ErrorFormatter;
+
+$schema = Validate::object([
+    'name'    => Validate::string()->min(1),
+    'email'   => Validate::string()->email(),
+    'address' => Validate::object([
+        'zip' => Validate::string()->min(5),
+    ]),
+]);
+
+$result = $schema->safeParse((object) [
+    'name'    => '',
+    'email'   => 'not-an-email',
+    'address' => (object) ['zip' => 'ab'],
+]);
+```
+
+**Flat errors** -- grouped by field, ideal for form validation
+and API error responses:
+
+```php
+$flat = ErrorFormatter::flatten($result->maybeError());
+
+$flat->getFieldErrors();
+// [
+//     'name'        => ['String must be at least 1 character'],
+//     'email'       => ['Invalid email address'],
+//     'address.zip' => ['String must be at least 5 characters'],
+// ]
+
+$flat->getRootErrors();
+// [] (all errors are on specific fields)
+```
+
+`getRootErrors()` collects errors that aren't tied to a specific
+field — for example, when the input is the wrong type entirely:
+
+```php
+$result = $schema->safeParse('not an object');
+$flat = ErrorFormatter::flatten($result->maybeError());
+
+$flat->getRootErrors();
+// ['Expected object, received string']
+
+$flat->getFieldErrors();
+// [] (type failed before fields were checked)
+```
+
+**Tree errors** -- nested structure mirroring the data shape,
+ideal for rendering errors alongside complex nested forms:
+
+```php
+$tree = ErrorFormatter::treeify($result->maybeError());
+
+$tree->getErrors();
+// [] (no root-level errors)
+
+$tree->maybeGetChild('name')->getErrors();
+// ['String must be at least 1 character']
+
+$tree->maybeGetChild('address')->maybeGetChild('zip')->getErrors();
+// ['String must be at least 5 characters']
+
+$tree->maybeGetChild('address')->hasErrors();
+// true
+```
+
+**Pretty-printed** -- human-readable string for logging and
+CLI output:
+
+```php
+echo ErrorFormatter::prettify($result->maybeError());
+// 3 validation issues
+//   ✗ name: String must be at least 1 character
+//   ✗ email: Invalid email address
+//   ✗ address.zip: String must be at least 5 characters
+```
 
 ## Primitive Schemas
 
@@ -177,7 +270,7 @@ $uuid = Validate::string()->uuid();
 | `max($length)` | Maximum character length |
 | `length($length)` | Exact character length |
 
-**Format constraints:**
+**Common format constraints:**
 
 | Method | Description |
 |--------|-------------|
@@ -191,6 +284,12 @@ $uuid = Validate::string()->uuid();
 | `dateTime()` | Date-time (RFC 3339) |
 | `duration()` | ISO 8601 duration |
 | `hostname()` | RFC 1123 hostname |
+
+<details>
+<summary><strong>Additional format constraints</strong> (internationalised, URI, JSON Schema)</summary>
+
+| Method | Description |
+|--------|-------------|
 | `uriReference()` | URI reference (RFC 3986) |
 | `idnEmail()` | Internationalised email (RFC 6531) |
 | `idnHostname()` | Internationalised hostname (RFC 5890) |
@@ -202,6 +301,8 @@ $uuid = Validate::string()->uuid();
 | `isRegex()` | Valid PCRE pattern |
 | `password()` | Password (UI hint only, no validation) |
 
+</details>
+
 **Content constraints:**
 
 | Method | Description |
@@ -211,7 +312,7 @@ $uuid = Validate::string()->uuid();
 | `startsWith($prefix)` | Must start with prefix |
 | `endsWith($suffix)` | Must end with suffix |
 
-**Transforms (applied before constraints):**
+**Normalisers** (run at the point they appear in the builder chain):
 
 | Method | Description |
 |--------|-------------|
@@ -275,6 +376,32 @@ $status = Validate::enum(valuesOrEnumClass: ['active', 'inactive', 'pending']);
 // PHP backed enum
 $role = Validate::enum(valuesOrEnumClass: UserRole::class);
 ```
+
+## Coercion
+
+By default, each schema validates its native PHP type. Call `coerce()` to opt in to type conversion:
+
+```php
+$age = Validate::int()->coerce();
+$age->parse('42');   // 42 (string coerced to int)
+$age->parse(42.0);   // 42 (float with no fractional part)
+
+$flag = Validate::boolean()->coerce();
+$flag->parse('true');  // true
+$flag->parse(1);       // true
+```
+
+| Schema | Native Type | `coerce()` Converts From |
+|--------|-------------|--------------------------|
+| `Validate::string()` | `string` | int, float, bool |
+| `Validate::int()` | `int` | numeric strings, floats (no fractional part), bool |
+| `Validate::float()` | `float` | numeric strings, int, bool |
+| `Validate::number()` | `int\|float` | numeric strings (preserving type), bool |
+| `Validate::boolean()` | `bool` | `"true"`, `"false"`, `"yes"`, `"no"`, `0`, `1`, etc. |
+| `Validate::dateTime()` | `DateTimeInterface` | ISO 8601 strings, Unix timestamps |
+| `Validate::uuid()` | `string` | UUID strings (normalisation) |
+
+Without `coerce()`, non-native types are rejected. This keeps the boundary between validation and conversion explicit.
 
 ## Collection Schemas
 
@@ -566,8 +693,8 @@ $schema = Validate::string()->withConstraint(new NoForbiddenWords());
 ```
 
 Two methods to implement:
-- `getType()` — returns the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) type URI that identifies this validation error
-- `check()` — returns `null` on success, an error message on failure
+- `getType()` -- returns the [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) type URI that identifies this validation error
+- `check()` -- returns `null` on success, an error message on failure
 
 ### Level 3: BaseConstraint
 
@@ -648,85 +775,9 @@ final class SlugifyTransformer extends BaseTransformer
 }
 ```
 
-## Error Handling
-
-Validation errors are structured following [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (Problem Details for HTTP APIs).
-
-### ValidationIssue
-
-Each validation failure is a `ValidationIssue` with:
-
-| Property | Description |
-|----------|-------------|
-| `type` | RFC 9457 URI identifying the error type |
-| `message` | Human-readable description |
-| `path` | Location in the data structure (e.g., `['address', 'zip']`) |
-| `input` | The value that failed validation |
-
-### Error Formatters
-
-Three formatters are available for different use cases:
-
-**Flat errors** — grouped by field, suitable for form validation:
-
-```php
-use StusDevKit\ValidationKit\ErrorFormatting\ErrorFormatter;
-
-$result = $schema->safeParse($data);
-if ($result->failed()) {
-    $flat = ErrorFormatter::flatten($result->error());
-
-    $flat->formErrors();    // ['Form-level error messages']
-    $flat->fieldErrors();   // ['email' => ['Invalid email address']]
-}
-```
-
-**Tree errors** — nested structure mirroring the data shape:
-
-```php
-$tree = ErrorFormatter::treeify($result->error());
-
-$addressErrors = $tree->maybeChild('address');
-$zipErrors = $addressErrors?->maybeChild('zip');
-$zipErrors?->errors();  // ['Invalid ZIP code']
-```
-
-**Pretty-printed** — human-readable string for logging:
-
-```php
-$pretty = ErrorFormatter::prettify($result->error());
-// "address.zip: Invalid ZIP code"
-```
-
-## Coercion
-
-By default, each schema validates its native PHP type. Call `coerce()` to opt in to type conversion:
-
-```php
-$age = Validate::int()->coerce();
-$age->parse('42');   // 42 (string coerced to int)
-$age->parse(42.0);   // 42 (float with no fractional part)
-
-$flag = Validate::boolean()->coerce();
-$flag->parse('true');  // true
-$flag->parse(1);       // true
-```
-
-| Schema | Native Type | `coerce()` Converts From |
-|--------|-------------|--------------------------|
-| `Validate::string()` | `string` | int, float, bool |
-| `Validate::int()` | `int` | numeric strings, floats (no fractional part), bool |
-| `Validate::float()` | `float` | numeric strings, int, bool |
-| `Validate::number()` | `int\|float` | numeric strings (preserving type), bool |
-| `Validate::boolean()` | `bool` | `"true"`, `"false"`, `"yes"`, `"no"`, `0`, `1`, etc. |
-| `Validate::dateTime()` | `DateTimeInterface` | ISO 8601 strings, Unix timestamps |
-| `Validate::uuid()` | `string` | UUID strings (normalisation) |
-
-Without `coerce()`, non-native types are rejected. This keeps the boundary between validation and conversion explicit.
-
 ## Codecs
 
-A Codec is a bidirectional schema that validates data in both directions — decoding incoming data into your domain types, and encoding your domain types back into a transport format. This is the pattern you need when the same validation rules are shared between an API handler (decoding requests) and an SDK client (encoding requests).
+A Codec is a bidirectional schema that validates data in both directions -- decoding incoming data into your domain types, and encoding your domain types back into a transport format. This is the pattern you need when the same validation rules are shared between an API handler (decoding requests) and an SDK client (encoding requests).
 
 ```php
 $dateCodec = Validate::codec(
@@ -736,18 +787,18 @@ $dateCodec = Validate::codec(
     encode: fn(DateTimeInterface $dt) => $dt->format(DATE_RFC3339),
 );
 
-// API handler: decode incoming string → DateTimeImmutable
+// API handler: decode incoming string -> DateTimeImmutable
 $date = $dateCodec->decode('2024-01-15T10:30:00Z');
 
-// SDK client: encode DateTimeImmutable → string
+// SDK client: encode DateTimeImmutable -> string
 $json = $dateCodec->encode(new DateTimeImmutable());
 ```
 
 The four parameters:
-- `input` — schema that validates the incoming (wire) format
-- `output` — schema that validates the decoded (domain) type
-- `decode` — transforms wire format → domain type
-- `encode` — transforms domain type → wire format
+- `input` -- schema that validates the incoming (wire) format
+- `output` -- schema that validates the decoded (domain) type
+- `decode` -- transforms wire format -> domain type
+- `encode` -- transforms domain type -> wire format
 
 Codecs support the same safe variants:
 
@@ -813,13 +864,13 @@ use StusDevKit\ValidationKit\JsonSchema\JsonSchemaRegistry;
 
 $registry = new JsonSchemaRegistry();
 
-// import — $defs are registered in the registry
+// import -- $defs are registered in the registry
 $schema = $importer->import(
     jsonSchema: $jsonSchema,
     registry: $registry,
 );
 
-// export — $ref and $defs are preserved
+// export -- $ref and $defs are preserved
 $exported = $exporter->export(
     schema: $schema,
     registry: $registry,
@@ -878,7 +929,7 @@ $schema->parse(null);    // 'unknown'
 $schema->parse('hello'); // 'hello'
 ```
 
-Note: default values are NOT validated against the schema. They are applied when decoding (`parse()`/`decode()`) but not when encoding (`encode()`) — outgoing data should already have real values.
+Note: default values are NOT validated against the schema. They are applied when decoding (`parse()`/`decode()`) but not when encoding (`encode()`) -- outgoing data should already have real values.
 
 ### Fallback on Failure
 
