@@ -43,6 +43,7 @@ namespace StusDevKit\ValidationKit;
 
 use BackedEnum;
 use Closure;
+use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\DateTimeInterfaceSchema;
 use StusDevKit\ValidationKit\Schemas\BuiltinObjects\InstanceOfSchema;
@@ -73,6 +74,7 @@ use StusDevKit\ValidationKit\Schemas\Logic\EnumSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\NotSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
 use StusDevKit\ValidationKit\Schemas\UuidSchema;
+use StusDevKit\ValidationKit\Transformers\CustomConstraint;
 use StusDevKit\ValidationKit\ValidationIssue;
 
 /**
@@ -716,5 +718,45 @@ final class Validate
             decoder: $decode,
             encoder: $encode,
         );
+    }
+
+    // ================================================================
+    //
+    // Reusable Constraint Factory
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * create a reusable constraint from a callable
+     *
+     * This bridges the gap between inline validation
+     * (`withCustomConstraint(fn(...))`) and a full
+     * constraint class. The returned constraint can be
+     * shared across multiple schemas.
+     *
+     * The callable receives the data and returns null
+     * on success or an error message string on failure.
+     *
+     * Usage:
+     *
+     *     $noEmpty = Validate::constraintFrom(
+     *         fn(mixed $data) => $data === ''
+     *             ? 'Must not be empty'
+     *             : null,
+     *     );
+     *
+     *     $name = Validate::string()
+     *         ->withConstraint($noEmpty);
+     *     $label = Validate::string()
+     *         ->withConstraint($noEmpty)
+     *         ->max(length: 50);
+     *
+     * @param callable(mixed): ?string $fn
+     * - returns null on success, error message on failure
+     */
+    public static function constraintFrom(
+        callable $fn,
+    ): ValidationConstraint {
+        return new CustomConstraint($fn);
     }
 }

@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- initial support for external $ref loading ([3006fb9](https://github.com/stuartherbert/stusdevkit/commit/3006fb9)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial support for external $ref loading ([247f4e4](https://github.com/stuartherbert/stusdevkit/commit/247f4e4)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for $anchor in any sub-schema ([c59f26a](https://github.com/stuartherbert/stusdevkit/commit/c59f26a)) — Stuart Herbert <stuart@stuartherbert.com>
 - schema $id is now exported to JSON schema ([ba71e0a](https://github.com/stuartherbert/stusdevkit/commit/ba71e0a)) — Stuart Herbert <stuart@stuartherbert.com>
 - add further JSON schema constraints ([3f35f37](https://github.com/stuartherbert/stusdevkit/commit/3f35f37)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -111,12 +111,9 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
-#### CollectionsKit
-
-- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- introduce BaseConstraint and BaseTransformer to simplify custom validator classes ([ad08ef0](https://github.com/stuartherbert/stusdevkit/commit/ad08ef0)) — Stuart Herbert <stuart@stuartherbert.com>
 - now requires the PHP intl extension ([10d40a0](https://github.com/stuartherbert/stusdevkit/commit/10d40a0)) — Stuart Herbert <stuart@stuartherbert.com>
 - move the JsonSchema support into a dedicated namespace ([33a9afb](https://github.com/stuartherbert/stusdevkit/commit/33a9afb)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::array()->nonempty() is now Validate::array->notEmpty() ([4fc09ab](https://github.com/stuartherbert/stusdevkit/commit/4fc09ab)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -144,6 +141,10 @@ This CHANGELOG is automatically compiled.
 - DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>
 - move validators for built-in PHP object types into their own namespace ([86941c7](https://github.com/stuartherbert/stusdevkit/commit/86941c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidatorKit
 
