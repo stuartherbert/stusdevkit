@@ -103,6 +103,10 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ValidationKit
+
+- added initial README ([ac6c173](https://github.com/stuartherbert/stusdevkit/commit/ac6c173)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionKit
 
 - add list of available methods ([7962911](https://github.com/stuartherbert/stusdevkit/commit/7962911)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -113,7 +117,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- more work to make custom validators easier to create ([98feeae](https://github.com/stuartherbert/stusdevkit/commit/98feeae)) — Stuart Herbert <stuart@stuartherbert.com>
+- more work to make custom validators easier to create ([3b43d4d](https://github.com/stuartherbert/stusdevkit/commit/3b43d4d)) — Stuart Herbert <stuart@stuartherbert.com>
 - existing transformers now use BaseTransformer to simplify implementation ([0ede17e](https://github.com/stuartherbert/stusdevkit/commit/0ede17e)) — Stuart Herbert <stuart@stuartherbert.com>
 - built-in constraints now use the BaseConstraint to simplify the code ([cf0172b](https://github.com/stuartherbert/stusdevkit/commit/cf0172b)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce BaseConstraint and BaseTransformer to simplify custom validator classes ([50c5b16](https://github.com/stuartherbert/stusdevkit/commit/50c5b16)) — Stuart Herbert <stuart@stuartherbert.com>
