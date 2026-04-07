@@ -46,8 +46,12 @@ namespace StusDevKit\ValidationKit\Tests\Acceptance;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use StusDevKit\ValidationKit\Exceptions\ExternalJsonSchemaRefNotFoundException;
+use StusDevKit\ValidationKit\Exceptions\ExternalJsonSchemaRefWithoutLoaderException;
 use StusDevKit\ValidationKit\Exceptions\InvalidJsonSchemaException;
+use StusDevKit\ValidationKit\Exceptions\UnresolvableJsonSchemaRelativeRefException;
 use StusDevKit\ValidationKit\JsonSchema\JsonSchema;
+use StusDevKit\ValidationKit\Tests\Fixtures\InMemorySchemaLoader;
 use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Exporter;
 use StusDevKit\ValidationKit\JsonSchema\JsonSchemaDraft202012Importer;
 use StusDevKit\ValidationKit\JsonSchema\JsonSchemaRegistry;
@@ -4851,5 +4855,605 @@ class JsonSchemaDraft202012ImporterTest extends TestCase
             $result,
         );
 
+    }
+
+    // ================================================================
+    //
+    // External $ref
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('external $ref without loader throws')]
+    public function test_external_ref_without_loader_throws(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that an external $ref without a
+        // JsonSchemaLoader throws the appropriate exception
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "https://example.com/address.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change + test the results
+
+        $this->expectException(
+            ExternalJsonSchemaRefWithoutLoaderException::class,
+        );
+        $unit->import($jsonSchema);
+    }
+
+    #[TestDox('relative external $ref without base URI throws')]
+    public function test_relative_ref_without_base_uri_throws(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a relative external $ref
+        // without a base URI ($id) throws the appropriate
+        // exception
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "address.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change + test the results
+
+        $this->expectException(
+            UnresolvableJsonSchemaRelativeRefException::class,
+        );
+        $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+    }
+
+    #[TestDox('external $ref loader returns null throws')]
+    public function test_external_ref_loader_returns_null_throws(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that when the loader cannot find
+        // the external document, the importer throws an
+        // unresolved ref exception
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "https://example.com/missing.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change + test the results
+
+        $this->expectException(
+            ExternalJsonSchemaRefNotFoundException::class,
+        );
+        $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+    }
+
+    #[TestDox('external $ref with absolute URI loads and validates')]
+    public function test_external_ref_absolute_uri(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that an absolute external $ref
+        // loads the document via the loader and validates
+        // against the external schema
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $loader->addFromJson(
+            uri: 'https://example.com/address.json',
+            json: <<<'JSON'
+                {
+                    "type": "object",
+                    "properties": {
+                        "street": {"type": "string"}
+                    },
+                    "required": ["street"]
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "https://example.com/address.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // valid
+        $validResult = $schema->safeParse((object) [
+            'address' => (object) ['street' => '123 Main St'],
+        ]);
+        $this->assertFalse($validResult->failed());
+
+        // invalid — missing required 'street'
+        $failResult = $schema->safeParse((object) [
+            'address' => (object) [],
+        ]);
+        $this->assertTrue($failResult->failed());
+    }
+
+    #[TestDox('external $ref with relative URI resolves against $id')]
+    public function test_external_ref_relative_uri(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that a relative external $ref
+        // is resolved against the root schema's $id
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $loader->addFromJson(
+            uri: 'https://example.com/schemas/address.json',
+            json: <<<'JSON'
+                {
+                    "type": "object",
+                    "properties": {
+                        "street": {"type": "string"}
+                    },
+                    "required": ["street"]
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/schemas/root.json",
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "address.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $validResult = $schema->safeParse((object) [
+            'address' => (object) ['street' => '123 Main St'],
+        ]);
+        $this->assertFalse($validResult->failed());
+    }
+
+    #[TestDox('external $ref with $defs fragment resolves')]
+    public function test_external_ref_with_defs_fragment(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that an external $ref with a
+        // /$defs/ fragment resolves the specific definition
+        // within the external document
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $loader->addFromJson(
+            uri: 'https://example.com/types.json',
+            json: <<<'JSON'
+                {
+                    "$defs": {
+                        "Street": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "street": {
+                        "$ref": "https://example.com/types.json#/$defs/Street"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // valid
+        $validResult = $schema->safeParse((object) [
+            'street' => '123 Main St',
+        ]);
+        $this->assertFalse($validResult->failed());
+
+        // invalid — empty string fails minLength: 1
+        $failResult = $schema->safeParse((object) [
+            'street' => '',
+        ]);
+        $this->assertTrue($failResult->failed());
+    }
+
+    #[TestDox('external $ref with anchor fragment resolves')]
+    public function test_external_ref_with_anchor_fragment(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that an external $ref with an
+        // anchor fragment resolves the anchored definition
+        // within the external document
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $loader->addFromJson(
+            uri: 'https://example.com/types.json',
+            json: <<<'JSON'
+                {
+                    "$defs": {
+                        "Street": {
+                            "$anchor": "street-type",
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "street": {
+                        "$ref": "https://example.com/types.json#street-type"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $validResult = $schema->safeParse((object) [
+            'street' => '123 Main St',
+        ]);
+        $this->assertFalse($validResult->failed());
+
+        $failResult = $schema->safeParse((object) [
+            'street' => '',
+        ]);
+        $this->assertTrue($failResult->failed());
+    }
+
+    #[TestDox('external document is loaded only once (caching)')]
+    public function test_external_ref_caching(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the same external document
+        // is loaded from the loader only once, even when
+        // referenced multiple times
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+        $loader->addFromJson(
+            uri: 'https://example.com/address.json',
+            json: <<<'JSON'
+                {
+                    "type": "object",
+                    "properties": {
+                        "street": {"type": "string"}
+                    }
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "home": {
+                        "$ref": "https://example.com/address.json"
+                    },
+                    "work": {
+                        "$ref": "https://example.com/address.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // loader should only be called once
+        $this->assertSame(1, $loader->loadCount());
+
+        // both properties should still validate
+        $validResult = $schema->safeParse((object) [
+            'home' => (object) ['street' => '1 Main St'],
+            'work' => (object) ['street' => '2 High St'],
+        ]);
+        $this->assertFalse($validResult->failed());
+    }
+
+    #[TestDox('transitive external refs resolve (A -> B -> C)')]
+    public function test_external_ref_transitive(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that transitive external refs
+        // work: document A references B, B references C
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+
+        // C: a simple string type
+        $loader->addFromJson(
+            uri: 'https://example.com/name.json',
+            json: <<<'JSON'
+                {
+                    "type": "string",
+                    "minLength": 1
+                }
+                JSON,
+        );
+
+        // B: references C
+        $loader->addFromJson(
+            uri: 'https://example.com/person.json',
+            json: <<<'JSON'
+                {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "$ref": "https://example.com/name.json"
+                        }
+                    },
+                    "required": ["name"]
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        // A: references B
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "author": {
+                        "$ref": "https://example.com/person.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // valid
+        $validResult = $schema->safeParse((object) [
+            'author' => (object) ['name' => 'Stuart'],
+        ]);
+        $this->assertFalse($validResult->failed());
+
+        // invalid — name fails minLength: 1 from doc C
+        $failResult = $schema->safeParse((object) [
+            'author' => (object) ['name' => ''],
+        ]);
+        $this->assertTrue($failResult->failed());
+    }
+
+    #[TestDox('circular external refs do not loop infinitely')]
+    public function test_external_ref_circular(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that circular external refs
+        // (A references B, B references A) do not cause
+        // infinite recursion
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $loader = new InMemorySchemaLoader();
+
+        $loader->addFromJson(
+            uri: 'https://example.com/a.json',
+            json: <<<'JSON'
+                {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "b": {
+                            "$ref": "https://example.com/b.json"
+                        }
+                    }
+                }
+                JSON,
+        );
+
+        $loader->addFromJson(
+            uri: 'https://example.com/b.json',
+            json: <<<'JSON'
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {"type": "integer"},
+                        "a": {
+                            "$ref": "https://example.com/a.json"
+                        }
+                    }
+                }
+                JSON,
+        );
+
+        $unit = new JsonSchemaDraft202012Importer();
+
+        $jsonSchema = $this->jsonToSchema(<<<'JSON'
+            {
+                "$id": "https://example.com/root.json",
+                "type": "object",
+                "properties": {
+                    "start": {
+                        "$ref": "https://example.com/a.json"
+                    }
+                }
+            }
+            JSON);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $schema = $unit->import(
+            jsonSchema: $jsonSchema,
+            loader: $loader,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // should not hang — validates a simple case
+        $validResult = $schema->safeParse((object) [
+            'start' => (object) [
+                'name' => 'hello',
+                'b' => (object) [
+                    'value' => 42,
+                ],
+            ],
+        ]);
+        $this->assertFalse($validResult->failed());
     }
 }

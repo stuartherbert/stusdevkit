@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- add support for $anchor in any sub-schema ([f6a5bba](https://github.com/stuartherbert/stusdevkit/commit/f6a5bba)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial support for external $ref loading ([3006fb9](https://github.com/stuartherbert/stusdevkit/commit/3006fb9)) — Stuart Herbert <stuart@stuartherbert.com>
+- add support for $anchor in any sub-schema ([c59f26a](https://github.com/stuartherbert/stusdevkit/commit/c59f26a)) — Stuart Herbert <stuart@stuartherbert.com>
 - schema $id is now exported to JSON schema ([ba71e0a](https://github.com/stuartherbert/stusdevkit/commit/ba71e0a)) — Stuart Herbert <stuart@stuartherbert.com>
 - add further JSON schema constraints ([3f35f37](https://github.com/stuartherbert/stusdevkit/commit/3f35f37)) — Stuart Herbert <stuart@stuartherbert.com>
 - add support for resolving references during JSON schema import ([ce6db71](https://github.com/stuartherbert/stusdevkit/commit/ce6db71)) — Stuart Herbert <stuart@stuartherbert.com>

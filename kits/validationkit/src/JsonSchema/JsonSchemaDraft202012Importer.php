@@ -41,9 +41,13 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\JsonSchema;
 
+use Closure;
 use stdClass;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
+use StusDevKit\ValidationKit\Exceptions\ExternalJsonSchemaRefNotFoundException;
+use StusDevKit\ValidationKit\Exceptions\ExternalJsonSchemaRefWithoutLoaderException;
 use StusDevKit\ValidationKit\Exceptions\InvalidJsonSchemaException;
+use StusDevKit\ValidationKit\Exceptions\UnresolvableJsonSchemaRelativeRefException;
 use StusDevKit\ValidationKit\Schemas\Builtins\ArraySchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\IntSchema;
 use StusDevKit\ValidationKit\Schemas\Builtins\NumberSchema;
@@ -55,6 +59,8 @@ use StusDevKit\ValidationKit\Schemas\Logic\AnyOfSchema;
 use StusDevKit\ValidationKit\Schemas\Logic\OneOfSchema;
 use StusDevKit\ValidationKit\Validate;
 
+use function StusDevKit\MissingBitsKit\uri_parse;
+use function StusDevKit\MissingBitsKit\uri_recompose;
 use function StusDevKit\MissingBitsKit\uri_resolve_reference;
 
 /**
@@ -96,6 +102,16 @@ use function StusDevKit\MissingBitsKit\uri_resolve_reference;
  */
 class JsonSchemaDraft202012Importer
 {
+    /**
+     * the loader for external `$ref` resolution
+     *
+     * Set at the start of import(), reset to null at the
+     * end. Stored as instance state so that deeply nested
+     * resolveRef() calls can access it without threading
+     * through every intermediate method.
+     */
+    private ?JsonSchemaLoader $loader = null;
+
     /**
      * imported schemas for anchors discovered during
      * pre-scan
@@ -212,9 +228,11 @@ class JsonSchemaDraft202012Importer
     public function import(
         JsonSchema $jsonSchema,
         ?JsonSchemaRegistry $registry = null,
+        ?JsonSchemaLoader $loader = null,
     ): ValidationSchema {
         $root = $jsonSchema->toObject();
         $registry ??= new JsonSchemaRegistry();
+        $this->loader = $loader;
 
         // push root $id as base URI before registering
         // $defs and anchors, so that anchors resolve
@@ -263,6 +281,8 @@ class JsonSchemaDraft202012Importer
             // a round-trip through the exporter
             $result = $result->withSchemaId($rootId);
         }
+
+        $this->loader = null;
 
         return $result;
     }
@@ -461,20 +481,35 @@ class JsonSchemaDraft202012Importer
         /** @var array<string, ValidationSchema<mixed>> $resolved */
         $resolved = [];
 
-        // pass 1: register lazy placeholders
+        // pass 1: register lazy placeholders by flat name
+        // and by fully-qualified URI
+        $currentBaseUri = $registry->currentBaseUri();
         foreach (get_object_vars($defs) as $name => $defBody) {
             /** @var non-empty-string $defName */
             $defName = (string) $name;
+            $lazySchema = new LazySchema(
+                function () use (&$resolved, $defName) {
+                    /** @var ValidationSchema<mixed> $schema */
+                    $schema = $resolved[$defName];
+                    return $schema;
+                },
+            );
+
             $registry->register(
                 name: $defName,
-                schema: new LazySchema(
-                    function () use (&$resolved, $defName) {
-                        /** @var ValidationSchema<mixed> $schema */
-                        $schema = $resolved[$defName];
-                        return $schema;
-                    },
-                ),
+                schema: $lazySchema,
             );
+
+            // also register by fully-qualified URI so
+            // that external refs with #/$defs/ fragments
+            // can resolve across documents
+            if ($currentBaseUri !== '') {
+                $registry->registerByUri(
+                    uri: $currentBaseUri
+                        . '#/$defs/' . $defName,
+                    schema: $lazySchema,
+                );
+            }
         }
 
         // pass 2: import each definition body and register
@@ -869,8 +904,12 @@ class JsonSchemaDraft202012Importer
         );
 
         // store the ref target so the exporter can emit
-        // $ref instead of inlining
-        $refSchema = $refSchema->withRefTarget($ref);
+        // $ref instead of inlining. Only for local refs
+        // — external refs may return unresolved lazy
+        // placeholders that cannot be safely cloned.
+        if (str_starts_with($ref, '#')) {
+            $refSchema = $refSchema->withRefTarget($ref);
+        }
 
         // check if any sibling is a validation keyword
         $hasValidationSiblings = false;
@@ -2125,8 +2164,217 @@ class JsonSchemaDraft202012Importer
             );
         }
 
-        // JSON Pointer format (#/$defs/...) or other
-        return $registry->resolveRef(ref: $ref);
+        // local JSON Pointer (#/$defs/...)
+        if (str_starts_with($ref, '#/')) {
+            return $registry->resolveRef(ref: $ref);
+        }
+
+        // external ref (absolute or relative URI)
+        return $this->resolveExternalRef(
+            ref: $ref,
+            registry: $registry,
+        );
+    }
+
+    /**
+     * resolve an external `$ref` to a validation schema
+     *
+     * Handles absolute URIs, relative URIs, and external
+     * URIs with fragments (JSON Pointer or anchor).
+     *
+     * @param non-empty-string $ref
+     * @return ValidationSchema<mixed>
+     * @throws ExternalJsonSchemaRefWithoutLoaderException
+     *         if no loader was provided
+     * @throws UnresolvableJsonSchemaRelativeRefException
+     *         if the ref is relative and no base URI
+     *         exists
+     */
+    private function resolveExternalRef(
+        string $ref,
+        JsonSchemaRegistry $registry,
+    ): ValidationSchema {
+        // resolve against the current base URI
+        $baseUri = $registry->currentBaseUri();
+
+        // check if the ref is relative (no scheme)
+        $parsed = uri_parse($ref);
+        if ($parsed['scheme'] === '' && $baseUri === '') {
+            throw new UnresolvableJsonSchemaRelativeRefException(
+                ref: $ref,
+            );
+        }
+
+        $absoluteUri = $baseUri !== ''
+            ? uri_resolve_reference(
+                base: $baseUri,
+                ref: $ref,
+            )
+            : $ref;
+
+        // separate document URI from fragment
+        $parts = uri_parse($absoluteUri);
+        $fragment = $parts['fragment'];
+        /** @var non-empty-string $documentUri */
+        $documentUri = uri_recompose(
+            scheme: $parts['scheme'],
+            authority: $parts['authority'],
+            path: $parts['path'],
+            query: $parts['query'],
+            fragment: '',
+        );
+
+        $documentSchema = $this->importExternalDocument(
+            documentUri: $documentUri,
+            registry: $registry,
+        );
+
+        // resolve fragment within the external document
+        if ($fragment === '') {
+            return $documentSchema;
+        }
+
+        // JSON Pointer fragment (/$defs/...)
+        if (str_starts_with($fragment, '/$defs/')) {
+            return $registry->resolveByUri(
+                uri: $documentUri . '#' . $fragment,
+            );
+        }
+
+        // non-pointer fragment is an anchor
+        if (! str_starts_with($fragment, '/')) {
+            return $registry->resolveAnchor(
+                baseUri: $documentUri,
+                anchor: $fragment,
+            );
+        }
+
+        // other JSON Pointer forms not yet supported
+        throw InvalidJsonSchemaException::malformed(
+            reason: '$ref fragment "' . $fragment
+                . '" is not a supported JSON Pointer'
+                . ' form; only /$defs/<name> and'
+                . ' anchors are supported',
+        );
+    }
+
+    /**
+     * load and import an external JSON Schema document
+     *
+     * The document is loaded via the JsonSchemaLoader,
+     * imported recursively, and cached in the registry
+     * by its base URI so that subsequent references to
+     * the same document do not re-load or re-import it.
+     *
+     * @param non-empty-string $documentUri
+     *   absolute URI without fragment
+     * @return ValidationSchema<mixed>
+     */
+    private function importExternalDocument(
+        string $documentUri,
+        JsonSchemaRegistry $registry,
+    ): ValidationSchema {
+        // cache hit — already imported
+        if ($registry->hasByUri($documentUri)) {
+            return $registry->resolveByUri(
+                uri: $documentUri,
+            );
+        }
+
+        if ($this->loader === null) {
+            throw new ExternalJsonSchemaRefWithoutLoaderException(
+                ref: $documentUri,
+            );
+        }
+
+        $loaded = $this->loader->load($documentUri);
+        if ($loaded === null) {
+            throw new ExternalJsonSchemaRefNotFoundException(
+                ref: $documentUri,
+            );
+        }
+
+        // placeholder to break circular references.
+        //
+        // $resolved is assigned after import completes.
+        // During circular reference resolution the lazy
+        // may be resolved early, but at validation time
+        // it will always point to the real schema.
+        $resolved = Validate::mixed();
+        /** @var Closure(): ValidationSchema<mixed> $factory */
+        $factory = function () use (&$resolved): ValidationSchema {
+            return $resolved;
+        };
+        $registry->registerByUri(
+            uri: $documentUri,
+            schema: new LazySchema($factory),
+        );
+
+        // import the external document with its own
+        // anchor wiring scope
+        $root = $loaded->toObject();
+
+        // push document URI as base (in case it has no
+        // $id)
+        $registry->pushBaseUri(uri: $documentUri);
+
+        try {
+            // save parent document's anchor state
+            $savedAnchors = $this->anchorSchemas;
+            $this->anchorSchemas = [];
+
+            // pre-scan anchors + register $defs
+            $this->preRegisterAnchors(
+                schema: $root,
+                registry: $registry,
+            );
+            if (
+                isset($root->{'$defs'})
+                && $root->{'$defs'} instanceof stdClass
+            ) {
+                $this->registerDefs(
+                    defs: $root->{'$defs'},
+                    registry: $registry,
+                );
+            }
+
+            // handle $id on the external document
+            $hasId = isset($root->{'$id'})
+                && is_string($root->{'$id'})
+                && $root->{'$id'} !== '';
+
+            if ($hasId) {
+                /** @var non-empty-string $docId */
+                $docId = $root->{'$id'};
+                $registry->pushBaseUri(uri: $docId);
+            }
+
+            $result = $this->importSchemaBody(
+                schema: $root,
+                registry: $registry,
+            );
+
+            if ($hasId) {
+                $result = $result->withSchemaId($docId);
+                $registry->popBaseUri();
+            }
+
+            // wire the placeholder
+            $resolved = $result;
+
+            // merge external doc's anchors into the
+            // parent's state — external doc's lazy
+            // closures read from $this->anchorSchemas,
+            // so the entries must persist
+            $this->anchorSchemas = array_merge(
+                $savedAnchors,
+                $this->anchorSchemas,
+            );
+
+            return $result;
+        } finally {
+            $registry->popBaseUri();
+        }
     }
 
     /**
