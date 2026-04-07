@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -53,7 +52,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *     $transformer = new LowerCaseTransformer();
  *     $transformer->process('HELLO', $ctx); // 'hello'
  */
-final class LowerCaseTransformer implements ValueTransformer
+final class LowerCaseTransformer extends BaseTransformer
 {
     public function process(
         mixed $data,
@@ -62,10 +61,5 @@ final class LowerCaseTransformer implements ValueTransformer
         assert(is_string($data));
 
         return mb_strtolower($data);
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

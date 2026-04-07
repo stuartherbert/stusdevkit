@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -54,7 +53,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *     $transformer->process('  hello  ', $ctx);
  *     // 'hello'
  */
-final class TrimTransformer implements ValueTransformer
+final class TrimTransformer extends BaseTransformer
 {
     public function process(
         mixed $data,
@@ -63,10 +62,5 @@ final class TrimTransformer implements ValueTransformer
         assert(is_string($data));
 
         return trim($data);
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

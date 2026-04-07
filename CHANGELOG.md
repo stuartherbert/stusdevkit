@@ -113,7 +113,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- built-in constraints now use the BaseConstraint to simplify the code ([68c81a2](https://github.com/stuartherbert/stusdevkit/commit/68c81a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- existing transformers now use BaseTransformer to simplify implementation ([93b817d](https://github.com/stuartherbert/stusdevkit/commit/93b817d)) — Stuart Herbert <stuart@stuartherbert.com>
+- built-in constraints now use the BaseConstraint to simplify the code ([cf0172b](https://github.com/stuartherbert/stusdevkit/commit/cf0172b)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce BaseConstraint and BaseTransformer to simplify custom validator classes ([50c5b16](https://github.com/stuartherbert/stusdevkit/commit/50c5b16)) — Stuart Herbert <stuart@stuartherbert.com>
 - now requires the PHP intl extension ([10d40a0](https://github.com/stuartherbert/stusdevkit/commit/10d40a0)) — Stuart Herbert <stuart@stuartherbert.com>
 - move the JsonSchema support into a dedicated namespace ([33a9afb](https://github.com/stuartherbert/stusdevkit/commit/33a9afb)) — Stuart Herbert <stuart@stuartherbert.com>
