@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -58,7 +57,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *
  *     $constraint = new StringPasswordConstraint();
  */
-final class StringPasswordConstraint implements ValidationConstraint
+final class StringPasswordConstraint extends BaseConstraint
 {
     // ================================================================
     //
@@ -81,10 +80,5 @@ final class StringPasswordConstraint implements ValidationConstraint
         assert(is_string($data));
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

@@ -113,7 +113,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- introduce BaseConstraint and BaseTransformer to simplify custom validator classes ([ad08ef0](https://github.com/stuartherbert/stusdevkit/commit/ad08ef0)) — Stuart Herbert <stuart@stuartherbert.com>
+- built-in constraints now use the BaseConstraint to simplify the code ([68c81a2](https://github.com/stuartherbert/stusdevkit/commit/68c81a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce BaseConstraint and BaseTransformer to simplify custom validator classes ([50c5b16](https://github.com/stuartherbert/stusdevkit/commit/50c5b16)) — Stuart Herbert <stuart@stuartherbert.com>
 - now requires the PHP intl extension ([10d40a0](https://github.com/stuartherbert/stusdevkit/commit/10d40a0)) — Stuart Herbert <stuart@stuartherbert.com>
 - move the JsonSchema support into a dedicated namespace ([33a9afb](https://github.com/stuartherbert/stusdevkit/commit/33a9afb)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::array()->nonempty() is now Validate::array->notEmpty() ([4fc09ab](https://github.com/stuartherbert/stusdevkit/commit/4fc09ab)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -61,7 +60,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class NumericInt32Constraint implements ValidationConstraint
+final class NumericInt32Constraint extends BaseConstraint
 {
     /**
      * minimum value for a 32-bit signed integer
@@ -118,10 +117,5 @@ final class NumericInt32Constraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

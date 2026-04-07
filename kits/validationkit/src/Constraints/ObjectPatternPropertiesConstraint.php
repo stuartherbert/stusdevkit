@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
@@ -70,7 +69,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *
  * @phpstan-type PatternMap array<string, ValidationSchema<mixed>>
  */
-final class ObjectPatternPropertiesConstraint implements ValidationConstraint
+final class ObjectPatternPropertiesConstraint extends BaseConstraint
 {
     /**
      * @param PatternMap $patterns
@@ -140,10 +139,5 @@ final class ObjectPatternPropertiesConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

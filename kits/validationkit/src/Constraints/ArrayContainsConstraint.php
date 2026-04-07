@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
@@ -86,7 +85,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class ArrayContainsConstraint implements ValidationConstraint
+final class ArrayContainsConstraint extends BaseConstraint
 {
     /** @var ErrorCallback */
     private readonly mixed $error;
@@ -263,10 +262,5 @@ final class ArrayContainsConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

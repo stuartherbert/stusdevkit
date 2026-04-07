@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -61,7 +60,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class StringEmailConstraint implements ValidationConstraint
+final class StringEmailConstraint extends BaseConstraint
 {
     /** @var ErrorCallback */
     private mixed $error;
@@ -106,10 +105,5 @@ final class StringEmailConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

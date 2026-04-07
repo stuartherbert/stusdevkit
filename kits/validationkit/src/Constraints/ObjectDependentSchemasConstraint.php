@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
@@ -72,7 +71,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *
  * @phpstan-type DependencyMap array<string, ValidationSchema<mixed>>
  */
-final class ObjectDependentSchemasConstraint implements ValidationConstraint
+final class ObjectDependentSchemasConstraint extends BaseConstraint
 {
     /**
      * @param DependencyMap $dependencies
@@ -138,10 +137,5 @@ final class ObjectDependentSchemasConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

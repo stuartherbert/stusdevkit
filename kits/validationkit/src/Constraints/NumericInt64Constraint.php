@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -60,7 +59,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *
  *     $constraint = new NumericInt64Constraint();
  */
-final class NumericInt64Constraint implements ValidationConstraint
+final class NumericInt64Constraint extends BaseConstraint
 {
     // ================================================================
     //
@@ -90,10 +89,5 @@ final class NumericInt64Constraint implements ValidationConstraint
         // marker for the JSON Schema exporter.
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

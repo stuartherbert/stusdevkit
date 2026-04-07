@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -79,7 +78,7 @@ use const PHP_FLOAT_EPSILON;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class NumericMultipleOfConstraint implements ValidationConstraint
+final class NumericMultipleOfConstraint extends BaseConstraint
 {
     /** @var ErrorCallback */
     private readonly mixed $error;
@@ -166,10 +165,5 @@ final class NumericMultipleOfConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

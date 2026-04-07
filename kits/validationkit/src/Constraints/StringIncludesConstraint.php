@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -78,7 +77,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class StringIncludesConstraint implements ValidationConstraint
+final class StringIncludesConstraint extends BaseConstraint
 {
     /**
      * the substring that must be present in the input
@@ -158,10 +157,5 @@ final class StringIncludesConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

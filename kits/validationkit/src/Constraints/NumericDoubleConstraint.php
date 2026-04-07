@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -60,7 +59,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *
  *     $constraint = new NumericDoubleConstraint();
  */
-final class NumericDoubleConstraint implements ValidationConstraint
+final class NumericDoubleConstraint extends BaseConstraint
 {
     // ================================================================
     //
@@ -90,10 +89,5 @@ final class NumericDoubleConstraint implements ValidationConstraint
         // Schema exporter.
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

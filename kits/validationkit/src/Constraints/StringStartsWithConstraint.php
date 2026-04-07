@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -80,7 +79,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class StringStartsWithConstraint implements ValidationConstraint
+final class StringStartsWithConstraint extends BaseConstraint
 {
     /**
      * the prefix that the input string must start with
@@ -160,10 +159,5 @@ final class StringStartsWithConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

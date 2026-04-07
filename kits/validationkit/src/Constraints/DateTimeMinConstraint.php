@@ -42,7 +42,6 @@ declare(strict_types=1);
 namespace StusDevKit\ValidationKit\Constraints;
 
 use DateTimeInterface;
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -72,7 +71,7 @@ use StusDevKit\ValidationKit\ValidationIssue;
  *
  * @phpstan-type ErrorCallback callable(mixed): ValidationIssue
  */
-final class DateTimeMinConstraint implements ValidationConstraint
+final class DateTimeMinConstraint extends BaseConstraint
 {
     /** @var ErrorCallback */
     private readonly mixed $error;
@@ -141,10 +140,5 @@ final class DateTimeMinConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -66,7 +65,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *         ],
  *     );
  */
-final class ObjectDependentRequiredConstraint implements ValidationConstraint
+final class ObjectDependentRequiredConstraint extends BaseConstraint
 {
     /**
      * @param array<string, list<string>> $dependencies
@@ -140,10 +139,5 @@ final class ObjectDependentRequiredConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }

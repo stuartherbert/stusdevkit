@@ -41,7 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
-use StusDevKit\ValidationKit\Contracts\ValidationConstraint;
+use StusDevKit\ValidationKit\Constraints\BaseConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
@@ -54,7 +54,7 @@ use StusDevKit\ValidationKit\Internals\ValidationContext;
  *
  * @phpstan-type CustomConstraintCallable callable(mixed): ?string
  */
-final class CustomConstraint implements ValidationConstraint
+final class CustomConstraint extends BaseConstraint
 {
     /** @var CustomConstraintCallable */
     private readonly mixed $callable;
@@ -82,10 +82,5 @@ final class CustomConstraint implements ValidationConstraint
         }
 
         return $data;
-    }
-
-    public function skipOnIssues(): bool
-    {
-        return false;
     }
 }
