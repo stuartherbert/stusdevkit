@@ -105,6 +105,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- make README more useful as a reference ([741b7c5](https://github.com/stuartherbert/stusdevkit/commit/741b7c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain the individual steps of a validator ([8cb5ec5](https://github.com/stuartherbert/stusdevkit/commit/8cb5ec5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README ([421b82b](https://github.com/stuartherbert/stusdevkit/commit/421b82b)) — Stuart Herbert <stuart@stuartherbert.com>
 
@@ -118,7 +119,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- improve usability of ErrorFormatter ([1701912](https://github.com/stuartherbert/stusdevkit/commit/1701912)) — Stuart Herbert <stuart@stuartherbert.com>
+- improve usability of ErrorFormatter ([6b049d7](https://github.com/stuartherbert/stusdevkit/commit/6b049d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - more work to make custom validators easier to create ([3b43d4d](https://github.com/stuartherbert/stusdevkit/commit/3b43d4d)) — Stuart Herbert <stuart@stuartherbert.com>
 - existing transformers now use BaseTransformer to simplify implementation ([0ede17e](https://github.com/stuartherbert/stusdevkit/commit/0ede17e)) — Stuart Herbert <stuart@stuartherbert.com>
 - built-in constraints now use the BaseConstraint to simplify the code ([cf0172b](https://github.com/stuartherbert/stusdevkit/commit/cf0172b)) — Stuart Herbert <stuart@stuartherbert.com>

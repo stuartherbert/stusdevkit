@@ -285,8 +285,7 @@ $uuid = Validate::string()->uuid();
 | `duration()` | ISO 8601 duration |
 | `hostname()` | RFC 1123 hostname |
 
-<details>
-<summary><strong>Additional format constraints</strong> (internationalised, URI, JSON Schema)</summary>
+**Additional format constraints:** (internationalised, URI, JSON Schema)
 
 | Method | Description |
 |--------|-------------|
@@ -301,8 +300,6 @@ $uuid = Validate::string()->uuid();
 | `isRegex()` | Valid PCRE pattern |
 | `password()` | Password (UI hint only, no validation) |
 
-</details>
-
 **Content constraints:**
 
 | Method | Description |
@@ -312,7 +309,7 @@ $uuid = Validate::string()->uuid();
 | `startsWith($prefix)` | Must start with prefix |
 | `endsWith($suffix)` | Must end with suffix |
 
-**Normalisers** (run at the point they appear in the builder chain):
+**Normalisers:** (run at the point they appear in the builder chain):
 
 | Method | Description |
 |--------|-------------|
@@ -347,19 +344,103 @@ $port = Validate::int()->gt(0)->lt(65536);
 $score = Validate::number()->gte(0)->lte(100);
 ```
 
-Same constraint methods as integers, plus:
-
 | Method | Description |
 |--------|-------------|
+| `gt($value)` | Greater than |
+| `gte($value)` | Greater than or equal |
+| `lt($value)` | Less than |
+| `lte($value)` | Less than or equal |
+| `positive()` | Shorthand for `gt(0)` |
+| `negative()` | Shorthand for `lt(0)` |
+| `nonNegative()` | Shorthand for `gte(0)` |
+| `nonPositive()` | Shorthand for `lte(0)` |
+| `multipleOf($value)` | Must be a multiple of the given value |
 | `finite()` | Must not be INF or NAN |
 | `float()` | Must fit in IEEE 754 single-precision |
 | `double()` | Must fit in IEEE 754 double-precision (no-op in PHP) |
 
-### Floats, Booleans, Null, Mixed
+### Floats
 
 ```php
 $ratio = Validate::float()->gte(0.0)->lte(1.0);
+```
+
+| Method | Description |
+|--------|-------------|
+| `gt($value)` | Greater than |
+| `gte($value)` | Greater than or equal |
+| `lt($value)` | Less than |
+| `lte($value)` | Less than or equal |
+| `positive()` | Shorthand for `gt(0)` |
+| `negative()` | Shorthand for `lt(0)` |
+| `nonNegative()` | Shorthand for `gte(0)` |
+| `nonPositive()` | Shorthand for `lte(0)` |
+| `multipleOf($value)` | Must be a multiple of the given value |
+| `finite()` | Must not be INF or NAN |
+
+### Booleans
+
+```php
 $flag = Validate::boolean();
+$flag->parse(true);    // true
+$flag->parse('true');  // throws ValidationException
+```
+
+Call `coerce()` to accept strings, integers, and floats as booleans:
+
+```php
+$flag = Validate::boolean()->coerce();
+$flag->parse('true');  // true
+$flag->parse('yes');   // true
+$flag->parse('1');     // true
+$flag->parse(1);       // true
+
+$flag->parse('false'); // false
+$flag->parse('no');    // false
+$flag->parse('0');     // false
+$flag->parse(0);       // false
+```
+
+The default string lookup table is case-insensitive:
+
+| String | Boolean |
+|--------|---------|
+| `"true"` | `true` |
+| `"1"` | `true` |
+| `"yes"` | `true` |
+| `"false"` | `false` |
+| `"0"` | `false` |
+| `"no"` | `false` |
+| `""` | `false` |
+
+You can replace the lookup table entirely:
+
+```php
+$toggle = Validate::boolean()->coerce(
+    strings: ['on' => true, 'off' => false],
+);
+$toggle->parse('on');    // true
+$toggle->parse('off');   // false
+$toggle->parse('true');  // throws (not in the lookup table)
+```
+
+Or extend the defaults:
+
+```php
+use StusDevKit\ValidationKit\Coercions\CoerceToBoolean;
+
+$flag = Validate::boolean()->coerce(
+    strings: [
+        ...CoerceToBoolean::DEFAULT_STRINGS,
+        'on' => true,
+        'off' => false,
+    ],
+);
+```
+
+### Null, Mixed
+
+```php
 $nothing = Validate::null();
 $anything = Validate::mixed();   // accepts any value including null
 ```
