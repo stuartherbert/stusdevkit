@@ -105,7 +105,8 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- added initial README ([ac6c173](https://github.com/stuartherbert/stusdevkit/commit/ac6c173)) — Stuart Herbert <stuart@stuartherbert.com>
+- explain the individual steps of a validator ([cfb1ebe](https://github.com/stuartherbert/stusdevkit/commit/cfb1ebe)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial README ([421b82b](https://github.com/stuartherbert/stusdevkit/commit/421b82b)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionKit
 

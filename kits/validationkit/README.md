@@ -114,6 +114,47 @@ $result->error();        // ValidationException (throws if succeeded)
 $result->maybeError();   // ValidationException or null
 ```
 
+### Validation Pipeline
+
+When you call `parse()` (or `decode()`), the data flows through a pipeline in this order:
+
+| Step | What Happens | Stops Pipeline On Failure? |
+|------|-------------|---------------------------|
+| 1. **Default** | If input is null and `withDefault()` is set, return the default value immediately | Returns early |
+| 2. **Coercion** | If `coerce()` is enabled, attempt to convert the input to the expected type | No |
+| 3. **Type check** | Verify the input is the correct PHP type (string, int, etc.) | Yes |
+| 4. **Children** | Validate child schemas (object properties, array elements, tuple positions) | Yes |
+| 5. **Pipeline steps** | Run normalisers, constraints, and transforms in the order they were added | Transforms skip if prior issues exist |
+| 6. **Pipe** | If `withPipe()` is set, pass the result to the next schema | No |
+| 7. **Catch** | If any step failed and `withCatch()` is set, return the fallback value | Returns fallback |
+
+Steps 5 deserves a closer look. Normalisers, constraints, and transforms all run as pipeline steps in the order you add them:
+
+```php
+$schema = Validate::string()
+    ->applyTrim()           // normaliser: runs first
+    ->min(1)                // constraint: runs after trim
+    ->applyToLowerCase()    // normaliser: runs after min
+    ->withCustomTransform(  // transform: skipped if min failed
+        fn($data) => $data . '!',
+    );
+```
+
+When you call `encode()` (or `safeEncode()`), the pipeline is slightly different — outgoing data should already be valid, so:
+
+- defaults are not applied, and
+- fallbacks are skipped:
+
+| Step | What Happens | Stops Pipeline On Failure? |
+|------|-------------|---------------------------|
+| 1. ~~Default~~ | Skipped — encode does not substitute defaults | — |
+| 2. **Coercion** | If `coerce()` is enabled, attempt to convert the input to the expected type | No |
+| 3. **Type check** | Verify the input is the correct PHP type | Yes |
+| 4. **Children** | Validate child schemas (using their encode path) | Yes |
+| 5. **Pipeline steps** | Run normalisers, constraints, and transforms in the order they were added | Transforms skip if prior issues exist |
+| 6. **Pipe** | If `withPipe()` is set, pass the result to the next schema (using its encode path) | No |
+| 7. ~~Catch~~ | Skipped — encode does not suppress errors | — |
+
 ## Primitive Schemas
 
 ### Strings
