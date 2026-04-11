@@ -85,7 +85,7 @@ phpstan: ## Run all static analysis checks
 	docker compose run --rm test-container-85 vendor/bin/phpstan $(PHPSTAN_XDEBUG) --memory-limit=-1 ${OPTS}
 
 syntax-check: ## Check all PHP files for syntax errors
-	@docker compose run --rm test-container-85 find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l
+	@docker compose run --rm test-container-85 sh -c "find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l | grep -v 'No syntax errors detected'; test \$$? -ne 0"
 
 test: unit acceptance ## Run all tests
 

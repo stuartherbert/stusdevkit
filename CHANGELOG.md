@@ -105,7 +105,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- make README more useful as a reference ([741b7c5](https://github.com/stuartherbert/stusdevkit/commit/741b7c5)) — Stuart Herbert <stuart@stuartherbert.com>
+- make README more useful as a reference ([6521431](https://github.com/stuartherbert/stusdevkit/commit/6521431)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain the individual steps of a validator ([8cb5ec5](https://github.com/stuartherbert/stusdevkit/commit/8cb5ec5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README ([421b82b](https://github.com/stuartherbert/stusdevkit/commit/421b82b)) — Stuart Herbert <stuart@stuartherbert.com>
 
