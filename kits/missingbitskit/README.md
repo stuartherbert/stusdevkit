@@ -112,6 +112,73 @@ $options = GetPrintableType::FLAG_CLASSNAME
 GetPrintableType::from(new stdClass(), $options);                   // 'object<stdClass>'
 ```
 
+### Reflection
+
+Helpers for working with PHP's `ReflectionType` hierarchy.
+
+#### GetReflectionTypes
+
+`ReflectionType` is abstract: the real payload lives on three unrelated child classes (`ReflectionNamedType`, `ReflectionUnionType`, `ReflectionIntersectionType`), each with its own shape. `GetReflectionTypes::from()` papers over that by returning a flat `ReflectionType[]` regardless of which child class you were handed.
+
+```php
+use StusDevKit\MissingBitsKit\Reflection\GetReflectionTypes;
+
+// given a named type (e.g. `int`), you get it back wrapped in an array
+$types = GetReflectionTypes::from($namedType);
+// => [ReflectionNamedType]
+
+// given a union (e.g. `int|string`), you get the member types
+$types = GetReflectionTypes::from($unionType);
+// => [ReflectionNamedType, ReflectionNamedType]
+
+// given an intersection (e.g. `Countable&Traversable`), same
+$types = GetReflectionTypes::from($intersectionType);
+// => [ReflectionNamedType, ReflectionNamedType]
+```
+
+`from()` performs a **one-level unwrap only**. For a DNF type such as `(Countable&Traversable)|int`, the returned array contains the intersection as a `ReflectionIntersectionType` — callers that need a fully-flattened leaf list should use `FlattenReflectionType::from()` instead.
+
+Throws `UnsupportedReflectionTypeException` if given a `ReflectionType` subclass it does not recognise (future-proofing against new PHP additions).
+
+#### FlattenReflectionType
+
+`FlattenReflectionType::from()` goes one step further than `GetReflectionTypes`: it recurses all the way to the leaves and returns the **unique set of PHP type-name strings** the position can satisfy. It's aimed at callers that want to ask *"which named types does this parameter accept?"* without caring about the `ReflectionType` hierarchy — a reflection-based DI container is the motivating use case.
+
+```php
+use StusDevKit\MissingBitsKit\Reflection\FlattenReflectionType;
+
+// a named type
+FlattenReflectionType::from($namedIntType);
+// => ['int']
+
+// a nullable named type - split into base type plus 'null', so it
+// looks the same as an explicit `int|null` union
+FlattenReflectionType::from($nullableIntType);
+// => ['int', 'null']
+
+// a union
+FlattenReflectionType::from($intOrStringType);
+// => ['int', 'string']
+
+// an intersection
+FlattenReflectionType::from($countableAndTraversableType);
+// => ['Countable', 'Traversable']
+
+// a DNF type - fully flattened to leaves, with duplicates collapsed
+FlattenReflectionType::from($aAndBOrAAndCType);
+// => ['A', 'B', 'C']     (not ['A', 'B', 'A', 'C'])
+```
+
+Three pieces of processing happen together:
+
+- **recursion** — union and intersection members are walked to the leaf level, including DNF types like `(A&B)|C`.
+- **nullable split** — a `?Foo` named type is emitted as two leaves, `'Foo'` and `'null'`, so the caller sees the same shape as an explicit `Foo|null` union. (`mixed` and an explicit `null` return type are already whole leaves and are not split further.)
+- **deduplication** — each distinct leaf appears once. The reachable case is a DNF like `(A&B)|(A&C)`, where `A` would otherwise appear twice.
+
+The returned list is **unordered**. PHP normalises union and intersection members at parse time, so source/declaration order is not preserved — reflection never sees it. Callers that need a predictable order should sort the result themselves.
+
+Throws `UnsupportedReflectionTypeException` if given a `ReflectionType` subclass it does not recognise (surfaced from the `GetReflectionTypes` delegation).
+
 ### Functions
 
 | Function | Purpose |

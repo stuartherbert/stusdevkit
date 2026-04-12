@@ -20,9 +20,13 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### MissingKitsBit
+
+- initial set of reflection tools ([4249e74](https://github.com/stuartherbert/stusdevkit/commit/4249e74)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
-- added initial set of TypeInspector classes ([e7180a2](https://github.com/stuartherbert/stusdevkit/commit/e7180a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
 - added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
 - added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
 - added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
