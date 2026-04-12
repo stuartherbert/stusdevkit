@@ -20,6 +20,10 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### DependencyKit
+
+- added skeleton ([e71350f](https://github.com/stuartherbert/stusdevkit/commit/e71350f)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ValidationKit
 
 - initial support for external $ref loading ([247f4e4](https://github.com/stuartherbert/stusdevkit/commit/247f4e4)) — Stuart Herbert <stuart@stuartherbert.com>

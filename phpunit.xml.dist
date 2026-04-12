@@ -30,6 +30,7 @@
             <directory suffix="Test.php">kits/assertionskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/collectionskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/datetimekit/tests/unit/src</directory>
+            <directory suffix="Test.php">kits/dependencykit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/missingbitskit/tests/unit/src</directory>
             <directory suffix="Test.php">kits/validationkit/tests/unit/src</directory>
@@ -43,6 +44,9 @@
         </testsuite>
         <testsuite name="unit-datetimekit">
             <directory suffix="Test.php">kits/datetimekit/tests/unit/src</directory>
+        </testsuite>
+        <testsuite name="unit-dependencykit">
+            <directory suffix="Test.php">kits/dependencykit/tests/unit/src</directory>
         </testsuite>
         <testsuite name="unit-exceptionskit">
             <directory suffix="Test.php">kits/exceptionskit/tests/unit/src</directory>
@@ -62,6 +66,7 @@
             <directory suffix=".php">kits/assertionskit/src</directory>
             <directory suffix=".php">kits/collectionskit/src</directory>
             <directory suffix=".php">kits/datetimekit/src</directory>
+            <directory suffix=".php">kits/dependencykit/src</directory>
             <directory suffix=".php">kits/exceptionskit/src</directory>
             <directory suffix=".php">kits/missingbitskit/src</directory>
             <directory suffix=".php">kits/validationkit/src</directory>

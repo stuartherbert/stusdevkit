@@ -8,6 +8,8 @@ parameters:
         - kits/collectionskit/tests
         - kits/datetimekit/src
         - kits/datetimekit/tests
+        - kits/dependencykit/src
+        - kits/dependencykit/tests
         - kits/missingbitskit/src
         - kits/missingbitskit/tests
         - kits/validationkit/src
