@@ -20,9 +20,16 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### MissingBitsKit
+
+- added initial set of TypeInspector classes ([e7180a2](https://github.com/stuartherbert/stusdevkit/commit/e7180a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
+- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### DependencyKit
 
-- added skeleton ([e71350f](https://github.com/stuartherbert/stusdevkit/commit/e71350f)) — Stuart Herbert <stuart@stuartherbert.com>
+- added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
@@ -55,12 +62,6 @@ This CHANGELOG is automatically compiled.
 #### CollectionsKit
 
 - added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
-- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
-- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 

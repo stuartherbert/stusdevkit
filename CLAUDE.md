@@ -132,6 +132,15 @@ Break work into small, focused pieces that can each be committed separately with
 - **No naming prefixes/suffixes** - Don't use `Abstract` prefix, `Interface`
   or `Trait` suffixes (PHPStan catches misuse). Exception classes **must** end
   with the `Exception` suffix (e.g. `NullValueNotAllowedException`).
+- **`get` / `Get*` prefix is a scope marker** - the prefix signals that the
+  thing only returns values and does nothing else. On a **class** name (e.g.
+  `GetClassTraits`, `GetPrintableType`), it means the class is a pure value
+  producer: no mutation, no side effects, no orchestration. If a class grows
+  beyond returning values, the prefix is wrong and the class needs renaming
+  or splitting. On a **method**, prefer `get` for getters unless the method
+  does complex work. (The full method-level convention is still being
+  formalised — apply incrementally, don't retroactively rename without
+  discussion.)
 - **No PHPStan ignoreErrors** - Never use `ignoreErrors` in `phpstan.neon` to suppress warnings. Fix the code or type annotations instead. The project runs PHPStan at max level specifically to catch type errors; suppressing them defeats that goal.
 - **Heredoc for multiline strings** - JSON examples and any strings that don't fit comfortably on a single line must use heredoc format. Use single-quoted heredoc (`<<<'JSON'`) for strings that don't need variable interpolation.
 
@@ -181,6 +190,7 @@ Heavy use of generics for type safety:
 - **Test explanations** - Keep concise, avoid redundant phrases. Word wrap at column 79.
 - **Test comments** - Word wrap all test explanation comments at column 79 for readability
 - **One condition per test** - Each test method must test one main condition. Do not combine "accepts valid input" and "rejects invalid input" in a single test. Write separate methods (e.g. `test_string_email_accepts_valid` and `test_string_email_rejects_invalid`).
+- **Expected values must be literal** - The `$expected` value (or equivalent) in a unit test must always be written as a literal, never computed. Do not derive it by calling another inspector, running a helper, or transforming the input at test time — that turns the test into a tautology (it passes whenever the computation agrees with itself, even if both are wrong). Type each expected value out by hand. Class-string constants (`SomeClass::class`) are fine because they resolve at compile time and give rename safety, but anything that runs code to produce the expected value is not.
 
 #### CRITICAL Testing Anti-Patterns to Avoid
 - **NEVER assume the method under test works correctly** - Write tests based on what the method SHOULD do according to business requirements, not what the current implementation happens to return. Tests should reveal bugs, not encode them.
