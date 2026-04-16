@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ExceptionsKit
 
-- added InvalidFunctionException ([0a5a9ac](https://github.com/stuartherbert/stusdevkit/commit/0a5a9ac)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidMethodException ([947e4a2](https://github.com/stuartherbert/stusdevkit/commit/947e4a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
 
