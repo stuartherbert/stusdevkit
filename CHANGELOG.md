@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### DependencyKit
 
-- added DependencyNotFoundException ([4a9cd13](https://github.com/stuartherbert/stusdevkit/commit/4a9cd13)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UnresolvedParameterException ([486fcad](https://github.com/stuartherbert/stusdevkit/commit/486fcad)) — Stuart Herbert <stuart@stuartherbert.com>
+- added DependencyNotFoundException ([29d4ce5](https://github.com/stuartherbert/stusdevkit/commit/29d4ce5)) — Stuart Herbert <stuart@stuartherbert.com>
 - add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
 
