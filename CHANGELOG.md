@@ -20,6 +20,11 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### ExceptionsKit
+
+- added InvalidClassException ([5f85c4e](https://github.com/stuartherbert/stusdevkit/commit/5f85c4e)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### DependencyKit
 
 - add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -68,10 +73,6 @@ This CHANGELOG is automatically compiled.
 #### CollectionsKit
 
 - added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### ExceptionsKit
-
-- added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 
