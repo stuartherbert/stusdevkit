@@ -41,8 +41,10 @@
 declare(strict_types=1);
 namespace StusDevKit\MissingBitsKit\Reflection;
 
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionType;
+use ReflectionUnionType;
 
 class FlattenReflectionType
 {
@@ -57,25 +59,61 @@ class FlattenReflectionType
      *
      * Three pieces of processing happen together:
      *
-     *  - **recursion** - union and intersection members are walked
-     *    to the leaf level, including DNF types like `(A&B)|C`
+     *  - **recursion** - union members are walked to the leaf level
      *  - **nullable split** - a `?Foo` named type is emitted as two
      *    leaves, `'Foo'` and `'null'`, matching what you get from an
      *    explicit `Foo|null` union so both spellings look the same
      *    to the caller
-     *  - **deduplication** - each distinct leaf appears once, even
-     *    when PHP's type system would otherwise allow repeats (the
-     *    reachable case is a DNF like `(A&B)|(A&C)`)
+     *  - **deduplication** - each distinct leaf appears once
      *
-     * The returned list is unordered. PHP normalises union and
-     * intersection members at parse time, so source/declaration
-     * order is not preserved - reflection never sees it. Callers
-     * that need a predictable order should sort the result
+     * **Ordering.** Union members are returned in the order PHP
+     * produces when stringifying the type (via `(string)$refType`).
+     * In practice this means:
+     *
+     *  - **class-only unions** preserve declaration order: for
+     *    `A|B` you get `['A', 'B']`, for `B|A` you get `['B', 'A']`.
+     *  - **scalar-only unions** are reported in PHP's canonical
+     *    order (both `int|string` and `string|int` stringify as
+     *    `string|int`), so the output is deterministic but not the
+     *    order the developer wrote.
+     *  - **mixed unions** put classes first (in declaration order)
+     *    and scalars last (in canonical order).
+     *
+     * Here Be Dragons.
+     * ================
+     *
+     * The ordering guarantee above is derived from PHP's text
+     * representation, so it is **only as stable as that
+     * representation**. A future PHP release could in principle
+     * change the canonical scalar ordering, or alter how it
+     * stringifies unions in some other way, and the output of
+     * from() would shift with it. Callers that need guaranteed
+     * behaviour across PHP versions - or that care about anything
+     * stronger than "class-only unions preserve declaration order
+     * on the PHP we tested against" - should treat this as
+     * best-effort and write their own walker against the
+     * ReflectionType tree directly.
+     *
+     * **Intersection types are refused.** An intersection `A&B`
+     * means "a value that satisfies both A and B simultaneously".
+     * Collapsing that to `['A', 'B']` discards the "and" semantics:
+     * the flat list becomes indistinguishable from the list
+     * produced for a union `A|B` (which means "a value that
+     * satisfies either A or B"). Callers reasoning from the flat
+     * list would draw wrong conclusions. Rather than silently
+     * produce misleading output, from() throws
+     * IntersectionTypesNotSupportedException for any input
+     * containing an intersection anywhere in its tree - including
+     * DNF types like `(A&B)|C`. Consumers that need to reason about
+     * intersections must walk the ReflectionType structure
      * themselves.
      *
      * See {@see GetReflectionTypes} if you need a one-level unwrap
      * that keeps compound members intact.
      *
+     * @throws IntersectionTypesNotSupportedException
+     *   if $refType contains a ReflectionIntersectionType anywhere
+     *   in its tree (bare intersection or a DNF union member)
      * @throws UnsupportedReflectionTypeException
      *   if $refType is a ReflectionType subclass we do not
      *   recognise (surfaced from the GetReflectionTypes delegation)
@@ -94,47 +132,70 @@ class FlattenReflectionType
     }
 
     /**
-     * recursive helper for from() - produces the flat leaf list
-     * without the final deduplication
+     * single-pass helper for from() - dispatches on the concrete
+     * ReflectionType subclass and produces the leaf list for that
+     * subclass (before the final deduplication in from())
      *
+     * @throws IntersectionTypesNotSupportedException
      * @throws UnsupportedReflectionTypeException
      * @return list<string>
      */
     private static function walk(ReflectionType $refType): array
     {
-        // our return type
-        $retval = [];
-
-        // unwrap the top-level ReflectionType into its direct members
-        $types = GetReflectionTypes::from($refType);
-
-        foreach ($types as $type) {
-            // general case - we have a concrete type
-            if ($type instanceof ReflectionNamedType) {
-                $name = $type->getName();
-                $retval[] = $name;
-
-                // split `?Foo` into [Foo, null]. `mixed` and `null`
-                // both also report allowsNull() = true, but are
-                // already whole leaves in their own right - they
-                // must not sprout an extra `null` entry
-                if (
-                    $type->allowsNull()
-                    && $name !== 'mixed'
-                    && $name !== 'null'
-                ) {
-                    $retval[] = 'null';
-                }
-                continue;
-            }
-
-            // special case - we have a compound type that needs
-            // further expansion
-            foreach (self::walk($type) as $leaf) {
-                $retval[] = $leaf;
-            }
+        // refuse intersections - see the class-level docblock for
+        // the full rationale. In short, a flat list cannot
+        // faithfully represent "A and B must both be satisfied".
+        if ($refType instanceof ReflectionIntersectionType) {
+            throw new IntersectionTypesNotSupportedException($refType);
         }
 
-        return $retval;
+        // named type - emit its name, plus 'null' for nullable
+        // forms (`?Foo`, `Foo|null`). `mixed` and `null` already
+        // report allowsNull() = true but are whole leaves in their
+        // own right, so they must not sprout an extra `null` entry.
+        if ($refType instanceof ReflectionNamedType) {
+            $name = $refType->getName();
+            $retval = [$name];
+            if (
+                $refType->allowsNull()
+                && $name !== 'mixed'
+                && $name !== 'null'
+            ) {
+                $retval[] = 'null';
+            }
+            return $retval;
+        }
+
+        // union type - take the member order directly from PHP's
+        // text representation rather than from getTypes(), whose
+        // ordering is undocumented. The string form is what a
+        // developer sees when they stringify the type, and it
+        // preserves declaration order for class-only unions -
+        // exactly the ordering signal a reflection-based DI
+        // resolver needs.
+        //
+        // First, scan the members: a DNF union like `(A&B)|C` has
+        // a ReflectionIntersectionType as one of its members. The
+        // top-level intersection check above can't see it (the
+        // outer type is a union), so we catch it here before
+        // splitting the text. Once past this scan, every remaining
+        // member is a plain named type, so the string contains no
+        // parentheses and exploding on '|' is safe.
+        if ($refType instanceof ReflectionUnionType) {
+            foreach ($refType->getTypes() as $member) {
+                if ($member instanceof ReflectionIntersectionType) {
+                    throw new IntersectionTypesNotSupportedException(
+                        $member,
+                    );
+                }
+            }
+            return explode('|', (string)$refType);
+        }
+
+        // unknown ReflectionType subclass - unreachable until PHP
+        // adds new child classes. We raise the same exception
+        // GetReflectionTypes would, so any caller who used to
+        // catch that error keeps working.
+        throw new UnsupportedReflectionTypeException($refType);
     }
 }

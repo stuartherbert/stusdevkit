@@ -51,6 +51,7 @@ use ReflectionType;
 use ReflectionUnionType;
 use Stringable;
 use StusDevKit\MissingBitsKit\Reflection\FlattenReflectionType;
+use StusDevKit\MissingBitsKit\Reflection\IntersectionTypesNotSupportedException;
 use StusDevKit\MissingBitsKit\Reflection\UnsupportedReflectionTypeException;
 use Traversable;
 
@@ -184,14 +185,21 @@ class FlattenReflectionTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns all member names for a ReflectionUnionType')]
-    public function test_from_returns_all_member_names_for_union(): void
+    #[TestDox('from() returns all member names for a ReflectionUnionType, in PHP\'s canonical order for scalar-only unions')]
+    public function test_from_returns_scalar_union_members_in_canonical_order(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // a union type has two or more member types. from() must
-        // return the string form of every member.
+        // a scalar-only union has PHP's canonical ordering baked in:
+        // `int|string` and `string|int` both stringify to
+        // "string|int" - PHP normalises at parse time. Our
+        // implementation takes its ordering directly from the text
+        // representation, so the observable output must match PHP's
+        // canonical form. The test asserts the literal order
+        // (without sort) to pin that contract - if a future PHP
+        // release changes the canonical order, we want the failure
+        // to land here rather than surprise a downstream caller.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -208,26 +216,65 @@ class FlattenReflectionTypeTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        // PHP does not guarantee the ordering of union members, so we
-        // assert by set rather than by index
-        sort($actual);
-        $this->assertSame(['int', 'string'], $actual);
+        $this->assertSame(['string', 'int'], $actual);
     }
 
-    // ================================================================
-    //
-    // ReflectionIntersectionType
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('from() returns all member names for a ReflectionIntersectionType')]
-    public function test_from_returns_all_member_names_for_intersection(): void
+    #[TestDox('from() preserves declaration order for class-only ReflectionUnionType')]
+    public function test_from_preserves_declaration_order_for_class_only_union(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // an intersection type has two or more class/interface member
-        // types. from() must return the string form of every member.
+        // class-only unions are the case where declaration order is
+        // meaningful to the caller - for a DI resolver, it tells
+        // the resolver "try A first, then B". PHP's text
+        // representation of a class-only union preserves the order
+        // the developer wrote (unlike scalar unions, which PHP
+        // canonicalises). Our implementation takes its ordering
+        // from the text, so we must honour that for class-only
+        // unions. This test pins the guarantee.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $fn = static fn (Countable|Traversable $x): Countable|Traversable => $x;
+        $refType = (new ReflectionFunction($fn))->getReturnType();
+        $this->assertInstanceOf(ReflectionUnionType::class, $refType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = FlattenReflectionType::from($refType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(['Countable', 'Traversable'], $actual);
+    }
+
+    // ================================================================
+    //
+    // ReflectionIntersectionType (refused)
+    //
+    // A flat list of names cannot faithfully represent an intersection.
+    // `A&B` (a value satisfying BOTH) would collapse to `['A', 'B']`,
+    // indistinguishable from the list produced for `A|B` (a value
+    // satisfying EITHER) - so downstream callers reasoning from the
+    // flat list would draw wrong conclusions. from() refuses
+    // intersections rather than silently produce misleading output.
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('from() throws IntersectionTypesNotSupportedException for a ReflectionIntersectionType')]
+    public function test_from_throws_for_intersection(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a bare intersection `A&B` cannot be flattened without
+        // losing its "and" semantics (see section comment above), so
+        // from() must refuse it explicitly via
+        // IntersectionTypesNotSupportedException.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -237,34 +284,30 @@ class FlattenReflectionTypeTest extends TestCase
         $this->assertInstanceOf(ReflectionIntersectionType::class, $refType);
 
         // ----------------------------------------------------------------
-        // perform the change
-
-        $actual = FlattenReflectionType::from($refType);
-
-        // ----------------------------------------------------------------
         // test the results
 
-        // assert by set to avoid depending on PHP's member ordering
-        sort($actual);
-        $this->assertSame(['Countable', 'Traversable'], $actual);
+        $this->expectException(IntersectionTypesNotSupportedException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        FlattenReflectionType::from($refType);
     }
 
-    // ================================================================
-    //
-    // DNF types (union containing intersection)
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('from() recurses into compound members of a DNF union')]
-    public function test_from_recurses_into_dnf_union_members(): void
+    #[TestDox('from() throws IntersectionTypesNotSupportedException for a DNF type with any intersection branch')]
+    public function test_from_throws_for_dnf_with_intersection_branch(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // PHP 8.2+ supports DNF types such as (Countable&Traversable)|int.
-        // from() is a full flatten - unlike GetReflectionTypes, every
-        // leaf type must appear in the result regardless of nesting
-        // depth.
+        // a DNF type such as `(A&B)|C` mixes a union and an
+        // intersection. Even though the non-intersection branch
+        // could in principle be flattened, from() refuses the whole
+        // input: returning a flat list that silently dropped the
+        // intersection branch would be as misleading as flattening
+        // the intersection itself. Callers get a uniform "cannot
+        // flatten intersections" response regardless of where the
+        // intersection appears in the tree.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -274,54 +317,14 @@ class FlattenReflectionTypeTest extends TestCase
         $this->assertInstanceOf(ReflectionUnionType::class, $refType);
 
         // ----------------------------------------------------------------
-        // perform the change
-
-        $actual = FlattenReflectionType::from($refType);
-
-        // ----------------------------------------------------------------
         // test the results
 
-        // three leaves are expected: Countable, Traversable, int
-        sort($actual);
-        $this->assertSame(['Countable', 'Traversable', 'int'], $actual);
-    }
-
-    #[TestDox('from() deduplicates leaves that appear more than once')]
-    public function test_from_deduplicates_repeated_leaves(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // a DNF type such as `(Countable&Traversable)|(Countable&Stringable)`
-        // has Countable appearing in both intersection members. A naive
-        // flatten would emit Countable twice. from() must deduplicate
-        // so that callers - in particular a reflection-based DI
-        // container - see each leaf exactly once.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $fn = static fn (
-            (Countable&Traversable)|(Countable&Stringable) $x
-        ): (Countable&Traversable)|(Countable&Stringable) => $x;
-        $refType = (new ReflectionFunction($fn))->getReturnType();
-        $this->assertInstanceOf(ReflectionUnionType::class, $refType);
+        $this->expectException(IntersectionTypesNotSupportedException::class);
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = FlattenReflectionType::from($refType);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        // three distinct leaves are expected: Countable, Traversable,
-        // Stringable - not four
-        sort($actual);
-        $this->assertSame(
-            ['Countable', 'Stringable', 'Traversable'],
-            $actual,
-        );
+        FlattenReflectionType::from($refType);
     }
 
     // ================================================================

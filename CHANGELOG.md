@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added FlattenClassTypes ([65a8826](https://github.com/stuartherbert/stusdevkit/commit/65a8826)) — Stuart Herbert <stuart@stuartherbert.com>
+- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
 - added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
 - added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -82,6 +82,10 @@ This CHANGELOG is automatically compiled.
 
 ### Bug Fixes
 
+
+#### MissingBitsKit
+
+- FlattenReflectionType now throws if asked to flatten an intersection type ([56edb90](https://github.com/stuartherbert/stusdevkit/commit/56edb90)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
