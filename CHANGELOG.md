@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ExceptionsKit
 
-- added InvalidClassException ([5f85c4e](https://github.com/stuartherbert/stusdevkit/commit/5f85c4e)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidFunctionException ([0a5a9ac](https://github.com/stuartherbert/stusdevkit/commit/0a5a9ac)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
