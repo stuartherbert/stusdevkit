@@ -87,7 +87,8 @@ phpstan: ## Run all static analysis checks
 syntax-check: ## Check all PHP files for syntax errors
 	@docker compose run --rm test-container-85 sh -c "find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l | grep -v 'No syntax errors detected'; test \$$? -ne 0"
 
-test: unit acceptance ## Run all tests
+test: ## Run all tests
+	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit,acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 acceptance:  ## Run all acceptance tests
 	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
