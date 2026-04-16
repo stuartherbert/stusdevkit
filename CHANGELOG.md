@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### DependencyKit
 
-- added UnsupportedParameterTypeException ([77f6b56](https://github.com/stuartherbert/stusdevkit/commit/77f6b56)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UntypedParameterException ([de6952d](https://github.com/stuartherbert/stusdevkit/commit/de6952d)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UnsupportedParameterTypeException ([fa422f1](https://github.com/stuartherbert/stusdevkit/commit/fa422f1)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnresolvedParameterException ([21a2077](https://github.com/stuartherbert/stusdevkit/commit/21a2077)) — Stuart Herbert <stuart@stuartherbert.com>
 - added DependencyNotFoundException ([29d4ce5](https://github.com/stuartherbert/stusdevkit/commit/29d4ce5)) — Stuart Herbert <stuart@stuartherbert.com>
 - add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
