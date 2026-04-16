@@ -42,87 +42,87 @@ docker-rebuild: ## Rebuild Docker dev environment
 	docker compose build --pull
 
 composer-validate: ## Validate composer dependencies
-	docker compose run --rm test-container-85 composer validate --strict
+	@docker compose run --rm -q test-container-85 composer validate --strict
 
 composer-install: composer-validate ## Install composer dependencies
-	docker compose run --rm test-container-85 composer install
+	@docker compose run --rm -q test-container-85 composer install
 
 composer-update: ## Run composer update
-	docker compose run --rm test-container-85 composer update
-	docker compose run --rm test-container-85 composer outdated
+	@docker compose run --rm -q test-container-85 composer update
+	@docker compose run --rm -q test-container-85 composer outdated
 
 composer-bump-deps: ## Update deps and check outdated
-	docker compose run --rm test-container-85 composer update --bump-after-update
-	docker compose run --rm test-container-85 composer outdated
+	@docker compose run --rm -q test-container-85 composer update --bump-after-update
+	@docker compose run --rm -q test-container-85 composer outdated
 
 composer-dumpautoload: ## Composer Dumpautoload
-	docker compose run --rm test-container-85 composer dumpautoload
+	@docker compose run --rm -q test-container-85 composer dumpautoload
 
 clean: ## Remove all Docker containers, volumes, etc
 	docker compose down -v --rmi all --remove-orphans
 	rm -rf vendor
 
 changelog: ## Rebuild the CHANGELOG.md file
-	docker compose run --rm test-container-85 sh -c "php tools/ChangelogTool/bin/changelog-tool"
+	@docker compose run --rm -q test-container-85 sh -c "php tools/ChangelogTool/bin/changelog-tool"
 
 configure-githooks: ## Configure git to use the project githooks
 	git config core.hooksPath .githooks
 
 shell: ## Open a shell on the test container
-	docker compose run --rm test-container-85 ash || true
+	@docker compose run --rm -q test-container-85 ash || true
 
 all-checks: composer-validate static-checks cs-fix test ## Run all checks
 
 static-checks: syntax-check phpstan ## Run all static code checks
 
 cs: ## Run code style checks
-	docker compose run --rm test-container-85 sh -c "vendor/bin/phpcs ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "vendor/bin/phpcs ${OPTS}"
 
 cs-fix: ## Fix code style issues
-	docker compose run --rm test-container-85 sh -c "vendor/bin/phpcbf ${OPTS} || true; vendor/bin/phpcs ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "vendor/bin/phpcbf ${OPTS} || true; vendor/bin/phpcs ${OPTS}"
 
 phpstan: ## Run all static analysis checks
-	docker compose run --rm test-container-85 vendor/bin/phpstan $(PHPSTAN_XDEBUG) --memory-limit=-1 ${OPTS}
+	@docker compose run --rm -q test-container-85 vendor/bin/phpstan $(PHPSTAN_XDEBUG) --memory-limit=-1 ${OPTS}
 
 syntax-check: ## Check all PHP files for syntax errors
-	@docker compose run --rm test-container-85 sh -c "find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l | grep -v 'No syntax errors detected'; test \$$? -ne 0"
+	@docker compose run --rm -q test-container-85 sh -c "find kits/*/src kits/*/tests tools/*/src tools/*/tests -name '*.php' | xargs php -l | grep -v 'No syntax errors detected'; test \$$? -ne 0"
 
 test: ## Run all tests
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit,acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit,acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 acceptance:  ## Run all acceptance tests
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 acceptance-validationkit: ## Run acceptance tests for the ValidationKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance-validationkit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=acceptance-validationkit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit:  ## Run all unit tests
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-assertionskit: ## Run unit tests for the AssertionsKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-assertionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-assertionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-collectionskit: ## Run unit tests for the CollectionsKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-collectionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-collectionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-datetimekit: ## Run unit tests for the DateTimeKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-datetimekit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-datetimekit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-dependencykit: ## Run unit tests for the DependencyKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-dependencykit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-dependencykit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-validationkit: ## Run unit tests for the ValidationKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-validationkit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-validationkit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-exceptionskit: ## Run unit tests for the ExceptionsKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-exceptionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-exceptionskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-missingbitskit: ## Run unit tests for the MissingBitsKit
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-missingbitskit --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-missingbitskit --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 unit-changelogtool: ## Run unit tests for the ChangelogTool
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-changelogtool --display-all-issues --testdox --testdox-summary ${OPTS}"
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) vendor/bin/phpunit --testsuite=unit-changelogtool --display-all-issues --testdox --testdox-summary ${OPTS}"
 
 coverage: ## run all test and report on code coverage
-	docker compose run --rm test-container-85 sh -c "$(XDEBUG) XDEBUG_MODE=coverage vendor/bin/phpunit --testsuite=unit ${OPTS} --coverage-html testcoverage "
+	@docker compose run --rm -q test-container-85 sh -c "$(XDEBUG) XDEBUG_MODE=coverage vendor/bin/phpunit --testsuite=unit ${OPTS} --coverage-html testcoverage "
 
