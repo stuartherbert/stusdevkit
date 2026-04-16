@@ -20,17 +20,18 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### DependencyKit
+
+- added DependencyNotFoundException ([4a9cd13](https://github.com/stuartherbert/stusdevkit/commit/4a9cd13)) — Stuart Herbert <stuart@stuartherbert.com>
+- add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
+- added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ExceptionsKit
 
-- added InvalidMethodException ([947e4a2](https://github.com/stuartherbert/stusdevkit/commit/947e4a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidMethodException ([ef0015a](https://github.com/stuartherbert/stusdevkit/commit/ef0015a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### DependencyKit
-
-- add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
-- added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
 
