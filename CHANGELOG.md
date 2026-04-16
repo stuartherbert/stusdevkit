@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### DependencyKit
 
-- add PSR container package ([a6f31da](https://github.com/stuartherbert/stusdevkit/commit/a6f31da)) — Stuart Herbert <stuart@stuartherbert.com>
+- add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit

@@ -69,7 +69,7 @@ class IntersectionTypesNotSupportedException extends Rfc9457ProblemDetailsExcept
     )
     {
         parent::__construct(
-            type: "http://github.com/stuartherbert/stusdevkit/",
+            type: "https://github.com/stuartherbert/stusdevkit/",
             status: 422,
             title: "Intersection types cannot be flattened to a list of names",
             extra: [
