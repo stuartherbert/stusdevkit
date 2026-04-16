@@ -65,6 +65,28 @@ namespace StusDevKit\MissingBitsKit\TypeInspectors;
  * GetClassTypes. This means the developer's preferred types come
  * before their ancestors, which is what callers probing in list
  * order would expect.
+ *
+ * Here Be Dragons.
+ * ================
+ *
+ * **Autoloading side effect.** The "is this a class-like?" probe
+ * is implemented with `class_exists($name)` and
+ * `interface_exists($name)`, both of which **fire the registered
+ * autoloaders** by default for unknown names. In the motivating
+ * caller (a reflection-driven DI resolver), every name in
+ * $typeNames originates from a ReflectionParameter that PHP
+ * could only have produced if the class was already resolvable,
+ * so the autoloader either no-ops (already loaded) or runs once
+ * for a class that would have been loaded anyway.
+ *
+ * Callers that pass arbitrary strings - especially strings
+ * sourced from user input, configuration, or cross-machine wire
+ * formats - need to be aware that this helper will trigger the
+ * autoloader for each unknown name. Depending on how your
+ * autoloader is wired up, that can mean disk I/O, file_exists
+ * probes into every registered prefix, or (for PSR-0-style
+ * loaders) surprising cascade loads. If that's a concern, strip
+ * non-class-like names at the caller before handing them in.
  */
 class FlattenClassTypes
 {
