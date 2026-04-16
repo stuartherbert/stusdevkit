@@ -84,8 +84,7 @@ class GetNumericType
 
         // remember whether we were handed a string, so we can
         // surface 'string' as a duck-type alongside the numeric
-        // info (but in the right slot - after the numeric
-        // characterisation, before the universal 'mixed')
+        // info (after the numeric characterisation)
         $wasString = is_string($item);
         if ($wasString) {
             $item = $item + 0;
@@ -96,6 +95,10 @@ class GetNumericType
         // these values directly as type hints
         $type = is_int($item) ? 'int' : 'float';
 
+        // 'mixed' is deliberately NOT included here - see
+        // GetIntegerTypes::from() for the rationale (mixed is a
+        // duck-type marker, owned by GetDuckTypes, not per-type
+        // inspectors).
         $retval = [
             'numeric' => 'numeric',
             $type => $type,
@@ -103,7 +106,6 @@ class GetNumericType
         if ($wasString) {
             $retval['string'] = 'string';
         }
-        $retval['mixed'] = 'mixed';
 
         // all done
         return $retval;

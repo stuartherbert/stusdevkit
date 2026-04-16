@@ -134,7 +134,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('__invoke() coerces a Stringable object and returns string and mixed')]
+    #[TestDox('__invoke() coerces a Stringable object and returns the expected type list')]
     public function test_invoke_coerces_stringable_object(): void
     {
         // ----------------------------------------------------------------
@@ -142,7 +142,9 @@ class GetStringTypesTest extends TestCase
 
         // this test proves that __invoke() coerces a Stringable
         // object to a string and then produces the same type list
-        // it would produce for that string directly
+        // it would produce for that string directly. 'mixed' is
+        // not emitted here: it is the duck-type marker owned by
+        // GetDuckTypes, not by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -152,7 +154,6 @@ class GetStringTypesTest extends TestCase
         $expected = [
             Stringable::class => Stringable::class,
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -184,7 +185,7 @@ class GetStringTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns string and mixed for a plain string')]
+    #[TestDox('from() returns just string for a plain string')]
     #[DataProvider('plainStringProvider')]
     public function test_from_returns_expected_types_for_plain_string(string $input): void
     {
@@ -192,15 +193,15 @@ class GetStringTypesTest extends TestCase
         // explain your test
 
         // this test proves that a string which is not callable and
-        // not numeric produces just the string family: 'string'
-        // and 'mixed'
+        // not numeric produces just 'string'. 'mixed' is not
+        // emitted here: it is the duck-type marker owned by
+        // GetDuckTypes, not by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
 
         $expected = [
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -220,7 +221,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns callable, string, and mixed for a callable string')]
+    #[TestDox('from() returns callable and string for a callable string')]
     public function test_from_returns_expected_types_for_callable_string(): void
     {
         // ----------------------------------------------------------------
@@ -237,7 +238,6 @@ class GetStringTypesTest extends TestCase
         $expected = [
             'callable' => 'callable',
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -257,7 +257,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns numeric, int, string, and mixed for an integer-shaped numeric string')]
+    #[TestDox('from() returns numeric, int, and string for an integer-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_int_string(): void
     {
         // ----------------------------------------------------------------
@@ -275,7 +275,6 @@ class GetStringTypesTest extends TestCase
             'numeric' => 'numeric',
             'int' => 'int',
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -289,7 +288,7 @@ class GetStringTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns numeric, float, string, and mixed for a float-shaped numeric string')]
+    #[TestDox('from() returns numeric, float, and string for a float-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_float_string(): void
     {
         // ----------------------------------------------------------------
@@ -307,7 +306,6 @@ class GetStringTypesTest extends TestCase
             'numeric' => 'numeric',
             'float' => 'float',
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

@@ -148,7 +148,7 @@ class GetIntegerTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric, int, and mixed for any integer')]
+    #[TestDox('from() returns numeric and int for any integer')]
     #[DataProvider('integerProvider')]
     public function test_from_returns_expected_types(int $input): void
     {
@@ -156,8 +156,10 @@ class GetIntegerTypesTest extends TestCase
         // explain your test
 
         // this test proves that GetIntegerTypes::from() returns
-        // the same 'numeric', 'int', 'mixed' list regardless of
-        // the specific integer value
+        // the same 'numeric', 'int' list regardless of the
+        // specific integer value. 'mixed' is not emitted here:
+        // it is the duck-type marker owned by GetDuckTypes, not
+        // by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -165,7 +167,6 @@ class GetIntegerTypesTest extends TestCase
         $expected = [
             'numeric' => 'numeric',
             'int' => 'int',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

@@ -81,10 +81,13 @@ class GetBooleanTypes
             $retval['false'] = 'false';
         }
 
+        // 'mixed' is deliberately NOT included here - see
+        // GetIntegerTypes::from() for the rationale (mixed is a
+        // duck-type marker, owned by GetDuckTypes, not per-type
+        // inspectors).
         return [
             ...$retval,
             'bool' => 'bool',
-            'mixed' => 'mixed',
         ];
     }
 }

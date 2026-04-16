@@ -108,10 +108,17 @@ class GetClassTypes
         }
 
         // every class/interface/trait name resolves to an object at
-        // runtime, so it also satisfies the universal 'object' and
-        // 'mixed' type hints
+        // runtime, so it also satisfies the universal 'object' type
+        // hint.
+        //
+        // 'mixed' is deliberately NOT included. `mixed` is a
+        // duck-type marker meaning "any value" - every PHP value
+        // satisfies it, not just objects, so it adds no
+        // information to a "what types does this class satisfy?"
+        // answer. Consumers that want a universal-fallback leaf
+        // should add one themselves (and own the footgun that
+        // comes with it).
         $retval['object'] = 'object';
-        $retval['mixed'] = 'mixed';
 
         // all done
         return $retval;

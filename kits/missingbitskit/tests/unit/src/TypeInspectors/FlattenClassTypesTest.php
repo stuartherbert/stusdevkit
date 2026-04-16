@@ -121,11 +121,11 @@ class FlattenClassTypesTest extends TestCase
         // explain your test
 
         // a single class-string input expands to: itself, its
-        // parent classes, its interfaces, its traits, 'object',
-        // 'mixed'. The helper returns that as a plain list (flat
-        // values, not the key => value form GetClassTypes produces),
-        // so callers can iterate it directly without
-        // array_values() themselves.
+        // parent classes, its interfaces, its traits, and the
+        // universal 'object' token. The helper returns that as a
+        // plain list (flat values, not the key => value form
+        // GetClassTypes produces), so callers can iterate it
+        // directly without array_values() themselves.
 
         // SampleClass extends SampleParent implements SampleInterface
         // uses SampleTrait - chosen because its hierarchy is stable
@@ -141,7 +141,6 @@ class FlattenClassTypesTest extends TestCase
             SampleInterface::class,
             SampleTrait::class,
             'object',
-            'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -155,16 +154,16 @@ class FlattenClassTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() expands an interface to itself plus the universal types')]
+    #[TestDox('from() expands an interface to itself plus the universal object type')]
     public function test_from_expands_an_interface_to_itself_plus_universal_types(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // an interface with no parent interfaces expands to just
-        // itself plus 'object' and 'mixed'. This test proves that
-        // the helper's filter accepts interfaces (not only classes),
-        // matching the call site in ResolveParameter which used
+        // itself plus 'object'. This test proves that the helper's
+        // filter accepts interfaces (not only classes), matching
+        // the call site in ResolveParameter which used
         // class_exists() || interface_exists().
 
         // ----------------------------------------------------------------
@@ -173,7 +172,6 @@ class FlattenClassTypesTest extends TestCase
         $expected = [
             SampleInterface::class,
             'object',
-            'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -215,7 +213,6 @@ class FlattenClassTypesTest extends TestCase
             SampleInterface::class,
             SampleTrait::class,
             'object',
-            'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -237,9 +234,9 @@ class FlattenClassTypesTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // SampleClass and SampleParent share the universal ancestors
-        // 'object' and 'mixed', and SampleClass's expansion already
-        // emits SampleParent. A caller listing both
+        // SampleClass and SampleParent share the universal ancestor
+        // 'object', and SampleClass's expansion already emits
+        // SampleParent. A caller listing both
         // [SampleClass, SampleParent] should see each name exactly
         // once in the output, in the order they were first seen
         // while walking the inputs left-to-right.
@@ -258,7 +255,6 @@ class FlattenClassTypesTest extends TestCase
             SampleInterface::class,
             SampleTrait::class,
             'object',
-            'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -293,7 +289,6 @@ class FlattenClassTypesTest extends TestCase
         $expected = [
             SampleParent::class,
             'object',
-            'mixed',
             SampleClass::class,
             SampleInterface::class,
             SampleTrait::class,
@@ -338,7 +333,6 @@ class FlattenClassTypesTest extends TestCase
             SampleInterface::class,
             SampleTrait::class,
             'object',
-            'mixed',
         ];
 
         // ----------------------------------------------------------------

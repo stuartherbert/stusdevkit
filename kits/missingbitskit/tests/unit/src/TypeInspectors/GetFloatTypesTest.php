@@ -149,7 +149,7 @@ class GetFloatTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric, float, and mixed for any float')]
+    #[TestDox('from() returns numeric and float for any float')]
     #[DataProvider('floatProvider')]
     public function test_from_returns_expected_types(float $input): void
     {
@@ -157,8 +157,10 @@ class GetFloatTypesTest extends TestCase
         // explain your test
 
         // this test proves that GetFloatTypes::from() returns
-        // the same 'numeric', 'float', 'mixed' list regardless of
-        // the specific float value
+        // the same 'numeric', 'float' list regardless of the
+        // specific float value. 'mixed' is not emitted here:
+        // it is the duck-type marker owned by GetDuckTypes, not
+        // by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -166,7 +168,6 @@ class GetFloatTypesTest extends TestCase
         $expected = [
             'numeric' => 'numeric',
             'float' => 'float',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

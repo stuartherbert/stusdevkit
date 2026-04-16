@@ -138,7 +138,7 @@ class GetObjectTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns class name, object, and mixed for a plain object')]
+    #[TestDox('from() returns class name and object for a plain object')]
     public function test_from_returns_expected_types_for_plain_object(): void
     {
         // ----------------------------------------------------------------
@@ -146,7 +146,9 @@ class GetObjectTypesTest extends TestCase
 
         // this test proves that an object with no parents,
         // interfaces, or traits produces just the class name plus
-        // 'object' and 'mixed'
+        // 'object'. 'mixed' is not emitted here: it is the
+        // duck-type marker owned by GetDuckTypes, not by per-type
+        // inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -155,7 +157,6 @@ class GetObjectTypesTest extends TestCase
         $expected = [
             stdClass::class => stdClass::class,
             'object' => 'object',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -177,7 +178,9 @@ class GetObjectTypesTest extends TestCase
 
         // this test proves that every branch of an object's type
         // surface is reported - parent, interface, trait - ending
-        // with the universal 'object' and 'mixed' tokens
+        // with the universal 'object' token. 'mixed' is not
+        // emitted here: it is the duck-type marker owned by
+        // GetDuckTypes, not by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -189,7 +192,6 @@ class GetObjectTypesTest extends TestCase
             SampleInterface::class => SampleInterface::class,
             SampleTrait::class => SampleTrait::class,
             'object' => 'object',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -221,7 +223,6 @@ class GetObjectTypesTest extends TestCase
             Closure::class => Closure::class,
             'callable' => 'callable',
             'object' => 'object',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -254,7 +255,6 @@ class GetObjectTypesTest extends TestCase
             SampleInvokable::class => SampleInvokable::class,
             'callable' => 'callable',
             'object' => 'object',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

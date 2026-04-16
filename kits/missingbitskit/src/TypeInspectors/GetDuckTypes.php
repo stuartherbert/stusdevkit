@@ -75,49 +75,54 @@ class GetDuckTypes
         //
         // we call each inspector's static `from()` directly - no
         // per-call object allocation, one stack frame per dispatch.
+        //
+        // Each per-type inspector returns only the types the value
+        // literally satisfies. We append 'mixed' centrally here
+        // because mixed is the duck-type marker "any value at all"
+        // - every PHP value satisfies it, so it belongs in a
+        // duck-type answer but not in a per-type inspector's.
         if (is_string($item)) {
-            return GetStringTypes::from($item);
+            $retval = GetStringTypes::from($item);
         }
-        if (is_int($item)) {
-            return GetIntegerTypes::from($item);
+        elseif (is_int($item)) {
+            $retval = GetIntegerTypes::from($item);
         }
-        if (is_float($item)) {
-            return GetFloatTypes::from($item);
+        elseif (is_float($item)) {
+            $retval = GetFloatTypes::from($item);
         }
-        if (is_array($item)) {
-            return GetArrayTypes::from($item);
+        elseif (is_array($item)) {
+            $retval = GetArrayTypes::from($item);
         }
-        if (is_object($item)) {
-            return GetObjectTypes::from($item);
+        elseif (is_object($item)) {
+            $retval = GetObjectTypes::from($item);
         }
-        if (is_bool($item)) {
-            return GetBooleanTypes::from($item);
+        elseif (is_bool($item)) {
+            $retval = GetBooleanTypes::from($item);
         }
-        if ($item === null) {
+        elseif ($item === null) {
             // lowercase 'null' to match PHP's own keyword spelling,
             // so the returned types can be used as type-hint parts
-            return [
-                'null' => 'null',
-                'mixed' => 'mixed',
-            ];
+            $retval = ['null' => 'null'];
+        }
+        else {
+            // fallback for the PHP types we have no dedicated
+            // inspector for (resource, resource (closed), ...);
+            // echo whatever gettype() reports.
+            $type = gettype($item);
+
+            // gettype() returns the literal string
+            // 'resource (closed)' for closed resources. That is not
+            // a valid PHP token and the open/closed distinction is
+            // rarely what callers want to reason about, so we
+            // collapse it back to 'resource'.
+            if ($type === 'resource (closed)') {
+                $type = 'resource';
+            }
+
+            $retval = [$type => $type];
         }
 
-        // fallback for the PHP types we have no dedicated inspector
-        // for (resource, resource (closed), ...); echo whatever
-        // gettype() reports, paired with 'mixed'
-        $type = gettype($item);
-
-        // gettype() returns the literal string 'resource (closed)'
-        // for closed resources. That is not a valid PHP token and
-        // the open/closed distinction is rarely what callers want
-        // to reason about, so we collapse it back to 'resource'.
-        if ($type === 'resource (closed)') {
-            $type = 'resource';
-        }
-
-        return [
-            $type => $type,
-            'mixed' => 'mixed',
-        ];
+        $retval['mixed'] = 'mixed';
+        return $retval;
     }
 }

@@ -138,7 +138,7 @@ class GetClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns class, object, and mixed for a simple class')]
+    #[TestDox('from() returns class and object for a simple class')]
     public function test_from_returns_expected_types_for_simple_class(): void
     {
         // ----------------------------------------------------------------
@@ -146,7 +146,12 @@ class GetClassTypesTest extends TestCase
 
         // this test proves that a class with no parents,
         // interfaces, or traits produces just the class name plus
-        // the universal 'object' and 'mixed' type-hint tokens
+        // the universal 'object' type-hint token.
+        //
+        // 'mixed' is deliberately NOT in the output. mixed is a
+        // duck-type marker meaning "any value" - true of every
+        // PHP value, not a satisfaction claim about classes - so
+        // it adds no information here.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -154,7 +159,6 @@ class GetClassTypesTest extends TestCase
         $expected = [
             stdClass::class => stdClass::class,
             'object' => 'object',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -168,7 +172,7 @@ class GetClassTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns class, parent, interface, trait, object, and mixed for a class with all three')]
+    #[TestDox('from() returns class, parent, interface, trait, and object for a class with all three')]
     public function test_from_returns_full_class_surface(): void
     {
         // ----------------------------------------------------------------
@@ -177,7 +181,11 @@ class GetClassTypesTest extends TestCase
         // this test proves that when a class extends a parent,
         // implements an interface, and uses a trait, every branch
         // of its type surface appears in the returned type list,
-        // ending with the universal 'object' and 'mixed' tokens
+        // ending with the universal 'object' token.
+        //
+        // 'mixed' is deliberately NOT in the output - see
+        // test_from_returns_expected_types_for_simple_class for
+        // the rationale.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -188,7 +196,6 @@ class GetClassTypesTest extends TestCase
             SampleInterface::class => SampleInterface::class,
             SampleTrait::class => SampleTrait::class,
             'object' => 'object',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

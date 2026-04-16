@@ -78,9 +78,11 @@ class GetArrayTypes
             $retval["callable"] = "callable";
         }
 
-        // add in hard-coded types
+        // add in hard-coded types. 'mixed' is deliberately NOT
+        // included here - see GetIntegerTypes::from() for the
+        // rationale (mixed is a duck-type marker, owned by
+        // GetDuckTypes, not per-type inspectors).
         $retval["array"] = 'array';
-        $retval["mixed"] = 'mixed';
 
         // all done
         return $retval;

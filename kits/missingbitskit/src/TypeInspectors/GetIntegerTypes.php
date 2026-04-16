@@ -70,10 +70,14 @@ class GetIntegerTypes
      */
     public static function from(int $item): array
     {
+        // 'mixed' is deliberately NOT included here. mixed is the
+        // duck-type marker "any value at all" - every PHP value
+        // satisfies it, so it carries no useful information in a
+        // per-type inspector's answer. GetDuckTypes appends it
+        // centrally when a caller asks the duck-type question.
         return [
             'numeric' => 'numeric',
             'int' => 'int',
-            'mixed' => 'mixed',
         ];
     }
 }

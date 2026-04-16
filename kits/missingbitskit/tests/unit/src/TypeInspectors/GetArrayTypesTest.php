@@ -149,7 +149,7 @@ class GetArrayTypesTest extends TestCase
     /**
      * @param array<array-key,mixed> $input
      */
-    #[TestDox('from() returns array and mixed for a non-callable array')]
+    #[TestDox('from() returns just array for a non-callable array')]
     #[DataProvider('nonCallableArrayProvider')]
     public function test_from_returns_expected_types_for_non_callable_array(array $input): void
     {
@@ -157,15 +157,16 @@ class GetArrayTypesTest extends TestCase
         // explain your test
 
         // this test proves that a plain PHP array - one that is
-        // not also a valid callable - produces just 'array' and
-        // 'mixed' regardless of the array's contents
+        // not also a valid callable - produces just 'array'
+        // regardless of the array's contents. 'mixed' is not
+        // emitted here: it is the duck-type marker owned by
+        // GetDuckTypes, not by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
 
         $expected = [
             'array' => 'array',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -185,7 +186,7 @@ class GetArrayTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns callable, array, and mixed for a callable array')]
+    #[TestDox('from() returns callable and array for a callable array')]
     public function test_from_returns_expected_types_for_callable_array(): void
     {
         // ----------------------------------------------------------------
@@ -203,7 +204,6 @@ class GetArrayTypesTest extends TestCase
         $expected = [
             'callable' => 'callable',
             'array' => 'array',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

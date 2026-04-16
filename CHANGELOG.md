@@ -85,7 +85,8 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- FlattenReflectionType now throws if asked to flatten an intersection type ([56edb90](https://github.com/stuartherbert/stusdevkit/commit/56edb90)) — Stuart Herbert <stuart@stuartherbert.com>
+- only GetDuckTypes now returns `mixed` ([287baa5](https://github.com/stuartherbert/stusdevkit/commit/287baa5)) — Stuart Herbert <stuart@stuartherbert.com>
+- FlattenReflectionType now throws if asked to flatten an intersection type ([da90743](https://github.com/stuartherbert/stusdevkit/commit/da90743)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 

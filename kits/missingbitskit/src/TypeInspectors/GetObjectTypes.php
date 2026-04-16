@@ -69,6 +69,11 @@ class GetObjectTypes
      * via `method_exists($className, '__invoke')`, so we do not
      * need to examine the instance itself.
      *
+     * 'mixed' is deliberately NOT included here - see
+     * GetIntegerTypes::from() for the rationale (mixed is a
+     * duck-type marker, owned by GetDuckTypes, not per-type
+     * inspectors).
+     *
      * @param  object $item
      *         the item to examine
      * @return array<string,string>

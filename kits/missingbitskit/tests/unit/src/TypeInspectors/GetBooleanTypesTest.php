@@ -135,7 +135,7 @@ class GetBooleanTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from(true) returns true, bool, and mixed')]
+    #[TestDox('from(true) returns true and bool')]
     public function test_from_returns_expected_types_for_true(): void
     {
         // ----------------------------------------------------------------
@@ -143,8 +143,10 @@ class GetBooleanTypesTest extends TestCase
 
         // this test proves that GetBooleanTypes::from(true)
         // returns the literal 'true' type (PHP 8.2+ accepts 'true'
-        // as a standalone type hint), the generic 'bool', and
-        // 'mixed' - and does so in that exact order
+        // as a standalone type hint) and the generic 'bool', in
+        // that exact order. 'mixed' is not emitted here: it is the
+        // duck-type marker owned by GetDuckTypes, not by per-type
+        // inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -152,7 +154,6 @@ class GetBooleanTypesTest extends TestCase
         $expected = [
             'true' => 'true',
             'bool' => 'bool',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -166,7 +167,7 @@ class GetBooleanTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from(false) returns false, bool, and mixed')]
+    #[TestDox('from(false) returns false and bool')]
     public function test_from_returns_expected_types_for_false(): void
     {
         // ----------------------------------------------------------------
@@ -174,8 +175,10 @@ class GetBooleanTypesTest extends TestCase
 
         // this test proves that GetBooleanTypes::from(false)
         // returns the literal 'false' type (PHP 8.2+ accepts
-        // 'false' as a standalone type hint), the generic 'bool',
-        // and 'mixed' - and does so in that exact order
+        // 'false' as a standalone type hint) and the generic
+        // 'bool', in that exact order. 'mixed' is not emitted
+        // here: it is the duck-type marker owned by GetDuckTypes,
+        // not by per-type inspectors.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -183,7 +186,6 @@ class GetBooleanTypesTest extends TestCase
         $expected = [
             'false' => 'false',
             'bool' => 'bool',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------

@@ -174,7 +174,7 @@ class GetNumericTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric, int, and mixed for an integer')]
+    #[TestDox('from() returns numeric and int for an integer')]
     #[DataProvider('integerProvider')]
     public function test_from_returns_expected_types_for_integer(int $input): void
     {
@@ -191,7 +191,6 @@ class GetNumericTypeTest extends TestCase
         $expected = [
             'numeric' => 'numeric',
             'int' => 'int',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -223,7 +222,7 @@ class GetNumericTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric, float, and mixed for a float')]
+    #[TestDox('from() returns numeric and float for a float')]
     #[DataProvider('floatProvider')]
     public function test_from_returns_expected_types_for_float(float $input): void
     {
@@ -240,7 +239,6 @@ class GetNumericTypeTest extends TestCase
         $expected = [
             'numeric' => 'numeric',
             'float' => 'float',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -260,7 +258,7 @@ class GetNumericTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns numeric, int, string, and mixed for an integer-shaped numeric string')]
+    #[TestDox('from() returns numeric, int, and string for an integer-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_int_string(): void
     {
         // ----------------------------------------------------------------
@@ -279,7 +277,6 @@ class GetNumericTypeTest extends TestCase
             'numeric' => 'numeric',
             'int' => 'int',
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
@@ -293,7 +290,7 @@ class GetNumericTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns numeric, float, string, and mixed for a float-shaped numeric string')]
+    #[TestDox('from() returns numeric, float, and string for a float-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_float_string(): void
     {
         // ----------------------------------------------------------------
@@ -312,7 +309,6 @@ class GetNumericTypeTest extends TestCase
             'numeric' => 'numeric',
             'float' => 'float',
             'string' => 'string',
-            'mixed' => 'mixed',
         ];
 
         // ----------------------------------------------------------------
