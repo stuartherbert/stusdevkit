@@ -20,16 +20,17 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
-#### MissingKitsBit
-
-- initial set of reflection tools ([4249e74](https://github.com/stuartherbert/stusdevkit/commit/4249e74)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### MissingBitsKit
 
+- added FlattenClassTypes ([65a8826](https://github.com/stuartherbert/stusdevkit/commit/65a8826)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
 - added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
 - added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
 - added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingKitsBit
+
+- initial set of reflection tools ([b88fc35](https://github.com/stuartherbert/stusdevkit/commit/b88fc35)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
 
