@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### DependencyKit
 
-- added UntypedParameterException ([de6952d](https://github.com/stuartherbert/stusdevkit/commit/de6952d)) — Stuart Herbert <stuart@stuartherbert.com>
+- added ResolveParameter ([a5e81e9](https://github.com/stuartherbert/stusdevkit/commit/a5e81e9)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UntypedParameterException ([9d747f9](https://github.com/stuartherbert/stusdevkit/commit/9d747f9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnsupportedParameterTypeException ([fa422f1](https://github.com/stuartherbert/stusdevkit/commit/fa422f1)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnresolvedParameterException ([21a2077](https://github.com/stuartherbert/stusdevkit/commit/21a2077)) — Stuart Herbert <stuart@stuartherbert.com>
 - added DependencyNotFoundException ([29d4ce5](https://github.com/stuartherbert/stusdevkit/commit/29d4ce5)) — Stuart Herbert <stuart@stuartherbert.com>
