@@ -20,6 +20,11 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### DependencyKit
+
+- add PSR container package ([a6f31da](https://github.com/stuartherbert/stusdevkit/commit/a6f31da)) — Stuart Herbert <stuart@stuartherbert.com>
+- added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -31,10 +36,6 @@ This CHANGELOG is automatically compiled.
 #### MissingKitsBit
 
 - initial set of reflection tools ([b88fc35](https://github.com/stuartherbert/stusdevkit/commit/b88fc35)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### DependencyKit
-
-- added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
