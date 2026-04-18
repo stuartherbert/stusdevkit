@@ -179,6 +179,128 @@ The returned list is **unordered**. PHP normalises union and intersection member
 
 Throws `UnsupportedReflectionTypeException` if given a `ReflectionType` subclass it does not recognise (surfaced from the `GetReflectionTypes` delegation).
 
+#### GetClassInstantiability
+
+`GetClassInstantiability::from()` reports whether a given class-string names something PHP will let you `new` — and, if not, the single reason that disqualifies it. It's aimed at callers that want to guard a `new $classname(...)` call, such as a reflection-based DI container.
+
+The inspector returns a `ClassInstantiability` enum. Each case carries a short string value suitable for dropping straight into an error message.
+
+```php
+use StusDevKit\MissingBitsKit\Reflection\ClassInstantiability;
+use StusDevKit\MissingBitsKit\Reflection\GetClassInstantiability;
+
+// happy path - a plain class with a public constructor
+GetClassInstantiability::from(MyService::class);
+// => ClassInstantiability::INSTANTIABLE
+
+// interfaces cannot be `new`'d
+GetClassInstantiability::from(MyInterface::class);
+// => ClassInstantiability::IS_INTERFACE
+
+// enums are classes at runtime, but PHP forbids `new` on them
+GetClassInstantiability::from(MyEnum::class);
+// => ClassInstantiability::IS_ENUM
+
+// a singleton / factory-only class
+GetClassInstantiability::from(SingletonClass::class);
+// => ClassInstantiability::CONSTRUCTOR_NOT_PUBLIC
+
+// unknown name - not a class, interface, trait, or enum
+GetClassInstantiability::from('DoesNotExist');
+// => ClassInstantiability::CLASS_DOES_NOT_EXIST
+```
+
+Callers that only care about a yes/no answer use the `isInstantiable()` helper on the result:
+
+```php
+if (! GetClassInstantiability::from($classname)->isInstantiable()) {
+    throw new \RuntimeException("cannot build {$classname}");
+}
+```
+
+Callers that want a reason in their error message use the backing string:
+
+```php
+$result = GetClassInstantiability::from($classname);
+if (! $result->isInstantiable()) {
+    throw new \RuntimeException("cannot build {$classname}: {$result->value}");
+    // e.g. "cannot build MyThing: is an abstract class"
+}
+```
+
+The inspector reports the **first** disqualifying reason it finds, in this order: existence → interface → trait → enum → abstract → non-public constructor. A class that fails more than one check (e.g. abstract class with a private constructor) reports only the first one seen.
+
+### Arrays
+
+#### StaticallyArrayable
+
+`StaticallyArrayable` is a type-level counterpart to
+`CollectionsKit`'s instance-level `Arrayable`. It declares a single
+static method that returns the implementing type's data as a PHP
+array:
+
+```php
+namespace StusDevKit\MissingBitsKit\Arrays;
+
+/**
+ * @template TKey of array-key
+ * @template TValue of mixed
+ */
+interface StaticallyArrayable
+{
+    /** @return array<TKey, TValue> */
+    public static function toArray(): array;
+}
+```
+
+Originally added for **backed enums**: the set of cases is a
+property of the type, not of any individual case. Implementers
+(e.g. `ClassInstantiability`) advertise that their case set can be
+rendered as an array for data-provider tests, config rendering, JSON
+output, and similar consumers.
+
+See [`docs/01-Engineering-Standards/Enums.md`](../../docs/01-Engineering-Standards/Enums.md) — every backed
+enum in the project is required to implement this interface.
+
+### Enums
+
+#### EnumToArray
+
+`EnumToArray` is the canonical implementation of
+`StaticallyArrayable::toArray()` for backed enums. It walks
+`self::cases()` and returns a `name => value` map:
+
+```php
+use StusDevKit\MissingBitsKit\Arrays\StaticallyArrayable;
+use StusDevKit\MissingBitsKit\Enums\EnumToArray;
+
+/**
+ * @implements StaticallyArrayable<string, string>
+ */
+enum MyEnum: string implements StaticallyArrayable
+{
+    /** @use EnumToArray<string> */
+    use EnumToArray;
+
+    case FIRST = 'first';
+    case SECOND = 'second';
+}
+
+MyEnum::toArray();
+// => ['FIRST' => 'first', 'SECOND' => 'second']
+```
+
+The trait is **generic** over the backing type. Bind the type
+parameter at the use site with `@use EnumToArray<string>` for
+string-backed enums, or `@use EnumToArray<int>` for int-backed
+enums. Without the binding the return type widens to
+`array<string, string|int>`, leaking a union the using enum
+promised to avoid.
+
+PHPStan enforces that the trait is only used inside a backed enum
+via `@phpstan-require-implements \BackedEnum`. Using it in a pure
+enum, a regular class, or an interface is a static-analysis error.
+
 ### Functions
 
 | Function | Purpose |

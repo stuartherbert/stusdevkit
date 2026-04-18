@@ -131,9 +131,13 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### DependencyKit
+
+- experimenting with AI-generated docs ([7ba37d1](https://github.com/stuartherbert/stusdevkit/commit/7ba37d1)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ResolveParameters
 
-- improve docblocks ([9ba6998](https://github.com/stuartherbert/stusdevkit/commit/9ba6998)) — Stuart Herbert <stuart@stuartherbert.com>
+- improve docblocks ([6d21048](https://github.com/stuartherbert/stusdevkit/commit/6d21048)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
