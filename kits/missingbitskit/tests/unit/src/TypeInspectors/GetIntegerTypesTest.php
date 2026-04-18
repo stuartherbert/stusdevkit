@@ -56,7 +56,7 @@ class GetIntegerTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetIntegerTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -99,7 +99,7 @@ class GetIntegerTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for non-integer input')]
+    #[TestDox('->__invoke() returns empty array for non-integer input')]
     #[DataProvider('nonIntegerProvider')]
     public function test_invoke_rejects_non_integer_input(mixed $input): void
     {
@@ -148,7 +148,7 @@ class GetIntegerTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric and int for any integer')]
+    #[TestDox('::from() returns numeric and int for any integer')]
     #[DataProvider('integerProvider')]
     public function test_from_returns_expected_types(int $input): void
     {

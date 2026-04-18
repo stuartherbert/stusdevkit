@@ -158,15 +158,15 @@ _None yet._
 ```
 StusDevKit\DependencyKit\Reflection\ResolveParameters
  ✔ declares a forConstructor() method
- ✔ forConstructor() is public
- ✔ forConstructor() is static
- ✔ forConstructor() declares an array return type
- ✔ forConstructor() resolves parameters for a class with a typed constructor
- ✔ forConstructor() returns an empty array when the class has no explicit constructor
- ✔ forConstructor() returns an empty array when the class has a zero-argument constructor
- ✔ forConstructor() resolves parameters for an abstract class (permissive)
- ✔ forConstructor() resolves parameters for a class with a private constructor (permissive)
- ✔ forConstructor() throws InvalidClassException when the string does not name a declared class
+ ✔ ::forConstructor() is public
+ ✔ ::forConstructor() is static
+ ✔ ::forConstructor() declares an array return type
+ ✔ ::forConstructor() resolves parameters for a class with a typed constructor
+ ✔ ::forConstructor() returns an empty array when the class has no explicit constructor
+ ✔ ::forConstructor() returns an empty array when the class has a zero-argument constructor
+ ✔ ::forConstructor() resolves parameters for an abstract class (permissive)
+ ✔ ::forConstructor() resolves parameters for a class with a private constructor (permissive)
+ ✔ ::forConstructor() throws InvalidClassException when the string does not name a declared class
 ```
 
 ## Source

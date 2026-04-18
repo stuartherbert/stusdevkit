@@ -73,7 +73,7 @@ class RejectNullValueTest extends TestCase
         ];
     }
 
-    #[TestDox('Accepts non-null value')]
+    #[TestDox('::check() accepts non-null value')]
     #[DataProvider('provideNonNullValues')]
     public function test_accepts_non_null_values(
         mixed $value,
@@ -105,7 +105,7 @@ class RejectNullValueTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    #[TestDox('Throws NullValueNotAllowed for null value')]
+    #[TestDox('::check() throws NullValueNotAllowed for null value')]
     public function test_throws_for_null_value(): void
     {
         // ----------------------------------------------------------------
@@ -128,7 +128,7 @@ class RejectNullValueTest extends TestCase
         );
     }
 
-    #[TestDox('Exception message includes the collection type')]
+    #[TestDox('::check() exception message includes the collection type')]
     public function test_exception_includes_collection_type(): void
     {
         // ----------------------------------------------------------------

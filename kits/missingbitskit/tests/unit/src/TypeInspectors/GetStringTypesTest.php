@@ -58,7 +58,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetStringTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -100,7 +100,7 @@ class GetStringTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for a non-string, non-Stringable input')]
+    #[TestDox('->__invoke() returns empty array for a non-string, non-Stringable input')]
     #[DataProvider('nonStringProvider')]
     public function test_invoke_rejects_non_string_input(mixed $input): void
     {
@@ -134,7 +134,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('__invoke() coerces a Stringable object and returns the expected type list')]
+    #[TestDox('->__invoke() coerces a Stringable object and returns the expected type list')]
     public function test_invoke_coerces_stringable_object(): void
     {
         // ----------------------------------------------------------------
@@ -185,7 +185,7 @@ class GetStringTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns just string for a plain string')]
+    #[TestDox('::from() returns just string for a plain string')]
     #[DataProvider('plainStringProvider')]
     public function test_from_returns_expected_types_for_plain_string(string $input): void
     {
@@ -221,7 +221,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns callable and string for a callable string')]
+    #[TestDox('::from() returns callable and string for a callable string')]
     public function test_from_returns_expected_types_for_callable_string(): void
     {
         // ----------------------------------------------------------------
@@ -257,7 +257,7 @@ class GetStringTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns numeric, int, and string for an integer-shaped numeric string')]
+    #[TestDox('::from() returns numeric, int, and string for an integer-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_int_string(): void
     {
         // ----------------------------------------------------------------
@@ -288,7 +288,7 @@ class GetStringTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns numeric, float, and string for a float-shaped numeric string')]
+    #[TestDox('::from() returns numeric, float, and string for a float-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_float_string(): void
     {
         // ----------------------------------------------------------------

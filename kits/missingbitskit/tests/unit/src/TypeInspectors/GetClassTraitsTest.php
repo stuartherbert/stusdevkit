@@ -63,7 +63,7 @@ class GetClassTraitsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetClassTraits')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -107,7 +107,7 @@ class GetClassTraitsTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for input that is not a known class/trait name')]
+    #[TestDox('->__invoke() returns empty array for input that is not a known class/trait name')]
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
@@ -140,7 +140,7 @@ class GetClassTraitsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns empty array for a class that uses no traits')]
+    #[TestDox('::from() returns empty array for a class that uses no traits')]
     public function test_from_returns_empty_for_class_without_traits(): void
     {
         // ----------------------------------------------------------------
@@ -166,7 +166,7 @@ class GetClassTraitsTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns a directly used trait')]
+    #[TestDox('::from() returns a directly used trait')]
     public function test_from_returns_directly_used_trait(): void
     {
         // ----------------------------------------------------------------
@@ -193,7 +193,7 @@ class GetClassTraitsTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns a trait inherited from a parent class')]
+    #[TestDox('::from() returns a trait inherited from a parent class')]
     public function test_from_returns_inherited_trait(): void
     {
         // ----------------------------------------------------------------
@@ -220,7 +220,7 @@ class GetClassTraitsTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() walks traits used by other traits')]
+    #[TestDox('::from() walks traits used by other traits')]
     public function test_from_walks_traits_used_by_traits(): void
     {
         // ----------------------------------------------------------------

@@ -64,7 +64,7 @@ class FlattenReflectionTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns the type name for a ReflectionNamedType')]
+    #[TestDox('::from() returns the type name for a ReflectionNamedType')]
     public function test_from_returns_name_for_named_type(): void
     {
         // ----------------------------------------------------------------
@@ -91,7 +91,7 @@ class FlattenReflectionTypeTest extends TestCase
         $this->assertSame(['int'], $actual);
     }
 
-    #[TestDox('from() splits a nullable ReflectionNamedType into the base type and null')]
+    #[TestDox('::from() splits a nullable ReflectionNamedType into the base type and null')]
     public function test_from_splits_nullable_into_base_type_and_null(): void
     {
         // ----------------------------------------------------------------
@@ -123,7 +123,7 @@ class FlattenReflectionTypeTest extends TestCase
         $this->assertSame(['int', 'null'], $actual);
     }
 
-    #[TestDox('from() does not append null for a mixed ReflectionNamedType')]
+    #[TestDox('::from() does not append null for a mixed ReflectionNamedType')]
     public function test_from_does_not_append_null_for_mixed(): void
     {
         // ----------------------------------------------------------------
@@ -151,7 +151,7 @@ class FlattenReflectionTypeTest extends TestCase
         $this->assertSame(['mixed'], $actual);
     }
 
-    #[TestDox('from() does not duplicate null for an explicit null ReflectionNamedType')]
+    #[TestDox('::from() does not duplicate null for an explicit null ReflectionNamedType')]
     public function test_from_does_not_duplicate_null_for_explicit_null(): void
     {
         // ----------------------------------------------------------------
@@ -185,7 +185,7 @@ class FlattenReflectionTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns all member names for a ReflectionUnionType, in PHP\'s canonical order for scalar-only unions')]
+    #[TestDox('::from() returns all member names for a ReflectionUnionType, in PHP\'s canonical order for scalar-only unions')]
     public function test_from_returns_scalar_union_members_in_canonical_order(): void
     {
         // ----------------------------------------------------------------
@@ -219,7 +219,7 @@ class FlattenReflectionTypeTest extends TestCase
         $this->assertSame(['string', 'int'], $actual);
     }
 
-    #[TestDox('from() preserves declaration order for class-only ReflectionUnionType')]
+    #[TestDox('::from() preserves declaration order for class-only ReflectionUnionType')]
     public function test_from_preserves_declaration_order_for_class_only_union(): void
     {
         // ----------------------------------------------------------------
@@ -265,7 +265,7 @@ class FlattenReflectionTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() throws IntersectionTypesNotSupportedException for a ReflectionIntersectionType')]
+    #[TestDox('::from() throws IntersectionTypesNotSupportedException for a ReflectionIntersectionType')]
     public function test_from_throws_for_intersection(): void
     {
         // ----------------------------------------------------------------
@@ -294,7 +294,7 @@ class FlattenReflectionTypeTest extends TestCase
         FlattenReflectionType::from($refType);
     }
 
-    #[TestDox('from() throws IntersectionTypesNotSupportedException for a DNF type with any intersection branch')]
+    #[TestDox('::from() throws IntersectionTypesNotSupportedException for a DNF type with any intersection branch')]
     public function test_from_throws_for_dnf_with_intersection_branch(): void
     {
         // ----------------------------------------------------------------
@@ -333,7 +333,7 @@ class FlattenReflectionTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() throws UnsupportedReflectionTypeException for an unknown ReflectionType subclass')]
+    #[TestDox('::from() throws UnsupportedReflectionTypeException for an unknown ReflectionType subclass')]
     public function test_from_throws_for_unknown_reflection_type_subclass(): void
     {
         // ----------------------------------------------------------------

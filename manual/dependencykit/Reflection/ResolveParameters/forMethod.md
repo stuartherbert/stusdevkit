@@ -162,14 +162,14 @@ _None yet._
 ```
 StusDevKit\DependencyKit\Reflection\ResolveParameters
  ✔ declares a forMethod() method
- ✔ forMethod() is public
- ✔ forMethod() is static
- ✔ forMethod() declares an array return type
- ✔ forMethod() resolves parameters for an instance method on an object
- ✔ forMethod() resolves parameters for a static method via class-string
- ✔ forMethod() reflects private methods (visibility-blind)
- ✔ forMethod() throws InvalidMethodException when the method does not exist
- ✔ forMethod() throws InvalidMethodException for __call-dispatched virtual methods
+ ✔ ::forMethod() is public
+ ✔ ::forMethod() is static
+ ✔ ::forMethod() declares an array return type
+ ✔ ::forMethod() resolves parameters for an instance method on an object
+ ✔ ::forMethod() resolves parameters for a static method via class-string
+ ✔ ::forMethod() reflects private methods (visibility-blind)
+ ✔ ::forMethod() throws InvalidMethodException when the method does not exist
+ ✔ ::forMethod() throws InvalidMethodException for __call-dispatched virtual methods
 ```
 
 ## Source

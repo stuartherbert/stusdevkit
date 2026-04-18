@@ -109,7 +109,7 @@ class TrimTransformerTest extends TestCase
     }
 
     #[DataProvider('provideTrimCases')]
-    #[TestDox('trims whitespace')]
+    #[TestDox('->process() trims whitespace')]
     public function test_trims_whitespace(
         string $inputValue,
         string $expectedResult,

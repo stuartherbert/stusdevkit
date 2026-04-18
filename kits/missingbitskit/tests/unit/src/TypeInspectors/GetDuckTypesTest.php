@@ -72,7 +72,7 @@ use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\ThreeLevelParent;
 use StusDevKit\MissingBitsKit\TypeInspectors\GetDuckTypes;
 use Stringable;
 
-#[TestDox('GetDuckTypes')]
+#[TestDox(GetDuckTypes::class)]
 class GetDuckTypesTest extends TestCase
 {
     // ================================================================
@@ -81,7 +81,7 @@ class GetDuckTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetDuckTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -101,7 +101,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertInstanceOf(GetDuckTypes::class, $unit);
     }
 
-    #[TestDox('__invoke() returns the same result as from()')]
+    #[TestDox('->__invoke() and ::from() return the same result')]
     public function test_invoke_returns_same_result_as_from(): void
     {
         // ----------------------------------------------------------------
@@ -156,7 +156,7 @@ class GetDuckTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('Integer inputs return numeric, int, and mixed types')]
+    #[TestDox('::from() returns numeric, int, and mixed for integer inputs')]
     #[DataProvider('integerProvider')]
     public function test_integer_returns_numeric_int_mixed(int $input): void
     {
@@ -205,7 +205,7 @@ class GetDuckTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('Float inputs return numeric, float, and mixed types')]
+    #[TestDox('::from() returns numeric, float, and mixed for float inputs')]
     #[DataProvider('floatProvider')]
     public function test_float_returns_numeric_float_mixed(float $input): void
     {
@@ -293,7 +293,7 @@ class GetDuckTypesTest extends TestCase
     /**
      * @param array<string,string> $expected
      */
-    #[TestDox('String inputs return the expected type list')]
+    #[TestDox('::from() returns the expected type list for string inputs')]
     #[DataProvider('stringProvider')]
     public function test_string_returns_expected_types(string $input, array $expected): void
     {
@@ -336,7 +336,7 @@ class GetDuckTypesTest extends TestCase
     /**
      * @param array<array-key,mixed> $input
      */
-    #[TestDox('Non-callable array inputs return just array')]
+    #[TestDox('::from() returns just array for non-callable array inputs')]
     #[DataProvider('nonCallableArrayProvider')]
     public function test_non_callable_array_returns_array_only(array $input): void
     {
@@ -366,7 +366,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Callable array input returns callable and array')]
+    #[TestDox('::from() returns callable and array for callable array inputs')]
     public function test_callable_array_returns_callable_and_array(): void
     {
         // ----------------------------------------------------------------
@@ -403,7 +403,7 @@ class GetDuckTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Plain object returns just its class name')]
+    #[TestDox('::from() returns just the class name for a plain object')]
     public function test_plain_object_returns_class_name(): void
     {
         // ----------------------------------------------------------------
@@ -434,7 +434,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Object with parent, interface, and trait returns all four as duck-types')]
+    #[TestDox('::from() returns all four as duck-types for an object with parent, interface, and trait')]
     public function test_object_returns_class_parent_interface_and_trait(): void
     {
         // ----------------------------------------------------------------
@@ -468,7 +468,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Closure input returns Closure, callable, object, and mixed')]
+    #[TestDox('::from() returns Closure, callable, object, and mixed for Closure inputs')]
     public function test_closure_returns_callable(): void
     {
         // ----------------------------------------------------------------
@@ -503,7 +503,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Invokable object returns its class name, callable, object, and mixed')]
+    #[TestDox('::from() returns the class name, callable, object, and mixed for an invokable object')]
     public function test_invokable_object_returns_callable(): void
     {
         // ----------------------------------------------------------------
@@ -534,7 +534,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Stringable object returns its class name and Stringable')]
+    #[TestDox('::from() returns the class name and Stringable for a Stringable object')]
     public function test_stringable_object_returns_class_and_stringable(): void
     {
         // ----------------------------------------------------------------
@@ -567,7 +567,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Object with __toString() returns its class name and Stringable')]
+    #[TestDox('::from() returns the class name and Stringable for an object with __toString()')]
     public function test_object_with_toString_returns_class_and_stringable(): void
     {
         // ----------------------------------------------------------------
@@ -604,7 +604,7 @@ class GetDuckTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('3-deep class hierarchy surfaces parent and grandparent')]
+    #[TestDox('::from() surfaces parent and grandparent for a 3-deep class hierarchy')]
     public function test_three_level_hierarchy_surfaces_every_ancestor(): void
     {
         // ----------------------------------------------------------------
@@ -637,7 +637,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Interface implemented on a parent class is surfaced on the child')]
+    #[TestDox('::from() surfaces an interface implemented on a parent class on the child')]
     public function test_interface_implemented_on_parent_is_surfaced(): void
     {
         // ----------------------------------------------------------------
@@ -671,7 +671,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('2-deep interface hierarchy surfaces the base interface')]
+    #[TestDox('::from() surfaces the base interface for a 2-deep interface hierarchy')]
     public function test_interface_hierarchy_surfaces_base_interface(): void
     {
         // ----------------------------------------------------------------
@@ -704,7 +704,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Trait used by another trait is surfaced transitively')]
+    #[TestDox('::from() surfaces a trait used by another trait transitively')]
     public function test_trait_used_by_trait_is_surfaced(): void
     {
         // ----------------------------------------------------------------
@@ -739,7 +739,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Trait used by a parent class is surfaced on the child')]
+    #[TestDox('::from() surfaces a trait used by a parent class on the child')]
     public function test_trait_used_by_parent_is_surfaced(): void
     {
         // ----------------------------------------------------------------
@@ -807,7 +807,7 @@ class GetDuckTypesTest extends TestCase
     /**
      * @param array<string,string> $expected
      */
-    #[TestDox('Boolean inputs return their literal type, bool, and mixed')]
+    #[TestDox('::from() returns the literal type, bool, and mixed for boolean inputs')]
     #[DataProvider('booleanProvider')]
     public function test_boolean_returns_expected_types(bool $input, array $expected): void
     {
@@ -830,7 +830,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Null input returns null and mixed')]
+    #[TestDox('::from() returns null and mixed for a null input')]
     public function test_null_returns_null_and_mixed(): void
     {
         // ----------------------------------------------------------------
@@ -859,7 +859,7 @@ class GetDuckTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('Resource input returns resource and mixed')]
+    #[TestDox('::from() returns resource and mixed for a resource input')]
     public function test_resource_returns_resource_and_mixed(): void
     {
         // ----------------------------------------------------------------
@@ -896,7 +896,7 @@ class GetDuckTypesTest extends TestCase
         fclose($handle);
     }
 
-    #[TestDox('Closed resource input collapses to resource and mixed')]
+    #[TestDox('::from() collapses a closed resource input to resource and mixed')]
     public function test_closed_resource_returns_resource_and_mixed(): void
     {
         // ----------------------------------------------------------------

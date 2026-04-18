@@ -56,7 +56,7 @@ class GetNamespaceTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns the namespace part of a fully-qualified class name')]
+    #[TestDox('::from() returns the namespace part of a fully-qualified class name')]
     public function test_from_returns_namespace_for_namespaced_class_name(): void
     {
         // ----------------------------------------------------------------
@@ -83,7 +83,7 @@ class GetNamespaceTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns empty string for a class name without a namespace')]
+    #[TestDox('::from() returns empty string for a class name without a namespace')]
     public function test_from_returns_empty_for_global_class_name(): void
     {
         // ----------------------------------------------------------------
@@ -116,7 +116,7 @@ class GetNamespaceTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns the namespace for a namespaced object instance')]
+    #[TestDox('::from() returns the namespace for a namespaced object instance')]
     public function test_from_returns_namespace_for_namespaced_object(): void
     {
         // ----------------------------------------------------------------
@@ -143,7 +143,7 @@ class GetNamespaceTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns empty string for an object of a global-namespace class')]
+    #[TestDox('::from() returns empty string for an object of a global-namespace class')]
     public function test_from_returns_empty_for_global_object(): void
     {
         // ----------------------------------------------------------------

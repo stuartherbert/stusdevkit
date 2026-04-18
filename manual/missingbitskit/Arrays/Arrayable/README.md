@@ -62,6 +62,7 @@ _None._
 StusDevKit\MissingBitsKit\Arrays\Arrayable
  ✔ is declared as an interface
  ✔ lives in the StusDevKit\MissingBitsKit\Arrays namespace
+ ✔ exposes only a toArray() method
 ```
 
 ## Source

@@ -154,7 +154,7 @@ class StaticallyArrayableTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('declares a toArray() method')]
+    #[TestDox('::toArray() is declared')]
     public function test_declares_a_toArray_method(): void
     {
         // ----------------------------------------------------------------
@@ -185,7 +185,7 @@ class StaticallyArrayableTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() is public')]
+    #[TestDox('::toArray() is public')]
     public function test_toArray_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -213,7 +213,7 @@ class StaticallyArrayableTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('toArray() is static')]
+    #[TestDox('::toArray() is static')]
     public function test_toArray_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -241,7 +241,7 @@ class StaticallyArrayableTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('toArray() takes no parameters')]
+    #[TestDox('::toArray() takes no parameters')]
     public function test_toArray_takes_no_parameters(): void
     {
         // ----------------------------------------------------------------
@@ -269,7 +269,7 @@ class StaticallyArrayableTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('toArray() declares an `array` return type')]
+    #[TestDox('::toArray() declares an `array` return type')]
     public function test_toArray_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------

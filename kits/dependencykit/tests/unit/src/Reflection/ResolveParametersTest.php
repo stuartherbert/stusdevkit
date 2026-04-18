@@ -165,7 +165,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forCallable() is public')]
+    #[TestDox('::forCallable() is public')]
     public function test_forCallable_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -191,7 +191,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forCallable() is static')]
+    #[TestDox('::forCallable() is static')]
     public function test_forCallable_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -218,7 +218,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forCallable() declares an array return type')]
+    #[TestDox('::forCallable() declares an array return type')]
     public function test_forCallable_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------
@@ -326,7 +326,7 @@ class ResolveParametersTest extends TestCase
      * @param array<string, mixed> $services
      * @param array<string, mixed> $expected
      */
-    #[TestDox('forCallable() resolves parameters for $shapeDescription')]
+    #[TestDox('::forCallable() resolves parameters for $shapeDescription')]
     #[DataProvider('callableShapeProvider')]
     public function test_forCallable_resolves_parameters_for_shape(
         string $shapeDescription,
@@ -396,7 +396,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forFunction() is public')]
+    #[TestDox('::forFunction() is public')]
     public function test_forFunction_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -422,7 +422,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forFunction() is static')]
+    #[TestDox('::forFunction() is static')]
     public function test_forFunction_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -449,7 +449,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forFunction() declares an array return type')]
+    #[TestDox('::forFunction() declares an array return type')]
     public function test_forFunction_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------
@@ -485,7 +485,7 @@ class ResolveParametersTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('forFunction() resolves parameters for a Closure')]
+    #[TestDox('::forFunction() resolves parameters for a Closure')]
     public function test_forFunction_resolves_parameters_for_a_Closure(): void
     {
         // ----------------------------------------------------------------
@@ -513,7 +513,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forFunction() resolves parameters for a global function name')]
+    #[TestDox('::forFunction() resolves parameters for a global function name')]
     public function test_forFunction_resolves_parameters_for_a_global_function_name(): void
     {
         // ----------------------------------------------------------------
@@ -540,7 +540,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forFunction() returns an empty array for a zero-parameter Closure')]
+    #[TestDox('::forFunction() returns an empty array for a zero-parameter Closure')]
     public function test_forFunction_returns_an_empty_array_for_a_zero_parameter_Closure(): void
     {
         // ----------------------------------------------------------------
@@ -568,7 +568,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forFunction() throws InvalidFunctionException when the string does not name a declared function')]
+    #[TestDox('::forFunction() throws InvalidFunctionException when the string does not name a declared function')]
     public function test_forFunction_throws_when_the_string_does_not_name_a_declared_function(): void
     {
         // ----------------------------------------------------------------
@@ -623,7 +623,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forMethod() is public')]
+    #[TestDox('::forMethod() is public')]
     public function test_forMethod_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -649,7 +649,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forMethod() is static')]
+    #[TestDox('::forMethod() is static')]
     public function test_forMethod_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -676,7 +676,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forMethod() declares an array return type')]
+    #[TestDox('::forMethod() declares an array return type')]
     public function test_forMethod_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------
@@ -712,7 +712,7 @@ class ResolveParametersTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('forMethod() resolves parameters for an instance method on an object')]
+    #[TestDox('::forMethod() resolves parameters for an instance method on an object')]
     public function test_forMethod_resolves_parameters_for_an_instance_method(): void
     {
         // ----------------------------------------------------------------
@@ -744,7 +744,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forMethod() resolves parameters for a static method via class-string')]
+    #[TestDox('::forMethod() resolves parameters for a static method via class-string')]
     public function test_forMethod_resolves_parameters_for_a_static_method(): void
     {
         // ----------------------------------------------------------------
@@ -776,7 +776,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forMethod() reflects private methods (visibility-blind)')]
+    #[TestDox('::forMethod() reflects private methods (visibility-blind)')]
     public function test_forMethod_reflects_private_methods(): void
     {
         // ----------------------------------------------------------------
@@ -812,7 +812,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forMethod() throws InvalidMethodException when the method does not exist')]
+    #[TestDox('::forMethod() throws InvalidMethodException when the method does not exist')]
     public function test_forMethod_throws_when_the_method_does_not_exist(): void
     {
         // ----------------------------------------------------------------
@@ -837,7 +837,7 @@ class ResolveParametersTest extends TestCase
         );
     }
 
-    #[TestDox('forMethod() throws InvalidMethodException for __call-dispatched virtual methods')]
+    #[TestDox('::forMethod() throws InvalidMethodException for __call-dispatched virtual methods')]
     public function test_forMethod_throws_for_magic_call_methods(): void
     {
         // ----------------------------------------------------------------
@@ -895,7 +895,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forConstructor() is public')]
+    #[TestDox('::forConstructor() is public')]
     public function test_forConstructor_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -921,7 +921,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forConstructor() is static')]
+    #[TestDox('::forConstructor() is static')]
     public function test_forConstructor_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -948,7 +948,7 @@ class ResolveParametersTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('forConstructor() declares an array return type')]
+    #[TestDox('::forConstructor() declares an array return type')]
     public function test_forConstructor_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------
@@ -984,7 +984,7 @@ class ResolveParametersTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('forConstructor() resolves parameters for a class with a typed constructor')]
+    #[TestDox('::forConstructor() resolves parameters for a class with a typed constructor')]
     public function test_forConstructor_resolves_parameters_for_a_typed_constructor(): void
     {
         // ----------------------------------------------------------------
@@ -1014,7 +1014,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forConstructor() returns an empty array when the class has no explicit constructor')]
+    #[TestDox('::forConstructor() returns an empty array when the class has no explicit constructor')]
     public function test_forConstructor_returns_empty_array_when_class_has_no_explicit_constructor(): void
     {
         // ----------------------------------------------------------------
@@ -1045,7 +1045,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forConstructor() returns an empty array when the class has a zero-argument constructor')]
+    #[TestDox('::forConstructor() returns an empty array when the class has a zero-argument constructor')]
     public function test_forConstructor_returns_empty_array_when_class_has_zero_arg_constructor(): void
     {
         // ----------------------------------------------------------------
@@ -1076,7 +1076,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forConstructor() resolves parameters for an abstract class (permissive)')]
+    #[TestDox('::forConstructor() resolves parameters for an abstract class (permissive)')]
     public function test_forConstructor_resolves_parameters_for_an_abstract_class(): void
     {
         // ----------------------------------------------------------------
@@ -1108,7 +1108,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forConstructor() resolves parameters for a class with a private constructor (permissive)')]
+    #[TestDox('::forConstructor() resolves parameters for a class with a private constructor (permissive)')]
     public function test_forConstructor_resolves_parameters_for_a_private_constructor(): void
     {
         // ----------------------------------------------------------------
@@ -1139,7 +1139,7 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('forConstructor() throws InvalidClassException when the string does not name a declared class')]
+    #[TestDox('::forConstructor() throws InvalidClassException when the string does not name a declared class')]
     public function test_forConstructor_throws_when_the_string_does_not_name_a_declared_class(): void
     {
         // ----------------------------------------------------------------

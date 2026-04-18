@@ -75,7 +75,7 @@ class CoerceToBooleanTest extends TestCase
     }
 
     #[DataProvider('provideTruthyValues')]
-    #[TestDox('coerces truthy values to true')]
+    #[TestDox('->coerce() coerces truthy values to true')]
     public function test_coerces_truthy_to_true(
         mixed $inputValue,
     ): void {
@@ -126,7 +126,7 @@ class CoerceToBooleanTest extends TestCase
     }
 
     #[DataProvider('provideFalsyValues')]
-    #[TestDox('coerces falsy values to false')]
+    #[TestDox('->coerce() coerces falsy values to false')]
     public function test_coerces_falsy_to_false(
         mixed $inputValue,
     ): void {
@@ -171,7 +171,7 @@ class CoerceToBooleanTest extends TestCase
     }
 
     #[DataProvider('provideNonCoercibleValues')]
-    #[TestDox('returns non-coercible value unchanged')]
+    #[TestDox('->coerce() returns non-coercible value unchanged')]
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {
@@ -204,7 +204,7 @@ class CoerceToBooleanTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('custom strings replace built-in defaults')]
+    #[TestDox('->coerce() honours custom strings that replace built-in defaults')]
     public function test_custom_strings_replace_defaults(): void
     {
         // ----------------------------------------------------------------
@@ -236,7 +236,7 @@ class CoerceToBooleanTest extends TestCase
         $this->assertSame('false', $unit->coerce('false'));
     }
 
-    #[TestDox('custom strings are case-insensitive')]
+    #[TestDox('->coerce() matches custom strings case-insensitively')]
     public function test_custom_strings_are_case_insensitive(): void
     {
         // ----------------------------------------------------------------
@@ -265,7 +265,7 @@ class CoerceToBooleanTest extends TestCase
         $this->assertFalse($unit->coerce('Off'));
     }
 
-    #[TestDox('DEFAULTS can be merged with custom strings')]
+    #[TestDox('->coerce() works with DEFAULT_STRINGS merged with custom strings')]
     public function test_defaults_can_be_merged_with_custom(): void
     {
         // ----------------------------------------------------------------

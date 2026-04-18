@@ -73,7 +73,7 @@ class CoerceToIntTest extends TestCase
     }
 
     #[DataProvider('provideCoercibleValues')]
-    #[TestDox('coerces to int')]
+    #[TestDox('->coerce() coerces to int')]
     public function test_coerces_to_int(
         mixed $inputValue,
         int $expectedResult,
@@ -121,7 +121,7 @@ class CoerceToIntTest extends TestCase
     }
 
     #[DataProvider('provideNonCoercibleValues')]
-    #[TestDox('returns non-coercible value unchanged')]
+    #[TestDox('->coerce() returns non-coercible value unchanged')]
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {

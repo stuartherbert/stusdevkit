@@ -56,7 +56,7 @@ class GetFloatTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetFloatTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -99,7 +99,7 @@ class GetFloatTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for non-float input')]
+    #[TestDox('->__invoke() returns empty array for non-float input')]
     #[DataProvider('nonFloatProvider')]
     public function test_invoke_rejects_non_float_input(mixed $input): void
     {
@@ -149,7 +149,7 @@ class GetFloatTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric and float for any float')]
+    #[TestDox('::from() returns numeric and float for any float')]
     #[DataProvider('floatProvider')]
     public function test_from_returns_expected_types(float $input): void
     {

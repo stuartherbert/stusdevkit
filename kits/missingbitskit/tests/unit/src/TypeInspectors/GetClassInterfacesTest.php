@@ -63,7 +63,7 @@ class GetClassInterfacesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetClassInterfaces')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -107,7 +107,7 @@ class GetClassInterfacesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for input that is not a known class/interface name')]
+    #[TestDox('->__invoke() returns empty array for input that is not a known class/interface name')]
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
@@ -140,7 +140,7 @@ class GetClassInterfacesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns empty array when it implements nothing')]
+    #[TestDox('::from() returns empty array when it implements nothing')]
     public function test_from_returns_empty_array_when_no_interfaces(): void
     {
         // ----------------------------------------------------------------
@@ -165,7 +165,7 @@ class GetClassInterfacesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns a directly implemented interface')]
+    #[TestDox('::from() returns a directly implemented interface')]
     public function test_from_returns_direct_interface(): void
     {
         // ----------------------------------------------------------------
@@ -192,7 +192,7 @@ class GetClassInterfacesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns an interface inherited from a parent class')]
+    #[TestDox('::from() returns an interface inherited from a parent class')]
     public function test_from_returns_inherited_interface(): void
     {
         // ----------------------------------------------------------------
@@ -219,7 +219,7 @@ class GetClassInterfacesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() walks a 2-deep interface hierarchy')]
+    #[TestDox('::from() walks a 2-deep interface hierarchy')]
     public function test_from_walks_interface_hierarchy(): void
     {
         // ----------------------------------------------------------------

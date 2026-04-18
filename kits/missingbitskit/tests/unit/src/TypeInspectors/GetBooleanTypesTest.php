@@ -56,7 +56,7 @@ class GetBooleanTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetBooleanTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -99,7 +99,7 @@ class GetBooleanTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for non-boolean input')]
+    #[TestDox('->__invoke() returns empty array for non-boolean input')]
     #[DataProvider('nonBooleanProvider')]
     public function test_invoke_rejects_non_boolean_input(mixed $input): void
     {
@@ -135,7 +135,7 @@ class GetBooleanTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from(true) returns true and bool')]
+    #[TestDox('::from(true) returns true and bool')]
     public function test_from_returns_expected_types_for_true(): void
     {
         // ----------------------------------------------------------------
@@ -167,7 +167,7 @@ class GetBooleanTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from(false) returns false and bool')]
+    #[TestDox('::from(false) returns false and bool')]
     public function test_from_returns_expected_types_for_false(): void
     {
         // ----------------------------------------------------------------

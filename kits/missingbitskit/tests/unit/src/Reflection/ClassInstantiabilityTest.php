@@ -296,7 +296,7 @@ class ClassInstantiabilityTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns a map of every case name to its backing value')]
+    #[TestDox('::toArray() returns a map of every case name to its backing value')]
     public function test_toArray_returns_a_map_of_every_case_name_to_its_backing_value(): void
     {
         // ----------------------------------------------------------------
@@ -338,7 +338,7 @@ class ClassInstantiabilityTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('isInstantiable() returns true for INSTANTIABLE')]
+    #[TestDox('->isInstantiable() returns true for INSTANTIABLE')]
     public function test_isInstantiable_returns_true_for_INSTANTIABLE(): void
     {
         // ----------------------------------------------------------------
@@ -378,7 +378,7 @@ class ClassInstantiabilityTest extends TestCase
         ];
     }
 
-    #[TestDox('isInstantiable() returns false for $caseName')]
+    #[TestDox('->isInstantiable() returns false for $caseName')]
     #[DataProvider('nonInstantiableCaseProvider')]
     public function test_isInstantiable_returns_false_for_case(string $caseName): void
     {

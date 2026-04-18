@@ -53,7 +53,7 @@ class JsonSchemaRegistryTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('resolves #/$defs/<name> ref')]
+    #[TestDox('->resolveRef() resolves #/$defs/<name> ref')]
     public function test_resolves_defs_ref(): void
     {
         // ----------------------------------------------------------------
@@ -87,7 +87,7 @@ class JsonSchemaRegistryTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('registerByUri stores schema by absolute URI')]
+    #[TestDox('->registerByUri() stores schema by absolute URI')]
     public function test_register_by_uri(): void
     {
         // ----------------------------------------------------------------
@@ -120,7 +120,7 @@ class JsonSchemaRegistryTest extends TestCase
 
     }
 
-    #[TestDox('resolveByUri throws for unknown URI')]
+    #[TestDox('->resolveByUri() throws for unknown URI')]
     public function test_resolve_by_uri_throws_for_unknown(): void
     {
         // ----------------------------------------------------------------
@@ -153,7 +153,7 @@ class JsonSchemaRegistryTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('registerAnchor stores schema by base URI + anchor name')]
+    #[TestDox('->registerAnchor() stores schema by base URI + anchor name')]
     public function test_register_anchor(): void
     {
         // ----------------------------------------------------------------
@@ -189,7 +189,7 @@ class JsonSchemaRegistryTest extends TestCase
 
     }
 
-    #[TestDox('resolveAnchor throws for unknown anchor')]
+    #[TestDox('->resolveAnchor() throws for unknown anchor')]
     public function test_resolve_anchor_throws_for_unknown(): void
     {
         // ----------------------------------------------------------------
@@ -217,7 +217,7 @@ class JsonSchemaRegistryTest extends TestCase
 
     }
 
-    #[TestDox('anchors are scoped to their base URI')]
+    #[TestDox('->registerAnchor() scopes anchors to their base URI')]
     public function test_anchors_scoped_to_base_uri(): void
     {
         // ----------------------------------------------------------------
@@ -270,7 +270,7 @@ class JsonSchemaRegistryTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('pushBaseUri and popBaseUri manage the stack')]
+    #[TestDox('->pushBaseUri() and ->popBaseUri() manage the stack')]
     public function test_base_uri_stack(): void
     {
         // ----------------------------------------------------------------
@@ -317,7 +317,7 @@ class JsonSchemaRegistryTest extends TestCase
 
     }
 
-    #[TestDox('currentBaseUri returns empty string when stack is empty')]
+    #[TestDox('->currentBaseUri() returns empty string when stack is empty')]
     public function test_current_base_uri_empty_stack(): void
     {
         // ----------------------------------------------------------------

@@ -55,7 +55,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty list')]
+    #[TestDox('::__construct() creates an empty list')]
     public function test_can_instantiate_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -81,7 +81,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('Can instantiate with initial callables')]
+    #[TestDox('::__construct() accepts initial callables')]
     public function test_can_instantiate_with_initial_callables(): void
     {
         // ----------------------------------------------------------------
@@ -109,7 +109,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($expectedCallables, $unit->toArray());
     }
 
-    #[TestDox('Constructor preserves sequential integer keys')]
+    #[TestDox('::__construct() preserves sequential integer keys')]
     public function test_constructor_preserves_sequential_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -145,7 +145,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() appends a callable to the list')]
+    #[TestDox('->add() appends a callable to the list')]
     public function test_add_appends_callable(): void
     {
         // ----------------------------------------------------------------
@@ -172,7 +172,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() appends multiple callables in order')]
+    #[TestDox('->add() appends multiple callables in order')]
     public function test_add_appends_multiple_callables_in_order(): void
     {
         // ----------------------------------------------------------------
@@ -202,7 +202,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame([$fn1, $fn2, $fn3], $unit->toArray());
     }
 
-    #[TestDox('add() appends to existing data')]
+    #[TestDox('->add() appends to existing data')]
     public function test_add_appends_to_existing_data(): void
     {
         // ----------------------------------------------------------------
@@ -231,7 +231,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertCount(3, $unit);
     }
 
-    #[TestDox('add() returns $this for method chaining')]
+    #[TestDox('->add() returns $this for method chaining')]
     public function test_add_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -256,7 +256,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('add() supports fluent chaining')]
+    #[TestDox('->add() supports fluent chaining')]
     public function test_add_supports_fluent_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -286,7 +286,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame([$fn1, $fn2, $fn3], $unit->toArray());
     }
 
-    #[TestDox('add() maintains sequential integer keys')]
+    #[TestDox('->add() maintains sequential integer keys')]
     public function test_add_maintains_sequential_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -314,7 +314,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame([0, 1, 2], array_keys($actualData));
     }
 
-    #[TestDox('add() can add the same callable instance twice')]
+    #[TestDox('->add() can add the same callable instance twice')]
     public function test_add_can_add_same_callable_twice(): void
     {
         // ----------------------------------------------------------------
@@ -343,7 +343,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertCount(3, $unit);
     }
 
-    #[TestDox('add() accepts a closure')]
+    #[TestDox('->add() accepts a closure')]
     public function test_add_accepts_closure(): void
     {
         // ----------------------------------------------------------------
@@ -371,7 +371,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertInstanceOf(Closure::class, $unit->first());
     }
 
-    #[TestDox('add() accepts a named function string')]
+    #[TestDox('->add() accepts a named function string')]
     public function test_add_accepts_named_function_string(): void
     {
         // ----------------------------------------------------------------
@@ -397,7 +397,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame('strtolower', $unit->first());
     }
 
-    #[TestDox('add() accepts a static method array')]
+    #[TestDox('->add() accepts a static method array')]
     public function test_add_accepts_static_method_array(): void
     {
         // ----------------------------------------------------------------
@@ -424,7 +424,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($callable, $unit->first());
     }
 
-    #[TestDox('add() accepts an instance method array')]
+    #[TestDox('->add() accepts an instance method array')]
     public function test_add_accepts_instance_method_array(): void
     {
         // ----------------------------------------------------------------
@@ -451,7 +451,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($callable, $unit->first());
     }
 
-    #[TestDox('add() accepts an invokable object')]
+    #[TestDox('->add() accepts an invokable object')]
     public function test_add_accepts_invokable_object(): void
     {
         // ----------------------------------------------------------------
@@ -497,7 +497,7 @@ class ListOfCallablesTest extends TestCase
         ];
     }
 
-    #[TestDox('add() accepts various callable formats')]
+    #[TestDox('->add() accepts various callable formats')]
     #[DataProvider('provideCallableVariants')]
     public function test_add_accepts_various_callable_formats(
         callable $input,
@@ -531,7 +531,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty list')]
+    #[TestDox('->toArray() returns empty array for empty list')]
     public function test_to_array_returns_empty_array_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -556,7 +556,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -584,7 +584,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($expectedData, $actualResult);
     }
 
-    #[TestDox('toArray() returns data added via add()')]
+    #[TestDox('->toArray() returns data added via add()')]
     public function test_to_array_returns_data_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -619,7 +619,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty list')]
+    #[TestDox('->count() returns 0 for empty list')]
     public function test_count_returns_zero_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -644,7 +644,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in list')]
+    #[TestDox('->count() returns number of items in list')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -673,7 +673,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -702,7 +702,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() reflects items added via add()')]
+    #[TestDox('->count() reflects items added via add()')]
     public function test_count_reflects_items_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -735,7 +735,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -889,7 +889,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the list')]
+    #[TestDox('->merge() can merge an array into the list')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -922,7 +922,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another ListOfCallables')]
+    #[TestDox('->merge() can merge another ListOfCallables')]
     public function test_merge_can_merge_list_of_callables(): void
     {
         // ----------------------------------------------------------------
@@ -962,7 +962,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the list')]
+    #[TestDox('->mergeArray() adds array items to the list')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -994,7 +994,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() into empty list sets the data')]
+    #[TestDox('->mergeArray() into empty list sets the data')]
     public function test_merge_array_into_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1021,7 +1021,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame([$fn1, $fn2], $unit->toArray());
     }
 
-    #[TestDox('mergeArray() with empty array leaves list unchanged')]
+    #[TestDox('->mergeArray() with empty array leaves list unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -1049,7 +1049,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeArray() returns $this for method chaining')]
+    #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -1080,7 +1080,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another list into this one')]
+    #[TestDox('->mergeSelf() merges another list into this one')]
     public function test_merge_self_merges_list(): void
     {
         // ----------------------------------------------------------------
@@ -1113,7 +1113,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source list')]
+    #[TestDox('->mergeSelf() does not modify the source list')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -1141,7 +1141,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame([$fn2], $other->toArray());
     }
 
-    #[TestDox('mergeSelf() with empty source leaves list unchanged')]
+    #[TestDox('->mergeSelf() with empty source leaves list unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
         // ----------------------------------------------------------------
@@ -1176,7 +1176,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first callable')]
+    #[TestDox('->maybeFirst() returns the first callable')]
     public function test_maybe_first_returns_first_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1203,7 +1203,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($fn1, $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty list')]
+    #[TestDox('->maybeFirst() returns null for empty list')]
     public function test_maybe_first_returns_null_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1228,7 +1228,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeFirst() returns the first callable added via add()')]
+    #[TestDox('->maybeFirst() returns the first callable added via add()')]
     public function test_maybe_first_returns_first_callable_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -1263,7 +1263,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('first() returns the first callable')]
+    #[TestDox('->first() returns the first callable')]
     public function test_first_returns_first_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1290,7 +1290,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($fn1, $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty list')]
+    #[TestDox('->first() throws RuntimeException for empty list')]
     public function test_first_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1319,7 +1319,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last callable')]
+    #[TestDox('->maybeLast() returns the last callable')]
     public function test_maybe_last_returns_last_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1346,7 +1346,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($fn2, $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty list')]
+    #[TestDox('->maybeLast() returns null for empty list')]
     public function test_maybe_last_returns_null_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1371,7 +1371,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeLast() returns the last callable added via add()')]
+    #[TestDox('->maybeLast() returns the last callable added via add()')]
     public function test_maybe_last_returns_last_callable_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -1406,7 +1406,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('last() returns the last callable')]
+    #[TestDox('->last() returns the last callable')]
     public function test_last_returns_last_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1433,7 +1433,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($fn2, $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty list')]
+    #[TestDox('->last() throws RuntimeException for empty list')]
     public function test_last_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1462,7 +1462,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new ListOfCallables with the same data')]
+    #[TestDox('->copy() returns a new ListOfCallables with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1492,7 +1492,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($expectedData, $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (modifying copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1526,7 +1526,7 @@ class ListOfCallablesTest extends TestCase
         );
     }
 
-    #[TestDox('copy() of empty list returns empty list')]
+    #[TestDox('->copy() of empty list returns empty list')]
     public function test_copy_of_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1560,7 +1560,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty list')]
+    #[TestDox('->empty() returns true for empty list')]
     public function test_empty_returns_true_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1585,7 +1585,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty list')]
+    #[TestDox('->empty() returns false for non-empty list')]
     public function test_empty_returns_false_for_non_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1610,7 +1610,7 @@ class ListOfCallablesTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('empty() returns false after add()')]
+    #[TestDox('->empty() returns false after add()')]
     public function test_empty_returns_false_after_add(): void
     {
         // ----------------------------------------------------------------
@@ -1642,7 +1642,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns "ListOfCallables"')]
+    #[TestDox('->getCollectionTypeAsString() returns "ListOfCallables"')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
         // ----------------------------------------------------------------
@@ -1673,7 +1673,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('List with one callable: first() and last() return the same value')]
+    #[TestDox('List with one callable: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -1707,7 +1707,7 @@ class ListOfCallablesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() and merge methods support fluent chaining together')]
+    #[TestDox('->add() and merge methods support fluent chaining together')]
     public function test_add_and_merge_support_chaining(): void
     {
         // ----------------------------------------------------------------

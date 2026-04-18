@@ -55,7 +55,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty list')]
+    #[TestDox('::__construct() creates an empty list')]
     public function test_can_instantiate_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -81,7 +81,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('Can instantiate with initial UUIDs')]
+    #[TestDox('::__construct() accepts initial UUIDs')]
     public function test_can_instantiate_with_initial_uuids(): void
     {
         // ----------------------------------------------------------------
@@ -109,7 +109,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($expectedUuids, $unit->toArray());
     }
 
-    #[TestDox('Constructor preserves sequential integer keys')]
+    #[TestDox('::__construct() preserves sequential integer keys')]
     public function test_constructor_preserves_sequential_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -145,7 +145,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() appends a UUID to the list')]
+    #[TestDox('->add() appends a UUID to the list')]
     public function test_add_appends_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -172,7 +172,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() appends multiple UUIDs in order')]
+    #[TestDox('->add() appends multiple UUIDs in order')]
     public function test_add_appends_multiple_uuids_in_order(): void
     {
         // ----------------------------------------------------------------
@@ -202,7 +202,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([$uuid1, $uuid2, $uuid3], $unit->toArray());
     }
 
-    #[TestDox('add() appends to existing data')]
+    #[TestDox('->add() appends to existing data')]
     public function test_add_appends_to_existing_data(): void
     {
         // ----------------------------------------------------------------
@@ -231,7 +231,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertCount(3, $unit);
     }
 
-    #[TestDox('add() returns $this for method chaining')]
+    #[TestDox('->add() returns $this for method chaining')]
     public function test_add_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -256,7 +256,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('add() supports fluent chaining')]
+    #[TestDox('->add() supports fluent chaining')]
     public function test_add_supports_fluent_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -286,7 +286,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([$uuid1, $uuid2, $uuid3], $unit->toArray());
     }
 
-    #[TestDox('add() maintains sequential integer keys')]
+    #[TestDox('->add() maintains sequential integer keys')]
     public function test_add_maintains_sequential_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -314,7 +314,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([0, 1, 2], array_keys($actualData));
     }
 
-    #[TestDox('add() can add the same UUID instance twice')]
+    #[TestDox('->add() can add the same UUID instance twice')]
     public function test_add_can_add_same_uuid_twice(): void
     {
         // ----------------------------------------------------------------
@@ -349,7 +349,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty list')]
+    #[TestDox('->toArray() returns empty array for empty list')]
     public function test_to_array_returns_empty_array_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -374,7 +374,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -402,7 +402,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $actualResult);
     }
 
-    #[TestDox('toArray() returns data added via add()')]
+    #[TestDox('->toArray() returns data added via add()')]
     public function test_to_array_returns_data_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -437,7 +437,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty list')]
+    #[TestDox('->count() returns 0 for empty list')]
     public function test_count_returns_zero_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -462,7 +462,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in list')]
+    #[TestDox('->count() returns number of items in list')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -491,7 +491,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -520,7 +520,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() reflects items added via add()')]
+    #[TestDox('->count() reflects items added via add()')]
     public function test_count_reflects_items_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -553,7 +553,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -707,7 +707,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the list')]
+    #[TestDox('->merge() can merge an array into the list')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -740,7 +740,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another ListOfUuids')]
+    #[TestDox('->merge() can merge another ListOfUuids')]
     public function test_merge_can_merge_list_of_uuids(): void
     {
         // ----------------------------------------------------------------
@@ -780,7 +780,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the list')]
+    #[TestDox('->mergeArray() adds array items to the list')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -812,7 +812,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() into empty list sets the data')]
+    #[TestDox('->mergeArray() into empty list sets the data')]
     public function test_merge_array_into_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -839,7 +839,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([$uuid1, $uuid2], $unit->toArray());
     }
 
-    #[TestDox('mergeArray() with empty array leaves list unchanged')]
+    #[TestDox('->mergeArray() with empty array leaves list unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -867,7 +867,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeArray() returns $this for method chaining')]
+    #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -898,7 +898,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another list into this one')]
+    #[TestDox('->mergeSelf() merges another list into this one')]
     public function test_merge_self_merges_list(): void
     {
         // ----------------------------------------------------------------
@@ -931,7 +931,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source list')]
+    #[TestDox('->mergeSelf() does not modify the source list')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -959,7 +959,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([$uuid2], $other->toArray());
     }
 
-    #[TestDox('mergeSelf() with empty source leaves list unchanged')]
+    #[TestDox('->mergeSelf() with empty source leaves list unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
         // ----------------------------------------------------------------
@@ -994,7 +994,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first UUID')]
+    #[TestDox('->maybeFirst() returns the first UUID')]
     public function test_maybe_first_returns_first_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1021,7 +1021,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($uuid1, $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty list')]
+    #[TestDox('->maybeFirst() returns null for empty list')]
     public function test_maybe_first_returns_null_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1046,7 +1046,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeFirst() returns the first UUID added via add()')]
+    #[TestDox('->maybeFirst() returns the first UUID added via add()')]
     public function test_maybe_first_returns_first_uuid_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -1081,7 +1081,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('first() returns the first UUID')]
+    #[TestDox('->first() returns the first UUID')]
     public function test_first_returns_first_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1108,7 +1108,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($uuid1, $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty list')]
+    #[TestDox('->first() throws RuntimeException for empty list')]
     public function test_first_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1137,7 +1137,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last UUID')]
+    #[TestDox('->maybeLast() returns the last UUID')]
     public function test_maybe_last_returns_last_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1164,7 +1164,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty list')]
+    #[TestDox('->maybeLast() returns null for empty list')]
     public function test_maybe_last_returns_null_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1189,7 +1189,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeLast() returns the last UUID added via add()')]
+    #[TestDox('->maybeLast() returns the last UUID added via add()')]
     public function test_maybe_last_returns_last_uuid_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -1224,7 +1224,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('last() returns the last UUID')]
+    #[TestDox('->last() returns the last UUID')]
     public function test_last_returns_last_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1251,7 +1251,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty list')]
+    #[TestDox('->last() throws RuntimeException for empty list')]
     public function test_last_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1280,7 +1280,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new ListOfUuids with the same data')]
+    #[TestDox('->copy() returns a new ListOfUuids with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1310,7 +1310,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (modifying copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1344,7 +1344,7 @@ class ListOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('copy() of empty list returns empty list')]
+    #[TestDox('->copy() of empty list returns empty list')]
     public function test_copy_of_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1378,7 +1378,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty list')]
+    #[TestDox('->empty() returns true for empty list')]
     public function test_empty_returns_true_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1403,7 +1403,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty list')]
+    #[TestDox('->empty() returns false for non-empty list')]
     public function test_empty_returns_false_for_non_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1428,7 +1428,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('empty() returns false after add()')]
+    #[TestDox('->empty() returns false after add()')]
     public function test_empty_returns_false_after_add(): void
     {
         // ----------------------------------------------------------------
@@ -1460,7 +1460,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns "ListOfUuids"')]
+    #[TestDox('->getCollectionTypeAsString() returns "ListOfUuids"')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
         // ----------------------------------------------------------------
@@ -1491,7 +1491,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('List with one UUID: first() and last() return the same value')]
+    #[TestDox('List with one UUID: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -1525,7 +1525,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() and merge methods support fluent chaining together')]
+    #[TestDox('->add() and merge methods support fluent chaining together')]
     public function test_add_and_merge_support_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -1667,7 +1667,7 @@ class ListOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArrayOfStrings() returns empty array for empty list')]
+    #[TestDox('->toArrayOfStrings() returns empty array for empty list')]
     public function test_to_array_of_strings_returns_empty_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1692,7 +1692,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArrayOfStrings() returns string representations of all UUIDs')]
+    #[TestDox('->toArrayOfStrings() returns string representations of all UUIDs')]
     public function test_to_array_of_strings_returns_string_representations(): void
     {
         // ----------------------------------------------------------------
@@ -1727,7 +1727,7 @@ class ListOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('toArrayOfStrings() returns sequential integer keys')]
+    #[TestDox('->toArrayOfStrings() returns sequential integer keys')]
     public function test_to_array_of_strings_returns_sequential_keys(): void
     {
         // ----------------------------------------------------------------
@@ -1755,7 +1755,7 @@ class ListOfUuidsTest extends TestCase
         $this->assertSame([0, 1], array_keys($actualResult));
     }
 
-    #[TestDox('toArrayOfStrings() returns valid UUID strings')]
+    #[TestDox('->toArrayOfStrings() returns valid UUID strings')]
     public function test_to_array_of_strings_returns_valid_uuid_strings(): void
     {
         // ----------------------------------------------------------------
@@ -1788,7 +1788,7 @@ class ListOfUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('toArrayOfStrings() includes UUIDs added via add()')]
+    #[TestDox('->toArrayOfStrings() includes UUIDs added via add()')]
     public function test_to_array_of_strings_includes_added_uuids(): void
     {
         // ----------------------------------------------------------------

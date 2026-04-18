@@ -72,7 +72,7 @@ class CoerceToStringTest extends TestCase
     }
 
     #[DataProvider('provideCoercibleValues')]
-    #[TestDox('coerces to string')]
+    #[TestDox('->coerce() coerces to string')]
     public function test_coerces_to_string(
         mixed $inputValue,
         string $expectedResult,
@@ -118,7 +118,7 @@ class CoerceToStringTest extends TestCase
     }
 
     #[DataProvider('provideNonCoercibleValues')]
-    #[TestDox('returns non-coercible value unchanged')]
+    #[TestDox('->coerce() returns non-coercible value unchanged')]
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {

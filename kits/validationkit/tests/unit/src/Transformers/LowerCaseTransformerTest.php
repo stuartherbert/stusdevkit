@@ -105,7 +105,7 @@ class LowerCaseTransformerTest extends TestCase
     }
 
     #[DataProvider('provideLowerCaseCases')]
-    #[TestDox('converts to lower case')]
+    #[TestDox('->process() converts to lower case')]
     public function test_converts_to_lower_case(
         string $inputValue,
         string $expectedResult,

@@ -101,7 +101,7 @@ class NoCoercionTest extends TestCase
     }
 
     #[DataProvider('provideAllTypes')]
-    #[TestDox('returns input unchanged')]
+    #[TestDox('->coerce() returns input unchanged')]
     public function test_returns_input_unchanged(
         mixed $inputValue,
     ): void {

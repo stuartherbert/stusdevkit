@@ -61,7 +61,7 @@ class GetClassHierarchyTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetClassHierarchy')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -105,7 +105,7 @@ class GetClassHierarchyTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for input that is not a known class/interface name')]
+    #[TestDox('->__invoke() returns empty array for input that is not a known class/interface name')]
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
@@ -141,7 +141,7 @@ class GetClassHierarchyTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns only the class itself when it has no parents')]
+    #[TestDox('::from() returns only the class itself when it has no parents')]
     public function test_from_returns_only_class_when_no_parents(): void
     {
         // ----------------------------------------------------------------
@@ -169,7 +169,7 @@ class GetClassHierarchyTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns class plus its parent for a 2-deep hierarchy')]
+    #[TestDox('::from() returns class plus its parent for a 2-deep hierarchy')]
     public function test_from_returns_class_and_parent(): void
     {
         // ----------------------------------------------------------------
@@ -198,7 +198,7 @@ class GetClassHierarchyTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns the full chain for a 3-deep hierarchy')]
+    #[TestDox('::from() returns the full chain for a 3-deep hierarchy')]
     public function test_from_returns_full_three_level_hierarchy(): void
     {
         // ----------------------------------------------------------------

@@ -54,7 +54,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty list')]
+    #[TestDox('::__construct() creates an empty list')]
     public function test_can_instantiate_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -80,7 +80,7 @@ class ListOfStringsTest extends TestCase
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('Can instantiate with initial strings')]
+    #[TestDox('::__construct() accepts initial strings')]
     public function test_can_instantiate_with_initial_strings(): void
     {
         // ----------------------------------------------------------------
@@ -109,7 +109,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedStrings, $unit->toArray());
     }
 
-    #[TestDox('Constructor preserves sequential integer keys')]
+    #[TestDox('::__construct() preserves sequential integer keys')]
     public function test_constructor_preserves_sequential_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -141,7 +141,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() appends a string to the list')]
+    #[TestDox('->add() appends a string to the list')]
     public function test_add_appends_string(): void
     {
         // ----------------------------------------------------------------
@@ -167,7 +167,7 @@ class ListOfStringsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() appends multiple strings in order')]
+    #[TestDox('->add() appends multiple strings in order')]
     public function test_add_appends_multiple_strings_in_order(): void
     {
         // ----------------------------------------------------------------
@@ -197,7 +197,7 @@ class ListOfStringsTest extends TestCase
         );
     }
 
-    #[TestDox('add() appends to existing data')]
+    #[TestDox('->add() appends to existing data')]
     public function test_add_appends_to_existing_data(): void
     {
         // ----------------------------------------------------------------
@@ -226,7 +226,7 @@ class ListOfStringsTest extends TestCase
         $this->assertCount(3, $unit);
     }
 
-    #[TestDox('add() returns $this for method chaining')]
+    #[TestDox('->add() returns $this for method chaining')]
     public function test_add_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -251,7 +251,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('add() supports fluent chaining')]
+    #[TestDox('->add() supports fluent chaining')]
     public function test_add_supports_fluent_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -281,7 +281,7 @@ class ListOfStringsTest extends TestCase
         );
     }
 
-    #[TestDox('add() maintains sequential integer keys')]
+    #[TestDox('->add() maintains sequential integer keys')]
     public function test_add_maintains_sequential_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -309,7 +309,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame([0, 1, 2], array_keys($actualData));
     }
 
-    #[TestDox('add() can add duplicate strings')]
+    #[TestDox('->add() can add duplicate strings')]
     public function test_add_can_add_duplicate_strings(): void
     {
         // ----------------------------------------------------------------
@@ -340,7 +340,7 @@ class ListOfStringsTest extends TestCase
         $this->assertCount(3, $unit);
     }
 
-    #[TestDox('add() can add empty strings')]
+    #[TestDox('->add() can add empty strings')]
     public function test_add_can_add_empty_strings(): void
     {
         // ----------------------------------------------------------------
@@ -384,7 +384,7 @@ class ListOfStringsTest extends TestCase
         ];
     }
 
-    #[TestDox('add() accepts various string formats')]
+    #[TestDox('->add() accepts various string formats')]
     #[DataProvider('provideStringVariants')]
     public function test_add_accepts_various_string_formats(
         string $input,
@@ -417,7 +417,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty list')]
+    #[TestDox('->toArray() returns empty array for empty list')]
     public function test_to_array_returns_empty_array_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -442,7 +442,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -468,7 +468,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedData, $actualResult);
     }
 
-    #[TestDox('toArray() returns data added via add()')]
+    #[TestDox('->toArray() returns data added via add()')]
     public function test_to_array_returns_data_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -501,7 +501,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty list')]
+    #[TestDox('->count() returns 0 for empty list')]
     public function test_count_returns_zero_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -526,7 +526,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in list')]
+    #[TestDox('->count() returns number of items in list')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -551,7 +551,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -576,7 +576,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() reflects items added via add()')]
+    #[TestDox('->count() reflects items added via add()')]
     public function test_count_reflects_items_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -609,7 +609,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -755,7 +755,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the list')]
+    #[TestDox('->merge() can merge an array into the list')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -785,7 +785,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another ListOfStrings')]
+    #[TestDox('->merge() can merge another ListOfStrings')]
     public function test_merge_can_merge_list_of_strings(): void
     {
         // ----------------------------------------------------------------
@@ -821,7 +821,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the list')]
+    #[TestDox('->mergeArray() adds array items to the list')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -851,7 +851,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() into empty list sets the data')]
+    #[TestDox('->mergeArray() into empty list sets the data')]
     public function test_merge_array_into_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -877,7 +877,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame(['alpha', 'bravo'], $unit->toArray());
     }
 
-    #[TestDox('mergeArray() with empty array leaves list unchanged')]
+    #[TestDox('->mergeArray() with empty array leaves list unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -903,7 +903,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeArray() returns $this for method chaining')]
+    #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -934,7 +934,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another list into this one')]
+    #[TestDox('->mergeSelf() merges another list into this one')]
     public function test_merge_self_merges_list(): void
     {
         // ----------------------------------------------------------------
@@ -964,7 +964,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source list')]
+    #[TestDox('->mergeSelf() does not modify the source list')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -991,7 +991,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedOtherData, $other->toArray());
     }
 
-    #[TestDox('mergeSelf() with empty source leaves list unchanged')]
+    #[TestDox('->mergeSelf() with empty source leaves list unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
         // ----------------------------------------------------------------
@@ -1024,7 +1024,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first string')]
+    #[TestDox('->maybeFirst() returns the first string')]
     public function test_maybe_first_returns_first_string(): void
     {
         // ----------------------------------------------------------------
@@ -1049,7 +1049,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty list')]
+    #[TestDox('->maybeFirst() returns null for empty list')]
     public function test_maybe_first_returns_null_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1074,7 +1074,7 @@ class ListOfStringsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeFirst() returns the first string added via add()')]
+    #[TestDox('->maybeFirst() returns the first string added via add()')]
     public function test_maybe_first_returns_first_string_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -1107,7 +1107,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('first() returns the first string')]
+    #[TestDox('->first() returns the first string')]
     public function test_first_returns_first_string(): void
     {
         // ----------------------------------------------------------------
@@ -1132,7 +1132,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty list')]
+    #[TestDox('->first() throws RuntimeException for empty list')]
     public function test_first_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1161,7 +1161,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last string')]
+    #[TestDox('->maybeLast() returns the last string')]
     public function test_maybe_last_returns_last_string(): void
     {
         // ----------------------------------------------------------------
@@ -1186,7 +1186,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty list')]
+    #[TestDox('->maybeLast() returns null for empty list')]
     public function test_maybe_last_returns_null_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1211,7 +1211,7 @@ class ListOfStringsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeLast() returns the last string added via add()')]
+    #[TestDox('->maybeLast() returns the last string added via add()')]
     public function test_maybe_last_returns_last_string_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -1244,7 +1244,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('last() returns the last string')]
+    #[TestDox('->last() returns the last string')]
     public function test_last_returns_last_string(): void
     {
         // ----------------------------------------------------------------
@@ -1269,7 +1269,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty list')]
+    #[TestDox('->last() throws RuntimeException for empty list')]
     public function test_last_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1298,7 +1298,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new ListOfStrings with the same data')]
+    #[TestDox('->copy() returns a new ListOfStrings with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1326,7 +1326,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedData, $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (modifying copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1357,7 +1357,7 @@ class ListOfStringsTest extends TestCase
         );
     }
 
-    #[TestDox('copy() of empty list returns empty list')]
+    #[TestDox('->copy() of empty list returns empty list')]
     public function test_copy_of_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1391,7 +1391,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty list')]
+    #[TestDox('->empty() returns true for empty list')]
     public function test_empty_returns_true_for_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1416,7 +1416,7 @@ class ListOfStringsTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty list')]
+    #[TestDox('->empty() returns false for non-empty list')]
     public function test_empty_returns_false_for_non_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1441,7 +1441,7 @@ class ListOfStringsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('empty() returns false after add()')]
+    #[TestDox('->empty() returns false after add()')]
     public function test_empty_returns_false_after_add(): void
     {
         // ----------------------------------------------------------------
@@ -1473,7 +1473,7 @@ class ListOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('applyTrim() removes whitespace from strings in the list')]
+    #[TestDox('->applyTrim() removes whitespace from strings in the list')]
     public function test_apply_trim_removes_whitespace_from_strings(): void
     {
         // ----------------------------------------------------------------
@@ -1500,7 +1500,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedTrimmed, $unit->toArray());
     }
 
-    #[TestDox('applyTrim() on list with no spaces leaves strings unchanged')]
+    #[TestDox('->applyTrim() on list with no spaces leaves strings unchanged')]
     public function test_apply_trim_unchanged_when_no_spaces(): void
     {
         // ----------------------------------------------------------------
@@ -1526,7 +1526,7 @@ class ListOfStringsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('applyTrim() handles empty list')]
+    #[TestDox('->applyTrim() handles empty list')]
     public function test_apply_trim_on_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1552,7 +1552,7 @@ class ListOfStringsTest extends TestCase
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('applyTrim() handles strings with newlines and tabs')]
+    #[TestDox('->applyTrim() handles strings with newlines and tabs')]
     public function test_apply_trim_removes_newlines_and_tabs(): void
     {
         // ----------------------------------------------------------------
@@ -1582,7 +1582,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($expectedTrimmed, $unit->toArray());
     }
 
-    #[TestDox('applyTrim() handles empty strings')]
+    #[TestDox('->applyTrim() handles empty strings')]
     public function test_apply_trim_preserves_empty_strings(): void
     {
         // ----------------------------------------------------------------
@@ -1608,7 +1608,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('applyTrim() can be chained with other methods')]
+    #[TestDox('->applyTrim() can be chained with other methods')]
     public function test_apply_trim_supports_method_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -1633,7 +1633,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('applyTrim() can be used fluently with add()')]
+    #[TestDox('->applyTrim() can be used fluently with add()')]
     public function test_apply_trim_with_add(): void
     {
         // ----------------------------------------------------------------
@@ -1658,7 +1658,7 @@ alpha", "bravo	", "charlie
         $this->assertSame(['alpha', 'bravo'], $unit->toArray());
     }
 
-    #[TestDox('applyTrim() with custom characters strips only those characters')]
+    #[TestDox('->applyTrim() with custom characters strips only those characters')]
     public function test_apply_trim_with_custom_characters(): void
     {
         // ----------------------------------------------------------------
@@ -1687,7 +1687,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyTrim() with custom characters does not strip whitespace')]
+    #[TestDox('->applyTrim() with custom characters does not strip whitespace')]
     public function test_apply_trim_with_custom_characters_preserves_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -1716,7 +1716,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyTrim() with custom characters handles empty list')]
+    #[TestDox('->applyTrim() with custom characters handles empty list')]
     public function test_apply_trim_with_custom_characters_on_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1742,7 +1742,7 @@ alpha", "bravo	", "charlie
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('applyTrim() with custom characters returns $this for chaining')]
+    #[TestDox('->applyTrim() with custom characters returns $this for chaining')]
     public function test_apply_trim_with_custom_characters_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -1773,7 +1773,7 @@ alpha", "bravo	", "charlie
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('applyLtrim() removes leading whitespace from strings')]
+    #[TestDox('->applyLtrim() removes leading whitespace from strings')]
     public function test_apply_ltrim_removes_leading_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -1802,7 +1802,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyLtrim() preserves trailing whitespace')]
+    #[TestDox('->applyLtrim() preserves trailing whitespace')]
     public function test_apply_ltrim_preserves_trailing_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -1830,7 +1830,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyLtrim() on list with no leading spaces leaves strings unchanged')]
+    #[TestDox('->applyLtrim() on list with no leading spaces leaves strings unchanged')]
     public function test_apply_ltrim_unchanged_when_no_leading_spaces(): void
     {
         // ----------------------------------------------------------------
@@ -1856,7 +1856,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('applyLtrim() handles empty list')]
+    #[TestDox('->applyLtrim() handles empty list')]
     public function test_apply_ltrim_on_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -1882,7 +1882,7 @@ alpha", "bravo	", "charlie
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('applyLtrim() handles strings with leading newlines and tabs')]
+    #[TestDox('->applyLtrim() handles strings with leading newlines and tabs')]
     public function test_apply_ltrim_removes_leading_newlines_and_tabs(): void
     {
         // ----------------------------------------------------------------
@@ -1914,7 +1914,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyLtrim() handles empty strings')]
+    #[TestDox('->applyLtrim() handles empty strings')]
     public function test_apply_ltrim_preserves_empty_strings(): void
     {
         // ----------------------------------------------------------------
@@ -1940,7 +1940,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('applyLtrim() returns $this for method chaining')]
+    #[TestDox('->applyLtrim() returns $this for method chaining')]
     public function test_apply_ltrim_supports_method_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -1965,7 +1965,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('applyLtrim() can be used fluently with add()')]
+    #[TestDox('->applyLtrim() can be used fluently with add()')]
     public function test_apply_ltrim_with_add(): void
     {
         // ----------------------------------------------------------------
@@ -1993,7 +1993,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyLtrim() with custom characters strips only those characters from the left')]
+    #[TestDox('->applyLtrim() with custom characters strips only those characters from the left')]
     public function test_apply_ltrim_with_custom_characters(): void
     {
         // ----------------------------------------------------------------
@@ -2022,7 +2022,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyLtrim() with custom characters does not strip whitespace')]
+    #[TestDox('->applyLtrim() with custom characters does not strip whitespace')]
     public function test_apply_ltrim_with_custom_characters_preserves_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -2051,7 +2051,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyLtrim() with custom characters handles empty list')]
+    #[TestDox('->applyLtrim() with custom characters handles empty list')]
     public function test_apply_ltrim_with_custom_characters_on_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -2077,7 +2077,7 @@ alpha", "bravo	", "charlie
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('applyLtrim() with custom characters returns $this for chaining')]
+    #[TestDox('->applyLtrim() with custom characters returns $this for chaining')]
     public function test_apply_ltrim_with_custom_characters_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -2108,7 +2108,7 @@ alpha", "bravo	", "charlie
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('applyRtrim() removes trailing whitespace from strings')]
+    #[TestDox('->applyRtrim() removes trailing whitespace from strings')]
     public function test_apply_rtrim_removes_trailing_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -2137,7 +2137,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyRtrim() preserves leading whitespace')]
+    #[TestDox('->applyRtrim() preserves leading whitespace')]
     public function test_apply_rtrim_preserves_leading_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -2165,7 +2165,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyRtrim() on list with no trailing spaces leaves strings unchanged')]
+    #[TestDox('->applyRtrim() on list with no trailing spaces leaves strings unchanged')]
     public function test_apply_rtrim_unchanged_when_no_trailing_spaces(): void
     {
         // ----------------------------------------------------------------
@@ -2191,7 +2191,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('applyRtrim() handles empty list')]
+    #[TestDox('->applyRtrim() handles empty list')]
     public function test_apply_rtrim_on_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -2217,7 +2217,7 @@ alpha", "bravo	", "charlie
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('applyRtrim() handles strings with trailing newlines and tabs')]
+    #[TestDox('->applyRtrim() handles strings with trailing newlines and tabs')]
     public function test_apply_rtrim_removes_trailing_newlines_and_tabs(): void
     {
         // ----------------------------------------------------------------
@@ -2249,7 +2249,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyRtrim() handles empty strings')]
+    #[TestDox('->applyRtrim() handles empty strings')]
     public function test_apply_rtrim_preserves_empty_strings(): void
     {
         // ----------------------------------------------------------------
@@ -2275,7 +2275,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('applyRtrim() returns $this for method chaining')]
+    #[TestDox('->applyRtrim() returns $this for method chaining')]
     public function test_apply_rtrim_supports_method_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -2300,7 +2300,7 @@ alpha", "bravo	", "charlie
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('applyRtrim() can be used fluently with add()')]
+    #[TestDox('->applyRtrim() can be used fluently with add()')]
     public function test_apply_rtrim_with_add(): void
     {
         // ----------------------------------------------------------------
@@ -2328,7 +2328,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyRtrim() with custom characters strips only those characters from the right')]
+    #[TestDox('->applyRtrim() with custom characters strips only those characters from the right')]
     public function test_apply_rtrim_with_custom_characters(): void
     {
         // ----------------------------------------------------------------
@@ -2357,7 +2357,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyRtrim() with custom characters does not strip whitespace')]
+    #[TestDox('->applyRtrim() with custom characters does not strip whitespace')]
     public function test_apply_rtrim_with_custom_characters_preserves_whitespace(): void
     {
         // ----------------------------------------------------------------
@@ -2386,7 +2386,7 @@ alpha", "bravo	", "charlie
         );
     }
 
-    #[TestDox('applyRtrim() with custom characters handles empty list')]
+    #[TestDox('->applyRtrim() with custom characters handles empty list')]
     public function test_apply_rtrim_with_custom_characters_on_empty_list(): void
     {
         // ----------------------------------------------------------------
@@ -2412,7 +2412,7 @@ alpha", "bravo	", "charlie
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('applyRtrim() with custom characters returns $this for chaining')]
+    #[TestDox('->applyRtrim() with custom characters returns $this for chaining')]
     public function test_apply_rtrim_with_custom_characters_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -2443,7 +2443,7 @@ alpha", "bravo	", "charlie
     //
     // -----------------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns "ListOfStrings"')]
+    #[TestDox('->getCollectionTypeAsString() returns "ListOfStrings"')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
         // ----------------------------------------------------------------
@@ -2476,7 +2476,7 @@ alpha", "bravo	", "charlie
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('List with one string: first() and last() return the same value')]
+    #[TestDox('List with one string: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -2509,7 +2509,7 @@ alpha", "bravo	", "charlie
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() and merge methods support fluent chaining together')]
+    #[TestDox('->add() and merge methods support fluent chaining together')]
     public function test_add_and_merge_support_chaining(): void
     {
         // ----------------------------------------------------------------

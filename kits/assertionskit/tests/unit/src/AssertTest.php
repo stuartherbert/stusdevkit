@@ -88,7 +88,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertTrue() passes when given true')]
+    #[TestDox('::assertTrue() passes when given true')]
     public function test_assertTrue_passes_when_given_true(): void
     {
         // ----------------------------------------------------------------
@@ -110,7 +110,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertTrue() throws when given false')]
+    #[TestDox('::assertTrue() throws when given false')]
     public function test_assertTrue_throws_when_given_false(): void
     {
         // ----------------------------------------------------------------
@@ -130,7 +130,7 @@ class AssertTest extends TestCase
         Assert::assertTrue(false);
     }
 
-    #[TestDox('assertNotTrue() passes when given false')]
+    #[TestDox('::assertNotTrue() passes when given false')]
     public function test_assertNotTrue_passes_when_given_false(): void
     {
         // ----------------------------------------------------------------
@@ -150,7 +150,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotTrue() throws when given true')]
+    #[TestDox('::assertNotTrue() throws when given true')]
     public function test_assertNotTrue_throws_when_given_true(): void
     {
         // ----------------------------------------------------------------
@@ -170,7 +170,7 @@ class AssertTest extends TestCase
         Assert::assertNotTrue(true);
     }
 
-    #[TestDox('assertFalse() passes when given false')]
+    #[TestDox('::assertFalse() passes when given false')]
     public function test_assertFalse_passes_when_given_false(): void
     {
         // ----------------------------------------------------------------
@@ -190,7 +190,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertFalse() throws when given true')]
+    #[TestDox('::assertFalse() throws when given true')]
     public function test_assertFalse_throws_when_given_true(): void
     {
         // ----------------------------------------------------------------
@@ -210,7 +210,7 @@ class AssertTest extends TestCase
         Assert::assertFalse(true);
     }
 
-    #[TestDox('assertNotFalse() passes when given true')]
+    #[TestDox('::assertNotFalse() passes when given true')]
     public function test_assertNotFalse_passes_when_given_true(): void
     {
         // ----------------------------------------------------------------
@@ -230,7 +230,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotFalse() throws when given false')]
+    #[TestDox('::assertNotFalse() throws when given false')]
     public function test_assertNotFalse_throws_when_given_false(): void
     {
         // ----------------------------------------------------------------
@@ -256,7 +256,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertNull() passes when given null')]
+    #[TestDox('::assertNull() passes when given null')]
     public function test_assertNull_passes_when_given_null(): void
     {
         // ----------------------------------------------------------------
@@ -276,7 +276,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNull() throws when given non-null')]
+    #[TestDox('::assertNull() throws when given non-null')]
     public function test_assertNull_throws_when_given_non_null(): void
     {
         // ----------------------------------------------------------------
@@ -296,7 +296,7 @@ class AssertTest extends TestCase
         Assert::assertNull('not null');
     }
 
-    #[TestDox('assertNotNull() passes when given non-null')]
+    #[TestDox('::assertNotNull() passes when given non-null')]
     public function test_assertNotNull_passes_when_given_non_null(): void
     {
         // ----------------------------------------------------------------
@@ -316,7 +316,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotNull() throws when given null')]
+    #[TestDox('::assertNotNull() throws when given null')]
     public function test_assertNotNull_throws_when_given_null(): void
     {
         // ----------------------------------------------------------------
@@ -342,7 +342,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertEmpty() passes when given empty value')]
+    #[TestDox('::assertEmpty() passes when given empty value')]
     public function test_assertEmpty_passes_when_given_empty_value(): void
     {
         // ----------------------------------------------------------------
@@ -362,7 +362,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertEmpty() throws when given non-empty value')]
+    #[TestDox('::assertEmpty() throws when given non-empty value')]
     public function test_assertEmpty_throws_when_given_non_empty_value(): void
     {
         // ----------------------------------------------------------------
@@ -382,7 +382,7 @@ class AssertTest extends TestCase
         Assert::assertEmpty([1, 2, 3]);
     }
 
-    #[TestDox('assertNotEmpty() passes when given non-empty value')]
+    #[TestDox('::assertNotEmpty() passes when given non-empty value')]
     public function test_assertNotEmpty_passes_when_given_non_empty_value(): void
     {
         // ----------------------------------------------------------------
@@ -402,7 +402,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotEmpty() throws when given empty value')]
+    #[TestDox('::assertNotEmpty() throws when given empty value')]
     public function test_assertNotEmpty_throws_when_given_empty_value(): void
     {
         // ----------------------------------------------------------------
@@ -428,7 +428,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertFinite() passes when given finite number')]
+    #[TestDox('::assertFinite() passes when given finite number')]
     public function test_assertFinite_passes_when_given_finite_number(): void
     {
         // ----------------------------------------------------------------
@@ -448,7 +448,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertFinite() throws when given infinite number')]
+    #[TestDox('::assertFinite() throws when given infinite number')]
     public function test_assertFinite_throws_when_given_infinite_number(): void
     {
         // ----------------------------------------------------------------
@@ -468,7 +468,7 @@ class AssertTest extends TestCase
         Assert::assertFinite(INF);
     }
 
-    #[TestDox('assertInfinite() passes when given infinite number')]
+    #[TestDox('::assertInfinite() passes when given infinite number')]
     public function test_assertInfinite_passes_when_given_infinite_number(): void
     {
         // ----------------------------------------------------------------
@@ -488,7 +488,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertInfinite() throws when given finite number')]
+    #[TestDox('::assertInfinite() throws when given finite number')]
     public function test_assertInfinite_throws_when_given_finite_number(): void
     {
         // ----------------------------------------------------------------
@@ -508,7 +508,7 @@ class AssertTest extends TestCase
         Assert::assertInfinite(42.0);
     }
 
-    #[TestDox('assertNan() passes when given NaN')]
+    #[TestDox('::assertNan() passes when given NaN')]
     public function test_assertNan_passes_when_given_nan(): void
     {
         // ----------------------------------------------------------------
@@ -528,7 +528,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNan() throws when given a number')]
+    #[TestDox('::assertNan() throws when given a number')]
     public function test_assertNan_throws_when_given_a_number(): void
     {
         // ----------------------------------------------------------------
@@ -554,7 +554,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertGreaterThan() passes when actual is greater')]
+    #[TestDox('::assertGreaterThan() passes when actual is greater')]
     public function test_assertGreaterThan_passes_when_actual_is_greater(): void
     {
         // ----------------------------------------------------------------
@@ -578,7 +578,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertGreaterThan() throws when actual is equal')]
+    #[TestDox('::assertGreaterThan() throws when actual is equal')]
     public function test_assertGreaterThan_throws_when_actual_is_equal(): void
     {
         // ----------------------------------------------------------------
@@ -602,7 +602,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertGreaterThanOrEqual() passes when actual is equal')]
+    #[TestDox('::assertGreaterThanOrEqual() passes when actual is equal')]
     public function test_assertGreaterThanOrEqual_passes_when_actual_is_equal(): void
     {
         // ----------------------------------------------------------------
@@ -625,7 +625,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertGreaterThanOrEqual() throws when actual is less')]
+    #[TestDox('::assertGreaterThanOrEqual() throws when actual is less')]
     public function test_assertGreaterThanOrEqual_throws_when_actual_is_less(): void
     {
         // ----------------------------------------------------------------
@@ -648,7 +648,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertLessThan() passes when actual is less')]
+    #[TestDox('::assertLessThan() passes when actual is less')]
     public function test_assertLessThan_passes_when_actual_is_less(): void
     {
         // ----------------------------------------------------------------
@@ -671,7 +671,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertLessThan() throws when actual is equal')]
+    #[TestDox('::assertLessThan() throws when actual is equal')]
     public function test_assertLessThan_throws_when_actual_is_equal(): void
     {
         // ----------------------------------------------------------------
@@ -695,7 +695,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertLessThanOrEqual() passes when actual is equal')]
+    #[TestDox('::assertLessThanOrEqual() passes when actual is equal')]
     public function test_assertLessThanOrEqual_passes_when_actual_is_equal(): void
     {
         // ----------------------------------------------------------------
@@ -718,7 +718,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertLessThanOrEqual() throws when actual is greater')]
+    #[TestDox('::assertLessThanOrEqual() throws when actual is greater')]
     public function test_assertLessThanOrEqual_throws_when_actual_is_greater(): void
     {
         // ----------------------------------------------------------------
@@ -747,7 +747,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertIsArray() passes when given an array')]
+    #[TestDox('::assertIsArray() passes when given an array')]
     public function test_assertIsArray_passes_when_given_an_array(): void
     {
         // ----------------------------------------------------------------
@@ -767,7 +767,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsArray() throws when given a non-array')]
+    #[TestDox('::assertIsArray() throws when given a non-array')]
     public function test_assertIsArray_throws_when_given_a_non_array(): void
     {
         // ----------------------------------------------------------------
@@ -787,7 +787,7 @@ class AssertTest extends TestCase
         Assert::assertIsArray('string');
     }
 
-    #[TestDox('assertIsBool() passes when given a bool')]
+    #[TestDox('::assertIsBool() passes when given a bool')]
     public function test_assertIsBool_passes_when_given_a_bool(): void
     {
         // ----------------------------------------------------------------
@@ -807,7 +807,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsBool() throws when given a non-bool')]
+    #[TestDox('::assertIsBool() throws when given a non-bool')]
     public function test_assertIsBool_throws_when_given_a_non_bool(): void
     {
         // ----------------------------------------------------------------
@@ -827,7 +827,7 @@ class AssertTest extends TestCase
         Assert::assertIsBool(1);
     }
 
-    #[TestDox('assertIsFloat() passes when given a float')]
+    #[TestDox('::assertIsFloat() passes when given a float')]
     public function test_assertIsFloat_passes_when_given_a_float(): void
     {
         // ----------------------------------------------------------------
@@ -847,7 +847,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsFloat() throws when given a non-float')]
+    #[TestDox('::assertIsFloat() throws when given a non-float')]
     public function test_assertIsFloat_throws_when_given_a_non_float(): void
     {
         // ----------------------------------------------------------------
@@ -867,7 +867,7 @@ class AssertTest extends TestCase
         Assert::assertIsFloat(1);
     }
 
-    #[TestDox('assertIsInt() passes when given an int')]
+    #[TestDox('::assertIsInt() passes when given an int')]
     public function test_assertIsInt_passes_when_given_an_int(): void
     {
         // ----------------------------------------------------------------
@@ -887,7 +887,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsInt() throws when given a non-int')]
+    #[TestDox('::assertIsInt() throws when given a non-int')]
     public function test_assertIsInt_throws_when_given_a_non_int(): void
     {
         // ----------------------------------------------------------------
@@ -907,7 +907,7 @@ class AssertTest extends TestCase
         Assert::assertIsInt('string');
     }
 
-    #[TestDox('assertIsNumeric() passes when given a numeric value')]
+    #[TestDox('::assertIsNumeric() passes when given a numeric value')]
     public function test_assertIsNumeric_passes_when_given_a_numeric_value(): void
     {
         // ----------------------------------------------------------------
@@ -927,7 +927,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNumeric() throws when given a non-numeric value')]
+    #[TestDox('::assertIsNumeric() throws when given a non-numeric value')]
     public function test_assertIsNumeric_throws_when_given_a_non_numeric_value(): void
     {
         // ----------------------------------------------------------------
@@ -947,7 +947,7 @@ class AssertTest extends TestCase
         Assert::assertIsNumeric('abc');
     }
 
-    #[TestDox('assertIsObject() passes when given an object')]
+    #[TestDox('::assertIsObject() passes when given an object')]
     public function test_assertIsObject_passes_when_given_an_object(): void
     {
         // ----------------------------------------------------------------
@@ -967,7 +967,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsObject() throws when given a non-object')]
+    #[TestDox('::assertIsObject() throws when given a non-object')]
     public function test_assertIsObject_throws_when_given_a_non_object(): void
     {
         // ----------------------------------------------------------------
@@ -987,7 +987,7 @@ class AssertTest extends TestCase
         Assert::assertIsObject('string');
     }
 
-    #[TestDox('assertIsResource() passes when given a resource')]
+    #[TestDox('::assertIsResource() passes when given a resource')]
     public function test_assertIsResource_passes_when_given_a_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1018,7 +1018,7 @@ class AssertTest extends TestCase
         fclose($resource);
     }
 
-    #[TestDox('assertIsResource() throws when given a non-resource')]
+    #[TestDox('::assertIsResource() throws when given a non-resource')]
     public function test_assertIsResource_throws_when_given_a_non_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1038,7 +1038,7 @@ class AssertTest extends TestCase
         Assert::assertIsResource('string');
     }
 
-    #[TestDox('assertIsClosedResource() passes when given a closed resource')]
+    #[TestDox('::assertIsClosedResource() passes when given a closed resource')]
     public function test_assertIsClosedResource_passes_when_given_a_closed_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1065,7 +1065,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsClosedResource() throws when given a non-closed-resource')]
+    #[TestDox('::assertIsClosedResource() throws when given a non-closed-resource')]
     public function test_assertIsClosedResource_throws_when_given_a_non_closed_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1085,7 +1085,7 @@ class AssertTest extends TestCase
         Assert::assertIsClosedResource('string');
     }
 
-    #[TestDox('assertIsString() passes when given a string')]
+    #[TestDox('::assertIsString() passes when given a string')]
     public function test_assertIsString_passes_when_given_a_string(): void
     {
         // ----------------------------------------------------------------
@@ -1105,7 +1105,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsString() throws when given a non-string')]
+    #[TestDox('::assertIsString() throws when given a non-string')]
     public function test_assertIsString_throws_when_given_a_non_string(): void
     {
         // ----------------------------------------------------------------
@@ -1125,7 +1125,7 @@ class AssertTest extends TestCase
         Assert::assertIsString(42);
     }
 
-    #[TestDox('assertIsScalar() passes when given a scalar')]
+    #[TestDox('::assertIsScalar() passes when given a scalar')]
     public function test_assertIsScalar_passes_when_given_a_scalar(): void
     {
         // ----------------------------------------------------------------
@@ -1145,7 +1145,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsScalar() throws when given a non-scalar')]
+    #[TestDox('::assertIsScalar() throws when given a non-scalar')]
     public function test_assertIsScalar_throws_when_given_a_non_scalar(): void
     {
         // ----------------------------------------------------------------
@@ -1165,7 +1165,7 @@ class AssertTest extends TestCase
         Assert::assertIsScalar([]);
     }
 
-    #[TestDox('assertIsCallable() passes when given a callable')]
+    #[TestDox('::assertIsCallable() passes when given a callable')]
     public function test_assertIsCallable_passes_when_given_a_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1185,7 +1185,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsCallable() throws when given a non-callable')]
+    #[TestDox('::assertIsCallable() throws when given a non-callable')]
     public function test_assertIsCallable_throws_when_given_a_non_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1205,7 +1205,7 @@ class AssertTest extends TestCase
         Assert::assertIsCallable('not_a_function');
     }
 
-    #[TestDox('assertIsIterable() passes when given an iterable')]
+    #[TestDox('::assertIsIterable() passes when given an iterable')]
     public function test_assertIsIterable_passes_when_given_an_iterable(): void
     {
         // ----------------------------------------------------------------
@@ -1225,7 +1225,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsIterable() throws when given a non-iterable')]
+    #[TestDox('::assertIsIterable() throws when given a non-iterable')]
     public function test_assertIsIterable_throws_when_given_a_non_iterable(): void
     {
         // ----------------------------------------------------------------
@@ -1251,7 +1251,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertIsNotArray() passes when given a non-array')]
+    #[TestDox('::assertIsNotArray() passes when given a non-array')]
     public function test_assertIsNotArray_passes_when_given_a_non_array(): void
     {
         // ----------------------------------------------------------------
@@ -1271,7 +1271,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotArray() throws when given an array')]
+    #[TestDox('::assertIsNotArray() throws when given an array')]
     public function test_assertIsNotArray_throws_when_given_an_array(): void
     {
         // ----------------------------------------------------------------
@@ -1291,7 +1291,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotArray([1, 2, 3]);
     }
 
-    #[TestDox('assertIsNotBool() passes when given a non-bool')]
+    #[TestDox('::assertIsNotBool() passes when given a non-bool')]
     public function test_assertIsNotBool_passes_when_given_a_non_bool(): void
     {
         // ----------------------------------------------------------------
@@ -1311,7 +1311,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotBool() throws when given a bool')]
+    #[TestDox('::assertIsNotBool() throws when given a bool')]
     public function test_assertIsNotBool_throws_when_given_a_bool(): void
     {
         // ----------------------------------------------------------------
@@ -1331,7 +1331,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotBool(true);
     }
 
-    #[TestDox('assertIsNotFloat() passes when given a non-float')]
+    #[TestDox('::assertIsNotFloat() passes when given a non-float')]
     public function test_assertIsNotFloat_passes_when_given_a_non_float(): void
     {
         // ----------------------------------------------------------------
@@ -1351,7 +1351,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotFloat() throws when given a float')]
+    #[TestDox('::assertIsNotFloat() throws when given a float')]
     public function test_assertIsNotFloat_throws_when_given_a_float(): void
     {
         // ----------------------------------------------------------------
@@ -1371,7 +1371,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotFloat(3.14);
     }
 
-    #[TestDox('assertIsNotInt() passes when given a non-int')]
+    #[TestDox('::assertIsNotInt() passes when given a non-int')]
     public function test_assertIsNotInt_passes_when_given_a_non_int(): void
     {
         // ----------------------------------------------------------------
@@ -1391,7 +1391,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotInt() throws when given an int')]
+    #[TestDox('::assertIsNotInt() throws when given an int')]
     public function test_assertIsNotInt_throws_when_given_an_int(): void
     {
         // ----------------------------------------------------------------
@@ -1411,7 +1411,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotInt(42);
     }
 
-    #[TestDox('assertIsNotNumeric() passes when given a non-numeric value')]
+    #[TestDox('::assertIsNotNumeric() passes when given a non-numeric value')]
     public function test_assertIsNotNumeric_passes_when_given_a_non_numeric_value(): void
     {
         // ----------------------------------------------------------------
@@ -1431,7 +1431,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotNumeric() throws when given a numeric value')]
+    #[TestDox('::assertIsNotNumeric() throws when given a numeric value')]
     public function test_assertIsNotNumeric_throws_when_given_a_numeric_value(): void
     {
         // ----------------------------------------------------------------
@@ -1451,7 +1451,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotNumeric('123');
     }
 
-    #[TestDox('assertIsNotObject() passes when given a non-object')]
+    #[TestDox('::assertIsNotObject() passes when given a non-object')]
     public function test_assertIsNotObject_passes_when_given_a_non_object(): void
     {
         // ----------------------------------------------------------------
@@ -1471,7 +1471,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotObject() throws when given an object')]
+    #[TestDox('::assertIsNotObject() throws when given an object')]
     public function test_assertIsNotObject_throws_when_given_an_object(): void
     {
         // ----------------------------------------------------------------
@@ -1491,7 +1491,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotObject(new \stdClass());
     }
 
-    #[TestDox('assertIsNotResource() passes when given a non-resource')]
+    #[TestDox('::assertIsNotResource() passes when given a non-resource')]
     public function test_assertIsNotResource_passes_when_given_a_non_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1511,7 +1511,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotResource() throws when given a resource')]
+    #[TestDox('::assertIsNotResource() throws when given a resource')]
     public function test_assertIsNotResource_throws_when_given_a_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1537,7 +1537,7 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('assertIsNotClosedResource() passes when given a non-closed-resource')]
+    #[TestDox('::assertIsNotClosedResource() passes when given a non-closed-resource')]
     public function test_assertIsNotClosedResource_passes_when_given_a_non_closed_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1557,7 +1557,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotClosedResource() throws when given a closed resource')]
+    #[TestDox('::assertIsNotClosedResource() throws when given a closed resource')]
     public function test_assertIsNotClosedResource_throws_when_given_a_closed_resource(): void
     {
         // ----------------------------------------------------------------
@@ -1580,7 +1580,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotClosedResource($resource);
     }
 
-    #[TestDox('assertIsNotString() passes when given a non-string')]
+    #[TestDox('::assertIsNotString() passes when given a non-string')]
     public function test_assertIsNotString_passes_when_given_a_non_string(): void
     {
         // ----------------------------------------------------------------
@@ -1600,7 +1600,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotString() throws when given a string')]
+    #[TestDox('::assertIsNotString() throws when given a string')]
     public function test_assertIsNotString_throws_when_given_a_string(): void
     {
         // ----------------------------------------------------------------
@@ -1620,7 +1620,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotString('hello');
     }
 
-    #[TestDox('assertIsNotScalar() passes when given a non-scalar')]
+    #[TestDox('::assertIsNotScalar() passes when given a non-scalar')]
     public function test_assertIsNotScalar_passes_when_given_a_non_scalar(): void
     {
         // ----------------------------------------------------------------
@@ -1640,7 +1640,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotScalar() throws when given a scalar')]
+    #[TestDox('::assertIsNotScalar() throws when given a scalar')]
     public function test_assertIsNotScalar_throws_when_given_a_scalar(): void
     {
         // ----------------------------------------------------------------
@@ -1660,7 +1660,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotScalar(42);
     }
 
-    #[TestDox('assertIsNotCallable() passes when given a non-callable')]
+    #[TestDox('::assertIsNotCallable() passes when given a non-callable')]
     public function test_assertIsNotCallable_passes_when_given_a_non_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1680,7 +1680,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotCallable() throws when given a callable')]
+    #[TestDox('::assertIsNotCallable() throws when given a callable')]
     public function test_assertIsNotCallable_throws_when_given_a_callable(): void
     {
         // ----------------------------------------------------------------
@@ -1700,7 +1700,7 @@ class AssertTest extends TestCase
         Assert::assertIsNotCallable('strlen');
     }
 
-    #[TestDox('assertIsNotIterable() passes when given a non-iterable')]
+    #[TestDox('::assertIsNotIterable() passes when given a non-iterable')]
     public function test_assertIsNotIterable_passes_when_given_a_non_iterable(): void
     {
         // ----------------------------------------------------------------
@@ -1720,7 +1720,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsNotIterable() throws when given an iterable')]
+    #[TestDox('::assertIsNotIterable() throws when given an iterable')]
     public function test_assertIsNotIterable_throws_when_given_an_iterable(): void
     {
         // ----------------------------------------------------------------
@@ -1746,7 +1746,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertInstanceOf() passes when value is an instance of the expected class')]
+    #[TestDox('::assertInstanceOf() passes when value is an instance of the expected class')]
     public function test_assertInstanceOf_passes_when_value_is_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1769,7 +1769,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertInstanceOf() throws when value is not an instance of the expected class')]
+    #[TestDox('::assertInstanceOf() throws when value is not an instance of the expected class')]
     public function test_assertInstanceOf_throws_when_value_is_not_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1792,7 +1792,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotInstanceOf() passes when value is not an instance of the expected class')]
+    #[TestDox('::assertNotInstanceOf() passes when value is not an instance of the expected class')]
     public function test_assertNotInstanceOf_passes_when_value_is_not_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1816,7 +1816,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotInstanceOf() throws when value is an instance of the expected class')]
+    #[TestDox('::assertNotInstanceOf() throws when value is an instance of the expected class')]
     public function test_assertNotInstanceOf_throws_when_value_is_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1845,7 +1845,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertEquals() passes when values are equal')]
+    #[TestDox('::assertEquals() passes when values are equal')]
     public function test_assertEquals_passes_when_values_are_equal(): void
     {
         // ----------------------------------------------------------------
@@ -1868,7 +1868,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertEquals() throws when values are not equal')]
+    #[TestDox('::assertEquals() throws when values are not equal')]
     public function test_assertEquals_throws_when_values_are_not_equal(): void
     {
         // ----------------------------------------------------------------
@@ -1891,7 +1891,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertEqualsCanonicalizing() passes when arrays have same elements in different order')]
+    #[TestDox('::assertEqualsCanonicalizing() passes when arrays have same elements in different order')]
     public function test_assertEqualsCanonicalizing_passes_with_reordered_arrays(): void
     {
         // ----------------------------------------------------------------
@@ -1915,7 +1915,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertEqualsCanonicalizing() throws when arrays differ')]
+    #[TestDox('::assertEqualsCanonicalizing() throws when arrays differ')]
     public function test_assertEqualsCanonicalizing_throws_when_arrays_differ(): void
     {
         // ----------------------------------------------------------------
@@ -1938,7 +1938,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertEqualsIgnoringCase() passes when strings differ only in case')]
+    #[TestDox('::assertEqualsIgnoringCase() passes when strings differ only in case')]
     public function test_assertEqualsIgnoringCase_passes_when_strings_differ_in_case(): void
     {
         // ----------------------------------------------------------------
@@ -1961,7 +1961,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertEqualsIgnoringCase() throws when strings differ')]
+    #[TestDox('::assertEqualsIgnoringCase() throws when strings differ')]
     public function test_assertEqualsIgnoringCase_throws_when_strings_differ(): void
     {
         // ----------------------------------------------------------------
@@ -1984,7 +1984,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertEqualsWithDelta() passes when values are within delta')]
+    #[TestDox('::assertEqualsWithDelta() passes when values are within delta')]
     public function test_assertEqualsWithDelta_passes_when_within_delta(): void
     {
         // ----------------------------------------------------------------
@@ -2008,7 +2008,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertEqualsWithDelta() throws when values exceed delta')]
+    #[TestDox('::assertEqualsWithDelta() throws when values exceed delta')]
     public function test_assertEqualsWithDelta_throws_when_exceeding_delta(): void
     {
         // ----------------------------------------------------------------
@@ -2032,7 +2032,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotEquals() passes when values are not equal')]
+    #[TestDox('::assertNotEquals() passes when values are not equal')]
     public function test_assertNotEquals_passes_when_values_are_not_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2055,7 +2055,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotEquals() throws when values are equal')]
+    #[TestDox('::assertNotEquals() throws when values are equal')]
     public function test_assertNotEquals_throws_when_values_are_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2078,7 +2078,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotEqualsCanonicalizing() passes when arrays differ')]
+    #[TestDox('::assertNotEqualsCanonicalizing() passes when arrays differ')]
     public function test_assertNotEqualsCanonicalizing_passes_when_arrays_differ(): void
     {
         // ----------------------------------------------------------------
@@ -2101,7 +2101,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotEqualsCanonicalizing() throws when arrays are equal after canonicalizing')]
+    #[TestDox('::assertNotEqualsCanonicalizing() throws when arrays are equal after canonicalizing')]
     public function test_assertNotEqualsCanonicalizing_throws_when_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2124,7 +2124,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotEqualsIgnoringCase() passes when strings differ')]
+    #[TestDox('::assertNotEqualsIgnoringCase() passes when strings differ')]
     public function test_assertNotEqualsIgnoringCase_passes_when_strings_differ(): void
     {
         // ----------------------------------------------------------------
@@ -2148,7 +2148,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotEqualsIgnoringCase() throws when strings are equal ignoring case')]
+    #[TestDox('::assertNotEqualsIgnoringCase() throws when strings are equal ignoring case')]
     public function test_assertNotEqualsIgnoringCase_throws_when_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2171,7 +2171,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotEqualsWithDelta() passes when values exceed delta')]
+    #[TestDox('::assertNotEqualsWithDelta() passes when values exceed delta')]
     public function test_assertNotEqualsWithDelta_passes_when_exceeding_delta(): void
     {
         // ----------------------------------------------------------------
@@ -2195,7 +2195,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotEqualsWithDelta() throws when values are within delta')]
+    #[TestDox('::assertNotEqualsWithDelta() throws when values are within delta')]
     public function test_assertNotEqualsWithDelta_throws_when_within_delta(): void
     {
         // ----------------------------------------------------------------
@@ -2225,7 +2225,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertObjectEquals() passes when objects are equal')]
+    #[TestDox('::assertObjectEquals() passes when objects are equal')]
     public function test_assertObjectEquals_passes_when_objects_are_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2254,7 +2254,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertObjectEquals() throws when objects are not equal')]
+    #[TestDox('::assertObjectEquals() throws when objects are not equal')]
     public function test_assertObjectEquals_throws_when_objects_are_not_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2279,7 +2279,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertObjectNotEquals() passes when objects are not equal')]
+    #[TestDox('::assertObjectNotEquals() passes when objects are not equal')]
     public function test_assertObjectNotEquals_passes_when_objects_are_not_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2308,7 +2308,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertObjectNotEquals() throws when objects are equal')]
+    #[TestDox('::assertObjectNotEquals() throws when objects are equal')]
     public function test_assertObjectNotEquals_throws_when_objects_are_equal(): void
     {
         // ----------------------------------------------------------------
@@ -2333,7 +2333,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertObjectEquals() throws InvalidArgumentException when method does not exist')]
+    #[TestDox('::assertObjectEquals() throws InvalidArgumentException when method does not exist')]
     public function test_assertObjectEquals_throws_InvalidArgumentException_when_method_missing(): void
     {
         // ----------------------------------------------------------------
@@ -2360,7 +2360,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertObjectNotEquals() throws InvalidArgumentException when method does not exist')]
+    #[TestDox('::assertObjectNotEquals() throws InvalidArgumentException when method does not exist')]
     public function test_assertObjectNotEquals_throws_InvalidArgumentException_when_method_missing(): void
     {
         // ----------------------------------------------------------------
@@ -2393,7 +2393,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertSame() passes when values are identical')]
+    #[TestDox('::assertSame() passes when values are identical')]
     public function test_assertSame_passes_when_values_are_identical(): void
     {
         // ----------------------------------------------------------------
@@ -2416,7 +2416,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertSame() throws when values are not identical')]
+    #[TestDox('::assertSame() throws when values are not identical')]
     public function test_assertSame_throws_when_values_are_not_identical(): void
     {
         // ----------------------------------------------------------------
@@ -2439,7 +2439,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotSame() passes when values are not identical')]
+    #[TestDox('::assertNotSame() passes when values are not identical')]
     public function test_assertNotSame_passes_when_values_are_not_identical(): void
     {
         // ----------------------------------------------------------------
@@ -2462,7 +2462,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotSame() throws when values are identical')]
+    #[TestDox('::assertNotSame() throws when values are identical')]
     public function test_assertNotSame_throws_when_values_are_identical(): void
     {
         // ----------------------------------------------------------------
@@ -2491,7 +2491,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertObjectHasProperty() passes when object has the property')]
+    #[TestDox('::assertObjectHasProperty() passes when object has the property')]
     public function test_assertObjectHasProperty_passes_when_property_exists(): void
     {
         // ----------------------------------------------------------------
@@ -2519,7 +2519,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertObjectHasProperty() throws when object lacks the property')]
+    #[TestDox('::assertObjectHasProperty() throws when object lacks the property')]
     public function test_assertObjectHasProperty_throws_when_property_missing(): void
     {
         // ----------------------------------------------------------------
@@ -2543,7 +2543,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertObjectNotHasProperty() passes when object lacks the property')]
+    #[TestDox('::assertObjectNotHasProperty() passes when object lacks the property')]
     public function test_assertObjectNotHasProperty_passes_when_property_missing(): void
     {
         // ----------------------------------------------------------------
@@ -2571,7 +2571,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertObjectNotHasProperty() throws when object has the property')]
+    #[TestDox('::assertObjectNotHasProperty() throws when object has the property')]
     public function test_assertObjectNotHasProperty_throws_when_property_exists(): void
     {
         // ----------------------------------------------------------------
@@ -2601,7 +2601,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertArrayHasKey() passes when key exists')]
+    #[TestDox('::assertArrayHasKey() passes when key exists')]
     public function test_assertArrayHasKey_passes_when_key_exists(): void
     {
         // ----------------------------------------------------------------
@@ -2624,7 +2624,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArrayHasKey() throws when key missing')]
+    #[TestDox('::assertArrayHasKey() throws when key missing')]
     public function test_assertArrayHasKey_throws_when_key_missing(): void
     {
         // ----------------------------------------------------------------
@@ -2647,7 +2647,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayNotHasKey() passes when key missing')]
+    #[TestDox('::assertArrayNotHasKey() passes when key missing')]
     public function test_assertArrayNotHasKey_passes_when_key_missing(): void
     {
         // ----------------------------------------------------------------
@@ -2670,7 +2670,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArrayNotHasKey() throws when key exists')]
+    #[TestDox('::assertArrayNotHasKey() throws when key exists')]
     public function test_assertArrayNotHasKey_throws_when_key_exists(): void
     {
         // ----------------------------------------------------------------
@@ -2693,7 +2693,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayHasKey() throws InvalidArgumentException when key is not int or string')]
+    #[TestDox('::assertArrayHasKey() throws InvalidArgumentException when key is not int or string')]
     public function test_assertArrayHasKey_throws_InvalidArgumentException_when_key_is_invalid(): void
     {
         // ----------------------------------------------------------------
@@ -2717,7 +2717,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayNotHasKey() throws InvalidArgumentException when key is not int or string')]
+    #[TestDox('::assertArrayNotHasKey() throws InvalidArgumentException when key is not int or string')]
     public function test_assertArrayNotHasKey_throws_InvalidArgumentException_when_key_is_invalid(): void
     {
         // ----------------------------------------------------------------
@@ -2741,7 +2741,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertIsList() passes when given a list')]
+    #[TestDox('::assertIsList() passes when given a list')]
     public function test_assertIsList_passes_when_given_a_list(): void
     {
         // ----------------------------------------------------------------
@@ -2763,7 +2763,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertIsList() throws when given a non-list')]
+    #[TestDox('::assertIsList() throws when given a non-list')]
     public function test_assertIsList_throws_when_given_a_non_list(): void
     {
         // ----------------------------------------------------------------
@@ -2785,7 +2785,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysAreIdentical() passes when arrays are identical')]
+    #[TestDox('::assertArraysAreIdentical() passes when arrays are identical')]
     public function test_assertArraysAreIdentical_passes(): void
     {
         // ----------------------------------------------------------------
@@ -2808,7 +2808,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysAreIdentical() throws when arrays differ')]
+    #[TestDox('::assertArraysAreIdentical() throws when arrays differ')]
     public function test_assertArraysAreIdentical_throws(): void
     {
         // ----------------------------------------------------------------
@@ -2831,7 +2831,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysAreIdenticalIgnoringOrder() passes with reordered keys')]
+    #[TestDox('::assertArraysAreIdenticalIgnoringOrder() passes with reordered keys')]
     public function test_assertArraysAreIdenticalIgnoringOrder_passes(): void
     {
         // ----------------------------------------------------------------
@@ -2855,7 +2855,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysAreIdenticalIgnoringOrder() throws when values differ')]
+    #[TestDox('::assertArraysAreIdenticalIgnoringOrder() throws when values differ')]
     public function test_assertArraysAreIdenticalIgnoringOrder_throws(): void
     {
         // ----------------------------------------------------------------
@@ -2878,7 +2878,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysHaveIdenticalValues() passes when values match')]
+    #[TestDox('::assertArraysHaveIdenticalValues() passes when values match')]
     public function test_assertArraysHaveIdenticalValues_passes(): void
     {
         // ----------------------------------------------------------------
@@ -2901,7 +2901,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysHaveIdenticalValues() throws when values differ')]
+    #[TestDox('::assertArraysHaveIdenticalValues() throws when values differ')]
     public function test_assertArraysHaveIdenticalValues_throws(): void
     {
         // ----------------------------------------------------------------
@@ -2924,7 +2924,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysHaveIdenticalValuesIgnoringOrder() passes')]
+    #[TestDox('::assertArraysHaveIdenticalValuesIgnoringOrder() passes')]
     public function test_assertArraysHaveIdenticalValuesIgnoringOrder_passes(): void
     {
         // ----------------------------------------------------------------
@@ -2948,7 +2948,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysHaveIdenticalValuesIgnoringOrder() throws')]
+    #[TestDox('::assertArraysHaveIdenticalValuesIgnoringOrder() throws')]
     public function test_assertArraysHaveIdenticalValuesIgnoringOrder_throws(): void
     {
         // ----------------------------------------------------------------
@@ -2971,7 +2971,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysAreEqual() passes when arrays are loosely equal')]
+    #[TestDox('::assertArraysAreEqual() passes when arrays are loosely equal')]
     public function test_assertArraysAreEqual_passes(): void
     {
         // ----------------------------------------------------------------
@@ -2994,7 +2994,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysAreEqual() throws when arrays differ')]
+    #[TestDox('::assertArraysAreEqual() throws when arrays differ')]
     public function test_assertArraysAreEqual_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3017,7 +3017,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysAreEqualIgnoringOrder() passes')]
+    #[TestDox('::assertArraysAreEqualIgnoringOrder() passes')]
     public function test_assertArraysAreEqualIgnoringOrder_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3041,7 +3041,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysAreEqualIgnoringOrder() throws')]
+    #[TestDox('::assertArraysAreEqualIgnoringOrder() throws')]
     public function test_assertArraysAreEqualIgnoringOrder_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3064,7 +3064,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysHaveEqualValues() passes')]
+    #[TestDox('::assertArraysHaveEqualValues() passes')]
     public function test_assertArraysHaveEqualValues_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3087,7 +3087,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysHaveEqualValues() throws')]
+    #[TestDox('::assertArraysHaveEqualValues() throws')]
     public function test_assertArraysHaveEqualValues_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3110,7 +3110,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArraysHaveEqualValuesIgnoringOrder() passes')]
+    #[TestDox('::assertArraysHaveEqualValuesIgnoringOrder() passes')]
     public function test_assertArraysHaveEqualValuesIgnoringOrder_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3134,7 +3134,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArraysHaveEqualValuesIgnoringOrder() throws')]
+    #[TestDox('::assertArraysHaveEqualValuesIgnoringOrder() throws')]
     public function test_assertArraysHaveEqualValuesIgnoringOrder_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3157,7 +3157,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayIsEqualToArrayOnlyConsideringListOfKeys() passes')]
+    #[TestDox('::assertArrayIsEqualToArrayOnlyConsideringListOfKeys() passes')]
     public function test_assertArrayIsEqualToArrayOnlyConsideringListOfKeys_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3181,7 +3181,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArrayIsEqualToArrayOnlyConsideringListOfKeys() throws')]
+    #[TestDox('::assertArrayIsEqualToArrayOnlyConsideringListOfKeys() throws')]
     public function test_assertArrayIsEqualToArrayOnlyConsideringListOfKeys_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3205,7 +3205,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayIsEqualToArrayIgnoringListOfKeys() passes')]
+    #[TestDox('::assertArrayIsEqualToArrayIgnoringListOfKeys() passes')]
     public function test_assertArrayIsEqualToArrayIgnoringListOfKeys_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3229,7 +3229,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArrayIsEqualToArrayIgnoringListOfKeys() throws')]
+    #[TestDox('::assertArrayIsEqualToArrayIgnoringListOfKeys() throws')]
     public function test_assertArrayIsEqualToArrayIgnoringListOfKeys_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3253,7 +3253,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys() passes')]
+    #[TestDox('::assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys() passes')]
     public function test_assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3277,7 +3277,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys() throws')]
+    #[TestDox('::assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys() throws')]
     public function test_assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3301,7 +3301,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertArrayIsIdenticalToArrayIgnoringListOfKeys() passes')]
+    #[TestDox('::assertArrayIsIdenticalToArrayIgnoringListOfKeys() passes')]
     public function test_assertArrayIsIdenticalToArrayIgnoringListOfKeys_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3325,7 +3325,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertArrayIsIdenticalToArrayIgnoringListOfKeys() throws')]
+    #[TestDox('::assertArrayIsIdenticalToArrayIgnoringListOfKeys() throws')]
     public function test_assertArrayIsIdenticalToArrayIgnoringListOfKeys_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3355,7 +3355,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertContains() passes when needle found (strict)')]
+    #[TestDox('::assertContains() passes when needle found (strict)')]
     public function test_assertContains_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3378,7 +3378,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContains() throws when needle not found')]
+    #[TestDox('::assertContains() throws when needle not found')]
     public function test_assertContains_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3401,7 +3401,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertContainsEquals() passes when needle found (loose)')]
+    #[TestDox('::assertContainsEquals() passes when needle found (loose)')]
     public function test_assertContainsEquals_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3424,7 +3424,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsEquals() throws when needle not found')]
+    #[TestDox('::assertContainsEquals() throws when needle not found')]
     public function test_assertContainsEquals_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3448,7 +3448,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotContains() passes when needle not found')]
+    #[TestDox('::assertNotContains() passes when needle not found')]
     public function test_assertNotContains_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3471,7 +3471,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotContains() throws when needle found')]
+    #[TestDox('::assertNotContains() throws when needle found')]
     public function test_assertNotContains_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3494,7 +3494,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotContainsEquals() passes when needle not found')]
+    #[TestDox('::assertNotContainsEquals() passes when needle not found')]
     public function test_assertNotContainsEquals_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3517,7 +3517,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotContainsEquals() throws when needle found')]
+    #[TestDox('::assertNotContainsEquals() throws when needle found')]
     public function test_assertNotContainsEquals_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3546,7 +3546,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertContainsOnlyArray() passes when all items are arrays')]
+    #[TestDox('::assertContainsOnlyArray() passes when all items are arrays')]
     public function test_assertContainsOnlyArray_passes(): void
     {
         // ----------------------------------------------------------------
@@ -3568,7 +3568,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyArray() throws when not all items are arrays')]
+    #[TestDox('::assertContainsOnlyArray() throws when not all items are arrays')]
     public function test_assertContainsOnlyArray_throws(): void
     {
         // ----------------------------------------------------------------
@@ -3590,105 +3590,105 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertContainsOnlyBool() passes')]
+    #[TestDox('::assertContainsOnlyBool() passes')]
     public function test_assertContainsOnlyBool_passes(): void
     {
         Assert::assertContainsOnlyBool(haystack: [true, false]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyBool() throws')]
+    #[TestDox('::assertContainsOnlyBool() throws')]
     public function test_assertContainsOnlyBool_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyBool(haystack: [true, 1]);
     }
 
-    #[TestDox('assertContainsOnlyCallable() passes')]
+    #[TestDox('::assertContainsOnlyCallable() passes')]
     public function test_assertContainsOnlyCallable_passes(): void
     {
         Assert::assertContainsOnlyCallable(haystack: ['strlen', 'strtolower']);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyCallable() throws')]
+    #[TestDox('::assertContainsOnlyCallable() throws')]
     public function test_assertContainsOnlyCallable_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyCallable(haystack: ['strlen', 'not_a_function']);
     }
 
-    #[TestDox('assertContainsOnlyFloat() passes')]
+    #[TestDox('::assertContainsOnlyFloat() passes')]
     public function test_assertContainsOnlyFloat_passes(): void
     {
         Assert::assertContainsOnlyFloat(haystack: [1.0, 2.5]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyFloat() throws')]
+    #[TestDox('::assertContainsOnlyFloat() throws')]
     public function test_assertContainsOnlyFloat_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyFloat(haystack: [1.0, 1]);
     }
 
-    #[TestDox('assertContainsOnlyInt() passes')]
+    #[TestDox('::assertContainsOnlyInt() passes')]
     public function test_assertContainsOnlyInt_passes(): void
     {
         Assert::assertContainsOnlyInt(haystack: [1, 2, 3]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyInt() throws')]
+    #[TestDox('::assertContainsOnlyInt() throws')]
     public function test_assertContainsOnlyInt_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyInt(haystack: [1, 'two']);
     }
 
-    #[TestDox('assertContainsOnlyIterable() passes')]
+    #[TestDox('::assertContainsOnlyIterable() passes')]
     public function test_assertContainsOnlyIterable_passes(): void
     {
         Assert::assertContainsOnlyIterable(haystack: [[], [1]]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyIterable() throws')]
+    #[TestDox('::assertContainsOnlyIterable() throws')]
     public function test_assertContainsOnlyIterable_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyIterable(haystack: [[], 42]);
     }
 
-    #[TestDox('assertContainsOnlyNull() passes')]
+    #[TestDox('::assertContainsOnlyNull() passes')]
     public function test_assertContainsOnlyNull_passes(): void
     {
         Assert::assertContainsOnlyNull(haystack: [null, null]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyNull() throws')]
+    #[TestDox('::assertContainsOnlyNull() throws')]
     public function test_assertContainsOnlyNull_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyNull(haystack: [null, 0]);
     }
 
-    #[TestDox('assertContainsOnlyNumeric() passes')]
+    #[TestDox('::assertContainsOnlyNumeric() passes')]
     public function test_assertContainsOnlyNumeric_passes(): void
     {
         Assert::assertContainsOnlyNumeric(haystack: [1, '2', 3.0]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyNumeric() throws')]
+    #[TestDox('::assertContainsOnlyNumeric() throws')]
     public function test_assertContainsOnlyNumeric_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyNumeric(haystack: [1, 'abc']);
     }
 
-    #[TestDox('assertContainsOnlyObject() passes')]
+    #[TestDox('::assertContainsOnlyObject() passes')]
     public function test_assertContainsOnlyObject_passes(): void
     {
         Assert::assertContainsOnlyObject(
@@ -3697,7 +3697,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyObject() throws')]
+    #[TestDox('::assertContainsOnlyObject() throws')]
     public function test_assertContainsOnlyObject_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
@@ -3706,7 +3706,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertContainsOnlyResource() passes')]
+    #[TestDox('::assertContainsOnlyResource() passes')]
     public function test_assertContainsOnlyResource_passes(): void
     {
         $r = fopen('php://memory', 'r');
@@ -3716,14 +3716,14 @@ class AssertTest extends TestCase
         fclose($r);
     }
 
-    #[TestDox('assertContainsOnlyResource() throws')]
+    #[TestDox('::assertContainsOnlyResource() throws')]
     public function test_assertContainsOnlyResource_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyResource(haystack: ['string']);
     }
 
-    #[TestDox('assertContainsOnlyClosedResource() passes')]
+    #[TestDox('::assertContainsOnlyClosedResource() passes')]
     public function test_assertContainsOnlyClosedResource_passes(): void
     {
         $r = fopen('php://memory', 'r');
@@ -3733,42 +3733,42 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyClosedResource() throws')]
+    #[TestDox('::assertContainsOnlyClosedResource() throws')]
     public function test_assertContainsOnlyClosedResource_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyClosedResource(haystack: ['string']);
     }
 
-    #[TestDox('assertContainsOnlyScalar() passes')]
+    #[TestDox('::assertContainsOnlyScalar() passes')]
     public function test_assertContainsOnlyScalar_passes(): void
     {
         Assert::assertContainsOnlyScalar(haystack: [1, 'two', true]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyScalar() throws')]
+    #[TestDox('::assertContainsOnlyScalar() throws')]
     public function test_assertContainsOnlyScalar_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyScalar(haystack: [1, []]);
     }
 
-    #[TestDox('assertContainsOnlyString() passes')]
+    #[TestDox('::assertContainsOnlyString() passes')]
     public function test_assertContainsOnlyString_passes(): void
     {
         Assert::assertContainsOnlyString(haystack: ['a', 'b']);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyString() throws')]
+    #[TestDox('::assertContainsOnlyString() throws')]
     public function test_assertContainsOnlyString_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsOnlyString(haystack: ['a', 1]);
     }
 
-    #[TestDox('assertContainsOnlyInstancesOf() passes')]
+    #[TestDox('::assertContainsOnlyInstancesOf() passes')]
     public function test_assertContainsOnlyInstancesOf_passes(): void
     {
         Assert::assertContainsOnlyInstancesOf(
@@ -3778,7 +3778,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsOnlyInstancesOf() throws')]
+    #[TestDox('::assertContainsOnlyInstancesOf() throws')]
     public function test_assertContainsOnlyInstancesOf_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
@@ -3794,35 +3794,35 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertContainsNotOnlyArray() passes when not all are arrays')]
+    #[TestDox('::assertContainsNotOnlyArray() passes when not all are arrays')]
     public function test_assertContainsNotOnlyArray_passes(): void
     {
         Assert::assertContainsNotOnlyArray(haystack: [[], 'string']);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyArray() throws when all are arrays')]
+    #[TestDox('::assertContainsNotOnlyArray() throws when all are arrays')]
     public function test_assertContainsNotOnlyArray_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyArray(haystack: [[], [1]]);
     }
 
-    #[TestDox('assertContainsNotOnlyBool() passes')]
+    #[TestDox('::assertContainsNotOnlyBool() passes')]
     public function test_assertContainsNotOnlyBool_passes(): void
     {
         Assert::assertContainsNotOnlyBool(haystack: [true, 1]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyBool() throws')]
+    #[TestDox('::assertContainsNotOnlyBool() throws')]
     public function test_assertContainsNotOnlyBool_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyBool(haystack: [true, false]);
     }
 
-    #[TestDox('assertContainsNotOnlyCallable() passes')]
+    #[TestDox('::assertContainsNotOnlyCallable() passes')]
     public function test_assertContainsNotOnlyCallable_passes(): void
     {
         Assert::assertContainsNotOnlyCallable(
@@ -3831,7 +3831,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyCallable() throws')]
+    #[TestDox('::assertContainsNotOnlyCallable() throws')]
     public function test_assertContainsNotOnlyCallable_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
@@ -3840,77 +3840,77 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertContainsNotOnlyFloat() passes')]
+    #[TestDox('::assertContainsNotOnlyFloat() passes')]
     public function test_assertContainsNotOnlyFloat_passes(): void
     {
         Assert::assertContainsNotOnlyFloat(haystack: [1.0, 1]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyFloat() throws')]
+    #[TestDox('::assertContainsNotOnlyFloat() throws')]
     public function test_assertContainsNotOnlyFloat_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyFloat(haystack: [1.0, 2.5]);
     }
 
-    #[TestDox('assertContainsNotOnlyInt() passes')]
+    #[TestDox('::assertContainsNotOnlyInt() passes')]
     public function test_assertContainsNotOnlyInt_passes(): void
     {
         Assert::assertContainsNotOnlyInt(haystack: [1, 'two']);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyInt() throws')]
+    #[TestDox('::assertContainsNotOnlyInt() throws')]
     public function test_assertContainsNotOnlyInt_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyInt(haystack: [1, 2, 3]);
     }
 
-    #[TestDox('assertContainsNotOnlyIterable() passes')]
+    #[TestDox('::assertContainsNotOnlyIterable() passes')]
     public function test_assertContainsNotOnlyIterable_passes(): void
     {
         Assert::assertContainsNotOnlyIterable(haystack: [[], 42]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyIterable() throws')]
+    #[TestDox('::assertContainsNotOnlyIterable() throws')]
     public function test_assertContainsNotOnlyIterable_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyIterable(haystack: [[], [1]]);
     }
 
-    #[TestDox('assertContainsNotOnlyNull() passes')]
+    #[TestDox('::assertContainsNotOnlyNull() passes')]
     public function test_assertContainsNotOnlyNull_passes(): void
     {
         Assert::assertContainsNotOnlyNull(haystack: [null, 0]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyNull() throws')]
+    #[TestDox('::assertContainsNotOnlyNull() throws')]
     public function test_assertContainsNotOnlyNull_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyNull(haystack: [null, null]);
     }
 
-    #[TestDox('assertContainsNotOnlyNumeric() passes')]
+    #[TestDox('::assertContainsNotOnlyNumeric() passes')]
     public function test_assertContainsNotOnlyNumeric_passes(): void
     {
         Assert::assertContainsNotOnlyNumeric(haystack: [1, 'abc']);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyNumeric() throws')]
+    #[TestDox('::assertContainsNotOnlyNumeric() throws')]
     public function test_assertContainsNotOnlyNumeric_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyNumeric(haystack: [1, '2']);
     }
 
-    #[TestDox('assertContainsNotOnlyObject() passes')]
+    #[TestDox('::assertContainsNotOnlyObject() passes')]
     public function test_assertContainsNotOnlyObject_passes(): void
     {
         Assert::assertContainsNotOnlyObject(
@@ -3919,7 +3919,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyObject() throws')]
+    #[TestDox('::assertContainsNotOnlyObject() throws')]
     public function test_assertContainsNotOnlyObject_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
@@ -3928,14 +3928,14 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertContainsNotOnlyResource() passes')]
+    #[TestDox('::assertContainsNotOnlyResource() passes')]
     public function test_assertContainsNotOnlyResource_passes(): void
     {
         Assert::assertContainsNotOnlyResource(haystack: ['string']);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyResource() throws')]
+    #[TestDox('::assertContainsNotOnlyResource() throws')]
     public function test_assertContainsNotOnlyResource_throws(): void
     {
         $r = fopen('php://memory', 'r');
@@ -3949,7 +3949,7 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('assertContainsNotOnlyClosedResource() passes')]
+    #[TestDox('::assertContainsNotOnlyClosedResource() passes')]
     public function test_assertContainsNotOnlyClosedResource_passes(): void
     {
         Assert::assertContainsNotOnlyClosedResource(
@@ -3958,7 +3958,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyClosedResource() throws')]
+    #[TestDox('::assertContainsNotOnlyClosedResource() throws')]
     public function test_assertContainsNotOnlyClosedResource_throws(): void
     {
         $r = fopen('php://memory', 'r');
@@ -3968,35 +3968,35 @@ class AssertTest extends TestCase
         Assert::assertContainsNotOnlyClosedResource(haystack: [$r]);
     }
 
-    #[TestDox('assertContainsNotOnlyScalar() passes')]
+    #[TestDox('::assertContainsNotOnlyScalar() passes')]
     public function test_assertContainsNotOnlyScalar_passes(): void
     {
         Assert::assertContainsNotOnlyScalar(haystack: [1, []]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyScalar() throws')]
+    #[TestDox('::assertContainsNotOnlyScalar() throws')]
     public function test_assertContainsNotOnlyScalar_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyScalar(haystack: [1, 'two']);
     }
 
-    #[TestDox('assertContainsNotOnlyString() passes')]
+    #[TestDox('::assertContainsNotOnlyString() passes')]
     public function test_assertContainsNotOnlyString_passes(): void
     {
         Assert::assertContainsNotOnlyString(haystack: ['a', 1]);
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyString() throws')]
+    #[TestDox('::assertContainsNotOnlyString() throws')]
     public function test_assertContainsNotOnlyString_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
         Assert::assertContainsNotOnlyString(haystack: ['a', 'b']);
     }
 
-    #[TestDox('assertContainsNotOnlyInstancesOf() passes')]
+    #[TestDox('::assertContainsNotOnlyInstancesOf() passes')]
     public function test_assertContainsNotOnlyInstancesOf_passes(): void
     {
         Assert::assertContainsNotOnlyInstancesOf(
@@ -4006,7 +4006,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertContainsNotOnlyInstancesOf() throws')]
+    #[TestDox('::assertContainsNotOnlyInstancesOf() throws')]
     public function test_assertContainsNotOnlyInstancesOf_throws(): void
     {
         $this->expectException(AssertionFailedException::class);
@@ -4022,7 +4022,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertCount() passes when count matches')]
+    #[TestDox('::assertCount() passes when count matches')]
     public function test_assertCount_passes(): void
     {
         // ----------------------------------------------------------------
@@ -4045,7 +4045,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertCount() throws when count differs')]
+    #[TestDox('::assertCount() throws when count differs')]
     public function test_assertCount_throws(): void
     {
         // ----------------------------------------------------------------
@@ -4068,7 +4068,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotCount() passes when count differs')]
+    #[TestDox('::assertNotCount() passes when count differs')]
     public function test_assertNotCount_passes(): void
     {
         // ----------------------------------------------------------------
@@ -4091,7 +4091,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotCount() throws when count matches')]
+    #[TestDox('::assertNotCount() throws when count matches')]
     public function test_assertNotCount_throws(): void
     {
         // ----------------------------------------------------------------
@@ -4120,7 +4120,7 @@ class AssertTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('assertSameSize() passes when sizes match')]
+    #[TestDox('::assertSameSize() passes when sizes match')]
     public function test_assertSameSize_passes(): void
     {
         // ----------------------------------------------------------------
@@ -4144,7 +4144,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertSameSize() throws when sizes differ')]
+    #[TestDox('::assertSameSize() throws when sizes differ')]
     public function test_assertSameSize_throws(): void
     {
         // ----------------------------------------------------------------
@@ -4167,7 +4167,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertNotSameSize() passes when sizes differ')]
+    #[TestDox('::assertNotSameSize() passes when sizes differ')]
     public function test_assertNotSameSize_passes(): void
     {
         // ----------------------------------------------------------------
@@ -4190,7 +4190,7 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('assertNotSameSize() throws when sizes match')]
+    #[TestDox('::assertNotSameSize() throws when sizes match')]
     public function test_assertNotSameSize_throws(): void
     {
         // ----------------------------------------------------------------
@@ -4222,7 +4222,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringContainsString
      */
-    #[TestDox('assertStringContainsString() passes when haystack contains needle')]
+    #[TestDox('::assertStringContainsString() passes when haystack contains needle')]
     public function test_assertStringContainsString_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4240,7 +4240,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringContainsString
      */
-    #[TestDox('assertStringContainsString() throws when haystack does not contain needle')]
+    #[TestDox('::assertStringContainsString() throws when haystack does not contain needle')]
     public function test_assertStringContainsString_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4263,7 +4263,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringContainsStringIgnoringCase
      */
-    #[TestDox('assertStringContainsStringIgnoringCase() passes when haystack contains needle (ignoring case)')]
+    #[TestDox('::assertStringContainsStringIgnoringCase() passes when haystack contains needle (ignoring case)')]
     public function test_assertStringContainsStringIgnoringCase_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4282,7 +4282,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringContainsStringIgnoringCase
      */
-    #[TestDox('assertStringContainsStringIgnoringCase() throws when haystack does not contain needle')]
+    #[TestDox('::assertStringContainsStringIgnoringCase() throws when haystack does not contain needle')]
     public function test_assertStringContainsStringIgnoringCase_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4306,7 +4306,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotContainsString
      */
-    #[TestDox('assertStringNotContainsString() passes when haystack does not contain needle')]
+    #[TestDox('::assertStringNotContainsString() passes when haystack does not contain needle')]
     public function test_assertStringNotContainsString_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4324,7 +4324,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotContainsString
      */
-    #[TestDox('assertStringNotContainsString() throws when haystack contains needle')]
+    #[TestDox('::assertStringNotContainsString() throws when haystack contains needle')]
     public function test_assertStringNotContainsString_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4347,7 +4347,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotContainsStringIgnoringCase
      */
-    #[TestDox('assertStringNotContainsStringIgnoringCase() passes when haystack does not contain needle')]
+    #[TestDox('::assertStringNotContainsStringIgnoringCase() passes when haystack does not contain needle')]
     public function test_assertStringNotContainsStringIgnoringCase_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4366,7 +4366,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotContainsStringIgnoringCase
      */
-    #[TestDox('assertStringNotContainsStringIgnoringCase() throws when haystack contains needle (ignoring case)')]
+    #[TestDox('::assertStringNotContainsStringIgnoringCase() throws when haystack contains needle (ignoring case)')]
     public function test_assertStringNotContainsStringIgnoringCase_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4390,7 +4390,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringStartsWith
      */
-    #[TestDox('assertStringStartsWith() passes when string starts with prefix')]
+    #[TestDox('::assertStringStartsWith() passes when string starts with prefix')]
     public function test_assertStringStartsWith_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4408,7 +4408,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringStartsWith
      */
-    #[TestDox('assertStringStartsWith() throws when string does not start with prefix')]
+    #[TestDox('::assertStringStartsWith() throws when string does not start with prefix')]
     public function test_assertStringStartsWith_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4431,7 +4431,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringStartsNotWith
      */
-    #[TestDox('assertStringStartsNotWith() passes when string does not start with prefix')]
+    #[TestDox('::assertStringStartsNotWith() passes when string does not start with prefix')]
     public function test_assertStringStartsNotWith_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4449,7 +4449,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringStartsNotWith
      */
-    #[TestDox('assertStringStartsNotWith() throws when string starts with prefix')]
+    #[TestDox('::assertStringStartsNotWith() throws when string starts with prefix')]
     public function test_assertStringStartsNotWith_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4472,7 +4472,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEndsWith
      */
-    #[TestDox('assertStringEndsWith() passes when string ends with suffix')]
+    #[TestDox('::assertStringEndsWith() passes when string ends with suffix')]
     public function test_assertStringEndsWith_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4490,7 +4490,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEndsWith
      */
-    #[TestDox('assertStringEndsWith() throws when string does not end with suffix')]
+    #[TestDox('::assertStringEndsWith() throws when string does not end with suffix')]
     public function test_assertStringEndsWith_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4513,7 +4513,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEndsNotWith
      */
-    #[TestDox('assertStringEndsNotWith() passes when string does not end with suffix')]
+    #[TestDox('::assertStringEndsNotWith() passes when string does not end with suffix')]
     public function test_assertStringEndsNotWith_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4531,7 +4531,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEndsNotWith
      */
-    #[TestDox('assertStringEndsNotWith() throws when string ends with suffix')]
+    #[TestDox('::assertStringEndsNotWith() throws when string ends with suffix')]
     public function test_assertStringEndsNotWith_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4554,7 +4554,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringContainsStringIgnoringLineEndings
      */
-    #[TestDox('assertStringContainsStringIgnoringLineEndings() passes when haystack contains needle after normalizing line endings')]
+    #[TestDox('::assertStringContainsStringIgnoringLineEndings() passes when haystack contains needle after normalizing line endings')]
     public function test_assertStringContainsStringIgnoringLineEndings_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4573,7 +4573,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringContainsStringIgnoringLineEndings
      */
-    #[TestDox('assertStringContainsStringIgnoringLineEndings() throws when haystack does not contain needle')]
+    #[TestDox('::assertStringContainsStringIgnoringLineEndings() throws when haystack does not contain needle')]
     public function test_assertStringContainsStringIgnoringLineEndings_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4597,7 +4597,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsStringIgnoringLineEndings
      */
-    #[TestDox('assertStringEqualsStringIgnoringLineEndings() passes when strings are equal after normalizing line endings')]
+    #[TestDox('::assertStringEqualsStringIgnoringLineEndings() passes when strings are equal after normalizing line endings')]
     public function test_assertStringEqualsStringIgnoringLineEndings_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4616,7 +4616,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsStringIgnoringLineEndings
      */
-    #[TestDox('assertStringEqualsStringIgnoringLineEndings() throws when strings differ after normalizing line endings')]
+    #[TestDox('::assertStringEqualsStringIgnoringLineEndings() throws when strings differ after normalizing line endings')]
     public function test_assertStringEqualsStringIgnoringLineEndings_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4640,7 +4640,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringMatchesFormat
      */
-    #[TestDox('assertStringMatchesFormat() passes when string matches format')]
+    #[TestDox('::assertStringMatchesFormat() passes when string matches format')]
     public function test_assertStringMatchesFormat_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4659,7 +4659,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringMatchesFormat
      */
-    #[TestDox('assertStringMatchesFormat() throws when string does not match format')]
+    #[TestDox('::assertStringMatchesFormat() throws when string does not match format')]
     public function test_assertStringMatchesFormat_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4683,7 +4683,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringMatchesFormatFile
      */
-    #[TestDox('assertStringMatchesFormatFile() passes when string matches format from file')]
+    #[TestDox('::assertStringMatchesFormatFile() passes when string matches format from file')]
     public function test_assertStringMatchesFormatFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4705,7 +4705,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringMatchesFormatFile
      */
-    #[TestDox('assertStringMatchesFormatFile() throws when string does not match format from file')]
+    #[TestDox('::assertStringMatchesFormatFile() throws when string does not match format from file')]
     public function test_assertStringMatchesFormatFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4729,7 +4729,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringMatchesFormatFile() throws InvalidArgumentException when format file is not readable')]
+    #[TestDox('::assertStringMatchesFormatFile() throws InvalidArgumentException when format file is not readable')]
     public function test_assertStringMatchesFormatFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -4762,7 +4762,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertMatchesRegularExpression
      */
-    #[TestDox('assertMatchesRegularExpression() passes when string matches pattern')]
+    #[TestDox('::assertMatchesRegularExpression() passes when string matches pattern')]
     public function test_assertMatchesRegularExpression_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4780,7 +4780,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertMatchesRegularExpression
      */
-    #[TestDox('assertMatchesRegularExpression() throws when string does not match pattern')]
+    #[TestDox('::assertMatchesRegularExpression() throws when string does not match pattern')]
     public function test_assertMatchesRegularExpression_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4804,7 +4804,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDoesNotMatchRegularExpression
      */
-    #[TestDox('assertDoesNotMatchRegularExpression() passes when string does not match pattern')]
+    #[TestDox('::assertDoesNotMatchRegularExpression() passes when string does not match pattern')]
     public function test_assertDoesNotMatchRegularExpression_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4823,7 +4823,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDoesNotMatchRegularExpression
      */
-    #[TestDox('assertDoesNotMatchRegularExpression() throws when string matches pattern')]
+    #[TestDox('::assertDoesNotMatchRegularExpression() throws when string matches pattern')]
     public function test_assertDoesNotMatchRegularExpression_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4852,7 +4852,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileExists
      */
-    #[TestDox('assertFileExists() passes when file exists')]
+    #[TestDox('::assertFileExists() passes when file exists')]
     public function test_assertFileExists_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4869,7 +4869,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileExists
      */
-    #[TestDox('assertFileExists() throws when file does not exist')]
+    #[TestDox('::assertFileExists() throws when file does not exist')]
     public function test_assertFileExists_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4891,7 +4891,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileDoesNotExist
      */
-    #[TestDox('assertFileDoesNotExist() passes when file does not exist')]
+    #[TestDox('::assertFileDoesNotExist() passes when file does not exist')]
     public function test_assertFileDoesNotExist_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4908,7 +4908,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileDoesNotExist
      */
-    #[TestDox('assertFileDoesNotExist() throws when file exists')]
+    #[TestDox('::assertFileDoesNotExist() throws when file exists')]
     public function test_assertFileDoesNotExist_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4930,7 +4930,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileIsReadable
      */
-    #[TestDox('assertFileIsReadable() passes when file is readable')]
+    #[TestDox('::assertFileIsReadable() passes when file is readable')]
     public function test_assertFileIsReadable_passes(): void
     {
         // this test verifies that the assertion passes
@@ -4947,7 +4947,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileIsReadable
      */
-    #[TestDox('assertFileIsReadable() throws when file does not exist')]
+    #[TestDox('::assertFileIsReadable() throws when file does not exist')]
     public function test_assertFileIsReadable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4969,7 +4969,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileIsNotReadable
      */
-    #[TestDox('assertFileIsNotReadable() throws when file is readable')]
+    #[TestDox('::assertFileIsNotReadable() throws when file is readable')]
     public function test_assertFileIsNotReadable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -4992,7 +4992,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileIsWritable
      */
-    #[TestDox('assertFileIsWritable() passes when file is writable')]
+    #[TestDox('::assertFileIsWritable() passes when file is writable')]
     public function test_assertFileIsWritable_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5016,7 +5016,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileIsWritable
      */
-    #[TestDox('assertFileIsWritable() throws when file does not exist')]
+    #[TestDox('::assertFileIsWritable() throws when file does not exist')]
     public function test_assertFileIsWritable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5038,7 +5038,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileIsNotWritable
      */
-    #[TestDox('assertFileIsNotWritable() throws when file is writable')]
+    #[TestDox('::assertFileIsNotWritable() throws when file is writable')]
     public function test_assertFileIsNotWritable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5067,7 +5067,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryExists
      */
-    #[TestDox('assertDirectoryExists() passes when directory exists')]
+    #[TestDox('::assertDirectoryExists() passes when directory exists')]
     public function test_assertDirectoryExists_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5084,7 +5084,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryExists
      */
-    #[TestDox('assertDirectoryExists() throws when directory does not exist')]
+    #[TestDox('::assertDirectoryExists() throws when directory does not exist')]
     public function test_assertDirectoryExists_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5106,7 +5106,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryDoesNotExist
      */
-    #[TestDox('assertDirectoryDoesNotExist() passes when directory does not exist')]
+    #[TestDox('::assertDirectoryDoesNotExist() passes when directory does not exist')]
     public function test_assertDirectoryDoesNotExist_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5123,7 +5123,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryDoesNotExist
      */
-    #[TestDox('assertDirectoryDoesNotExist() throws when directory exists')]
+    #[TestDox('::assertDirectoryDoesNotExist() throws when directory exists')]
     public function test_assertDirectoryDoesNotExist_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5145,7 +5145,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryIsReadable
      */
-    #[TestDox('assertDirectoryIsReadable() passes when directory is readable')]
+    #[TestDox('::assertDirectoryIsReadable() passes when directory is readable')]
     public function test_assertDirectoryIsReadable_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5162,7 +5162,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryIsReadable
      */
-    #[TestDox('assertDirectoryIsReadable() throws when directory does not exist')]
+    #[TestDox('::assertDirectoryIsReadable() throws when directory does not exist')]
     public function test_assertDirectoryIsReadable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5184,7 +5184,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryIsNotReadable
      */
-    #[TestDox('assertDirectoryIsNotReadable() throws when directory is readable')]
+    #[TestDox('::assertDirectoryIsNotReadable() throws when directory is readable')]
     public function test_assertDirectoryIsNotReadable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5206,7 +5206,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryIsWritable
      */
-    #[TestDox('assertDirectoryIsWritable() passes when directory is writable')]
+    #[TestDox('::assertDirectoryIsWritable() passes when directory is writable')]
     public function test_assertDirectoryIsWritable_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5223,7 +5223,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryIsWritable
      */
-    #[TestDox('assertDirectoryIsWritable() throws when directory does not exist')]
+    #[TestDox('::assertDirectoryIsWritable() throws when directory does not exist')]
     public function test_assertDirectoryIsWritable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5245,7 +5245,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertDirectoryIsNotWritable
      */
-    #[TestDox('assertDirectoryIsNotWritable() throws when directory is writable')]
+    #[TestDox('::assertDirectoryIsNotWritable() throws when directory is writable')]
     public function test_assertDirectoryIsNotWritable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5267,7 +5267,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertIsReadable
      */
-    #[TestDox('assertIsReadable() passes when path is readable')]
+    #[TestDox('::assertIsReadable() passes when path is readable')]
     public function test_assertIsReadable_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5284,7 +5284,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertIsReadable
      */
-    #[TestDox('assertIsReadable() throws when path is not readable')]
+    #[TestDox('::assertIsReadable() throws when path is not readable')]
     public function test_assertIsReadable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5306,7 +5306,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertIsNotReadable
      */
-    #[TestDox('assertIsNotReadable() throws when path is readable')]
+    #[TestDox('::assertIsNotReadable() throws when path is readable')]
     public function test_assertIsNotReadable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5328,7 +5328,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertIsWritable
      */
-    #[TestDox('assertIsWritable() passes when path is writable')]
+    #[TestDox('::assertIsWritable() passes when path is writable')]
     public function test_assertIsWritable_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5352,7 +5352,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertIsWritable
      */
-    #[TestDox('assertIsWritable() throws when path is not writable')]
+    #[TestDox('::assertIsWritable() throws when path is not writable')]
     public function test_assertIsWritable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5374,7 +5374,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertIsNotWritable
      */
-    #[TestDox('assertIsNotWritable() throws when path is writable')]
+    #[TestDox('::assertIsNotWritable() throws when path is writable')]
     public function test_assertIsNotWritable_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5409,7 +5409,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileMatchesFormat
      */
-    #[TestDox('assertFileMatchesFormat() passes when file contents matches format')]
+    #[TestDox('::assertFileMatchesFormat() passes when file contents matches format')]
     public function test_assertFileMatchesFormat_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5440,7 +5440,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileMatchesFormat
      */
-    #[TestDox('assertFileMatchesFormat() throws when file contents does not match format')]
+    #[TestDox('::assertFileMatchesFormat() throws when file contents does not match format')]
     public function test_assertFileMatchesFormat_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5470,7 +5470,7 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('assertFileMatchesFormat() throws InvalidArgumentException when actual file is not readable')]
+    #[TestDox('::assertFileMatchesFormat() throws InvalidArgumentException when actual file is not readable')]
     public function test_assertFileMatchesFormat_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5497,7 +5497,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileMatchesFormatFile
      */
-    #[TestDox('assertFileMatchesFormatFile() passes when file contents matches format file')]
+    #[TestDox('::assertFileMatchesFormatFile() passes when file contents matches format file')]
     public function test_assertFileMatchesFormatFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5531,7 +5531,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileMatchesFormatFile
      */
-    #[TestDox('assertFileMatchesFormatFile() throws when file contents does not match format file')]
+    #[TestDox('::assertFileMatchesFormatFile() throws when file contents does not match format file')]
     public function test_assertFileMatchesFormatFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5564,7 +5564,7 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('assertFileMatchesFormatFile() throws InvalidArgumentException when format file is not readable')]
+    #[TestDox('::assertFileMatchesFormatFile() throws InvalidArgumentException when format file is not readable')]
     public function test_assertFileMatchesFormatFile_throws_InvalidArgumentException_when_formatFile_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5588,7 +5588,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileMatchesFormatFile() throws InvalidArgumentException when actual file is not readable')]
+    #[TestDox('::assertFileMatchesFormatFile() throws InvalidArgumentException when actual file is not readable')]
     public function test_assertFileMatchesFormatFile_throws_InvalidArgumentException_when_actualFile_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5624,7 +5624,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileEquals
      */
-    #[TestDox('assertFileEquals() passes when files have equal contents')]
+    #[TestDox('::assertFileEquals() passes when files have equal contents')]
     public function test_assertFileEquals_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5644,7 +5644,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileEquals
      */
-    #[TestDox('assertFileEquals() throws when files have different contents')]
+    #[TestDox('::assertFileEquals() throws when files have different contents')]
     public function test_assertFileEquals_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5669,7 +5669,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileEqualsCanonicalizing
      */
-    #[TestDox('assertFileEqualsCanonicalizing() passes when files are equal after sorting lines')]
+    #[TestDox('::assertFileEqualsCanonicalizing() passes when files are equal after sorting lines')]
     public function test_assertFileEqualsCanonicalizing_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5690,7 +5690,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileEqualsCanonicalizing
      */
-    #[TestDox('assertFileEqualsCanonicalizing() throws when files differ after sorting')]
+    #[TestDox('::assertFileEqualsCanonicalizing() throws when files differ after sorting')]
     public function test_assertFileEqualsCanonicalizing_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5715,7 +5715,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileEqualsIgnoringCase
      */
-    #[TestDox('assertFileEqualsIgnoringCase() passes when files are equal ignoring case')]
+    #[TestDox('::assertFileEqualsIgnoringCase() passes when files are equal ignoring case')]
     public function test_assertFileEqualsIgnoringCase_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5736,7 +5736,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileEqualsIgnoringCase
      */
-    #[TestDox('assertFileEqualsIgnoringCase() throws when files differ ignoring case')]
+    #[TestDox('::assertFileEqualsIgnoringCase() throws when files differ ignoring case')]
     public function test_assertFileEqualsIgnoringCase_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5762,7 +5762,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileNotEquals
      */
-    #[TestDox('assertFileNotEquals() passes when files have different contents')]
+    #[TestDox('::assertFileNotEquals() passes when files have different contents')]
     public function test_assertFileNotEquals_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5782,7 +5782,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileNotEquals
      */
-    #[TestDox('assertFileNotEquals() throws when files have equal contents')]
+    #[TestDox('::assertFileNotEquals() throws when files have equal contents')]
     public function test_assertFileNotEquals_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5807,7 +5807,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileNotEqualsCanonicalizing
      */
-    #[TestDox('assertFileNotEqualsCanonicalizing() passes when files differ after sorting')]
+    #[TestDox('::assertFileNotEqualsCanonicalizing() passes when files differ after sorting')]
     public function test_assertFileNotEqualsCanonicalizing_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5827,7 +5827,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileNotEqualsCanonicalizing
      */
-    #[TestDox('assertFileNotEqualsCanonicalizing() throws when files are equal after sorting')]
+    #[TestDox('::assertFileNotEqualsCanonicalizing() throws when files are equal after sorting')]
     public function test_assertFileNotEqualsCanonicalizing_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5852,7 +5852,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileNotEqualsIgnoringCase
      */
-    #[TestDox('assertFileNotEqualsIgnoringCase() passes when files differ ignoring case')]
+    #[TestDox('::assertFileNotEqualsIgnoringCase() passes when files differ ignoring case')]
     public function test_assertFileNotEqualsIgnoringCase_passes(): void
     {
         // this test verifies that the assertion passes
@@ -5873,7 +5873,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertFileNotEqualsIgnoringCase
      */
-    #[TestDox('assertFileNotEqualsIgnoringCase() throws when files are equal ignoring case')]
+    #[TestDox('::assertFileNotEqualsIgnoringCase() throws when files are equal ignoring case')]
     public function test_assertFileNotEqualsIgnoringCase_throws(): void
     {
         // this test verifies that the assertion throws
@@ -5896,7 +5896,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileEquals() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertFileEquals() throws InvalidArgumentException when file is not readable')]
     public function test_assertFileEquals_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5920,7 +5920,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileEqualsCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertFileEqualsCanonicalizing() throws InvalidArgumentException when file is not readable')]
     public function test_assertFileEqualsCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5944,7 +5944,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileEqualsIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertFileEqualsIgnoringCase() throws InvalidArgumentException when file is not readable')]
     public function test_assertFileEqualsIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5968,7 +5968,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileNotEquals() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertFileNotEquals() throws InvalidArgumentException when file is not readable')]
     public function test_assertFileNotEquals_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -5992,7 +5992,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileNotEqualsCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertFileNotEqualsCanonicalizing() throws InvalidArgumentException when file is not readable')]
     public function test_assertFileNotEqualsCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6016,7 +6016,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertFileNotEqualsIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertFileNotEqualsIgnoringCase() throws InvalidArgumentException when file is not readable')]
     public function test_assertFileNotEqualsIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6049,7 +6049,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsFile
      */
-    #[TestDox('assertStringEqualsFile() passes when string equals file contents')]
+    #[TestDox('::assertStringEqualsFile() passes when string equals file contents')]
     public function test_assertStringEqualsFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6069,7 +6069,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsFile
      */
-    #[TestDox('assertStringEqualsFile() throws when string does not equal file contents')]
+    #[TestDox('::assertStringEqualsFile() throws when string does not equal file contents')]
     public function test_assertStringEqualsFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6094,7 +6094,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsFileCanonicalizing
      */
-    #[TestDox('assertStringEqualsFileCanonicalizing() passes when string equals file after sorting')]
+    #[TestDox('::assertStringEqualsFileCanonicalizing() passes when string equals file after sorting')]
     public function test_assertStringEqualsFileCanonicalizing_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6115,7 +6115,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsFileCanonicalizing
      */
-    #[TestDox('assertStringEqualsFileCanonicalizing() throws when string differs from file after sorting')]
+    #[TestDox('::assertStringEqualsFileCanonicalizing() throws when string differs from file after sorting')]
     public function test_assertStringEqualsFileCanonicalizing_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6141,7 +6141,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsFileIgnoringCase
      */
-    #[TestDox('assertStringEqualsFileIgnoringCase() passes when string equals file ignoring case')]
+    #[TestDox('::assertStringEqualsFileIgnoringCase() passes when string equals file ignoring case')]
     public function test_assertStringEqualsFileIgnoringCase_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6162,7 +6162,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringEqualsFileIgnoringCase
      */
-    #[TestDox('assertStringEqualsFileIgnoringCase() throws when string differs from file ignoring case')]
+    #[TestDox('::assertStringEqualsFileIgnoringCase() throws when string differs from file ignoring case')]
     public function test_assertStringEqualsFileIgnoringCase_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6188,7 +6188,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotEqualsFile
      */
-    #[TestDox('assertStringNotEqualsFile() passes when string does not equal file contents')]
+    #[TestDox('::assertStringNotEqualsFile() passes when string does not equal file contents')]
     public function test_assertStringNotEqualsFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6208,7 +6208,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotEqualsFile
      */
-    #[TestDox('assertStringNotEqualsFile() throws when string equals file contents')]
+    #[TestDox('::assertStringNotEqualsFile() throws when string equals file contents')]
     public function test_assertStringNotEqualsFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6233,7 +6233,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotEqualsFileCanonicalizing
      */
-    #[TestDox('assertStringNotEqualsFileCanonicalizing() passes when string differs from file after sorting')]
+    #[TestDox('::assertStringNotEqualsFileCanonicalizing() passes when string differs from file after sorting')]
     public function test_assertStringNotEqualsFileCanonicalizing_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6254,7 +6254,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotEqualsFileCanonicalizing
      */
-    #[TestDox('assertStringNotEqualsFileCanonicalizing() throws when string equals file after sorting')]
+    #[TestDox('::assertStringNotEqualsFileCanonicalizing() throws when string equals file after sorting')]
     public function test_assertStringNotEqualsFileCanonicalizing_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6280,7 +6280,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotEqualsFileIgnoringCase
      */
-    #[TestDox('assertStringNotEqualsFileIgnoringCase() passes when string differs from file ignoring case')]
+    #[TestDox('::assertStringNotEqualsFileIgnoringCase() passes when string differs from file ignoring case')]
     public function test_assertStringNotEqualsFileIgnoringCase_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6301,7 +6301,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertStringNotEqualsFileIgnoringCase
      */
-    #[TestDox('assertStringNotEqualsFileIgnoringCase() throws when string equals file ignoring case')]
+    #[TestDox('::assertStringNotEqualsFileIgnoringCase() throws when string equals file ignoring case')]
     public function test_assertStringNotEqualsFileIgnoringCase_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6324,7 +6324,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringEqualsFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertStringEqualsFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertStringEqualsFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6348,7 +6348,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringEqualsFileCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertStringEqualsFileCanonicalizing() throws InvalidArgumentException when file is not readable')]
     public function test_assertStringEqualsFileCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6372,7 +6372,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringEqualsFileIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertStringEqualsFileIgnoringCase() throws InvalidArgumentException when file is not readable')]
     public function test_assertStringEqualsFileIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6396,7 +6396,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringNotEqualsFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertStringNotEqualsFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertStringNotEqualsFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6420,7 +6420,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringNotEqualsFileCanonicalizing() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertStringNotEqualsFileCanonicalizing() throws InvalidArgumentException when file is not readable')]
     public function test_assertStringNotEqualsFileCanonicalizing_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6445,7 +6445,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertStringNotEqualsFileIgnoringCase() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertStringNotEqualsFileIgnoringCase() throws InvalidArgumentException when file is not readable')]
     public function test_assertStringNotEqualsFileIgnoringCase_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6479,7 +6479,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJson
      */
-    #[TestDox('assertJson() passes when string is valid JSON')]
+    #[TestDox('::assertJson() passes when string is valid JSON')]
     public function test_assertJson_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6496,7 +6496,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJson
      */
-    #[TestDox('assertJson() throws when string is not valid JSON')]
+    #[TestDox('::assertJson() throws when string is not valid JSON')]
     public function test_assertJson_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6518,7 +6518,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringEqualsJsonString
      */
-    #[TestDox('assertJsonStringEqualsJsonString() passes when JSON strings are equal')]
+    #[TestDox('::assertJsonStringEqualsJsonString() passes when JSON strings are equal')]
     public function test_assertJsonStringEqualsJsonString_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6537,7 +6537,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringEqualsJsonString
      */
-    #[TestDox('assertJsonStringEqualsJsonString() throws when JSON strings are not equal')]
+    #[TestDox('::assertJsonStringEqualsJsonString() throws when JSON strings are not equal')]
     public function test_assertJsonStringEqualsJsonString_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6561,7 +6561,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringNotEqualsJsonString
      */
-    #[TestDox('assertJsonStringNotEqualsJsonString() passes when JSON strings differ')]
+    #[TestDox('::assertJsonStringNotEqualsJsonString() passes when JSON strings differ')]
     public function test_assertJsonStringNotEqualsJsonString_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6580,7 +6580,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringNotEqualsJsonString
      */
-    #[TestDox('assertJsonStringNotEqualsJsonString() throws when JSON strings are equal')]
+    #[TestDox('::assertJsonStringNotEqualsJsonString() throws when JSON strings are equal')]
     public function test_assertJsonStringNotEqualsJsonString_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6604,7 +6604,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringEqualsJsonFile
      */
-    #[TestDox('assertJsonStringEqualsJsonFile() passes when JSON string equals file')]
+    #[TestDox('::assertJsonStringEqualsJsonFile() passes when JSON string equals file')]
     public function test_assertJsonStringEqualsJsonFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6625,7 +6625,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringEqualsJsonFile
      */
-    #[TestDox('assertJsonStringEqualsJsonFile() throws when JSON string does not equal file')]
+    #[TestDox('::assertJsonStringEqualsJsonFile() throws when JSON string does not equal file')]
     public function test_assertJsonStringEqualsJsonFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6651,7 +6651,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringNotEqualsJsonFile
      */
-    #[TestDox('assertJsonStringNotEqualsJsonFile() passes when JSON string differs from file')]
+    #[TestDox('::assertJsonStringNotEqualsJsonFile() passes when JSON string differs from file')]
     public function test_assertJsonStringNotEqualsJsonFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6672,7 +6672,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonStringNotEqualsJsonFile
      */
-    #[TestDox('assertJsonStringNotEqualsJsonFile() throws when JSON string equals file')]
+    #[TestDox('::assertJsonStringNotEqualsJsonFile() throws when JSON string equals file')]
     public function test_assertJsonStringNotEqualsJsonFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6698,7 +6698,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonFileEqualsJsonFile
      */
-    #[TestDox('assertJsonFileEqualsJsonFile() passes when JSON files are equal')]
+    #[TestDox('::assertJsonFileEqualsJsonFile() passes when JSON files are equal')]
     public function test_assertJsonFileEqualsJsonFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6719,7 +6719,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonFileEqualsJsonFile
      */
-    #[TestDox('assertJsonFileEqualsJsonFile() throws when JSON files differ')]
+    #[TestDox('::assertJsonFileEqualsJsonFile() throws when JSON files differ')]
     public function test_assertJsonFileEqualsJsonFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6745,7 +6745,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonFileNotEqualsJsonFile
      */
-    #[TestDox('assertJsonFileNotEqualsJsonFile() passes when JSON files differ')]
+    #[TestDox('::assertJsonFileNotEqualsJsonFile() passes when JSON files differ')]
     public function test_assertJsonFileNotEqualsJsonFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6766,7 +6766,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertJsonFileNotEqualsJsonFile
      */
-    #[TestDox('assertJsonFileNotEqualsJsonFile() throws when JSON files are equal')]
+    #[TestDox('::assertJsonFileNotEqualsJsonFile() throws when JSON files are equal')]
     public function test_assertJsonFileNotEqualsJsonFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6789,7 +6789,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertJsonStringEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertJsonStringEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertJsonStringEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6813,7 +6813,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertJsonStringNotEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertJsonStringNotEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertJsonStringNotEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6837,7 +6837,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertJsonFileEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertJsonFileEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertJsonFileEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6861,7 +6861,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertJsonFileNotEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertJsonFileNotEqualsJsonFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertJsonFileNotEqualsJsonFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -6894,7 +6894,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringEqualsXmlString
      */
-    #[TestDox('assertXmlStringEqualsXmlString() passes when XML strings are equal')]
+    #[TestDox('::assertXmlStringEqualsXmlString() passes when XML strings are equal')]
     public function test_assertXmlStringEqualsXmlString_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6913,7 +6913,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringEqualsXmlString
      */
-    #[TestDox('assertXmlStringEqualsXmlString() throws when XML strings differ')]
+    #[TestDox('::assertXmlStringEqualsXmlString() throws when XML strings differ')]
     public function test_assertXmlStringEqualsXmlString_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6937,7 +6937,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringNotEqualsXmlString
      */
-    #[TestDox('assertXmlStringNotEqualsXmlString() passes when XML strings differ')]
+    #[TestDox('::assertXmlStringNotEqualsXmlString() passes when XML strings differ')]
     public function test_assertXmlStringNotEqualsXmlString_passes(): void
     {
         // this test verifies that the assertion passes
@@ -6956,7 +6956,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringNotEqualsXmlString
      */
-    #[TestDox('assertXmlStringNotEqualsXmlString() throws when XML strings are equal')]
+    #[TestDox('::assertXmlStringNotEqualsXmlString() throws when XML strings are equal')]
     public function test_assertXmlStringNotEqualsXmlString_throws(): void
     {
         // this test verifies that the assertion throws
@@ -6976,7 +6976,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertXmlStringEqualsXmlString() throws InvalidArgumentException when XML is invalid')]
+    #[TestDox('::assertXmlStringEqualsXmlString() throws InvalidArgumentException when XML is invalid')]
     public function test_assertXmlStringEqualsXmlString_throws_InvalidArgumentException_when_xml_invalid(): void
     {
         // ----------------------------------------------------------------
@@ -7000,7 +7000,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertXmlStringNotEqualsXmlString() throws InvalidArgumentException when XML is invalid')]
+    #[TestDox('::assertXmlStringNotEqualsXmlString() throws InvalidArgumentException when XML is invalid')]
     public function test_assertXmlStringNotEqualsXmlString_throws_InvalidArgumentException_when_xml_invalid(): void
     {
         // ----------------------------------------------------------------
@@ -7027,7 +7027,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringEqualsXmlFile
      */
-    #[TestDox('assertXmlStringEqualsXmlFile() passes when XML string equals file')]
+    #[TestDox('::assertXmlStringEqualsXmlFile() passes when XML string equals file')]
     public function test_assertXmlStringEqualsXmlFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -7048,7 +7048,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringEqualsXmlFile
      */
-    #[TestDox('assertXmlStringEqualsXmlFile() throws when XML string does not equal file')]
+    #[TestDox('::assertXmlStringEqualsXmlFile() throws when XML string does not equal file')]
     public function test_assertXmlStringEqualsXmlFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -7074,7 +7074,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringNotEqualsXmlFile
      */
-    #[TestDox('assertXmlStringNotEqualsXmlFile() passes when XML string differs from file')]
+    #[TestDox('::assertXmlStringNotEqualsXmlFile() passes when XML string differs from file')]
     public function test_assertXmlStringNotEqualsXmlFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -7095,7 +7095,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlStringNotEqualsXmlFile
      */
-    #[TestDox('assertXmlStringNotEqualsXmlFile() throws when XML string equals file')]
+    #[TestDox('::assertXmlStringNotEqualsXmlFile() throws when XML string equals file')]
     public function test_assertXmlStringNotEqualsXmlFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -7121,7 +7121,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlFileEqualsXmlFile
      */
-    #[TestDox('assertXmlFileEqualsXmlFile() passes when XML files are equal')]
+    #[TestDox('::assertXmlFileEqualsXmlFile() passes when XML files are equal')]
     public function test_assertXmlFileEqualsXmlFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -7141,7 +7141,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlFileEqualsXmlFile
      */
-    #[TestDox('assertXmlFileEqualsXmlFile() throws when XML files differ')]
+    #[TestDox('::assertXmlFileEqualsXmlFile() throws when XML files differ')]
     public function test_assertXmlFileEqualsXmlFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -7166,7 +7166,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlFileNotEqualsXmlFile
      */
-    #[TestDox('assertXmlFileNotEqualsXmlFile() passes when XML files differ')]
+    #[TestDox('::assertXmlFileNotEqualsXmlFile() passes when XML files differ')]
     public function test_assertXmlFileNotEqualsXmlFile_passes(): void
     {
         // this test verifies that the assertion passes
@@ -7186,7 +7186,7 @@ class AssertTest extends TestCase
     /**
      * @covers ::assertXmlFileNotEqualsXmlFile
      */
-    #[TestDox('assertXmlFileNotEqualsXmlFile() throws when XML files are equal')]
+    #[TestDox('::assertXmlFileNotEqualsXmlFile() throws when XML files are equal')]
     public function test_assertXmlFileNotEqualsXmlFile_throws(): void
     {
         // this test verifies that the assertion throws
@@ -7208,7 +7208,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertXmlStringEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertXmlStringEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertXmlStringEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -7232,7 +7232,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertXmlStringNotEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertXmlStringNotEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertXmlStringNotEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -7256,7 +7256,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertXmlFileEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertXmlFileEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertXmlFileEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -7280,7 +7280,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('assertXmlFileNotEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
+    #[TestDox('::assertXmlFileNotEqualsXmlFile() throws InvalidArgumentException when file is not readable')]
     public function test_assertXmlFileNotEqualsXmlFile_throws_InvalidArgumentException_when_file_not_readable(): void
     {
         // ----------------------------------------------------------------

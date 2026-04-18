@@ -54,7 +54,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty collection')]
+    #[TestDox('::__construct() creates an empty collection')]
     public function test_can_instantiate_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -80,7 +80,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('Can instantiate with initial data')]
+    #[TestDox('::__construct() accepts initial data')]
     public function test_can_instantiate_with_initial_data(): void
     {
         // ----------------------------------------------------------------
@@ -106,7 +106,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('Can instantiate with associative array')]
+    #[TestDox('::__construct() accepts associative array')]
     public function test_can_instantiate_with_associative_array(): void
     {
         // ----------------------------------------------------------------
@@ -142,7 +142,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty collection')]
+    #[TestDox('->toArray() returns empty array for empty collection')]
     public function test_to_array_returns_empty_array_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -167,7 +167,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -199,7 +199,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty collection')]
+    #[TestDox('->count() returns 0 for empty collection')]
     public function test_count_returns_zero_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -224,7 +224,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in collection')]
+    #[TestDox('->count() returns number of items in collection')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -249,7 +249,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -280,7 +280,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -400,7 +400,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the collection')]
+    #[TestDox('->merge() can merge an array into the collection')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -430,7 +430,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another collection')]
+    #[TestDox('->merge() can merge another collection')]
     public function test_merge_can_merge_collection(): void
     {
         // ----------------------------------------------------------------
@@ -466,7 +466,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the collection')]
+    #[TestDox('->mergeArray() adds array items to the collection')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -496,7 +496,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() into empty collection sets the data')]
+    #[TestDox('->mergeArray() into empty collection sets the data')]
     public function test_merge_array_into_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -523,7 +523,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame(['alpha', 'bravo'], $unit->toArray());
     }
 
-    #[TestDox('mergeArray() with empty array leaves collection unchanged')]
+    #[TestDox('->mergeArray() with empty array leaves collection unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -549,7 +549,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeArray() with associative keys overwrites matching keys')]
+    #[TestDox('->mergeArray() with associative keys overwrites matching keys')]
     public function test_merge_array_overwrites_matching_string_keys(): void
     {
         // ----------------------------------------------------------------
@@ -581,7 +581,7 @@ class AccessibleCollectionTest extends TestCase
         );
     }
 
-    #[TestDox('mergeArray() returns $this for method chaining')]
+    #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -612,7 +612,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another collection into this one')]
+    #[TestDox('->mergeSelf() merges another collection into this one')]
     public function test_merge_self_merges_collection(): void
     {
         // ----------------------------------------------------------------
@@ -642,7 +642,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source collection')]
+    #[TestDox('->mergeSelf() does not modify the source collection')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -669,7 +669,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($expectedOtherData, $other->toArray());
     }
 
-    #[TestDox('mergeSelf() with empty source leaves collection unchanged')]
+    #[TestDox('->mergeSelf() with empty source leaves collection unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
         // ----------------------------------------------------------------
@@ -702,7 +702,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first item')]
+    #[TestDox('->maybeFirst() returns the first item')]
     public function test_maybe_first_returns_first_item(): void
     {
         // ----------------------------------------------------------------
@@ -727,7 +727,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty collection')]
+    #[TestDox('->maybeFirst() returns null for empty collection')]
     public function test_maybe_first_returns_null_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -752,7 +752,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeFirst() returns first item from associative array')]
+    #[TestDox('->maybeFirst() returns first item from associative array')]
     public function test_maybe_first_returns_first_from_associative(): void
     {
         // ----------------------------------------------------------------
@@ -787,7 +787,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('first() returns the first item')]
+    #[TestDox('->first() returns the first item')]
     public function test_first_returns_first_item(): void
     {
         // ----------------------------------------------------------------
@@ -812,7 +812,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty collection')]
+    #[TestDox('->first() throws RuntimeException for empty collection')]
     public function test_first_throws_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -841,7 +841,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last item')]
+    #[TestDox('->maybeLast() returns the last item')]
     public function test_maybe_last_returns_last_item(): void
     {
         // ----------------------------------------------------------------
@@ -866,7 +866,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty collection')]
+    #[TestDox('->maybeLast() returns null for empty collection')]
     public function test_maybe_last_returns_null_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -891,7 +891,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeLast() returns last item from associative array')]
+    #[TestDox('->maybeLast() returns last item from associative array')]
     public function test_maybe_last_returns_last_from_associative(): void
     {
         // ----------------------------------------------------------------
@@ -926,7 +926,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('last() returns the last item')]
+    #[TestDox('->last() returns the last item')]
     public function test_last_returns_last_item(): void
     {
         // ----------------------------------------------------------------
@@ -951,7 +951,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty collection')]
+    #[TestDox('->last() throws RuntimeException for empty collection')]
     public function test_last_throws_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -980,7 +980,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new instance with the same data')]
+    #[TestDox('->copy() returns a new instance with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1008,7 +1008,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame($expectedData, $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (modifying copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1039,7 +1039,7 @@ class AccessibleCollectionTest extends TestCase
         );
     }
 
-    #[TestDox('copy() of empty collection returns empty collection')]
+    #[TestDox('->copy() of empty collection returns empty collection')]
     public function test_copy_of_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -1072,7 +1072,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty collection')]
+    #[TestDox('->empty() returns true for empty collection')]
     public function test_empty_returns_true_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -1097,7 +1097,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty collection')]
+    #[TestDox('->empty() returns false for non-empty collection')]
     public function test_empty_returns_false_for_non_empty_collection(): void
     {
         // ----------------------------------------------------------------
@@ -1128,7 +1128,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns the class basename')]
+    #[TestDox('->getCollectionTypeAsString() returns the class basename')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
         // ----------------------------------------------------------------
@@ -1159,7 +1159,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Collection with one item: first() and last() return the same value')]
+    #[TestDox('Collection with one item: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -1267,7 +1267,7 @@ class AccessibleCollectionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Constructor rejects array containing null')]
+    #[TestDox('::__construct() rejects array containing null')]
     public function test_constructor_rejects_null_in_array(): void
     {
         // ----------------------------------------------------------------
@@ -1288,7 +1288,7 @@ class AccessibleCollectionTest extends TestCase
         new AccessibleCollection(['alpha', null, 'bravo']); // @phpstan-ignore argument.type
     }
 
-    #[TestDox('mergeArray() rejects array containing null')]
+    #[TestDox('->mergeArray() rejects array containing null')]
     public function test_merge_array_rejects_null_in_array(): void
     {
         // ----------------------------------------------------------------

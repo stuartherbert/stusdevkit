@@ -58,7 +58,7 @@ class FlattenClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns an empty list for an empty input list')]
+    #[TestDox('::from() returns an empty list for an empty input list')]
     public function test_from_returns_empty_list_for_empty_input(): void
     {
         // ----------------------------------------------------------------
@@ -85,7 +85,7 @@ class FlattenClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() drops scalar and built-in type-name strings that are neither classes nor interfaces')]
+    #[TestDox('::from() drops scalar and built-in type-name strings that are neither classes nor interfaces')]
     public function test_from_drops_non_class_interface_names(): void
     {
         // ----------------------------------------------------------------
@@ -114,7 +114,7 @@ class FlattenClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() expands a class to its full hierarchy as a flat list')]
+    #[TestDox('::from() expands a class to its full hierarchy as a flat list')]
     public function test_from_expands_a_class_to_its_full_hierarchy(): void
     {
         // ----------------------------------------------------------------
@@ -154,7 +154,7 @@ class FlattenClassTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() expands an interface to itself plus the universal object type')]
+    #[TestDox('::from() expands an interface to itself plus the universal object type')]
     public function test_from_expands_an_interface_to_itself_plus_universal_types(): void
     {
         // ----------------------------------------------------------------
@@ -191,7 +191,7 @@ class FlattenClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() deduplicates when the same class-string appears more than once')]
+    #[TestDox('::from() deduplicates when the same class-string appears more than once')]
     public function test_from_deduplicates_repeated_inputs(): void
     {
         // ----------------------------------------------------------------
@@ -228,7 +228,7 @@ class FlattenClassTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() deduplicates shared ancestors across distinct inputs, preserving first-seen order')]
+    #[TestDox('::from() deduplicates shared ancestors across distinct inputs, preserving first-seen order')]
     public function test_from_deduplicates_shared_ancestors_preserving_first_seen_order(): void
     {
         // ----------------------------------------------------------------
@@ -270,7 +270,7 @@ class FlattenClassTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() preserves first-seen order when the input order is reversed')]
+    #[TestDox('::from() preserves first-seen order when the input order is reversed')]
     public function test_from_preserves_first_seen_order_when_input_is_reversed(): void
     {
         // ----------------------------------------------------------------
@@ -313,7 +313,7 @@ class FlattenClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() still expands class inputs that follow a dropped non-class input')]
+    #[TestDox('::from() still expands class inputs that follow a dropped non-class input')]
     public function test_from_keeps_expansions_after_a_dropped_non_class_input(): void
     {
         // ----------------------------------------------------------------

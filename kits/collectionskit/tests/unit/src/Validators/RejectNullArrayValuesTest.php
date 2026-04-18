@@ -52,7 +52,7 @@ class RejectNullArrayValuesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Accepts an empty array')]
+    #[TestDox('::check() accepts an empty array')]
     public function test_accepts_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -81,7 +81,7 @@ class RejectNullArrayValuesTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    #[TestDox('Accepts an array with no null values')]
+    #[TestDox('::check() accepts an array with no null values')]
     public function test_accepts_array_without_nulls(): void
     {
         // ----------------------------------------------------------------
@@ -120,7 +120,7 @@ class RejectNullArrayValuesTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    #[TestDox('Throws NullValueNotAllowed when array contains null')]
+    #[TestDox('::check() throws NullValueNotAllowed when array contains null')]
     public function test_throws_when_array_contains_null(): void
     {
         // ----------------------------------------------------------------
@@ -144,7 +144,7 @@ class RejectNullArrayValuesTest extends TestCase
         );
     }
 
-    #[TestDox('Throws when null is the first value')]
+    #[TestDox('::check() throws when null is the first value')]
     public function test_throws_when_null_is_first(): void
     {
         // ----------------------------------------------------------------
@@ -167,7 +167,7 @@ class RejectNullArrayValuesTest extends TestCase
         );
     }
 
-    #[TestDox('Throws when null is the last value')]
+    #[TestDox('::check() throws when null is the last value')]
     public function test_throws_when_null_is_last(): void
     {
         // ----------------------------------------------------------------
@@ -190,7 +190,7 @@ class RejectNullArrayValuesTest extends TestCase
         );
     }
 
-    #[TestDox('Throws when array has multiple null values')]
+    #[TestDox('::check() throws when array has multiple null values')]
     public function test_throws_when_multiple_nulls(): void
     {
         // ----------------------------------------------------------------
@@ -213,7 +213,7 @@ class RejectNullArrayValuesTest extends TestCase
         );
     }
 
-    #[TestDox('Exception message includes the collection type')]
+    #[TestDox('::check() exception message includes the collection type')]
     public function test_exception_includes_collection_type(): void
     {
         // ----------------------------------------------------------------

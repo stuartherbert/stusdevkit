@@ -105,7 +105,7 @@ class UpperCaseTransformerTest extends TestCase
     }
 
     #[DataProvider('provideUpperCaseCases')]
-    #[TestDox('converts to upper case')]
+    #[TestDox('->process() converts to upper case')]
     public function test_converts_to_upper_case(
         string $inputValue,
         string $expectedResult,

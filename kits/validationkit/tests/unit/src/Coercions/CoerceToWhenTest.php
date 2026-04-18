@@ -57,7 +57,7 @@ class CoerceToWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces ISO 8601 (ATOM) string to When')]
+    #[TestDox('->coerce() coerces ISO 8601 (ATOM) string to When')]
     public function test_coerces_atom_string(): void
     {
         // ----------------------------------------------------------------
@@ -96,7 +96,7 @@ class CoerceToWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces lenient date string to When')]
+    #[TestDox('->coerce() coerces lenient date string to When')]
     public function test_coerces_lenient_date_string(): void
     {
         // ----------------------------------------------------------------
@@ -135,7 +135,7 @@ class CoerceToWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces integer timestamp to When')]
+    #[TestDox('->coerce() coerces integer timestamp to When')]
     public function test_coerces_integer_timestamp(): void
     {
         // ----------------------------------------------------------------
@@ -174,7 +174,7 @@ class CoerceToWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces DateTimeImmutable to When')]
+    #[TestDox('->coerce() coerces DateTimeImmutable to When')]
     public function test_coerces_datetimeimmutable(): void
     {
         // ----------------------------------------------------------------
@@ -213,7 +213,7 @@ class CoerceToWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('returns an existing When instance')]
+    #[TestDox('->coerce() returns an existing When instance')]
     public function test_returns_existing_when_instance(): void
     {
         // ----------------------------------------------------------------
@@ -249,7 +249,7 @@ class CoerceToWhenTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('returns unparseable string unchanged')]
+    #[TestDox('->coerce() returns unparseable string unchanged')]
     public function test_returns_unparseable_string_unchanged(): void
     {
         // ----------------------------------------------------------------
@@ -275,7 +275,7 @@ class CoerceToWhenTest extends TestCase
         $this->assertSame('not-a-date', $actualResult);
     }
 
-    #[TestDox('returns null unchanged')]
+    #[TestDox('->coerce() returns null unchanged')]
     public function test_returns_null_unchanged(): void
     {
         // ----------------------------------------------------------------
@@ -300,7 +300,7 @@ class CoerceToWhenTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('returns float unchanged')]
+    #[TestDox('->coerce() returns float unchanged')]
     public function test_returns_float_unchanged(): void
     {
         // ----------------------------------------------------------------
@@ -325,7 +325,7 @@ class CoerceToWhenTest extends TestCase
         $this->assertSame(3.14, $actualResult);
     }
 
-    #[TestDox('returns array unchanged')]
+    #[TestDox('->coerce() returns array unchanged')]
     public function test_returns_array_unchanged(): void
     {
         // ----------------------------------------------------------------

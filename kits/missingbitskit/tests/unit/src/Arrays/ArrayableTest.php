@@ -154,7 +154,7 @@ class ArrayableTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('declares a toArray() method')]
+    #[TestDox('->toArray() is declared')]
     public function test_declares_a_toArray_method(): void
     {
         // ----------------------------------------------------------------
@@ -185,7 +185,7 @@ class ArrayableTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() is public')]
+    #[TestDox('->toArray() is public')]
     public function test_toArray_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -213,7 +213,7 @@ class ArrayableTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('toArray() is an instance method')]
+    #[TestDox('->toArray() is an instance method')]
     public function test_toArray_is_an_instance_method(): void
     {
         // ----------------------------------------------------------------
@@ -242,7 +242,7 @@ class ArrayableTest extends TestCase
         $this->assertFalse($actual);
     }
 
-    #[TestDox('toArray() takes no parameters')]
+    #[TestDox('->toArray() takes no parameters')]
     public function test_toArray_takes_no_parameters(): void
     {
         // ----------------------------------------------------------------
@@ -270,7 +270,7 @@ class ArrayableTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('toArray() declares an `array` return type')]
+    #[TestDox('->toArray() declares an `array` return type')]
     public function test_toArray_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------

@@ -53,7 +53,7 @@ class StackOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('can instantiate an empty stack')]
+    #[TestDox('::__construct() creates an empty stack')]
     public function test_can_instantiate_empty_stack(): void
     {
         // ----------------------------------------------------------------
@@ -89,7 +89,7 @@ class StackOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('push adds a value to the top of the stack')]
+    #[TestDox('->push() adds a value to the top of the stack')]
     public function test_push_adds_value(): void
     {
         // ----------------------------------------------------------------
@@ -117,7 +117,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('push returns the stack for chaining')]
+    #[TestDox('->push() returns the stack for chaining')]
     public function test_push_returns_static(): void
     {
         // ----------------------------------------------------------------
@@ -143,7 +143,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('push maintains LIFO order')]
+    #[TestDox('->push() maintains LIFO order')]
     public function test_push_maintains_lifo_order(): void
     {
         // ----------------------------------------------------------------
@@ -179,7 +179,7 @@ class StackOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('pop removes and returns the top value')]
+    #[TestDox('->pop() removes and returns the top value')]
     public function test_pop_removes_top(): void
     {
         // ----------------------------------------------------------------
@@ -209,7 +209,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('pop on empty stack throws RuntimeException')]
+    #[TestDox('->pop() on empty stack throws RuntimeException')]
     public function test_pop_empty_throws(): void
     {
         // ----------------------------------------------------------------
@@ -232,7 +232,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('maybePop returns null on empty stack')]
+    #[TestDox('->maybePop() returns null on empty stack')]
     public function test_maybe_pop_returns_null(): void
     {
         // ----------------------------------------------------------------
@@ -258,7 +258,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('maybePop removes and returns the top value')]
+    #[TestDox('->maybePop() removes and returns the top value')]
     public function test_maybe_pop_removes_top(): void
     {
         // ----------------------------------------------------------------
@@ -292,7 +292,7 @@ class StackOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('peek returns the top value without removing it')]
+    #[TestDox('->peek() returns the top value without removing it')]
     public function test_peek_does_not_remove(): void
     {
         // ----------------------------------------------------------------
@@ -322,7 +322,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('peek on empty stack throws RuntimeException')]
+    #[TestDox('->peek() on empty stack throws RuntimeException')]
     public function test_peek_empty_throws(): void
     {
         // ----------------------------------------------------------------
@@ -345,7 +345,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('maybePeek returns null on empty stack')]
+    #[TestDox('->maybePeek() returns null on empty stack')]
     public function test_maybe_peek_returns_null(): void
     {
         // ----------------------------------------------------------------
@@ -377,7 +377,7 @@ class StackOfStringsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('push and pop maintain LIFO order')]
+    #[TestDox('->push() and ->pop() maintain LIFO order')]
     public function test_lifo_order(): void
     {
         // ----------------------------------------------------------------
@@ -482,7 +482,7 @@ class StackOfStringsTest extends TestCase
 
     }
 
-    #[TestDox('toArray returns values in LIFO order')]
+    #[TestDox('->toArray() returns values in LIFO order')]
     public function test_to_array_returns_lifo_order(): void
     {
         // -----------------------------------------------------------------

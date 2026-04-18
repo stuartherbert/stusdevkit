@@ -57,7 +57,7 @@ class GetNumericTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetNumericType')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -99,7 +99,7 @@ class GetNumericTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for non-numeric input')]
+    #[TestDox('->__invoke() returns empty array for non-numeric input')]
     #[DataProvider('nonNumericProvider')]
     public function test_invoke_rejects_non_numeric_input(mixed $input): void
     {
@@ -127,7 +127,7 @@ class GetNumericTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('__invoke() returns empty array for Stringable whose string is non-numeric')]
+    #[TestDox('->__invoke() returns empty array for Stringable whose string is non-numeric')]
     public function test_invoke_rejects_stringable_with_non_numeric_value(): void
     {
         // ----------------------------------------------------------------
@@ -174,7 +174,7 @@ class GetNumericTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric and int for an integer')]
+    #[TestDox('::from() returns numeric and int for an integer')]
     #[DataProvider('integerProvider')]
     public function test_from_returns_expected_types_for_integer(int $input): void
     {
@@ -222,7 +222,7 @@ class GetNumericTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns numeric and float for a float')]
+    #[TestDox('::from() returns numeric and float for a float')]
     #[DataProvider('floatProvider')]
     public function test_from_returns_expected_types_for_float(float $input): void
     {
@@ -258,7 +258,7 @@ class GetNumericTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns numeric, int, and string for an integer-shaped numeric string')]
+    #[TestDox('::from() returns numeric, int, and string for an integer-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_int_string(): void
     {
         // ----------------------------------------------------------------
@@ -290,7 +290,7 @@ class GetNumericTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns numeric, float, and string for a float-shaped numeric string')]
+    #[TestDox('::from() returns numeric, float, and string for a float-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_float_string(): void
     {
         // ----------------------------------------------------------------
@@ -334,7 +334,7 @@ class GetNumericTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns empty array for a non-numeric string')]
+    #[TestDox('::from() returns empty array for a non-numeric string')]
     #[DataProvider('nonNumericStringProvider')]
     public function test_from_returns_empty_for_non_numeric_string(string $input): void
     {

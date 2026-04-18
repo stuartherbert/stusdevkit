@@ -56,7 +56,7 @@ class CoerceToDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces ISO 8601 (ATOM) string to DateTimeImmutable')]
+    #[TestDox('->coerce() coerces ISO 8601 (ATOM) string to DateTimeImmutable')]
     public function test_coerces_atom_string(): void
     {
         // ----------------------------------------------------------------
@@ -95,7 +95,7 @@ class CoerceToDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces lenient date string to DateTimeImmutable')]
+    #[TestDox('->coerce() coerces lenient date string to DateTimeImmutable')]
     public function test_coerces_lenient_date_string(): void
     {
         // ----------------------------------------------------------------
@@ -134,7 +134,7 @@ class CoerceToDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('coerces integer timestamp to DateTimeImmutable')]
+    #[TestDox('->coerce() coerces integer timestamp to DateTimeImmutable')]
     public function test_coerces_integer_timestamp(): void
     {
         // ----------------------------------------------------------------
@@ -173,7 +173,7 @@ class CoerceToDateTimeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('returns unparseable string unchanged')]
+    #[TestDox('->coerce() returns unparseable string unchanged')]
     public function test_returns_unparseable_string_unchanged(): void
     {
         // ----------------------------------------------------------------
@@ -200,7 +200,7 @@ class CoerceToDateTimeTest extends TestCase
         $this->assertSame('not-a-date', $actualResult);
     }
 
-    #[TestDox('returns null unchanged')]
+    #[TestDox('->coerce() returns null unchanged')]
     public function test_returns_null_unchanged(): void
     {
         // ----------------------------------------------------------------
@@ -225,7 +225,7 @@ class CoerceToDateTimeTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('returns float unchanged')]
+    #[TestDox('->coerce() returns float unchanged')]
     public function test_returns_float_unchanged(): void
     {
         // ----------------------------------------------------------------
@@ -250,7 +250,7 @@ class CoerceToDateTimeTest extends TestCase
         $this->assertSame(3.14, $actualResult);
     }
 
-    #[TestDox('returns array unchanged')]
+    #[TestDox('->coerce() returns array unchanged')]
     public function test_returns_array_unchanged(): void
     {
         // ----------------------------------------------------------------

@@ -60,7 +60,7 @@ class GetClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetClassTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -104,7 +104,7 @@ class GetClassTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for input that is not a known class/interface/trait name')]
+    #[TestDox('->__invoke() returns empty array for input that is not a known class/interface/trait name')]
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
@@ -138,7 +138,7 @@ class GetClassTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns class and object for a simple class')]
+    #[TestDox('::from() returns class and object for a simple class')]
     public function test_from_returns_expected_types_for_simple_class(): void
     {
         // ----------------------------------------------------------------
@@ -172,7 +172,7 @@ class GetClassTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns class, parent, interface, trait, and object for a class with all three')]
+    #[TestDox('::from() returns class, parent, interface, trait, and object for a class with all three')]
     public function test_from_returns_full_class_surface(): void
     {
         // ----------------------------------------------------------------

@@ -68,7 +68,7 @@ class CoerceToNumberTest extends TestCase
     }
 
     #[DataProvider('provideIntCoercibleValues')]
-    #[TestDox('coerces whole-number strings to int')]
+    #[TestDox('->coerce() coerces whole-number strings to int')]
     public function test_coerces_whole_number_strings_to_int(
         string $inputValue,
         int $expectedResult,
@@ -116,7 +116,7 @@ class CoerceToNumberTest extends TestCase
     }
 
     #[DataProvider('provideFloatCoercibleValues')]
-    #[TestDox('coerces decimal/scientific strings to float')]
+    #[TestDox('->coerce() coerces decimal/scientific strings to float')]
     public function test_coerces_decimal_strings_to_float(
         string $inputValue,
         float $expectedResult,
@@ -163,7 +163,7 @@ class CoerceToNumberTest extends TestCase
     }
 
     #[DataProvider('provideBoolValues')]
-    #[TestDox('coerces booleans to int')]
+    #[TestDox('->coerce() coerces booleans to int')]
     public function test_coerces_booleans_to_int(
         bool $inputValue,
         int $expectedResult,
@@ -209,7 +209,7 @@ class CoerceToNumberTest extends TestCase
     }
 
     #[DataProvider('provideNonCoercibleValues')]
-    #[TestDox('returns non-coercible value unchanged')]
+    #[TestDox('->coerce() returns non-coercible value unchanged')]
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {

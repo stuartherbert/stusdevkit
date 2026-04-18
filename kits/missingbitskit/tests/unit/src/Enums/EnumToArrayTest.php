@@ -158,7 +158,7 @@ class EnumToArrayTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares a toArray() method')]
+    #[TestDox('::toArray() is declared')]
     public function test_declares_a_toArray_method(): void
     {
         // ----------------------------------------------------------------
@@ -183,7 +183,7 @@ class EnumToArrayTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('toArray() is public')]
+    #[TestDox('::toArray() is public')]
     public function test_toArray_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -210,7 +210,7 @@ class EnumToArrayTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('toArray() is static')]
+    #[TestDox('::toArray() is static')]
     public function test_toArray_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -238,7 +238,7 @@ class EnumToArrayTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('toArray() takes no parameters')]
+    #[TestDox('::toArray() takes no parameters')]
     public function test_toArray_takes_no_parameters(): void
     {
         // ----------------------------------------------------------------
@@ -266,7 +266,7 @@ class EnumToArrayTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('toArray() declares an `array` return type')]
+    #[TestDox('::toArray() declares an `array` return type')]
     public function test_toArray_declares_an_array_return_type(): void
     {
         // ----------------------------------------------------------------
@@ -302,7 +302,7 @@ class EnumToArrayTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns a name-to-value map for a string-backed enum')]
+    #[TestDox('::toArray() returns a name-to-value map for a string-backed enum')]
     public function test_toArray_returns_name_to_value_map_for_string_backed_enum(): void
     {
         // ----------------------------------------------------------------
@@ -332,7 +332,7 @@ class EnumToArrayTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('toArray() returns a name-to-value map for an int-backed enum')]
+    #[TestDox('::toArray() returns a name-to-value map for an int-backed enum')]
     public function test_toArray_returns_name_to_value_map_for_int_backed_enum(): void
     {
         // ----------------------------------------------------------------
@@ -362,7 +362,7 @@ class EnumToArrayTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('toArray() returns a one-entry map for a single-case enum')]
+    #[TestDox('::toArray() returns a one-entry map for a single-case enum')]
     public function test_toArray_returns_one_entry_map_for_single_case_enum(): void
     {
         // ----------------------------------------------------------------
@@ -390,7 +390,7 @@ class EnumToArrayTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('toArray() preserves case declaration order')]
+    #[TestDox('::toArray() preserves case declaration order')]
     public function test_toArray_preserves_case_declaration_order(): void
     {
         // ----------------------------------------------------------------

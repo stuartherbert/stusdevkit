@@ -59,7 +59,7 @@ class GetPrintableTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetPrintableType')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -110,7 +110,7 @@ class GetPrintableTypeTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns the expected descriptor for a scalar value')]
+    #[TestDox('::from() returns the expected descriptor for a scalar value')]
     #[DataProvider('scalarProvider')]
     public function test_from_returns_expected_for_scalar(
         bool|int|float|string $input,
@@ -143,7 +143,7 @@ class GetPrintableTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns just "object" for a plain object when FLAG_CLASSNAME is not set')]
+    #[TestDox('::from() returns just "object" for a plain object when FLAG_CLASSNAME is not set')]
     public function test_from_returns_plain_object_without_classname_flag(): void
     {
         // ----------------------------------------------------------------
@@ -170,7 +170,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns object<ClassName> when FLAG_CLASSNAME is set')]
+    #[TestDox('::from() returns object<ClassName> when FLAG_CLASSNAME is set')]
     public function test_from_returns_object_with_classname(): void
     {
         // ----------------------------------------------------------------
@@ -197,7 +197,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns object<ClassName> for an invokable object with defaults')]
+    #[TestDox('::from() returns object<ClassName> for an invokable object with defaults')]
     public function test_from_returns_object_for_invokable_with_defaults(): void
     {
         // ----------------------------------------------------------------
@@ -231,7 +231,7 @@ class GetPrintableTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns "callable" for a Closure when FLAG_CALLABLE_DETAILS is not set')]
+    #[TestDox('::from() returns "callable" for a Closure when FLAG_CALLABLE_DETAILS is not set')]
     public function test_from_returns_plain_callable_for_closure_without_details(): void
     {
         // ----------------------------------------------------------------
@@ -259,7 +259,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns "callable<Closure>" for a Closure when FLAG_CALLABLE_DETAILS alone is set')]
+    #[TestDox('::from() returns "callable<Closure>" for a Closure when FLAG_CALLABLE_DETAILS alone is set')]
     public function test_from_returns_closure_detail_without_classname(): void
     {
         // ----------------------------------------------------------------
@@ -288,7 +288,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns "callable<Closure>" for a Closure with defaults')]
+    #[TestDox('::from() returns "callable<Closure>" for a Closure with defaults')]
     public function test_from_returns_callable_closure_detail_for_closure(): void
     {
         // ----------------------------------------------------------------
@@ -322,7 +322,7 @@ class GetPrintableTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns "callable" for a callable string without FLAG_CALLABLE_DETAILS')]
+    #[TestDox('::from() returns "callable" for a callable string without FLAG_CALLABLE_DETAILS')]
     public function test_from_returns_plain_callable_for_callable_string(): void
     {
         // ----------------------------------------------------------------
@@ -349,7 +349,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns "callable<function>" for a callable string with FLAG_CALLABLE_DETAILS')]
+    #[TestDox('::from() returns "callable<function>" for a callable string with FLAG_CALLABLE_DETAILS')]
     public function test_from_returns_callable_with_function_name(): void
     {
         // ----------------------------------------------------------------
@@ -376,7 +376,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns "callable<Class::method>" for a [Class, method] callable array with FLAG_CALLABLE_DETAILS')]
+    #[TestDox('::from() returns "callable<Class::method>" for a [Class, method] callable array with FLAG_CALLABLE_DETAILS')]
     public function test_from_returns_callable_with_static_method(): void
     {
         // ----------------------------------------------------------------
@@ -409,7 +409,7 @@ class GetPrintableTypeTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns "null" for a null input')]
+    #[TestDox('::from() returns "null" for a null input')]
     public function test_from_returns_null_output_for_null(): void
     {
         // ----------------------------------------------------------------
@@ -436,7 +436,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns "array" for a non-callable array input')]
+    #[TestDox('::from() returns "array" for a non-callable array input')]
     public function test_from_returns_array_output_for_array(): void
     {
         // ----------------------------------------------------------------
@@ -462,7 +462,7 @@ class GetPrintableTypeTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns "resource" for a resource input')]
+    #[TestDox('::from() returns "resource" for a resource input')]
     public function test_from_returns_resource_output_for_resource(): void
     {
         // ----------------------------------------------------------------
@@ -496,7 +496,7 @@ class GetPrintableTypeTest extends TestCase
         fclose($handle);
     }
 
-    #[TestDox('from() collapses a closed resource back to "resource"')]
+    #[TestDox('::from() collapses a closed resource back to "resource"')]
     public function test_from_collapses_closed_resource(): void
     {
         // ----------------------------------------------------------------

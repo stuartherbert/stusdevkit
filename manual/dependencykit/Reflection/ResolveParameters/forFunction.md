@@ -160,13 +160,13 @@ _None yet._
 ```
 StusDevKit\DependencyKit\Reflection\ResolveParameters
  ✔ declares a forFunction() method
- ✔ forFunction() is public
- ✔ forFunction() is static
- ✔ forFunction() declares an array return type
- ✔ forFunction() resolves parameters for a Closure
- ✔ forFunction() resolves parameters for a global function name
- ✔ forFunction() returns an empty array for a zero-parameter Closure
- ✔ forFunction() throws InvalidFunctionException when the string does not name a declared function
+ ✔ ::forFunction() is public
+ ✔ ::forFunction() is static
+ ✔ ::forFunction() declares an array return type
+ ✔ ::forFunction() resolves parameters for a Closure
+ ✔ ::forFunction() resolves parameters for a global function name
+ ✔ ::forFunction() returns an empty array for a zero-parameter Closure
+ ✔ ::forFunction() throws InvalidFunctionException when the string does not name a declared function
 ```
 
 ## Source

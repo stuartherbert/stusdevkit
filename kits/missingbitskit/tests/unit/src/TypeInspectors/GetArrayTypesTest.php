@@ -57,7 +57,7 @@ class GetArrayTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetArrayTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -99,7 +99,7 @@ class GetArrayTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for non-array input')]
+    #[TestDox('->__invoke() returns empty array for non-array input')]
     #[DataProvider('nonArrayProvider')]
     public function test_invoke_rejects_non_array_input(mixed $input): void
     {
@@ -149,7 +149,7 @@ class GetArrayTypesTest extends TestCase
     /**
      * @param array<array-key,mixed> $input
      */
-    #[TestDox('from() returns just array for a non-callable array')]
+    #[TestDox('::from() returns just array for a non-callable array')]
     #[DataProvider('nonCallableArrayProvider')]
     public function test_from_returns_expected_types_for_non_callable_array(array $input): void
     {
@@ -186,7 +186,7 @@ class GetArrayTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns callable and array for a callable array')]
+    #[TestDox('::from() returns callable and array for a callable array')]
     public function test_from_returns_expected_types_for_callable_array(): void
     {
         // ----------------------------------------------------------------

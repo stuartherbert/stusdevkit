@@ -109,7 +109,7 @@ class GetClassInstantiabilityTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares a from() method')]
+    #[TestDox('::from() is declared')]
     public function test_declares_a_from_method(): void
     {
         // ----------------------------------------------------------------
@@ -134,7 +134,7 @@ class GetClassInstantiabilityTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('from() is public')]
+    #[TestDox('::from() is public')]
     public function test_from_is_public(): void
     {
         // ----------------------------------------------------------------
@@ -161,7 +161,7 @@ class GetClassInstantiabilityTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('from() is static')]
+    #[TestDox('::from() is static')]
     public function test_from_is_static(): void
     {
         // ----------------------------------------------------------------
@@ -188,7 +188,7 @@ class GetClassInstantiabilityTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('from() takes exactly one parameter')]
+    #[TestDox('::from() takes exactly one parameter')]
     public function test_from_takes_exactly_one_parameter(): void
     {
         // ----------------------------------------------------------------
@@ -217,7 +217,7 @@ class GetClassInstantiabilityTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox("from()'s parameter has a string type")]
+    #[TestDox("::from()'s parameter has a string type")]
     public function test_from_parameter_has_a_string_type(): void
     {
         // ----------------------------------------------------------------
@@ -251,7 +251,7 @@ class GetClassInstantiabilityTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() declares a ClassInstantiability return type')]
+    #[TestDox('::from() declares a ClassInstantiability return type')]
     public function test_from_declares_a_ClassInstantiability_return_type(): void
     {
         // ----------------------------------------------------------------
@@ -367,7 +367,7 @@ class GetClassInstantiabilityTest extends TestCase
         ];
     }
 
-    #[TestDox('from() returns $expectedCaseName for $inputDescription')]
+    #[TestDox('::from() returns $expectedCaseName for $inputDescription')]
     #[DataProvider('inputProvider')]
     public function test_from_returns_expected_case_for_input(
         string $inputDescription,

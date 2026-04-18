@@ -54,7 +54,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty dictionary')]
+    #[TestDox('::__construct() creates an empty dictionary')]
     public function test_can_instantiate_empty_dictionary(): void
     {
         // ----------------------------------------------------------------
@@ -80,7 +80,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertCount(0, $unit);
     }
 
-    #[TestDox('Can instantiate with initial data')]
+    #[TestDox('::__construct() accepts initial data')]
     public function test_can_instantiate_with_initial_data(): void
     {
         // ----------------------------------------------------------------
@@ -110,7 +110,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('Constructor preserves string keys')]
+    #[TestDox('::__construct() preserves string keys')]
     public function test_constructor_preserves_string_keys(): void
     {
         // ----------------------------------------------------------------
@@ -140,7 +140,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame(['x', 'y', 'z'], array_keys($actualData));
     }
 
-    #[TestDox('Can instantiate with integer keys')]
+    #[TestDox('::__construct() accepts integer keys')]
     public function test_can_instantiate_with_integer_keys(): void
     {
         // ----------------------------------------------------------------
@@ -176,7 +176,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('set() stores a value with a string key')]
+    #[TestDox('->set() stores a value with a string key')]
     public function test_set_stores_value_with_string_key(): void
     {
         // ----------------------------------------------------------------
@@ -202,7 +202,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('set() stores a value with an integer key')]
+    #[TestDox('->set() stores a value with an integer key')]
     public function test_set_stores_value_with_integer_key(): void
     {
         // ----------------------------------------------------------------
@@ -228,7 +228,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('set() overwrites existing value at same key')]
+    #[TestDox('->set() overwrites existing value at same key')]
     public function test_set_overwrites_existing_value(): void
     {
         // ----------------------------------------------------------------
@@ -254,7 +254,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('set() adds to existing data')]
+    #[TestDox('->set() adds to existing data')]
     public function test_set_adds_to_existing_data(): void
     {
         // ----------------------------------------------------------------
@@ -290,7 +290,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertCount(3, $unit);
     }
 
-    #[TestDox('set() returns $this for method chaining')]
+    #[TestDox('->set() returns $this for method chaining')]
     public function test_set_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -315,7 +315,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('set() supports fluent chaining')]
+    #[TestDox('->set() supports fluent chaining')]
     public function test_set_supports_fluent_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -349,7 +349,7 @@ class CollectionAsDictTest extends TestCase
         );
     }
 
-    #[TestDox('set() can store values of different types')]
+    #[TestDox('->set() can store values of different types')]
     public function test_set_can_store_mixed_types(): void
     {
         // ----------------------------------------------------------------
@@ -394,7 +394,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('has() returns true for existing string key')]
+    #[TestDox('->has() returns true for existing string key')]
     public function test_has_returns_true_for_existing_string_key(): void
     {
         // ----------------------------------------------------------------
@@ -419,7 +419,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('has() returns true for existing integer key')]
+    #[TestDox('->has() returns true for existing integer key')]
     public function test_has_returns_true_for_existing_integer_key(): void
     {
         // ----------------------------------------------------------------
@@ -444,7 +444,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('has() returns false for missing key')]
+    #[TestDox('->has() returns false for missing key')]
     public function test_has_returns_false_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -469,7 +469,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('has() returns false for empty dict')]
+    #[TestDox('->has() returns false for empty dict')]
     public function test_has_returns_false_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -494,7 +494,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('has() returns true for key added via set()')]
+    #[TestDox('->has() returns true for key added via set()')]
     public function test_has_returns_true_for_key_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -520,7 +520,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('Constructor rejects null values')]
+    #[TestDox('::__construct() rejects null values')]
     public function test_constructor_rejects_null_values(): void
     {
         // ----------------------------------------------------------------
@@ -547,7 +547,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeGet() returns value for existing key')]
+    #[TestDox('->maybeGet() returns value for existing key')]
     public function test_maybe_get_returns_value_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -575,7 +575,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('maybeGet() returns null for missing key')]
+    #[TestDox('->maybeGet() returns null for missing key')]
     public function test_maybe_get_returns_null_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -600,7 +600,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeGet() returns null for empty dict')]
+    #[TestDox('->maybeGet() returns null for empty dict')]
     public function test_maybe_get_returns_null_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -625,7 +625,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeGet() returns value added via set()')]
+    #[TestDox('->maybeGet() returns value added via set()')]
     public function test_maybe_get_returns_value_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -651,7 +651,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('maybeGet() returns value with integer key')]
+    #[TestDox('->maybeGet() returns value with integer key')]
     public function test_maybe_get_returns_value_with_integer_key(): void
     {
         // ----------------------------------------------------------------
@@ -677,7 +677,7 @@ class CollectionAsDictTest extends TestCase
     }
 
 
-    #[TestDox('maybeGet() returns the overwritten value after set()')]
+    #[TestDox('->maybeGet() returns the overwritten value after set()')]
     public function test_maybe_get_returns_overwritten_value(): void
     {
         // ----------------------------------------------------------------
@@ -709,7 +709,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('get() returns value for existing key')]
+    #[TestDox('->get() returns value for existing key')]
     public function test_get_returns_value_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -737,7 +737,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('bravo', $actualResult);
     }
 
-    #[TestDox('get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws RuntimeException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -762,7 +762,7 @@ class CollectionAsDictTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('get() throws RuntimeException for empty dict')]
+    #[TestDox('->get() throws RuntimeException for empty dict')]
     public function test_get_throws_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -787,7 +787,7 @@ class CollectionAsDictTest extends TestCase
         $unit->get('anything');
     }
 
-    #[TestDox('get() returns value added via set()')]
+    #[TestDox('->get() returns value added via set()')]
     public function test_get_returns_value_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -814,7 +814,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('get() returns value with integer key')]
+    #[TestDox('->get() returns value with integer key')]
     public function test_get_returns_value_with_integer_key(): void
     {
         // ----------------------------------------------------------------
@@ -839,7 +839,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('get() exception message includes the missing key')]
+    #[TestDox('->get() exception message includes the missing key')]
     public function test_get_exception_includes_key(): void
     {
         // ----------------------------------------------------------------
@@ -870,7 +870,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty dict')]
+    #[TestDox('->toArray() returns empty array for empty dict')]
     public function test_to_array_returns_empty_array_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -895,7 +895,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -925,7 +925,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($expectedData, $actualResult);
     }
 
-    #[TestDox('toArray() returns data added via set()')]
+    #[TestDox('->toArray() returns data added via set()')]
     public function test_to_array_returns_data_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -961,7 +961,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty dict')]
+    #[TestDox('->count() returns 0 for empty dict')]
     public function test_count_returns_zero_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -986,7 +986,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in dict')]
+    #[TestDox('->count() returns number of items in dict')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -1015,7 +1015,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -1044,7 +1044,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() reflects items added via set()')]
+    #[TestDox('->count() reflects items added via set()')]
     public function test_count_reflects_items_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -1071,7 +1071,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame(2, $actualResult);
     }
 
-    #[TestDox('count() does not increase when overwriting a key')]
+    #[TestDox('->count() does not increase when overwriting a key')]
     public function test_count_does_not_increase_on_overwrite(): void
     {
         // ----------------------------------------------------------------
@@ -1102,7 +1102,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -1262,7 +1262,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the dict')]
+    #[TestDox('->merge() can merge an array into the dict')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -1296,7 +1296,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another CollectionAsDict')]
+    #[TestDox('->merge() can merge another CollectionAsDict')]
     public function test_merge_can_merge_collection(): void
     {
         // ----------------------------------------------------------------
@@ -1339,7 +1339,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the dict')]
+    #[TestDox('->mergeArray() adds array items to the dict')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -1373,7 +1373,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() into empty dict dicts the data')]
+    #[TestDox('->mergeArray() into empty dict dicts the data')]
     public function test_merge_array_into_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -1403,7 +1403,7 @@ class CollectionAsDictTest extends TestCase
         );
     }
 
-    #[TestDox('mergeArray() with empty array leaves dict unchanged')]
+    #[TestDox('->mergeArray() with empty array leaves dict unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -1429,7 +1429,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeArray() overwrites matching string keys')]
+    #[TestDox('->mergeArray() overwrites matching string keys')]
     public function test_merge_array_overwrites_matching_keys(): void
     {
         // ----------------------------------------------------------------
@@ -1460,7 +1460,7 @@ class CollectionAsDictTest extends TestCase
         );
     }
 
-    #[TestDox('mergeArray() returns $this for method chaining')]
+    #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -1491,7 +1491,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another dict into this one')]
+    #[TestDox('->mergeSelf() merges another dict into this one')]
     public function test_merge_self_merges_set(): void
     {
         // ----------------------------------------------------------------
@@ -1528,7 +1528,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source dict')]
+    #[TestDox('->mergeSelf() does not modify the source dict')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -1555,7 +1555,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($expectedOtherData, $other->toArray());
     }
 
-    #[TestDox('mergeSelf() with empty source leaves dict unchanged')]
+    #[TestDox('->mergeSelf() with empty source leaves dict unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
         // ----------------------------------------------------------------
@@ -1582,7 +1582,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeSelf() overwrites matching keys')]
+    #[TestDox('->mergeSelf() overwrites matching keys')]
     public function test_merge_self_overwrites_matching_keys(): void
     {
         // ----------------------------------------------------------------
@@ -1623,7 +1623,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first item')]
+    #[TestDox('->maybeFirst() returns the first item')]
     public function test_maybe_first_returns_first_item(): void
     {
         // ----------------------------------------------------------------
@@ -1652,7 +1652,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty dict')]
+    #[TestDox('->maybeFirst() returns null for empty dict')]
     public function test_maybe_first_returns_null_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -1677,7 +1677,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeFirst() returns the first item added via set()')]
+    #[TestDox('->maybeFirst() returns the first item added via set()')]
     public function test_maybe_first_returns_first_item_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -1710,7 +1710,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('first() returns the first item')]
+    #[TestDox('->first() returns the first item')]
     public function test_first_returns_first_item(): void
     {
         // ----------------------------------------------------------------
@@ -1739,7 +1739,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty dict')]
+    #[TestDox('->first() throws RuntimeException for empty dict')]
     public function test_first_throws_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -1768,7 +1768,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last item')]
+    #[TestDox('->maybeLast() returns the last item')]
     public function test_maybe_last_returns_last_item(): void
     {
         // ----------------------------------------------------------------
@@ -1797,7 +1797,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty dict')]
+    #[TestDox('->maybeLast() returns null for empty dict')]
     public function test_maybe_last_returns_null_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -1822,7 +1822,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeLast() returns the last item added via set()')]
+    #[TestDox('->maybeLast() returns the last item added via set()')]
     public function test_maybe_last_returns_last_item_added_via_set(): void
     {
         // ----------------------------------------------------------------
@@ -1855,7 +1855,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('last() returns the last item')]
+    #[TestDox('->last() returns the last item')]
     public function test_last_returns_last_item(): void
     {
         // ----------------------------------------------------------------
@@ -1884,7 +1884,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty dict')]
+    #[TestDox('->last() throws RuntimeException for empty dict')]
     public function test_last_throws_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -1913,7 +1913,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new CollectionAsDict with the same data')]
+    #[TestDox('->copy() returns a new CollectionAsDict with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1945,7 +1945,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame($expectedData, $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (modifying copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1980,7 +1980,7 @@ class CollectionAsDictTest extends TestCase
         );
     }
 
-    #[TestDox('copy() of empty dict returns empty dict')]
+    #[TestDox('->copy() of empty dict returns empty dict')]
     public function test_copy_of_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -2014,7 +2014,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty dict')]
+    #[TestDox('->empty() returns true for empty dict')]
     public function test_empty_returns_true_for_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -2039,7 +2039,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty dict')]
+    #[TestDox('->empty() returns false for non-empty dict')]
     public function test_empty_returns_false_for_non_empty_set(): void
     {
         // ----------------------------------------------------------------
@@ -2064,7 +2064,7 @@ class CollectionAsDictTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('empty() returns false after set()')]
+    #[TestDox('->empty() returns false after set()')]
     public function test_empty_returns_false_after_set(): void
     {
         // ----------------------------------------------------------------
@@ -2096,7 +2096,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns the class basename')]
+    #[TestDox('->getCollectionTypeAsString() returns the class basename')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
         // ----------------------------------------------------------------
@@ -2127,7 +2127,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('dict with one item: first() and last() return the same value')]
+    #[TestDox('dict with one item: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -2160,7 +2160,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('set() and merge methods support fluent chaining together')]
+    #[TestDox('->set() and merge methods support fluent chaining together')]
     public function test_set_and_merge_support_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -2206,7 +2206,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('get() and maybeGet() return same value for existing key')]
+    #[TestDox('->get() and ->maybeGet() return same value for existing key')]
     public function test_get_and_maybe_get_return_same_value(): void
     {
         // ----------------------------------------------------------------

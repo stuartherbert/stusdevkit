@@ -115,7 +115,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() throws UntypedParameterException when the parameter has no declared type')]
+    #[TestDox('::for() throws UntypedParameterException when the parameter has no declared type')]
     public function test_for_throws_when_parameter_is_untyped(): void
     {
         // ----------------------------------------------------------------
@@ -143,7 +143,7 @@ class ResolveParameterTest extends TestCase
         ResolveParameter::for($param, $container);
     }
 
-    #[TestDox('for() prefers the untyped refusal over the variadic refusal when a parameter is both')]
+    #[TestDox('::for() prefers the untyped refusal over the variadic refusal when a parameter is both')]
     public function test_for_throws_untyped_before_variadic_when_parameter_is_both(): void
     {
         // ----------------------------------------------------------------
@@ -182,7 +182,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() throws UnsupportedParameterTypeException for a variadic parameter, with paramType formatted as "Type ..."')]
+    #[TestDox('::for() throws UnsupportedParameterTypeException for a variadic parameter, with paramType formatted as "Type ..."')]
     public function test_for_throws_for_variadic_parameter(): void
     {
         // ----------------------------------------------------------------
@@ -226,7 +226,7 @@ class ResolveParameterTest extends TestCase
         $this->fail('UnsupportedParameterTypeException was not thrown');
     }
 
-    #[TestDox('for() throws UnsupportedParameterTypeException for a variadic parameter with a union type')]
+    #[TestDox('::for() throws UnsupportedParameterTypeException for a variadic parameter with a union type')]
     public function test_for_throws_for_variadic_union_parameter(): void
     {
         // ----------------------------------------------------------------
@@ -272,7 +272,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() returns the container-registered value when the type matches')]
+    #[TestDox('::for() returns the container-registered value when the type matches')]
     public function test_for_returns_container_value_on_match(): void
     {
         // ----------------------------------------------------------------
@@ -337,7 +337,7 @@ class ResolveParameterTest extends TestCase
         ];
     }
 
-    #[TestDox('for() resolves universal / leaf type hints by exact-string container lookup')]
+    #[TestDox('::for() resolves universal / leaf type hints by exact-string container lookup')]
     #[DataProvider('provideUniversalTypeParams')]
     public function test_for_resolves_universal_type_via_direct_container_hit(
         Closure $fn,
@@ -381,7 +381,7 @@ class ResolveParameterTest extends TestCase
         $this->assertSame($service, $actual);
     }
 
-    #[TestDox('for() returns null for a `mixed` parameter when the container has no match, because mixed is implicitly nullable')]
+    #[TestDox('::for() returns null for a `mixed` parameter when the container has no match, because mixed is implicitly nullable')]
     public function test_for_returns_null_for_mixed_when_container_has_no_match(): void
     {
         // ----------------------------------------------------------------
@@ -417,7 +417,7 @@ class ResolveParameterTest extends TestCase
         $this->assertNull($actual);
     }
 
-    #[TestDox('for() returns null for a standalone `null` typed parameter without probing the container')]
+    #[TestDox('::for() returns null for a standalone `null` typed parameter without probing the container')]
     public function test_for_returns_null_for_standalone_null_typed_parameter(): void
     {
         // ----------------------------------------------------------------
@@ -470,7 +470,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() lets a RuntimeException thrown by $container->get() propagate unchanged')]
+    #[TestDox('::for() lets a RuntimeException thrown by $container->get() propagate unchanged')]
     public function test_for_propagates_exception_from_container_get(): void
     {
         // ----------------------------------------------------------------
@@ -520,7 +520,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved class type')]
+    #[TestDox('::for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved class type')]
     public function test_for_throws_when_no_match_and_no_fallback(): void
     {
         // ----------------------------------------------------------------
@@ -584,7 +584,7 @@ class ResolveParameterTest extends TestCase
         ];
     }
 
-    #[TestDox('for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved scalar / leaf type')]
+    #[TestDox('::for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved scalar / leaf type')]
     #[DataProvider('provideScalarParams')]
     public function test_for_throws_for_unresolved_scalar(
         Closure $fn,
@@ -651,7 +651,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() throws UnsupportedParameterTypeException for an intersection type')]
+    #[TestDox('::for() throws UnsupportedParameterTypeException for an intersection type')]
     public function test_for_throws_for_intersection_type(): void
     {
         // ----------------------------------------------------------------
@@ -691,7 +691,7 @@ class ResolveParameterTest extends TestCase
         $this->fail('UnsupportedParameterTypeException was not thrown');
     }
 
-    #[TestDox('for() throws UnsupportedParameterTypeException for a DNF type with any intersection branch')]
+    #[TestDox('::for() throws UnsupportedParameterTypeException for a DNF type with any intersection branch')]
     public function test_for_throws_for_dnf_type_with_intersection_branch(): void
     {
         // ----------------------------------------------------------------
@@ -740,7 +740,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved union type')]
+    #[TestDox('::for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved union type')]
     public function test_for_throws_for_unresolved_union_type(): void
     {
         // ----------------------------------------------------------------
@@ -807,7 +807,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() throws UnresolvedParameterException carrying the enum FQCN for an enum-typed parameter with no container match')]
+    #[TestDox('::for() throws UnresolvedParameterException carrying the enum FQCN for an enum-typed parameter with no container match')]
     public function test_for_throws_for_unresolved_enum_typed_parameter(): void
     {
         // ----------------------------------------------------------------
@@ -867,7 +867,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() resolves a `self` typed parameter by looking up the declaring class in the container')]
+    #[TestDox('::for() resolves a `self` typed parameter by looking up the declaring class in the container')]
     public function test_for_resolves_self_typed_parameter_via_declaring_class(): void
     {
         // ----------------------------------------------------------------
@@ -903,7 +903,7 @@ class ResolveParameterTest extends TestCase
         $this->assertSame($service, $actual);
     }
 
-    #[TestDox('for() resolves a `parent` typed parameter by looking up the parent class in the container')]
+    #[TestDox('::for() resolves a `parent` typed parameter by looking up the parent class in the container')]
     public function test_for_resolves_parent_typed_parameter_via_parent_of_declaring_class(): void
     {
         // ----------------------------------------------------------------
@@ -946,7 +946,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() does not re-probe the declared type when falling through to the second-pass hierarchy walk')]
+    #[TestDox('::for() does not re-probe the declared type when falling through to the second-pass hierarchy walk')]
     public function test_for_does_not_re_probe_the_declared_type_in_the_second_pass(): void
     {
         // ----------------------------------------------------------------
@@ -997,7 +997,7 @@ class ResolveParameterTest extends TestCase
         );
     }
 
-    #[TestDox('for() never probes the container for the literal key "null" when resolving a nullable parameter')]
+    #[TestDox('::for() never probes the container for the literal key "null" when resolving a nullable parameter')]
     public function test_for_does_not_probe_null_key_for_nullable_parameter(): void
     {
         // ----------------------------------------------------------------
@@ -1047,7 +1047,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() returns null when the parameter is nullable and the container has no match')]
+    #[TestDox('::for() returns null when the parameter is nullable and the container has no match')]
     public function test_for_returns_null_for_nullable_when_no_match(): void
     {
         // ----------------------------------------------------------------
@@ -1076,7 +1076,7 @@ class ResolveParameterTest extends TestCase
         $this->assertNull($actual);
     }
 
-    #[TestDox('for() prefers the container match over the null fallback')]
+    #[TestDox('::for() prefers the container match over the null fallback')]
     public function test_for_prefers_container_match_over_null(): void
     {
         // ----------------------------------------------------------------
@@ -1110,7 +1110,7 @@ class ResolveParameterTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('for() returns the declared default value when the container has no match')]
+    #[TestDox('::for() returns the declared default value when the container has no match')]
     public function test_for_returns_default_value_when_no_match(): void
     {
         // ----------------------------------------------------------------
@@ -1138,7 +1138,7 @@ class ResolveParameterTest extends TestCase
         $this->assertSame(42, $actual);
     }
 
-    #[TestDox('for() prefers the container match over the declared default value')]
+    #[TestDox('::for() prefers the container match over the declared default value')]
     public function test_for_prefers_container_match_over_default(): void
     {
         // ----------------------------------------------------------------
@@ -1166,7 +1166,7 @@ class ResolveParameterTest extends TestCase
         $this->assertSame(99, $actual);
     }
 
-    #[TestDox('for() prefers the declared default value over the null fallback')]
+    #[TestDox('::for() prefers the declared default value over the null fallback')]
     public function test_for_prefers_default_over_null(): void
     {
         // ----------------------------------------------------------------

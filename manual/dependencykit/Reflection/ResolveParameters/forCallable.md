@@ -150,16 +150,16 @@ _None yet._
 ```
 StusDevKit\DependencyKit\Reflection\ResolveParameters
  ✔ declares a forCallable() method
- ✔ forCallable() is public
- ✔ forCallable() is static
- ✔ forCallable() declares an array return type
- ✔ forCallable() resolves parameters for a Closure
- ✔ forCallable() resolves parameters for a first-class callable
- ✔ forCallable() resolves parameters for an invokable object
- ✔ forCallable() resolves parameters for an [object, method] array
- ✔ forCallable() resolves parameters for a [class-string, method] array
- ✔ forCallable() resolves parameters for a "Class::method" string
- ✔ forCallable() resolves parameters for a global function name
+ ✔ ::forCallable() is public
+ ✔ ::forCallable() is static
+ ✔ ::forCallable() declares an array return type
+ ✔ ::forCallable() resolves parameters for a Closure
+ ✔ ::forCallable() resolves parameters for a first-class callable
+ ✔ ::forCallable() resolves parameters for an invokable object
+ ✔ ::forCallable() resolves parameters for an [object, method] array
+ ✔ ::forCallable() resolves parameters for a [class-string, method] array
+ ✔ ::forCallable() resolves parameters for a "Class::method" string
+ ✔ ::forCallable() resolves parameters for a global function name
 ```
 
 ## Source

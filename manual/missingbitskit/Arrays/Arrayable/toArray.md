@@ -70,12 +70,11 @@ _None yet._
 
 ```
 StusDevKit\MissingBitsKit\Arrays\Arrayable
- ✔ exposes only a toArray() method
- ✔ declares a toArray() method
- ✔ toArray() is public
- ✔ toArray() is an instance method
- ✔ toArray() takes no parameters
- ✔ toArray() declares an `array` return type
+ ✔ ->toArray() is declared
+ ✔ ->toArray() is public
+ ✔ ->toArray() is an instance method
+ ✔ ->toArray() takes no parameters
+ ✔ ->toArray() declares an `array` return type
 ```
 
 ## Source

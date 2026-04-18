@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- introduce JsonValidationError ([a1337fd](https://github.com/stuartherbert/stusdevkit/commit/a1337fd)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ClassInstantiability enum ([a8ea4d4](https://github.com/stuartherbert/stusdevkit/commit/a8ea4d4)) — Stuart Herbert <stuart@stuartherbert.com>
 - added EnumToArray ([80d2ca6](https://github.com/stuartherbert/stusdevkit/commit/80d2ca6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added StaticallyArrayable interface ([eb01012](https://github.com/stuartherbert/stusdevkit/commit/eb01012)) — Stuart Herbert <stuart@stuartherbert.com>

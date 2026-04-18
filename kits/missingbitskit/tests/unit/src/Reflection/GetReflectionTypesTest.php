@@ -62,7 +62,7 @@ class GetReflectionTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() wraps a ReflectionNamedType in a single-item array')]
+    #[TestDox('::from() wraps a ReflectionNamedType in a single-item array')]
     public function test_from_wraps_named_type_in_array(): void
     {
         // ----------------------------------------------------------------
@@ -91,7 +91,7 @@ class GetReflectionTypesTest extends TestCase
         $this->assertSame($refType, $actual[0]);
     }
 
-    #[TestDox('from() wraps a nullable ReflectionNamedType in a single-item array')]
+    #[TestDox('::from() wraps a nullable ReflectionNamedType in a single-item array')]
     public function test_from_wraps_nullable_named_type_in_array(): void
     {
         // ----------------------------------------------------------------
@@ -127,7 +127,7 @@ class GetReflectionTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns the member types of a ReflectionUnionType')]
+    #[TestDox('::from() returns the member types of a ReflectionUnionType')]
     public function test_from_returns_member_types_of_union(): void
     {
         // ----------------------------------------------------------------
@@ -168,7 +168,7 @@ class GetReflectionTypesTest extends TestCase
         $this->assertSame(['int', 'string'], $names);
     }
 
-    #[TestDox('from() does not recurse into compound members of a union (DNF)')]
+    #[TestDox('::from() does not recurse into compound members of a union (DNF)')]
     public function test_from_does_not_recurse_into_dnf_union_members(): void
     {
         // ----------------------------------------------------------------
@@ -218,7 +218,7 @@ class GetReflectionTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns the member types of a ReflectionIntersectionType')]
+    #[TestDox('::from() returns the member types of a ReflectionIntersectionType')]
     public function test_from_returns_member_types_of_intersection(): void
     {
         // ----------------------------------------------------------------
@@ -264,7 +264,7 @@ class GetReflectionTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() throws UnsupportedReflectionTypeException for an unknown ReflectionType subclass')]
+    #[TestDox('::from() throws UnsupportedReflectionTypeException for an unknown ReflectionType subclass')]
     public function test_from_throws_for_unknown_reflection_type_subclass(): void
     {
         // ----------------------------------------------------------------

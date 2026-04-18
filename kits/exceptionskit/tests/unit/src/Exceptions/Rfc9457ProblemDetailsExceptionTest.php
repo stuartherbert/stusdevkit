@@ -61,7 +61,7 @@ class Rfc9457ProblemDetailsExceptionTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('can instantiate with required params only')]
+    #[TestDox('::__construct() accepts the required parameters only')]
     public function test_can_instantiate_with_required_params(): void
     {
         // ----------------------------------------------------------------
@@ -90,7 +90,7 @@ class Rfc9457ProblemDetailsExceptionTest extends TestCase
         $this->assertInstanceOf(Rfc9457ProblemDetailsException::class, $unit);
     }
 
-    #[TestDox('can instantiate with all params')]
+    #[TestDox('::__construct() accepts all parameters')]
     public function test_can_instantiate_with_all_params(): void
     {
         // ----------------------------------------------------------------
@@ -971,7 +971,7 @@ class Rfc9457ProblemDetailsExceptionTest extends TestCase
         $this->assertCount(6, $result);
     }
 
-    #[TestDox('json_encode($exception) produces valid JSON output')]
+    #[TestDox('->jsonSerialize() produces valid JSON output when consumed by json_encode()')]
     public function test_json_encode_produces_valid_json(): void
     {
         // ----------------------------------------------------------------
@@ -1013,7 +1013,7 @@ class Rfc9457ProblemDetailsExceptionTest extends TestCase
         $this->assertSame(['account_id' => 'abc-123', 'balance' => 30], $decoded['extra']);
     }
 
-    #[TestDox('can be thrown and caught with all properties intact')]
+    #[TestDox('survives throw/catch with all properties intact')]
     public function test_can_be_thrown_and_caught(): void
     {
         // ----------------------------------------------------------------

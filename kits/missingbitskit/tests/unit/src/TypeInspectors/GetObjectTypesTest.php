@@ -62,7 +62,7 @@ class GetObjectTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate GetObjectTypes')]
+    #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
         // ----------------------------------------------------------------
@@ -104,7 +104,7 @@ class GetObjectTypesTest extends TestCase
         ];
     }
 
-    #[TestDox('__invoke() returns empty array for non-object input')]
+    #[TestDox('->__invoke() returns empty array for non-object input')]
     #[DataProvider('nonObjectProvider')]
     public function test_invoke_rejects_non_object_input(mixed $input): void
     {
@@ -138,7 +138,7 @@ class GetObjectTypesTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('from() returns class name and object for a plain object')]
+    #[TestDox('::from() returns class name and object for a plain object')]
     public function test_from_returns_expected_types_for_plain_object(): void
     {
         // ----------------------------------------------------------------
@@ -170,7 +170,7 @@ class GetObjectTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() returns full class surface for an object with parent, interface, and trait')]
+    #[TestDox('::from() returns full class surface for an object with parent, interface, and trait')]
     public function test_from_returns_full_class_surface(): void
     {
         // ----------------------------------------------------------------
@@ -205,7 +205,7 @@ class GetObjectTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() adds callable for a Closure instance')]
+    #[TestDox('::from() adds callable for a Closure instance')]
     public function test_from_adds_callable_for_closure(): void
     {
         // ----------------------------------------------------------------
@@ -236,7 +236,7 @@ class GetObjectTypesTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('from() adds callable for an object that defines __invoke()')]
+    #[TestDox('::from() adds callable for an object that defines __invoke()')]
     public function test_from_adds_callable_for_invokable_object(): void
     {
         // ----------------------------------------------------------------

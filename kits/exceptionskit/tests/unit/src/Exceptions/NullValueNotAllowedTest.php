@@ -52,7 +52,7 @@ class NullValueNotAllowedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate with a detail string')]
+    #[TestDox('::__construct() accepts a detail string')]
     public function test_can_instantiate_with_detail(): void
     {
         // ----------------------------------------------------------------
@@ -79,7 +79,7 @@ class NullValueNotAllowedTest extends TestCase
         $this->assertInstanceOf(NullValueNotAllowedException::class, $unit);
     }
 
-    #[TestDox('Extends Rfc9457ProblemDetailsException')]
+    #[TestDox('extends Rfc9457ProblemDetailsException')]
     public function test_extends_rfc9457(): void
     {
         // ----------------------------------------------------------------
@@ -115,7 +115,7 @@ class NullValueNotAllowedTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Has correct type URI')]
+    #[TestDox('->getTypeAsString() returns the fixed type URI')]
     public function test_has_correct_type_uri(): void
     {
         // ----------------------------------------------------------------
@@ -145,7 +145,7 @@ class NullValueNotAllowedTest extends TestCase
         );
     }
 
-    #[TestDox('Has status 422')]
+    #[TestDox('->getStatus() returns 422')]
     public function test_has_status_422(): void
     {
         // ----------------------------------------------------------------
@@ -172,7 +172,7 @@ class NullValueNotAllowedTest extends TestCase
         $this->assertSame(422, $actualResult);
     }
 
-    #[TestDox('Has fixed title')]
+    #[TestDox('->getTitle() returns the fixed title')]
     public function test_has_fixed_title(): void
     {
         // ----------------------------------------------------------------
@@ -202,7 +202,7 @@ class NullValueNotAllowedTest extends TestCase
         );
     }
 
-    #[TestDox('Detail matches the provided string')]
+    #[TestDox('->maybeGetDetail() returns the detail string passed into the constructor')]
     public function test_detail_matches_provided_string(): void
     {
         // ----------------------------------------------------------------
@@ -232,7 +232,7 @@ class NullValueNotAllowedTest extends TestCase
         );
     }
 
-    #[TestDox('Exception message matches the detail')]
+    #[TestDox('->getMessage() returns the detail string passed into the constructor')]
     public function test_exception_message_matches_detail(): void
     {
         // ----------------------------------------------------------------

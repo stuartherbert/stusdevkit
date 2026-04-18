@@ -46,6 +46,85 @@ Banned phrases: **"ensures"**, **"verifies"**, **"tests that"**,
 describe what the test is doing rather than what the code does.
 Remove them, and what's left is the fact worth documenting.
 
+## Prefix method-specific tests with the method name
+
+A flat TestDox listing mixes every class-level and method-level
+test under one class heading. Without a prefix, a reader cannot
+tell which method a given behaviour belongs to:
+
+```
+StusDevKit\MissingBitsKit\Json\Json
+ ✔ encodes an integer as the root value          ← which method?
+ ✔ decodes a JSON array                           ← different method
+ ✔ returns a JsonValidationError for invalid JSON ← third method
+```
+
+Prefix every method-specific test with the method name, using
+PHP's own call syntax to signal what kind of member is being
+tested:
+
+- **`->method()`** — instance methods (the method is called
+  through an object reference)
+- **`::method()`** — static methods and the constructor (the
+  method is called through the class name, or implicitly via
+  `new`)
+
+Class-level tests (namespace, class kind, published method set,
+class constants) describe the class itself, not a specific
+member — leave them **unprefixed**.
+
+### Allowed
+
+```php
+// class-level - no prefix
+#[TestDox('lives in the StusDevKit\\MissingBitsKit\\Json namespace')]
+#[TestDox('exposes only encode(), decode() and validate() as public methods')]
+
+// instance method - arrow prefix
+#[TestDox('->encode() encodes an integer as the root value')]
+#[TestDox('->getCode() returns the $code passed to the constructor')]
+
+// static method - double-colon prefix
+#[TestDox('::from() accepts any callable shape')]
+
+// constructor - double-colon prefix (matches `new Foo(...)` syntax)
+#[TestDox('::__construct() declares $code and $message as parameters in that order')]
+```
+
+### Not allowed
+
+```php
+#[TestDox('encodes an integer as the root value')]
+// ↑ which method?
+
+#[TestDox('encode() accepts named parameters')]
+// ↑ bare form - is it static or instance?
+
+#[TestDox('::encode() encodes an integer as the root value')]
+// ↑ `::` on an instance method - the syntax is misleading
+```
+
+The output is then self-documenting — a reader scanning the
+TestDox listing sees at a glance which member each line exercises:
+
+```
+StusDevKit\MissingBitsKit\Json\Json
+ ✔ lives in the StusDevKit\MissingBitsKit\Json namespace
+ ✔ exposes only encode(), decode() and validate() as public methods
+ ✔ ->encode() encodes an integer as the root value
+ ✔ ->decode() decodes a JSON array
+ ✔ ->validate() returns a JsonValidationError for invalid JSON
+```
+
+### Tests that span multiple members
+
+When a single test exercises two members together (typically a
+round-trip or composed-call test), prefix with both:
+
+```php
+#[TestDox('->encode() and ->decode() are inverse operations')]
+```
+
 ## DataProvider: use `$paramName` placeholders
 
 PHPUnit's `#[TestDox(...)]` attribute supports parameter

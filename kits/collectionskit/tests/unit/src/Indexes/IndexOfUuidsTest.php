@@ -56,7 +56,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty index')]
+    #[TestDox('::__construct() creates an empty index')]
     public function test_can_instantiate_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -107,7 +107,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertInstanceOf(DictOfObjects::class, $unit);
     }
 
-    #[TestDox('Can instantiate with initial data')]
+    #[TestDox('::__construct() accepts initial data')]
     public function test_can_instantiate_with_initial_data(): void
     {
         // ----------------------------------------------------------------
@@ -140,7 +140,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('Constructor preserves string keys')]
+    #[TestDox('::__construct() preserves string keys')]
     public function test_constructor_preserves_string_keys(): void
     {
         // ----------------------------------------------------------------
@@ -180,7 +180,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() stores a UUID using its string representation as key')]
+    #[TestDox('->add() stores a UUID using its string representation as key')]
     public function test_add_stores_uuid_using_string_as_key(): void
     {
         // ----------------------------------------------------------------
@@ -208,7 +208,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() overwrites existing UUID with same string representation')]
+    #[TestDox('->add() overwrites existing UUID with same string representation')]
     public function test_add_overwrites_existing_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -238,7 +238,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() adds to existing data')]
+    #[TestDox('->add() adds to existing data')]
     public function test_add_adds_to_existing_data(): void
     {
         // ----------------------------------------------------------------
@@ -270,7 +270,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid3, $unit->get((string) $uuid3));
     }
 
-    #[TestDox('add() returns $this for method chaining')]
+    #[TestDox('->add() returns $this for method chaining')]
     public function test_add_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -295,7 +295,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('add() supports fluent chaining')]
+    #[TestDox('->add() supports fluent chaining')]
     public function test_add_supports_fluent_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -334,7 +334,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('set() stores a UUID with a string key')]
+    #[TestDox('->set() stores a UUID with a string key')]
     public function test_set_stores_uuid_with_string_key(): void
     {
         // ----------------------------------------------------------------
@@ -361,7 +361,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('set() returns $this for method chaining')]
+    #[TestDox('->set() returns $this for method chaining')]
     public function test_set_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -395,7 +395,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('has() returns true for existing key')]
+    #[TestDox('->has() returns true for existing key')]
     public function test_has_returns_true_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -422,7 +422,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('has() returns false for missing key')]
+    #[TestDox('->has() returns false for missing key')]
     public function test_has_returns_false_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -448,7 +448,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('has() returns false for empty index')]
+    #[TestDox('->has() returns false for empty index')]
     public function test_has_returns_false_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -473,7 +473,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('has() returns true for key added via add()')]
+    #[TestDox('->has() returns true for key added via add()')]
     public function test_has_returns_true_for_key_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -506,7 +506,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeGet() returns UUID for existing key')]
+    #[TestDox('->maybeGet() returns UUID for existing key')]
     public function test_maybe_get_returns_uuid_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -533,7 +533,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid, $actualResult);
     }
 
-    #[TestDox('maybeGet() returns null for missing key')]
+    #[TestDox('->maybeGet() returns null for missing key')]
     public function test_maybe_get_returns_null_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -559,7 +559,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeGet() returns null for empty index')]
+    #[TestDox('->maybeGet() returns null for empty index')]
     public function test_maybe_get_returns_null_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -584,7 +584,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeGet() returns UUID added via add()')]
+    #[TestDox('->maybeGet() returns UUID added via add()')]
     public function test_maybe_get_returns_uuid_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -617,7 +617,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('get() returns UUID for existing key')]
+    #[TestDox('->get() returns UUID for existing key')]
     public function test_get_returns_uuid_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -646,7 +646,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult);
     }
 
-    #[TestDox('get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws RuntimeException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -672,7 +672,7 @@ class IndexOfUuidsTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('get() throws RuntimeException for empty index')]
+    #[TestDox('->get() throws RuntimeException for empty index')]
     public function test_get_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -697,7 +697,7 @@ class IndexOfUuidsTest extends TestCase
         $unit->get('anything');
     }
 
-    #[TestDox('get() returns UUID added via add()')]
+    #[TestDox('->get() returns UUID added via add()')]
     public function test_get_returns_uuid_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -724,7 +724,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid, $actualResult);
     }
 
-    #[TestDox('get() exception message includes the missing key')]
+    #[TestDox('->get() exception message includes the missing key')]
     public function test_get_exception_includes_key(): void
     {
         // ----------------------------------------------------------------
@@ -755,7 +755,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty index')]
+    #[TestDox('->toArray() returns empty array for empty index')]
     public function test_to_array_returns_empty_array_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -780,7 +780,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -815,7 +815,7 @@ class IndexOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('toArray() returns data added via add()')]
+    #[TestDox('->toArray() returns data added via add()')]
     public function test_to_array_returns_data_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -859,7 +859,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty index')]
+    #[TestDox('->count() returns 0 for empty index')]
     public function test_count_returns_zero_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -884,7 +884,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in index')]
+    #[TestDox('->count() returns number of items in index')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -912,7 +912,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -940,7 +940,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() reflects items added via add()')]
+    #[TestDox('->count() reflects items added via add()')]
     public function test_count_reflects_items_added_via_add(): void
     {
         // ----------------------------------------------------------------
@@ -967,7 +967,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame(2, $actualResult);
     }
 
-    #[TestDox('count() does not increase when adding the same UUID')]
+    #[TestDox('->count() does not increase when adding the same UUID')]
     public function test_count_does_not_increase_on_duplicate(): void
     {
         // ----------------------------------------------------------------
@@ -1000,7 +1000,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -1192,7 +1192,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the index')]
+    #[TestDox('->merge() can merge an array into the index')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -1227,7 +1227,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another IndexOfUuids')]
+    #[TestDox('->merge() can merge another IndexOfUuids')]
     public function test_merge_can_merge_index(): void
     {
         // ----------------------------------------------------------------
@@ -1268,7 +1268,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the index')]
+    #[TestDox('->mergeArray() adds array items to the index')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -1303,7 +1303,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() into empty index sets the data')]
+    #[TestDox('->mergeArray() into empty index sets the data')]
     public function test_merge_array_into_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1339,7 +1339,7 @@ class IndexOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('mergeArray() with empty array leaves index unchanged')]
+    #[TestDox('->mergeArray() with empty array leaves index unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
         // ----------------------------------------------------------------
@@ -1369,7 +1369,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeArray() overwrites matching keys')]
+    #[TestDox('->mergeArray() overwrites matching keys')]
     public function test_merge_array_overwrites_matching_keys(): void
     {
         // ----------------------------------------------------------------
@@ -1405,7 +1405,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertCount(2, $unit);
     }
 
-    #[TestDox('mergeArray() returns $this for method chaining')]
+    #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -1437,7 +1437,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another index into this one')]
+    #[TestDox('->mergeSelf() merges another index into this one')]
     public function test_merge_self_merges_index(): void
     {
         // ----------------------------------------------------------------
@@ -1472,7 +1472,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source index')]
+    #[TestDox('->mergeSelf() does not modify the source index')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -1506,7 +1506,7 @@ class IndexOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('mergeSelf() with empty source leaves index unchanged')]
+    #[TestDox('->mergeSelf() with empty source leaves index unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
         // ----------------------------------------------------------------
@@ -1537,7 +1537,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('mergeSelf() overwrites matching keys')]
+    #[TestDox('->mergeSelf() overwrites matching keys')]
     public function test_merge_self_overwrites_matching_keys(): void
     {
         // ----------------------------------------------------------------
@@ -1581,7 +1581,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first UUID')]
+    #[TestDox('->maybeFirst() returns the first UUID')]
     public function test_maybe_first_returns_first_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1610,7 +1610,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid1, $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty index')]
+    #[TestDox('->maybeFirst() returns null for empty index')]
     public function test_maybe_first_returns_null_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1635,7 +1635,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('first() returns the first UUID')]
+    #[TestDox('->first() returns the first UUID')]
     public function test_first_returns_first_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1664,7 +1664,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid1, $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty index')]
+    #[TestDox('->first() throws RuntimeException for empty index')]
     public function test_first_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1693,7 +1693,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last UUID')]
+    #[TestDox('->maybeLast() returns the last UUID')]
     public function test_maybe_last_returns_last_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1722,7 +1722,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty index')]
+    #[TestDox('->maybeLast() returns null for empty index')]
     public function test_maybe_last_returns_null_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1747,7 +1747,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('last() returns the last UUID')]
+    #[TestDox('->last() returns the last UUID')]
     public function test_last_returns_last_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -1776,7 +1776,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty index')]
+    #[TestDox('->last() throws RuntimeException for empty index')]
     public function test_last_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1805,7 +1805,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new IndexOfUuids with the same data')]
+    #[TestDox('->copy() returns a new IndexOfUuids with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1836,7 +1836,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($unit->toArray(), $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (adding to copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (adding to copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1867,7 +1867,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertFalse($unit->has((string) $uuid2));
     }
 
-    #[TestDox('copy() of empty index returns empty index')]
+    #[TestDox('->copy() of empty index returns empty index')]
     public function test_copy_of_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1895,7 +1895,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertCount(0, $copy);
     }
 
-    #[TestDox('copy() shares UUID references with original')]
+    #[TestDox('->copy() shares UUID references with original')]
     public function test_copy_shares_uuid_references(): void
     {
         // ----------------------------------------------------------------
@@ -1932,7 +1932,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty index')]
+    #[TestDox('->empty() returns true for empty index')]
     public function test_empty_returns_true_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1957,7 +1957,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty index')]
+    #[TestDox('->empty() returns false for non-empty index')]
     public function test_empty_returns_false_for_non_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1983,7 +1983,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('empty() returns false after add()')]
+    #[TestDox('->empty() returns false after add()')]
     public function test_empty_returns_false_after_add(): void
     {
         // ----------------------------------------------------------------
@@ -2015,7 +2015,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns "IndexOfUuids"')]
+    #[TestDox('->getCollectionTypeAsString() returns "IndexOfUuids"')]
     public function test_get_collection_type_as_string(): void
     {
         // ----------------------------------------------------------------
@@ -2046,7 +2046,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Index with one UUID: first() and last() return the same UUID')]
+    #[TestDox('Index with one UUID: ->first() and ->last() return the same UUID')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -2081,7 +2081,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() and merge methods support fluent chaining together')]
+    #[TestDox('->add() and merge methods support fluent chaining together')]
     public function test_add_and_merge_support_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -2122,7 +2122,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('get() and maybeGet() return same UUID for existing key')]
+    #[TestDox('->get() and ->maybeGet() return same UUID for existing key')]
     public function test_get_and_maybe_get_return_same_uuid(): void
     {
         // ----------------------------------------------------------------
@@ -2251,7 +2251,7 @@ class IndexOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArrayOfStrings() returns empty array for empty index')]
+    #[TestDox('->toArrayOfStrings() returns empty array for empty index')]
     public function test_to_array_of_strings_returns_empty_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -2276,7 +2276,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArrayOfStrings() returns UUID string representations')]
+    #[TestDox('->toArrayOfStrings() returns UUID string representations')]
     public function test_to_array_of_strings_returns_string_representations(): void
     {
         // ----------------------------------------------------------------
@@ -2314,7 +2314,7 @@ class IndexOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('toArrayOfStrings() preserves string keys')]
+    #[TestDox('->toArrayOfStrings() preserves string keys')]
     public function test_to_array_of_strings_preserves_keys(): void
     {
         // ----------------------------------------------------------------
@@ -2346,7 +2346,7 @@ class IndexOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('toArrayOfStrings() returns valid UUID strings')]
+    #[TestDox('->toArrayOfStrings() returns valid UUID strings')]
     public function test_to_array_of_strings_returns_valid_uuid_strings(): void
     {
         // ----------------------------------------------------------------
@@ -2376,7 +2376,7 @@ class IndexOfUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('toArrayOfStrings() includes items added via add()')]
+    #[TestDox('->toArrayOfStrings() includes items added via add()')]
     public function test_to_array_of_strings_includes_items_from_add(): void
     {
         // ----------------------------------------------------------------
@@ -2411,7 +2411,7 @@ class IndexOfUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('toArrayOfStrings() values match UUID toString()')]
+    #[TestDox('->toArrayOfStrings() values match UUID toString()')]
     public function test_to_array_of_strings_matches_to_string(): void
     {
         // ----------------------------------------------------------------
@@ -2447,7 +2447,7 @@ class IndexOfUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('toArrayOfStrings() keys match toArray() keys')]
+    #[TestDox('->toArrayOfStrings() keys match toArray() keys')]
     public function test_to_array_of_strings_keys_match_to_array_keys(): void
     {
         // ----------------------------------------------------------------

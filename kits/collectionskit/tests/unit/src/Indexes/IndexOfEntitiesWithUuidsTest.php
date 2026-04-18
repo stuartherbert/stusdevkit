@@ -57,7 +57,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Can instantiate an empty index')]
+    #[TestDox('::__construct() creates an empty index')]
     public function test_can_instantiate_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -111,7 +111,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertInstanceOf(DictOfObjects::class, $unit);
     }
 
-    #[TestDox('Can instantiate with initial data')]
+    #[TestDox('::__construct() accepts initial data')]
     public function test_can_instantiate_with_initial_data(): void
     {
         // ----------------------------------------------------------------
@@ -150,7 +150,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    #[TestDox('Constructor preserves string keys')]
+    #[TestDox('::__construct() preserves string keys')]
     public function test_constructor_preserves_string_keys(): void
     {
         // ----------------------------------------------------------------
@@ -196,7 +196,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('add() stores an entity using its UUID string as key')]
+    #[TestDox('->add() stores an entity using its UUID string as key')]
     public function test_add_stores_entity_using_uuid_as_key(): void
     {
         // ----------------------------------------------------------------
@@ -229,7 +229,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() overwrites existing entity with same UUID')]
+    #[TestDox('->add() overwrites existing entity with same UUID')]
     public function test_add_overwrites_existing_entity(): void
     {
         // ----------------------------------------------------------------
@@ -272,7 +272,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('add() adds to existing data')]
+    #[TestDox('->add() adds to existing data')]
     public function test_add_adds_to_existing_data(): void
     {
         // ----------------------------------------------------------------
@@ -316,7 +316,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity3, $unit->get((string) $uuid3));
     }
 
-    #[TestDox('add() returns $this for method chaining')]
+    #[TestDox('->add() returns $this for method chaining')]
     public function test_add_returns_this(): void
     {
         // ----------------------------------------------------------------
@@ -344,7 +344,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('add() supports fluent chaining')]
+    #[TestDox('->add() supports fluent chaining')]
     public function test_add_supports_fluent_chaining(): void
     {
         // ----------------------------------------------------------------
@@ -395,7 +395,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('has() returns true for existing key')]
+    #[TestDox('->has() returns true for existing key')]
     public function test_has_returns_true_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -425,7 +425,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('has() returns false for missing key')]
+    #[TestDox('->has() returns false for missing key')]
     public function test_has_returns_false_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -454,7 +454,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('has() returns false for empty index')]
+    #[TestDox('->has() returns false for empty index')]
     public function test_has_returns_false_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -485,7 +485,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeGet() returns entity for existing key')]
+    #[TestDox('->maybeGet() returns entity for existing key')]
     public function test_maybe_get_returns_entity_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -516,7 +516,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity, $actualResult);
     }
 
-    #[TestDox('maybeGet() returns null for missing key')]
+    #[TestDox('->maybeGet() returns null for missing key')]
     public function test_maybe_get_returns_null_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -545,7 +545,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeGet() returns null for empty index')]
+    #[TestDox('->maybeGet() returns null for empty index')]
     public function test_maybe_get_returns_null_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -570,7 +570,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('maybeGet() returns the overwritten entity after add()')]
+    #[TestDox('->maybeGet() returns the overwritten entity after add()')]
     public function test_maybe_get_returns_overwritten_entity(): void
     {
         // ----------------------------------------------------------------
@@ -612,7 +612,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('get() returns entity for existing key')]
+    #[TestDox('->get() returns entity for existing key')]
     public function test_get_returns_entity_for_existing_key(): void
     {
         // ----------------------------------------------------------------
@@ -649,7 +649,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity2, $actualResult);
     }
 
-    #[TestDox('get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws RuntimeException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -678,7 +678,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('get() throws RuntimeException for empty index')]
+    #[TestDox('->get() throws RuntimeException for empty index')]
     public function test_get_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -703,7 +703,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $unit->get('anything');
     }
 
-    #[TestDox('get() exception message includes the missing key')]
+    #[TestDox('->get() exception message includes the missing key')]
     public function test_get_exception_includes_key(): void
     {
         // ----------------------------------------------------------------
@@ -735,7 +735,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('toArray() returns empty array for empty index')]
+    #[TestDox('->toArray() returns empty array for empty index')]
     public function test_to_array_returns_empty_array_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -760,7 +760,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('toArray() returns the internal data as a PHP array')]
+    #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
         // ----------------------------------------------------------------
@@ -809,7 +809,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('count() returns 0 for empty index')]
+    #[TestDox('->count() returns 0 for empty index')]
     public function test_count_returns_zero_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -834,7 +834,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame(0, $actualResult);
     }
 
-    #[TestDox('count() returns number of items in index')]
+    #[TestDox('->count() returns number of items in index')]
     public function test_count_returns_number_of_items(): void
     {
         // ----------------------------------------------------------------
@@ -871,7 +871,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('count() works with PHP count() function')]
+    #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
         // ----------------------------------------------------------------
@@ -904,7 +904,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame(2, $actualResult);
     }
 
-    #[TestDox('count() does not increase when overwriting an entity')]
+    #[TestDox('->count() does not increase when overwriting an entity')]
     public function test_count_does_not_increase_on_overwrite(): void
     {
         // ----------------------------------------------------------------
@@ -943,7 +943,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIterator() returns an ArrayIterator')]
+    #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
         // ----------------------------------------------------------------
@@ -1093,7 +1093,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('merge() can merge an array into the index')]
+    #[TestDox('->merge() can merge an array into the index')]
     public function test_merge_can_merge_array(): void
     {
         // ----------------------------------------------------------------
@@ -1131,7 +1131,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('merge() can merge another IndexOfEntitiesWithUuids')]
+    #[TestDox('->merge() can merge another IndexOfEntitiesWithUuids')]
     public function test_merge_can_merge_index(): void
     {
         // ----------------------------------------------------------------
@@ -1177,7 +1177,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeArray() adds array items to the index')]
+    #[TestDox('->mergeArray() adds array items to the index')]
     public function test_merge_array_adds_items(): void
     {
         // ----------------------------------------------------------------
@@ -1215,7 +1215,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeArray() overwrites matching keys')]
+    #[TestDox('->mergeArray() overwrites matching keys')]
     public function test_merge_array_overwrites_matching_keys(): void
     {
         // ----------------------------------------------------------------
@@ -1260,7 +1260,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('mergeSelf() merges another index into this one')]
+    #[TestDox('->mergeSelf() merges another index into this one')]
     public function test_merge_self_merges_index(): void
     {
         // ----------------------------------------------------------------
@@ -1300,7 +1300,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    #[TestDox('mergeSelf() does not modify the source index')]
+    #[TestDox('->mergeSelf() does not modify the source index')]
     public function test_merge_self_does_not_modify_source(): void
     {
         // ----------------------------------------------------------------
@@ -1348,7 +1348,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeFirst() returns the first entity')]
+    #[TestDox('->maybeFirst() returns the first entity')]
     public function test_maybe_first_returns_first_entity(): void
     {
         // ----------------------------------------------------------------
@@ -1383,7 +1383,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity1, $actualResult);
     }
 
-    #[TestDox('maybeFirst() returns null for empty index')]
+    #[TestDox('->maybeFirst() returns null for empty index')]
     public function test_maybe_first_returns_null_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1408,7 +1408,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('first() returns the first entity')]
+    #[TestDox('->first() returns the first entity')]
     public function test_first_returns_first_entity(): void
     {
         // ----------------------------------------------------------------
@@ -1443,7 +1443,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity1, $actualResult);
     }
 
-    #[TestDox('first() throws RuntimeException for empty index')]
+    #[TestDox('->first() throws RuntimeException for empty index')]
     public function test_first_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1474,7 +1474,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('maybeLast() returns the last entity')]
+    #[TestDox('->maybeLast() returns the last entity')]
     public function test_maybe_last_returns_last_entity(): void
     {
         // ----------------------------------------------------------------
@@ -1509,7 +1509,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity2, $actualResult);
     }
 
-    #[TestDox('maybeLast() returns null for empty index')]
+    #[TestDox('->maybeLast() returns null for empty index')]
     public function test_maybe_last_returns_null_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1534,7 +1534,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('last() returns the last entity')]
+    #[TestDox('->last() returns the last entity')]
     public function test_last_returns_last_entity(): void
     {
         // ----------------------------------------------------------------
@@ -1569,7 +1569,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity2, $actualResult);
     }
 
-    #[TestDox('last() throws RuntimeException for empty index')]
+    #[TestDox('->last() throws RuntimeException for empty index')]
     public function test_last_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1600,7 +1600,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('copy() returns a new index with the same data')]
+    #[TestDox('->copy() returns a new index with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
         // ----------------------------------------------------------------
@@ -1641,7 +1641,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($unit->toArray(), $copy->toArray());
     }
 
-    #[TestDox('copy() returns independent instance (adding to copy does not affect original)')]
+    #[TestDox('->copy() returns independent instance (adding to copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
         // ----------------------------------------------------------------
@@ -1677,7 +1677,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertCount(2, $copy);
     }
 
-    #[TestDox('copy() of empty index returns empty index')]
+    #[TestDox('->copy() of empty index returns empty index')]
     public function test_copy_of_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1708,7 +1708,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertCount(0, $copy);
     }
 
-    #[TestDox('copy() shares entity references with original')]
+    #[TestDox('->copy() shares entity references with original')]
     public function test_copy_shares_entity_references(): void
     {
         // ----------------------------------------------------------------
@@ -1754,7 +1754,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('empty() returns true for empty index')]
+    #[TestDox('->empty() returns true for empty index')]
     public function test_empty_returns_true_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1779,7 +1779,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('empty() returns false for non-empty index')]
+    #[TestDox('->empty() returns false for non-empty index')]
     public function test_empty_returns_false_for_non_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -1814,7 +1814,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getCollectionTypeAsString() returns "IndexOfEntitiesWithUuids"')]
+    #[TestDox('->getCollectionTypeAsString() returns "IndexOfEntitiesWithUuids"')]
     public function test_get_collection_type_as_string(): void
     {
         // ----------------------------------------------------------------
@@ -1849,7 +1849,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('Index with one entity: first() and last() return the same entity')]
+    #[TestDox('Index with one entity: ->first() and ->last() return the same entity')]
     public function test_single_item_first_and_last_are_same(): void
     {
         // ----------------------------------------------------------------
@@ -1887,7 +1887,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('get() and maybeGet() return same entity for existing key')]
+    #[TestDox('->get() and ->maybeGet() return same entity for existing key')]
     public function test_get_and_maybe_get_return_same_entity(): void
     {
         // ----------------------------------------------------------------
@@ -2003,7 +2003,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIds() returns empty array for empty index')]
+    #[TestDox('->getIds() returns empty array for empty index')]
     public function test_get_ids_returns_empty_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -2028,7 +2028,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('getIds() returns UuidInterface objects')]
+    #[TestDox('->getIds() returns UuidInterface objects')]
     public function test_get_ids_returns_uuid_objects(): void
     {
         // ----------------------------------------------------------------
@@ -2065,7 +2065,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('getIds() returns the same UUID instances from the entities')]
+    #[TestDox('->getIds() returns the same UUID instances from the entities')]
     public function test_get_ids_returns_same_uuid_instances(): void
     {
         // ----------------------------------------------------------------
@@ -2101,7 +2101,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult[(string) $uuid2]);
     }
 
-    #[TestDox('getIds() preserves string keys from the index')]
+    #[TestDox('->getIds() preserves string keys from the index')]
     public function test_get_ids_preserves_string_keys(): void
     {
         // ----------------------------------------------------------------
@@ -2139,7 +2139,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('getIds() does not contain duplicates after overwrite')]
+    #[TestDox('->getIds() does not contain duplicates after overwrite')]
     public function test_get_ids_no_duplicates_after_overwrite(): void
     {
         // ----------------------------------------------------------------
@@ -2185,7 +2185,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIdsAsStrings() returns empty array for empty index')]
+    #[TestDox('->getIdsAsStrings() returns empty array for empty index')]
     public function test_get_ids_as_strings_returns_empty_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -2210,7 +2210,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame([], $actualResult);
     }
 
-    #[TestDox('getIdsAsStrings() returns UUID string representations')]
+    #[TestDox('->getIdsAsStrings() returns UUID string representations')]
     public function test_get_ids_as_strings_returns_uuid_strings(): void
     {
         // ----------------------------------------------------------------
@@ -2253,7 +2253,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('getIdsAsStrings() returns all strings')]
+    #[TestDox('->getIdsAsStrings() returns all strings')]
     public function test_get_ids_as_strings_returns_all_strings(): void
     {
         // ----------------------------------------------------------------
@@ -2288,7 +2288,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('getIdsAsStrings() returns valid UUID strings')]
+    #[TestDox('->getIdsAsStrings() returns valid UUID strings')]
     public function test_get_ids_as_strings_returns_valid_uuids(): void
     {
         // ----------------------------------------------------------------
@@ -2323,7 +2323,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('getIdsAsStrings() preserves insertion order')]
+    #[TestDox('->getIdsAsStrings() preserves insertion order')]
     public function test_get_ids_as_strings_preserves_order(): void
     {
         // ----------------------------------------------------------------
@@ -2366,7 +2366,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('getIdsAsStrings() does not contain duplicates after overwrite')]
+    #[TestDox('->getIdsAsStrings() does not contain duplicates after overwrite')]
     public function test_get_ids_as_strings_no_duplicates_after_overwrite(): void
     {
         // ----------------------------------------------------------------
@@ -2410,7 +2410,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         );
     }
 
-    #[TestDox('getIdsAsStrings() matches keys from toArray()')]
+    #[TestDox('->getIdsAsStrings() matches keys from toArray()')]
     public function test_get_ids_as_strings_matches_to_array_keys(): void
     {
         // ----------------------------------------------------------------
@@ -2450,7 +2450,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('getIds() UUID strings match getIdsAsStrings()')]
+    #[TestDox('->getIds() UUID strings match getIdsAsStrings()')]
     public function test_get_ids_strings_match_get_ids_as_strings(): void
     {
         // ----------------------------------------------------------------
