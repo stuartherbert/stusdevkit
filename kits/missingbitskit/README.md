@@ -19,7 +19,7 @@ Standalone functions are autoloaded via Composer's `files` directive. Classes fo
 Provides safe wrappers around PHP's `json_encode()`, `json_decode()`, and `json_validate()`. All encode/decode calls force `JSON_THROW_ON_ERROR` so that failures always throw `\JsonException` instead of returning `false`.
 
 ```php
-use StusDevKit\MissingBitsKit\Json;
+use StusDevKit\MissingBitsKit\Json\Json;
 
 $json = new Json();
 

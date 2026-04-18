@@ -133,7 +133,7 @@ This CHANGELOG is automatically compiled.
 
 #### Engineering Standards
 
-- update note about Arrayable ([d54710c](https://github.com/stuartherbert/stusdevkit/commit/d54710c)) — Stuart Herbert <stuart@stuartherbert.com>
+- update note about Arrayable ([3f33016](https://github.com/stuartherbert/stusdevkit/commit/3f33016)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial commit ([f53ef84](https://github.com/stuartherbert/stusdevkit/commit/f53ef84)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
@@ -157,6 +157,10 @@ This CHANGELOG is automatically compiled.
 ### Refactoring
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingBitsKit
+
+- move Json into its own namespace ([dca51dc](https://github.com/stuartherbert/stusdevkit/commit/dca51dc)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### CollectionsKit
 

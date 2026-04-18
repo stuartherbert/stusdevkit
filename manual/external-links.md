@@ -15,14 +15,22 @@ pre-flight report flags it and asks the author to add an entry.
 | Name | URL |
 |------|-----|
 | `Closure` | https://www.php.net/manual/en/class.closure.php |
+| `JSON_*` constants | https://www.php.net/manual/en/json.constants.php |
+| `JsonException` | https://www.php.net/manual/en/class.jsonexception.php |
 | `ReflectionClass` | https://www.php.net/manual/en/class.reflectionclass.php |
 | `ReflectionFunction` | https://www.php.net/manual/en/class.reflectionfunction.php |
 | `ReflectionFunctionAbstract` | https://www.php.net/manual/en/class.reflectionfunctionabstract.php |
 | `ReflectionMethod` | https://www.php.net/manual/en/class.reflectionmethod.php |
 | `ReflectionParameter` | https://www.php.net/manual/en/class.reflectionparameter.php |
+| `stdClass` | https://www.php.net/manual/en/class.stdclass.php |
 | `Stringable` | https://www.php.net/manual/en/class.stringable.php |
 | `function_exists()` | https://www.php.net/manual/en/function.function-exists.php |
 | `class_exists()` | https://www.php.net/manual/en/function.class-exists.php |
+| `json_decode()` | https://www.php.net/manual/en/function.json-decode.php |
+| `json_encode()` | https://www.php.net/manual/en/function.json-encode.php |
+| `json_last_error()` | https://www.php.net/manual/en/function.json-last-error.php |
+| `json_last_error_msg()` | https://www.php.net/manual/en/function.json-last-error-msg.php |
+| `json_validate()` | https://www.php.net/manual/en/function.json-validate.php |
 | `method_exists()` | https://www.php.net/manual/en/function.method-exists.php |
 | `is_callable()` | https://www.php.net/manual/en/function.is-callable.php |
 | `is_string()` | https://www.php.net/manual/en/function.is-string.php |
