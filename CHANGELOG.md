@@ -131,6 +131,10 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ResolveParameters
+
+- improve docblocks ([9ba6998](https://github.com/stuartherbert/stusdevkit/commit/9ba6998)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ValidationKit
 
 - make README more useful as a reference ([6521431](https://github.com/stuartherbert/stusdevkit/commit/6521431)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -149,8 +149,12 @@ class ResolveParameters
      * Full treatment in {@see ResolveParameter}'s own
      * `Here Be Dragons`.
      *
+     * @param Closure|string $func
+     *   the function that you want to resolve parameters for
+     * @param ContainerInterface $container
+     *   the DI container to retrieve parameter values from
      * @return array<string, mixed>
-     *   keyed by parameter name (as declared, no `$` prefix), in
+     *   indexed by parameter name (as declared, no `$` prefix), in
      *   declaration order. Splat-ready with `...` and compatible
      *   with named-argument invocation. Keys are always parameter
      *   names, even when every parameter is positional.
@@ -238,8 +242,13 @@ class ResolveParameters
      * Full treatment in {@see ResolveParameter}'s own
      * `Here Be Dragons`.
      *
+     * @param callable $callable
+     *   the callable that you want to resolve parameters for
+     * @param ContainerInterface $container
+     *   the DI container to retrieve parameter values from
+     *
      * @return array<string, mixed>
-     *   keyed by parameter name (as declared, no `$` prefix), in
+     *   indexed by parameter name (as declared, no `$` prefix), in
      *   declaration order. Splat-ready with `...` and compatible
      *   with named-argument invocation. Keys are always parameter
      *   names, even when every parameter is positional.
@@ -306,7 +315,13 @@ class ResolveParameters
     // ----------------------------------------------------------------
 
     /**
-     * return the parameters that need to be passed into the given `$method` of `$target`
+     * return the parameters that need to be passed into the given
+     * `$method` of `$target`. The parameters come from the given
+     * PSR-11 DI `$container`.
+     *
+     * This inspects the parameters accepted by the given method,
+     * and uses their types to find matching values in the given
+     * DI container.
      *
      * Here Be Dragons
      * ===============
@@ -354,8 +369,15 @@ class ResolveParameters
      * Full treatment in {@see ResolveParameter}'s own
      * `Here Be Dragons`.
      *
+     * @param object|string $target
+     *   the object or class where the method is defined
+     * @param string $method
+     *   the method on $target that you want to resolve parameters for
+     * @param ContainerInterface $container
+     *   the DI container to retrieve parameter values from
+     *
      * @return array<string, mixed>
-     *   keyed by parameter name (as declared, no `$` prefix), in
+     *   indexed by parameter name (as declared, no `$` prefix), in
      *   declaration order. Splat-ready with `...` and compatible
      *   with named-argument invocation. Keys are always parameter
      *   names, even when every parameter is positional.
@@ -398,6 +420,9 @@ class ResolveParameters
     /**
      * return the parameters that need to be passed into the constructor of
      * `$class`
+     *
+     * Inspects the parameters accepted by the given class's constructor,
+     * and uses their types to find values in the given DI container.
      *
      * Here Be Dragons
      * ===============
@@ -463,8 +488,10 @@ class ResolveParameters
      *   will usually be handing in a `class-string`, but a plain
      *   `string` is accepted by the docblock to match the runtime
      *   behaviour and permit "is this a class at all?" checks.
+     * @param ContainerInterface $container
+     *   the DI container to retrieve parameter values from
      * @return array<string, mixed>
-     *   keyed by parameter name (as declared, no `$` prefix), in
+     *   indexed by parameter name (as declared, no `$` prefix), in
      *   declaration order. Splat-ready with `...` and compatible
      *   with named-argument invocation. Keys are always parameter
      *   names, even when every parameter is positional.
