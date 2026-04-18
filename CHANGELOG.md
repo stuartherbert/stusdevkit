@@ -133,7 +133,7 @@ This CHANGELOG is automatically compiled.
 
 #### Engineering Standards
 
-- initial commit ([4c9d9d2](https://github.com/stuartherbert/stusdevkit/commit/4c9d9d2)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial commit ([f53ef84](https://github.com/stuartherbert/stusdevkit/commit/f53ef84)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
 
@@ -156,6 +156,11 @@ This CHANGELOG is automatically compiled.
 ### Refactoring
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- moved Arrayable into MissingBitsKit ([ffee31f](https://github.com/stuartherbert/stusdevkit/commit/ffee31f)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
@@ -191,10 +196,6 @@ This CHANGELOG is automatically compiled.
 - DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>
 - move validators for built-in PHP object types into their own namespace ([86941c7](https://github.com/stuartherbert/stusdevkit/commit/86941c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidatorKit
 

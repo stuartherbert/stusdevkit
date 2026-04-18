@@ -38,24 +38,30 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 declare(strict_types=1);
+namespace StusDevKit\DependencyKit;
 
-namespace StusDevKit\CollectionsKit\Contracts;
+use Psr\Container\ContainerInterface;
 
-/**
- * Any class that implements Arrayable can return its internal state
- * as a PHP array.
- *
- * It is up to each class to determine (and to document!) exactly what
- * data it will return. Classes are not required to return any hidden
- * internal data (for example).
- *
- * @template TKey of array-key
- * @template TValue of mixed
- */
-interface Arrayable
+class Container implements ContainerInterface
 {
-    /**
-     * @return array<TKey, TValue>
-     */
-    public function toArray(): array;
+    public function __construct()
+    {
+
+    }
+
+    // ================================================================
+    //
+    // ContainerInterface
+    //
+    // ----------------------------------------------------------------
+
+    public function get(string $id)
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function has(string $id): bool
+    {
+        throw new \Exception('Not implemented');
+    }
 }

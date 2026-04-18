@@ -20,6 +20,7 @@ pre-flight report flags it and asks the author to add an entry.
 | `ReflectionFunctionAbstract` | https://www.php.net/manual/en/class.reflectionfunctionabstract.php |
 | `ReflectionMethod` | https://www.php.net/manual/en/class.reflectionmethod.php |
 | `ReflectionParameter` | https://www.php.net/manual/en/class.reflectionparameter.php |
+| `Stringable` | https://www.php.net/manual/en/class.stringable.php |
 | `function_exists()` | https://www.php.net/manual/en/function.function-exists.php |
 | `class_exists()` | https://www.php.net/manual/en/function.class-exists.php |
 | `method_exists()` | https://www.php.net/manual/en/function.method-exists.php |

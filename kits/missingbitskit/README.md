@@ -234,10 +234,9 @@ The inspector reports the **first** disqualifying reason it finds, in this order
 
 #### StaticallyArrayable
 
-`StaticallyArrayable` is a type-level counterpart to
-`CollectionsKit`'s instance-level `Arrayable`. It declares a single
-static method that returns the implementing type's data as a PHP
-array:
+`StaticallyArrayable` is a type-level counterpart to the
+instance-level `Arrayable`. It declares a single static method that
+returns the implementing type's data as a PHP array:
 
 ```php
 namespace StusDevKit\MissingBitsKit\Arrays;

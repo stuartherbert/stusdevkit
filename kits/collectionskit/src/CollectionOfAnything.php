@@ -44,8 +44,8 @@ namespace StusDevKit\CollectionsKit;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use StusDevKit\CollectionsKit\Contracts\Arrayable;
 use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
+use StusDevKit\MissingBitsKit\Arrays\Arrayable;
 
 use function StusDevKit\MissingBitsKit\get_class_basename;
 
