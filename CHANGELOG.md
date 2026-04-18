@@ -20,19 +20,9 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
-#### MissingBitsKit
-
-- added ClassInstantiability enum ([71897d2](https://github.com/stuartherbert/stusdevkit/commit/71897d2)) — Stuart Herbert <stuart@stuartherbert.com>
-- added EnumToArray ([80d2ca6](https://github.com/stuartherbert/stusdevkit/commit/80d2ca6)) — Stuart Herbert <stuart@stuartherbert.com>
-- added StaticallyArrayable interface ([eb01012](https://github.com/stuartherbert/stusdevkit/commit/eb01012)) — Stuart Herbert <stuart@stuartherbert.com>
-- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
-- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
-- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
-- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
-- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### DependencyKit
 
+- added ResolveParameters tool ([a1835f7](https://github.com/stuartherbert/stusdevkit/commit/a1835f7)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ResolveParameter ([375d39a](https://github.com/stuartherbert/stusdevkit/commit/375d39a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UntypedParameterException ([9d747f9](https://github.com/stuartherbert/stusdevkit/commit/9d747f9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnsupportedParameterTypeException ([fa422f1](https://github.com/stuartherbert/stusdevkit/commit/fa422f1)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -40,6 +30,17 @@ This CHANGELOG is automatically compiled.
 - added DependencyNotFoundException ([29d4ce5](https://github.com/stuartherbert/stusdevkit/commit/29d4ce5)) — Stuart Herbert <stuart@stuartherbert.com>
 - add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingBitsKit
+
+- added ClassInstantiability enum ([a8ea4d4](https://github.com/stuartherbert/stusdevkit/commit/a8ea4d4)) — Stuart Herbert <stuart@stuartherbert.com>
+- added EnumToArray ([80d2ca6](https://github.com/stuartherbert/stusdevkit/commit/80d2ca6)) — Stuart Herbert <stuart@stuartherbert.com>
+- added StaticallyArrayable interface ([eb01012](https://github.com/stuartherbert/stusdevkit/commit/eb01012)) — Stuart Herbert <stuart@stuartherbert.com>
+- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
+- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
+- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 

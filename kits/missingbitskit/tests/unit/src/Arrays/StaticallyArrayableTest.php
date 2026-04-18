@@ -122,26 +122,31 @@ class StaticallyArrayableTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares exactly one method')]
-    public function test_declares_exactly_one_method(): void
+    #[TestDox('exposes only a toArray() method')]
+    public function test_exposes_only_a_toArray_method(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // the interface exists to require a single method, toArray().
         // Adding a second method is a breaking change for every
-        // implementer, so the method count is pinned.
+        // implementer, so the method set is pinned by enumeration -
+        // any addition fails with a diff that names the new method,
+        // rather than a cryptic count mismatch.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = 1;
+        $expected = ['toArray'];
         $reflection = new ReflectionClass(StaticallyArrayable::class);
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = count($reflection->getMethods());
+        $actual = array_map(
+            static fn ($method) => $method->getName(),
+            $reflection->getMethods(),
+        );
 
         // ----------------------------------------------------------------
         // test the results

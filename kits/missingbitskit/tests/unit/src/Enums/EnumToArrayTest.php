@@ -120,26 +120,31 @@ class EnumToArrayTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('declares exactly one method')]
-    public function test_declares_exactly_one_method(): void
+    #[TestDox('exposes only a toArray() method')]
+    public function test_exposes_only_a_toArray_method(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // the trait exists to supply a single method, toArray().
         // Adding a second method is a surface-area expansion that
-        // every using enum inherits, so the method count is pinned.
+        // every using enum inherits, so the method set is pinned by
+        // enumeration - any addition fails with a diff that names
+        // the new method, rather than a cryptic count mismatch.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = 1;
+        $expected = ['toArray'];
         $reflection = new ReflectionClass(EnumToArray::class);
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = count($reflection->getMethods());
+        $actual = array_map(
+            static fn ($method) => $method->getName(),
+            $reflection->getMethods(),
+        );
 
         // ----------------------------------------------------------------
         // test the results
