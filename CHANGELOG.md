@@ -20,6 +20,15 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### MissingBitsKit
+
+- added StaticallyArrayable interface ([842db06](https://github.com/stuartherbert/stusdevkit/commit/842db06)) — Stuart Herbert <stuart@stuartherbert.com>
+- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
+- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
+- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### DependencyKit
 
 - added ResolveParameter ([375d39a](https://github.com/stuartherbert/stusdevkit/commit/375d39a)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -36,14 +45,6 @@ This CHANGELOG is automatically compiled.
 - added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
-- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
-- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
-- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
-- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingKitsBit
 
