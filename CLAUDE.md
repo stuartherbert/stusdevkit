@@ -124,6 +124,63 @@ Break work into small, focused pieces that can each be committed separately with
 - **PHP 8.5+** with `declare(strict_types=1)`
 - **License header** - All PHP files must include the BSD-3-Clause license header (copy from `kits/collectionskit/src/Lists/ListOfStrings.php`)
 - **Detailed docblocks** with purpose and usage examples
+- **Docblocks: motivation, not speculation** - Don't claim what's
+  "primary", "main", or "most common" — you don't have that
+  information, and speculation ages badly. DO record what drove the
+  code into existence: phrase motivation as **"Originally added
+  for ..."**. That's factual information the author always has, and
+  it remains useful even once other uses emerge. Applies to docblocks,
+  inline comments, and README sections written alongside new code.
+- **Method docblocks are load-bearing on utility classes.** For
+  classes consumed through their static methods, the caller's IDE
+  hover shows only the method docblock — the class-level docblock
+  is rarely read. Every piece of contract the caller needs (return
+  shape, hazards, `@throws`) must live in the method docblock,
+  repeated across siblings if necessary. The class-level docblock
+  carries origin, navigation, and shared terms only. Authoritative
+  write-up:
+  [docs/01-Engineering-Standards/Docblocks.md](docs/01-Engineering-Standards/Docblocks.md).
+- **Inline comments are essential, not optional.** This project
+  writes code for decades. Inline comments inside functions and
+  methods are load-bearing: code tells you *what*, comments tell
+  you *why*. Don't default to writing none — default to writing
+  enough that the method reads as its own design document.
+  Authoritative write-up:
+  [docs/01-Engineering-Standards/Inline-Comments.md](docs/01-Engineering-Standards/Inline-Comments.md).
+  Key points summarised below.
+- **Comments first, then implementation.** Write the comments
+  before the code. The comments become the method's outline; the
+  code fills them in. A wrong comment is a design bug, not a doc
+  bug.
+- **Narrative shape.** A method body reads top-to-bottom as
+  *declare → guard → discriminate → summarise → confirm → return*.
+  Markers below make each beat visible.
+- **Marker vocabulary** (apply as short tags above the code they
+  describe):
+  - `// our return value` — declares the accumulator at the top
+  - `// robustness!` — guard rejects invalid input
+  - `// correctness!` — guard ensures correct output for supported
+    input (robustness and correctness are the two first-class
+    engineering pillars — never strip these markers, never critique
+    them as "what-comments")
+  - `// general case` / `// special case` — branch discrimination
+  - `// step 1: XXX` / `// step 2: XXX` — numbered steps in
+    multi-step methods, drafted before the implementation
+  - `// if we get here ...` — short one-liner summarising what the
+    early-returns/throws above have proven
+  - `// all done` — confirms work is complete before the final
+    return
+  - `// keep phpstan happy` — classifies a statement as existing
+    for the static analyser's benefit, not runtime correctness
+    (the invariant already holds from earlier code). Use the
+    two-line structure: invariant line, blank `//`, then the marker.
+  - `// shorthand` — variable is a readability rename (not
+    computation or state); can license short names when they mirror
+    external notation
+- **What NOT to comment.** Don't restate WHAT the code does; don't
+  reference the current task, fix, or ticket (belongs in commit
+  message / PR); don't reference callers (git history is
+  authoritative).
 - **Constructor validation** with meaningful assertions
 - **Line length** - PHP docblocks and comments should word wrap at column 79. Code does not have to word wrap. Markdown files do not need to word wrap.
 - **Named method parameters** - always use named method parameters when a
@@ -185,6 +242,33 @@ Heavy use of generics for type safety:
 - **Test structure**: explain test → setup → perform change → test results
 - **Cover ALL public methods** including inherited ones from parent classes
 - **Use TestDox attributes** for clear test descriptions
+- **Tests are documentation** - The TestDox output is the specification.
+  A reader who runs `make test` should learn what the code does without
+  reading the code. This shapes how tests are written:
+  - Each `#[TestDox('...')]` description is a **complete factual sentence**
+    about the code, not test jargon. Prefer `toArray() is static` over
+    `ensures that toArray is static`. Prefer `returns a name-to-value
+    map for a string-backed enum` over `tests the string-backed enum
+    case`. No "ensures", "verifies", "tests that", "checks if" — state
+    the fact directly.
+  - Group tests into sections using `// ===` separators, and order the
+    sections so the TestDox output reads top-down as a coherent story
+    (identity first, then shape, then behaviour).
+  - Contract tests (reflection-based lockdowns of the published API
+    shape) belong alongside behaviour tests: the combination reads as
+    "here's what it IS, here's what it DOES".
+  - On every `#[DataProvider(...)]` test, use `#[TestDox('... $paramName ...')]`
+    placeholders so the varying value lands **inside** the sentence
+    rather than as a trailing `with data set "X"` suffix. Prefer
+    scalar (`string`/`int`/`bool`) parameter types because they
+    interpolate cleanly; look up rich objects inside the test body
+    from a scalar name (e.g. `constant(Enum::class . '::' . $name)`
+    + `assertInstanceOf` for enum cases).
+  - **Pin sets, not counts.** When locking down an API surface (enum
+    cases, class methods, parameters), assert the enumerated list,
+    not its cardinality. `assertSame(['toArray'], $methodNames)` names
+    the offender on failure; `assertSame(1, count(...))` just says
+    "expected 1, got 2".
 - **Comprehensive coverage** - test happy path, edge cases, and error conditions
 - **Never** use for() loops in tests - always create PHPUnit data providers instead
 - **Test explanations** - Keep concise, avoid redundant phrases. Word wrap at column 79.
