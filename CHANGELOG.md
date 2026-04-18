@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added StaticallyArrayable interface ([842db06](https://github.com/stuartherbert/stusdevkit/commit/842db06)) — Stuart Herbert <stuart@stuartherbert.com>
+- added EnumToArray ([606a2d0](https://github.com/stuartherbert/stusdevkit/commit/606a2d0)) — Stuart Herbert <stuart@stuartherbert.com>
+- added StaticallyArrayable interface ([eb01012](https://github.com/stuartherbert/stusdevkit/commit/eb01012)) — Stuart Herbert <stuart@stuartherbert.com>
 - added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
 - added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
