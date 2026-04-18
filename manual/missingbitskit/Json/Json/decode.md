@@ -1,4 +1,4 @@
-# Json::decode()
+# Json->decode()
 
 > `public decode(string $input, ?bool $associative = null, int $depth = self::DEFAULT_DEPTH, int $flags = self::DEFAULT_DECODE_FLAGS): mixed`
 
@@ -47,7 +47,7 @@ instead of silently returning `null`.
 
 It is one of three siblings on [`Json`](README.md):
 
-- [`Json::encode()`](encode.md) — the inverse operation
+- [`Json->encode()`](encode.md) — the inverse operation
 - [`Json::validate()`](validate.md) — check a string is valid JSON
   without decoding it
 
@@ -129,24 +129,24 @@ _None yet._
 
 ```
 StusDevKit\MissingBitsKit\Json\Json
- ✔ decodes a JSON object as stdClass by default
- ✔ decodes a JSON object as an associative array when associative is true
- ✔ decodes a JSON array
- ✔ decodes root-level JSON string primitive
- ✔ decodes root-level JSON integer primitive
- ✔ decodes root-level JSON negative integer primitive
- ✔ decodes root-level JSON float primitive
- ✔ decodes root-level JSON boolean true primitive
- ✔ decodes root-level JSON boolean false primitive
- ✔ decodes root-level JSON null primitive
- ✔ respects JSON_BIGINT_AS_STRING
- ✔ decode() accepts named parameters
- ✔ succeeds when nesting is within the custom depth limit
- ✔ throws JsonException on syntactically invalid JSON
- ✔ throws JsonException on an empty string
- ✔ throws JsonException on a whitespace-only string
- ✔ throws JsonException when decode depth is exceeded
- ✔ encode() and decode() are inverse operations
+ ✔ ->decode() declares $input, $associative, $depth and $flags as parameters in that order
+ ✔ ->decode() decodes a JSON object as stdClass by default
+ ✔ ->decode() decodes a JSON object as an associative array when associative is true
+ ✔ ->decode() decodes a JSON array
+ ✔ ->decode() decodes root-level JSON string primitive
+ ✔ ->decode() decodes root-level JSON integer primitive
+ ✔ ->decode() decodes root-level JSON negative integer primitive
+ ✔ ->decode() decodes root-level JSON float primitive
+ ✔ ->decode() decodes root-level JSON boolean true primitive
+ ✔ ->decode() decodes root-level JSON boolean false primitive
+ ✔ ->decode() decodes root-level JSON null primitive
+ ✔ ->decode() respects JSON_BIGINT_AS_STRING
+ ✔ ->decode() succeeds when nesting is within the custom depth limit
+ ✔ ->decode() throws JsonException on syntactically invalid JSON
+ ✔ ->decode() throws JsonException on an empty string
+ ✔ ->decode() throws JsonException on a whitespace-only string
+ ✔ ->decode() throws JsonException when depth is exceeded
+ ✔ ->encode() and ->decode() are inverse operations
 ```
 
 ## Source
@@ -159,14 +159,14 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`Json::encode()`](encode.md) — the inverse operation
+- [`Json->encode()`](encode.md) — the inverse operation
 - [`Json::validate()`](validate.md) — check a string is valid JSON
   without paying the cost of decoding it
 
 ## Issues
 
-- [Open issues mentioning `Json::decode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22Json%3A%3Adecode%28%29%22)
-- [Closed issues mentioning `Json::decode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22Json%3A%3Adecode%28%29%22)
+- [Open issues mentioning `Json->decode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22Json%3A%3Adecode%28%29%22)
+- [Closed issues mentioning `Json->decode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22Json%3A%3Adecode%28%29%22)
 - [Report a new issue](https://github.com/stuartherbert/stusdevkit/issues/new?title=Json%3A%3Adecode%28%29%3A+%3Cdescribe+the+issue%3E)
 
 ---

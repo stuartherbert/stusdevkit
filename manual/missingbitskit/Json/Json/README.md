@@ -115,7 +115,9 @@ _No tagged releases yet._
 
 ## See Also
 
-_None._
+- [`JsonValidationError`](../JsonValidationError/README.md) — the
+  value object returned by [`Json::validate()`](validate.md) for
+  each error in a malformed document
 
 ## Issues
 

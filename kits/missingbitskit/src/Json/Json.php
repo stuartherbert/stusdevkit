@@ -200,30 +200,16 @@ class Json
      * Unlike `encode()` and `decode()`, this method never throws
      * on a malformed document: it reports the verdict in the
      * return value instead, so callers can branch on validity
-     * without setting up a `try`/`catch`.
+     * without setting up a `try`/`catch`. An empty list means
+     * the input is valid; a non-empty list carries the errors
+     * that were found.
      *
-     * Here Be Dragons
-     * ===============
-     *
-     * **The return value's truthiness is the opposite of what you
-     * would guess.**
-     *
-     * Empty array on success, `[code, message]` on failure. In
-     * PHP, an empty array is falsy and a non-empty array is
-     * truthy, so:
-     *
-     * - `if ($json->validate($x)) { /* valid *&#47; }` — the block
-     *   runs on **FAILURE** (non-empty array is truthy)
-     * - `if (! $json->validate($x)) { /* valid *&#47; }` — the
-     *   block runs on **SUCCESS** (empty array is falsy)
-     *
-     * Read the return type as "the list of errors, which is empty
-     * when there are none". Never eyeball the truthiness —
-     * compare explicitly:
+     * The recommended idiom is to compare the return value
+     * explicitly:
      *
      * ```
      * if ($json->validate($input) === []) {
-     *     // valid
+     *     // $input is valid JSON
      * }
      * ```
      *
@@ -235,9 +221,9 @@ class Json
      * @param int $flags
      *   bitmask of `JSON_*` validate flags.
      *
-     * @return array{int, string}|array{}
-     *   empty array on success; on failure, a two-element list of
-     *   `[json_last_error(), json_last_error_msg()]`.
+     * @return list<JsonValidationError>
+     *   empty list on success; on failure, the list of errors
+     *   found in `$input`.
      */
     public function validate(
         string $input,
@@ -250,6 +236,11 @@ class Json
             return [];
         }
 
-        return [ json_last_error(), json_last_error_msg() ];
+        return [
+            new JsonValidationError(
+                code: json_last_error(),
+                message: json_last_error_msg(),
+            ),
+        ];
     }
 }

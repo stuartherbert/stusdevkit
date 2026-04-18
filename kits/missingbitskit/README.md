@@ -30,7 +30,7 @@ $encoded = $json->encode(value: ['name' => 'Alice', 'age' => 30]);
 $decoded = $json->decode(input: $encoded, associative: true);
 
 // validate a JSON string without decoding it
-// returns [] on success, or [errorCode, errorMessage] on failure
+// returns [] on success, or a list<JsonValidationError> on failure
 $errors = $json->validate($encoded);
 ```
 

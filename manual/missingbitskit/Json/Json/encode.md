@@ -1,4 +1,4 @@
-# Json::encode()
+# Json->encode()
 
 > `public encode(mixed $input, int $flags = self::DEFAULT_ENCODE_FLAGS, int $depth = self::DEFAULT_DEPTH): string`
 
@@ -45,7 +45,7 @@ instead of returning `false`.
 
 It is one of three siblings on [`Json`](README.md):
 
-- [`Json::decode()`](decode.md) — read JSON back into a PHP value
+- [`Json->decode()`](decode.md) — read JSON back into a PHP value
 - [`Json::validate()`](validate.md) — check a string is valid JSON
   without decoding it
 
@@ -107,29 +107,29 @@ _None yet._
 
 ```
 StusDevKit\MissingBitsKit\Json\Json
- ✔ encodes an associative array as a JSON object
- ✔ encodes an empty array as []
- ✔ encodes an empty stdClass as {}
- ✔ encodes null as the root value
- ✔ encodes boolean true as the root value
- ✔ encodes boolean false as the root value
- ✔ encodes an integer as the root value
- ✔ encodes a string as the root value
- ✔ encodes PHP_INT_MAX without precision loss
- ✔ escapes special characters in strings and round-trips cleanly
- ✔ preserves unicode characters through a round-trip
- ✔ encodes deeply nested arrays
- ✔ encodes nested stdClass objects
- ✔ respects JSON_PRETTY_PRINT
- ✔ respects JSON_UNESCAPED_SLASHES
- ✔ respects JSON_UNESCAPED_UNICODE
- ✔ accepts combined flags via bitwise OR
- ✔ accepts JSON_THROW_ON_ERROR from the caller as a no-op
- ✔ encode() accepts named parameters
- ✔ throws JsonException on a circular reference
- ✔ throws JsonException when depth is exceeded
- ✔ throws JsonException when given a resource
- ✔ encode() and decode() are inverse operations
+ ✔ ->encode() declares $input, $flags and $depth as parameters in that order
+ ✔ ->encode() encodes an associative array as a JSON object
+ ✔ ->encode() encodes an empty array as []
+ ✔ ->encode() encodes an empty stdClass as {}
+ ✔ ->encode() encodes null as the root value
+ ✔ ->encode() encodes boolean true as the root value
+ ✔ ->encode() encodes boolean false as the root value
+ ✔ ->encode() encodes an integer as the root value
+ ✔ ->encode() encodes a string as the root value
+ ✔ ->encode() encodes PHP_INT_MAX without precision loss
+ ✔ ->encode() escapes special characters in strings and round-trips cleanly
+ ✔ ->encode() preserves unicode characters through a round-trip
+ ✔ ->encode() encodes deeply nested arrays
+ ✔ ->encode() encodes nested stdClass objects
+ ✔ ->encode() respects JSON_PRETTY_PRINT
+ ✔ ->encode() respects JSON_UNESCAPED_SLASHES
+ ✔ ->encode() respects JSON_UNESCAPED_UNICODE
+ ✔ ->encode() accepts combined flags via bitwise OR
+ ✔ ->encode() accepts JSON_THROW_ON_ERROR from the caller as a no-op
+ ✔ ->encode() throws JsonException on a circular reference
+ ✔ ->encode() throws JsonException when depth is exceeded
+ ✔ ->encode() throws JsonException when given a resource
+ ✔ ->encode() and ->decode() are inverse operations
 ```
 
 ## Source
@@ -142,14 +142,14 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`Json::decode()`](decode.md) — the inverse operation
+- [`Json->decode()`](decode.md) — the inverse operation
 - [`Json::validate()`](validate.md) — pre-check a string before
   attempting to decode it
 
 ## Issues
 
-- [Open issues mentioning `Json::encode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22Json%3A%3Aencode%28%29%22)
-- [Closed issues mentioning `Json::encode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22Json%3A%3Aencode%28%29%22)
+- [Open issues mentioning `Json->encode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22Json%3A%3Aencode%28%29%22)
+- [Closed issues mentioning `Json->encode()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22Json%3A%3Aencode%28%29%22)
 - [Report a new issue](https://github.com/stuartherbert/stusdevkit/issues/new?title=Json%3A%3Aencode%28%29%3A+%3Cdescribe+the+issue%3E)
 
 ---

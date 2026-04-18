@@ -1,4 +1,4 @@
-# Json::validate()
+# Json->validate()
 
 > `public validate(string $input, int $depth = self::DEFAULT_DEPTH, int $flags = self::DEFAULT_VALIDATE_FLAGS): array`
 
@@ -22,9 +22,9 @@ class Json
     /**
      * @param int<1,max> $depth
      *
-     * @return array{int, string}|array{}
-     *   empty array on success; on failure, a two-element list of
-     *   `[json_last_error(), json_last_error_msg()]`.
+     * @return list<JsonValidationError>
+     *   empty list on success; on failure, the list of errors
+     *   found in `$input`.
      */
     public function validate(
         string $input,
@@ -40,9 +40,21 @@ class Json
 Unlike [`Json::encode()`](encode.md) and [`Json::decode()`](decode.md),
 this method never throws on a malformed document: it reports the
 verdict in the return value instead, so callers can branch on
-validity without setting up a `try`/`catch`.
+validity without setting up a `try`/`catch`. An empty list means the
+input is valid; a non-empty list carries the errors that were found,
+each one a
+[`JsonValidationError`](../JsonValidationError/README.md) with a
+`getCode()` and a `getMessage()`.
 
-It is one of three siblings on [`Json`](README.md):
+The recommended idiom is to compare the return value explicitly:
+
+```php
+if ($json->validate($input) === []) {
+    // $input is valid JSON
+}
+```
+
+`validate()` is one of three siblings on [`Json`](README.md):
 
 - [`Json::encode()`](encode.md) — produce JSON from a PHP value
 - [`Json::decode()`](decode.md) — read JSON back into a PHP value
@@ -65,11 +77,16 @@ validate flags.
 
 ## Return Values
 
-Returns `array{int, string}|array{}`.
+Returns `list<`[`JsonValidationError`](../JsonValidationError/README.md)`>`.
 
-- On success: an empty array (`[]`).
-- On failure: a two-element list of
-  `[`[`json_last_error()`](https://www.php.net/manual/en/function.json-last-error.php)`, `[`json_last_error_msg()`](https://www.php.net/manual/en/function.json-last-error-msg.php)`]`.
+- On success: an empty list (`[]`).
+- On failure: a list with one entry per error. Each entry is a
+  [`JsonValidationError`](../JsonValidationError/README.md) carrying
+  the corresponding
+  [`json_last_error()`](https://www.php.net/manual/en/function.json-last-error.php)
+  code and
+  [`json_last_error_msg()`](https://www.php.net/manual/en/function.json-last-error-msg.php)
+  message.
 
 ## Errors/Exceptions
 
@@ -77,25 +94,7 @@ _None._
 
 ## Here Be Dragons
 
-**The return value's truthiness is the opposite of what you would
-guess.**
-
-Empty array on success, `[code, message]` on failure. In PHP, an
-empty array is falsy and a non-empty array is truthy, so:
-
-- `if ($json->validate($x)) { /* valid */ }` — the block runs on
-  **FAILURE** (non-empty array is truthy)
-- `if (! $json->validate($x)) { /* valid */ }` — the block runs on
-  **SUCCESS** (empty array is falsy)
-
-Read the return type as "the list of errors, which is empty when
-there are none". Never eyeball the truthiness — compare explicitly:
-
-```php
-if ($json->validate($input) === []) {
-    // valid
-}
-```
+_None._
 
 ## Examples
 
@@ -105,37 +104,38 @@ _None yet._
 
 ```
 StusDevKit\MissingBitsKit\Json\Json
- ✔ returns an empty array for valid JSON
- ✔ accepts valid JSON primitive [1, 2, 3]
- ✔ accepts valid JSON primitive "hello"
- ✔ accepts valid JSON primitive 42
- ✔ accepts valid JSON primitive -17
- ✔ accepts valid JSON primitive 3.14
- ✔ accepts valid JSON primitive true
- ✔ accepts valid JSON primitive false
- ✔ accepts valid JSON primitive null
- ✔ accepts valid JSON primitive []
- ✔ accepts valid JSON primitive {}
- ✔ accepts valid JSON with surrounding whitespace
- ✔ accepts JSON within the custom depth limit
- ✔ returns [errorCode, errorMessage] for invalid JSON
- ✔ rejects invalid JSON: {"unclosed brace
- ✔ rejects invalid JSON: [1, 2, 3,]
- ✔ rejects invalid JSON: {key: "value"}
- ✔ rejects invalid JSON: {"key": value}
- ✔ rejects invalid JSON: tru
- ✔ rejects invalid JSON: nul
- ✔ rejects invalid JSON: {"a": 1} {"b": 2}
- ✔ rejects invalid JSON: <xml>not json</xml>
- ✔ rejects invalid JSON: {"escaped": "bad\n'}
- ✔ rejects invalid JSON: ''
- ✔ rejects invalid JSON:    
- ✔ rejects JSON exceeding the custom depth limit
+ ✔ ->validate() declares $input, $depth and $flags as parameters in that order
+ ✔ ->validate() returns an empty array for valid JSON
+ ✔ ->validate() accepts valid JSON primitive [1, 2, 3]
+ ✔ ->validate() accepts valid JSON primitive "hello"
+ ✔ ->validate() accepts valid JSON primitive 42
+ ✔ ->validate() accepts valid JSON primitive -17
+ ✔ ->validate() accepts valid JSON primitive 3.14
+ ✔ ->validate() accepts valid JSON primitive true
+ ✔ ->validate() accepts valid JSON primitive false
+ ✔ ->validate() accepts valid JSON primitive null
+ ✔ ->validate() accepts valid JSON primitive []
+ ✔ ->validate() accepts valid JSON primitive {}
+ ✔ ->validate() accepts valid JSON with surrounding whitespace
+ ✔ ->validate() accepts JSON within the custom depth limit
+ ✔ ->validate() returns a JsonValidationError for invalid JSON
+ ✔ ->validate() rejects invalid JSON: {"unclosed brace
+ ✔ ->validate() rejects invalid JSON: [1, 2, 3,]
+ ✔ ->validate() rejects invalid JSON: {key: "value"}
+ ✔ ->validate() rejects invalid JSON: {"key": value}
+ ✔ ->validate() rejects invalid JSON: tru
+ ✔ ->validate() rejects invalid JSON: nul
+ ✔ ->validate() rejects invalid JSON: {"a": 1} {"b": 2}
+ ✔ ->validate() rejects invalid JSON: <xml>not json</xml>
+ ✔ ->validate() rejects invalid JSON: {"escaped": "bad\n'}
+ ✔ ->validate() rejects invalid JSON: ''
+ ✔ ->validate() rejects invalid JSON:    
+ ✔ ->validate() rejects JSON exceeding the custom depth limit
 ```
 
 ## Source
 
-[`kits/missingbitskit/src/Json/Json.php:242`](../../../../kits/missingbitskit/src/Json/Json.php#L242)
+[`kits/missingbitskit/src/Json/Json.php:228`](../../../../kits/missingbitskit/src/Json/Json.php#L228)
 
 ## Changelog
 
@@ -143,14 +143,16 @@ _No tagged releases yet._
 
 ## See Also
 
+- [`JsonValidationError`](../JsonValidationError/README.md) — the
+  value object returned for each error in a malformed document
 - [`Json::decode()`](decode.md) — when you need the decoded value
   and not just a verdict
 - [`Json::encode()`](encode.md) — the matching encoder
 
 ## Issues
 
-- [Open issues mentioning `Json::validate()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22Json%3A%3Avalidate%28%29%22)
-- [Closed issues mentioning `Json::validate()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22Json%3A%3Avalidate%28%29%22)
+- [Open issues mentioning `Json->validate()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22Json%3A%3Avalidate%28%29%22)
+- [Closed issues mentioning `Json->validate()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22Json%3A%3Avalidate%28%29%22)
 - [Report a new issue](https://github.com/stuartherbert/stusdevkit/issues/new?title=Json%3A%3Avalidate%28%29%3A+%3Cdescribe+the+issue%3E)
 
 ---
