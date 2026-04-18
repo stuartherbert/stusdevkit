@@ -133,6 +133,7 @@ This CHANGELOG is automatically compiled.
 
 #### Engineering Standards
 
+- update note about Arrayable ([d54710c](https://github.com/stuartherbert/stusdevkit/commit/d54710c)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial commit ([f53ef84](https://github.com/stuartherbert/stusdevkit/commit/f53ef84)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
@@ -159,7 +160,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- moved Arrayable into MissingBitsKit ([ffee31f](https://github.com/stuartherbert/stusdevkit/commit/ffee31f)) — Stuart Herbert <stuart@stuartherbert.com>
+- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit

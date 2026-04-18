@@ -174,9 +174,9 @@ thing" shape that an instance method would have.
 
 ### Why a separate `StaticallyArrayable` interface
 
-`Arrayable` (currently in CollectionsKit) is shaped for
-instance-level state: the same collection can hold different data at
-different moments, so `toArray()` is an instance method. `StaticallyArrayable`
+`Arrayable` is shaped for instance-level state: the same collection
+can hold different data at different moments, so `toArray()` is an
+instance method. `StaticallyArrayable`
 covers the other case — the data is bound to the type, not the
 instance — which is what a backed enum is.
 
