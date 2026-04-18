@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### DependencyKit
 
-- added ResolveParameters tool ([a1835f7](https://github.com/stuartherbert/stusdevkit/commit/a1835f7)) — Stuart Herbert <stuart@stuartherbert.com>
+- added ResolveParameters tool ([f3d3f8e](https://github.com/stuartherbert/stusdevkit/commit/f3d3f8e)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ResolveParameter ([375d39a](https://github.com/stuartherbert/stusdevkit/commit/375d39a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UntypedParameterException ([9d747f9](https://github.com/stuartherbert/stusdevkit/commit/9d747f9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnsupportedParameterTypeException ([fa422f1](https://github.com/stuartherbert/stusdevkit/commit/fa422f1)) — Stuart Herbert <stuart@stuartherbert.com>
