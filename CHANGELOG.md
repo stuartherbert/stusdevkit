@@ -132,14 +132,15 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### DependencyKit
+
+- generate manual page for ResolveParameter ([64e4a39](https://github.com/stuartherbert/stusdevkit/commit/64e4a39)) — Stuart Herbert <stuart@stuartherbert.com>
+- experimenting with AI-generated docs ([024e8e3](https://github.com/stuartherbert/stusdevkit/commit/024e8e3)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### Engineering Standards
 
 - update note about Arrayable ([3f33016](https://github.com/stuartherbert/stusdevkit/commit/3f33016)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial commit ([f53ef84](https://github.com/stuartherbert/stusdevkit/commit/f53ef84)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### DependencyKit
-
-- experimenting with AI-generated docs ([024e8e3](https://github.com/stuartherbert/stusdevkit/commit/024e8e3)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ResolveParameters
 

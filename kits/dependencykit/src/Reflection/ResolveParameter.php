@@ -55,130 +55,145 @@ use StusDevKit\MissingBitsKit\TypeInspectors\FlattenClassTypes;
  * dependency container and falling back to whatever the parameter
  * declaration allows (a declared default, `null` for a nullable
  * parameter, or a thrown exception if neither applies).
- *
- * Here Be Dragons.
- * ================
- *
- * **Union-type resolution order is best-effort, not a contract.**
- *
- * When a parameter is declared with a union type such as `A|B`, the
- * obvious expectation is "try `A` first, then `B`". We do our best
- * to honour that: the resolver takes the member order from the text
- * representation PHP produces for the union, which - on current PHP
- * versions - preserves declaration order for **class-only** unions.
- *
- * However:
- *
- *  - For **scalar-only** unions (e.g. `int|string`) and **mixed**
- *    unions (e.g. `stdClass|int`), PHP normalises the order at
- *    parse time, so declaration order is already lost before we
- *    see it. The resolver picks whatever order PHP reports, which
- *    is deterministic on a given PHP version but does not match
- *    what the developer wrote.
- *  - That text-based ordering is **not a cross-version
- *    guarantee**. A future PHP release could in principle change
- *    how it canonicalises unions, and the resolution order would
- *    shift with it.
- *
- * If the resolution order of a union-typed parameter is
- * load-bearing for your application, **do not rely on this**.
- * Either avoid union types on DI-injected parameters, or write a
- * dedicated factory that makes the choice explicit in your own
- * code.
- *
- * **Registering a service under the key `'object'` is a universal
- * class-type fallback.**
- *
- * For any class-typed parameter that misses its own hierarchy
- * lookup, the resolver's second pass eventually probes the
- * container for the literal key `'object'` - because `object` is
- * a real PHP type and a class value legitimately satisfies it.
- * This means that if you register a service under
- * `$container->set('object', …)`, **every** class-typed DI
- * resolution in your codebase that otherwise would fail falls
- * back to that service. That may be exactly what you want (a
- * deliberate "default object" for `object $x` parameters) - or it
- * may be an accidental catch-all that silently swallows real
- * resolution bugs.
- *
- * Rule of thumb: do not register anything under the key `'object'`
- * unless you mean for it to act as a universal class-type
- * fallback, and you accept that any missed resolution elsewhere
- * in the codebase will silently pick it up.
- *
- * **`NotFoundExceptionInterface` from `$container->get()` is
- * indistinguishable from the resolver's own
- * `UnresolvedParameterException` at a PSR-11 catch site.**
- *
- * `UnresolvedParameterException` deliberately implements
- * `NotFoundExceptionInterface` so that callers who only speak
- * PSR-11 can treat "no fallback available" as the same kind of
- * failure as any other container miss. The cost of that choice
- * is that a PSR-11-compliant exception thrown by the container
- * while resolving a sub-dependency of a matched id will *also*
- * implement `NotFoundExceptionInterface`, and a naive
- * `catch (NotFoundExceptionInterface $e)` cannot tell the two
- * apart. One of them is "the resolver ran out of fallbacks";
- * the other is "the container blew up mid-resolve". Those are
- * very different bugs, and conflating them will have you
- * chasing ghosts.
- *
- * If you need to tell the two cases apart, catch
- * `UnresolvedParameterException` **first**, and only then fall
- * through to a broader `NotFoundExceptionInterface` handler.
- *
- * Deliberately Out Of Scope.
- * ==========================
- *
- * The following features are **not** part of this resolver's
- * contract, and PRs adding them should be discussed and
- * consciously accepted before being merged - not slipped in as
- * "obvious next steps". The resolver is intentionally minimal so
- * that its behaviour stays predictable for many years; each
- * feature below trades some of that predictability away.
- *
- *  - **Attribute-driven overrides (`#[Inject('foo')]` and
- *    friends).** The resolver consults the declared type and
- *    nothing else. It deliberately does not read attributes off
- *    the parameter, the method, or the declaring class. Callers
- *    who need attribute-driven behaviour should build it in a
- *    layer above this resolver, where the policy is explicit
- *    and inspectable.
- *  - **Named-parameter lookup.** The resolver looks up container
- *    ids by type name, never by parameter name. A parameter
- *    `string $dsn` is not resolved by asking the container for
- *    `"dsn"`. Name-based DI is powerful but couples the caller's
- *    local variable naming to the container's key namespace, and
- *    makes rename refactors quietly unsafe. If you need
- *    name-based lookup, write an explicit factory.
- *  - **Autowiring of unregistered classes.** If a class type is
- *    not registered in the container (directly or via one of its
- *    ancestors), the resolver does not attempt to recursively
- *    construct it. Implicit construction hides dependency graphs
- *    from the container configuration, which is exactly where
- *    they should be visible. Register the class, or write a
- *    factory.
- *  - **Caching of resolved values or reflection output.** The
- *    resolver re-runs reflection on every call and re-probes the
- *    container every time. Callers who need caching should cache
- *    the *result* of a full `ResolveParameters::for*()` pass at
- *    their own layer, where the cache key and invalidation
- *    strategy are explicit. Per-parameter caching inside the
- *    resolver would couple its lifetime to the container's and
- *    introduce subtle staleness bugs.
- *  - **Scalar-value resolution by convention (env vars,
- *    config keys, etc.).** A parameter `string $apiKey` is
- *    resolved by asking the container for the id `"string"`, not
- *    by looking up `$_ENV['API_KEY']` or reading a config file.
- *    Convention-based scalar resolution is a separate concern
- *    and belongs in a dedicated config-binding layer.
- *
- * If a use case here feels essential, the right move is to open
- * the discussion at the kit level before touching this class -
- * not to widen the resolver's behaviour and hope nobody notices.
  */
 class ResolveParameter
 {
+    /**
+     * Retrieve a value for the given parameter, using its type, from
+     * the given PSR-11 DI container.
+     *
+     * Here Be Dragons.
+     * ================
+     *
+     * **Union-type resolution order is best-effort, not a contract.**
+     *
+     * When a parameter is declared with a union type such as `A|B`, the
+     * obvious expectation is "try `A` first, then `B`". We do our best
+     * to honour that: the resolver takes the member order from the text
+     * representation PHP produces for the union, which - on current PHP
+     * versions - preserves declaration order for **class-only** unions.
+     *
+     * However:
+     *
+     *  - For **scalar-only** unions (e.g. `int|string`) and **mixed**
+     *    unions (e.g. `stdClass|int`), PHP normalises the order at
+     *    parse time, so declaration order is already lost before we
+     *    see it. The resolver picks whatever order PHP reports, which
+     *    is deterministic on a given PHP version but does not match
+     *    what the developer wrote.
+     *  - That text-based ordering is **not a cross-version
+     *    guarantee**. A future PHP release could in principle change
+     *    how it canonicalises unions, and the resolution order would
+     *    shift with it.
+     *
+     * If the resolution order of a union-typed parameter is
+     * load-bearing for your application, **do not rely on this**.
+     * Either avoid union types on DI-injected parameters, or write a
+     * dedicated factory that makes the choice explicit in your own
+     * code.
+     *
+     * **Registering a service under the key `'object'` is a universal
+     * class-type fallback.**
+     *
+     * For any class-typed parameter that misses its own hierarchy
+     * lookup, the resolver's second pass eventually probes the
+     * container for the literal key `'object'` - because `object` is
+     * a real PHP type and a class value legitimately satisfies it.
+     * This means that if you register a service under
+     * `$container->set('object', …)`, **every** class-typed DI
+     * resolution in your codebase that otherwise would fail falls
+     * back to that service. That may be exactly what you want (a
+     * deliberate "default object" for `object $x` parameters) - or it
+     * may be an accidental catch-all that silently swallows real
+     * resolution bugs.
+     *
+     * Rule of thumb: do not register anything under the key `'object'`
+     * unless you mean for it to act as a universal class-type
+     * fallback, and you accept that any missed resolution elsewhere
+     * in the codebase will silently pick it up.
+     *
+     * **`NotFoundExceptionInterface` from `$container->get()` is
+     * indistinguishable from the resolver's own
+     * `UnresolvedParameterException` at a PSR-11 catch site.**
+     *
+     * `UnresolvedParameterException` deliberately implements
+     * `NotFoundExceptionInterface` so that callers who only speak
+     * PSR-11 can treat "no fallback available" as the same kind of
+     * failure as any other container miss. The cost of that choice
+     * is that a PSR-11-compliant exception thrown by the container
+     * while resolving a sub-dependency of a matched id will *also*
+     * implement `NotFoundExceptionInterface`, and a naive
+     * `catch (NotFoundExceptionInterface $e)` cannot tell the two
+     * apart. One of them is "the resolver ran out of fallbacks";
+     * the other is "the container blew up mid-resolve". Those are
+     * very different bugs, and conflating them will have you
+     * chasing ghosts.
+     *
+     * If you need to tell the two cases apart, catch
+     * `UnresolvedParameterException` **first**, and only then fall
+     * through to a broader `NotFoundExceptionInterface` handler.
+     *
+     * Deliberately Out Of Scope.
+     * ==========================
+     *
+     * The following features are **not** part of this resolver's
+     * contract, and PRs adding them should be discussed and
+     * consciously accepted before being merged - not slipped in as
+     * "obvious next steps". The resolver is intentionally minimal so
+     * that its behaviour stays predictable for many years; each
+     * feature below trades some of that predictability away.
+     *
+     *  - **Attribute-driven overrides (`#[Inject('foo')]` and
+     *    friends).** The resolver consults the declared type and
+     *    nothing else. It deliberately does not read attributes off
+     *    the parameter, the method, or the declaring class. Callers
+     *    who need attribute-driven behaviour should build it in a
+     *    layer above this resolver, where the policy is explicit
+     *    and inspectable.
+     *  - **Named-parameter lookup.** The resolver looks up container
+     *    ids by type name, never by parameter name. A parameter
+     *    `string $dsn` is not resolved by asking the container for
+     *    `"dsn"`. Name-based DI is powerful but couples the caller's
+     *    local variable naming to the container's key namespace, and
+     *    makes rename refactors quietly unsafe. If you need
+     *    name-based lookup, write an explicit factory.
+     *  - **Autowiring of unregistered classes.** If a class type is
+     *    not registered in the container (directly or via one of its
+     *    ancestors), the resolver does not attempt to recursively
+     *    construct it. Implicit construction hides dependency graphs
+     *    from the container configuration, which is exactly where
+     *    they should be visible. Register the class, or write a
+     *    factory.
+     *  - **Caching of resolved values or reflection output.** The
+     *    resolver re-runs reflection on every call and re-probes the
+     *    container every time. Callers who need caching should cache
+     *    the *result* of a full `ResolveParameters::for*()` pass at
+     *    their own layer, where the cache key and invalidation
+     *    strategy are explicit. Per-parameter caching inside the
+     *    resolver would couple its lifetime to the container's and
+     *    introduce subtle staleness bugs.
+     *  - **Scalar-value resolution by convention (env vars,
+     *    config keys, etc.).** A parameter `string $apiKey` is
+     *    resolved by asking the container for the id `"string"`, not
+     *    by looking up `$_ENV['API_KEY']` or reading a config file.
+     *    Convention-based scalar resolution is a separate concern
+     *    and belongs in a dedicated config-binding layer.
+     *
+     * @param ReflectionParameter $refParam
+     *   the parameter you need a value for
+     * @param ContainerInterface $container
+     *   the DI container to search for the value
+     * @return mixed
+     *   the value retrieved from the DI container
+     *
+     * @throws UntypedParameterException
+     *   if the parameter doesn't have a type-hint
+     * @throws UnsupportedParameterTypeException
+     *   if the parameter is variadic, or an intersection type
+     * @throws UnresolvedParameterException
+     *   if the DI container doesn't contain a value for the parameter's
+     *   type-hint
+     */
     public static function for(
         ReflectionParameter $refParam,
         ContainerInterface $container,

@@ -49,8 +49,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 use RuntimeException;
 use stdClass;
@@ -108,6 +110,314 @@ class ResolveParameterTest extends TestCase
         };
     }
 
+
+    // ================================================================
+    //
+    // Class identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\DependencyKit\\Reflection namespace')]
+    public function test_lives_in_the_expected_namespace(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published namespace is part of the contract - callers
+        // import ResolveParameter by FQN, so moving it is a breaking
+        // change that must go through a major version bump.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'StusDevKit\\DependencyKit\\Reflection';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (new ReflectionClass(ResolveParameter::class))
+            ->getNamespaceName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_declared_as_a_class(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // ResolveParameter is a plain class exposing a single static
+        // method - not a trait, not an interface, not an enum. Pinning
+        // this prevents a silent reshape (e.g. promoting to an
+        // interface or a trait) from slipping past review.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(ResolveParameter::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (! $reflection->isInterface())
+            && (! $reflection->isTrait())
+            && (! $reflection->isEnum());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('exposes only a for() public method')]
+    public function test_exposes_only_a_for_public_method(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the class exists to supply a single public static method,
+        // for(). Any new public method is a surface-area expansion
+        // that every caller inherits, so the method set is pinned by
+        // enumeration - an addition fails with a diff that names the
+        // new method, rather than a cryptic count mismatch.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['for'];
+        $reflection = new ReflectionClass(ResolveParameter::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($method) => $method->getName(),
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // ::for() shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::for() is declared')]
+    public function test_for_is_declared(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the single supplied method is for(). Renaming it is a
+        // breaking change for every caller.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(ResolveParameter::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $reflection->hasMethod('for');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('::for() is public')]
+    public function test_for_is_public(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the method must be public so callers outside the class can
+        // invoke it. Downgrading visibility would break every call
+        // site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = (new ReflectionClass(ResolveParameter::class))
+            ->getMethod('for');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $method->isPublic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('::for() is static')]
+    public function test_for_is_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // ResolveParameter is a stateless utility - the resolution is
+        // a pure function of (parameter, container), so for() is
+        // static. Silently downgrading to an instance method would
+        // force callers to construct an object for no reason.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = (new ReflectionClass(ResolveParameter::class))
+            ->getMethod('for');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('::for() declares a `mixed` return type')]
+    public function test_for_declares_a_mixed_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the runtime return type is `mixed` because the resolver
+        // hands back whatever the container (or the parameter's
+        // fallback) produced, and that can be any PHP value. Any
+        // narrower return type would be a lie about the surface.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'mixed';
+        $method = (new ReflectionClass(ResolveParameter::class))
+            ->getMethod('for');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $returnType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::for() declares $refParam and $container as parameters in that order')]
+    public function test_for_declares_refParam_and_container_in_that_order(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published parameter set is pinned by enumeration, in
+        // order. Adding, removing, renaming, or reordering parameters
+        // is a breaking change for every call site and must show up
+        // here as a diff that names the specific drift.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['refParam', 'container'];
+        $method = (new ReflectionClass(ResolveParameter::class))
+            ->getMethod('for');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($param) => $param->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::for() declares $refParam as ReflectionParameter')]
+    public function test_for_declares_refParam_as_ReflectionParameter(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the first parameter's type is the input contract - callers
+        // pass a ReflectionParameter because that's what the resolver
+        // is declared to accept. Widening it (to mixed) or narrowing
+        // it (to a specific subclass) is a breaking change.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ReflectionParameter::class;
+        $param = (new ReflectionClass(ResolveParameter::class))
+            ->getMethod('for')
+            ->getParameters()[0];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::for() declares $container as ContainerInterface')]
+    public function test_for_declares_container_as_ContainerInterface(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the second parameter is a PSR-11 ContainerInterface - the
+        // abstraction every compliant DI container implements. Binding
+        // to a specific container implementation here would make the
+        // resolver unusable with any other PSR-11 container, so this
+        // pins the abstraction at the published surface.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ContainerInterface::class;
+        $param = (new ReflectionClass(ResolveParameter::class))
+            ->getMethod('for')
+            ->getParameters()[1];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
 
     // ================================================================
     //
@@ -337,7 +647,7 @@ class ResolveParameterTest extends TestCase
         ];
     }
 
-    #[TestDox('::for() resolves universal / leaf type hints by exact-string container lookup')]
+    #[TestDox('::for() resolves a `$containerKey` typed parameter by exact-string container lookup')]
     #[DataProvider('provideUniversalTypeParams')]
     public function test_for_resolves_universal_type_via_direct_container_hit(
         Closure $fn,
@@ -584,7 +894,7 @@ class ResolveParameterTest extends TestCase
         ];
     }
 
-    #[TestDox('::for() throws UnresolvedParameterException carrying paramName and paramType for an unresolved scalar / leaf type')]
+    #[TestDox('::for() throws UnresolvedParameterException for an unresolved `$expectedParamType` typed parameter')]
     #[DataProvider('provideScalarParams')]
     public function test_for_throws_for_unresolved_scalar(
         Closure $fn,
