@@ -49,6 +49,61 @@ class StackOfStringsTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\CollectionsKit\\Stacks namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new \ReflectionClass(StackOfStrings::class);
+        $this->assertSame(
+            'StusDevKit\\CollectionsKit\\Stacks',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(StackOfStrings::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('extends CollectionAsStack')]
+    public function test_extends_parent(): void
+    {
+        $reflection = new \ReflectionClass(StackOfStrings::class);
+        $parent = $reflection->getParentClass();
+        $this->assertNotFalse($parent);
+        $this->assertSame(
+            \StusDevKit\CollectionsKit\Stacks\CollectionAsStack::class,
+            $parent->getName(),
+        );
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('declares no public methods of its own beyond inherited methods')]
+    public function test_declares_no_own_public_methods(): void
+    {
+        $reflection = new \ReflectionClass(StackOfStrings::class);
+        $ownMethods = [];
+        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === StackOfStrings::class) {
+                $ownMethods[] = $m->getName();
+            }
+        }
+        $this->assertSame([], $ownMethods);
+    }
+
+    // ================================================================
+    //
     // Construction
     //
     // ----------------------------------------------------------------
@@ -56,19 +111,7 @@ class StackOfStringsTest extends TestCase
     #[TestDox('::__construct() creates an empty stack')]
     public function test_can_instantiate_empty_stack(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that we can create a new, empty
-        // StackOfStrings
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             StackOfStrings::class,
@@ -80,7 +123,6 @@ class StackOfStringsTest extends TestCase
         );
         $this->assertCount(0, $unit);
         $this->assertTrue($unit->empty());
-
     }
 
     // ================================================================
@@ -92,85 +134,36 @@ class StackOfStringsTest extends TestCase
     #[TestDox('->push() adds a value to the top of the stack')]
     public function test_push_adds_value(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that push() adds a value to
-        // the top of the stack and increments the count
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $unit->push('first');
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertCount(1, $unit);
         $this->assertFalse($unit->empty());
         $this->assertSame('first', $unit->peek());
-
     }
 
     #[TestDox('->push() returns the stack for chaining')]
     public function test_push_returns_static(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that push() returns the stack
-        // instance for method chaining
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $result = $unit->push('hello');
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($unit, $result);
-
     }
 
     #[TestDox('->push() maintains LIFO order')]
     public function test_push_maintains_lifo_order(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that multiple pushes maintain
-        // last-in-first-out order — peek returns the most
-        // recently pushed value
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $unit->push('first');
         $unit->push('second');
         $unit->push('third');
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertCount(3, $unit);
         $this->assertSame('third', $unit->peek());
-
     }
 
     // ================================================================
@@ -182,108 +175,47 @@ class StackOfStringsTest extends TestCase
     #[TestDox('->pop() removes and returns the top value')]
     public function test_pop_removes_top(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that pop() removes the top
-        // value from the stack and returns it
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('first');
         $unit->push('second');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $result = $unit->pop();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('second', $result);
         $this->assertCount(1, $unit);
         $this->assertSame('first', $unit->peek());
-
     }
 
     #[TestDox('->pop() on empty stack throws RuntimeException')]
     public function test_pop_empty_throws(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that pop() throws when the
-        // stack is empty
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $this->expectException(EmptyStackException::class);
 
         $unit->pop();
-
     }
 
     #[TestDox('->maybePop() returns null on empty stack')]
     public function test_maybe_pop_returns_null(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that maybePop() returns null
-        // instead of throwing when the stack is empty
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $result = $unit->maybePop();
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertNull($result);
-
     }
 
     #[TestDox('->maybePop() removes and returns the top value')]
     public function test_maybe_pop_removes_top(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that maybePop() behaves like
-        // pop() when the stack is non-empty
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('hello');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $result = $unit->maybePop();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('hello', $result);
         $this->assertTrue($unit->empty());
-
     }
 
     // ================================================================
@@ -295,80 +227,35 @@ class StackOfStringsTest extends TestCase
     #[TestDox('->peek() returns the top value without removing it')]
     public function test_peek_does_not_remove(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that peek() returns the top
-        // value without modifying the stack
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('hello');
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $result1 = $unit->peek();
         $result2 = $unit->peek();
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame('hello', $result1);
         $this->assertSame('hello', $result2);
         $this->assertCount(1, $unit);
-
     }
 
     #[TestDox('->peek() on empty stack throws RuntimeException')]
     public function test_peek_empty_throws(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that peek() throws when the
-        // stack is empty
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $this->expectException(EmptyStackException::class);
 
         $unit->peek();
-
     }
 
     #[TestDox('->maybePeek() returns null on empty stack')]
     public function test_maybe_peek_returns_null(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that maybePeek() returns null
-        // instead of throwing when the stack is empty
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $result = $unit->maybePeek();
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertNull($result);
-
     }
 
     // ================================================================
@@ -380,35 +267,19 @@ class StackOfStringsTest extends TestCase
     #[TestDox('->push() and ->pop() maintain LIFO order')]
     public function test_lifo_order(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves the full LIFO contract: values
-        // come out in reverse order of insertion
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('first');
         $unit->push('second');
         $unit->push('third');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $r1 = $unit->pop();
         $r2 = $unit->pop();
         $r3 = $unit->pop();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('third', $r1);
         $this->assertSame('second', $r2);
         $this->assertSame('first', $r3);
         $this->assertTrue($unit->empty());
-
     }
 
     // ================================================================
@@ -420,93 +291,44 @@ class StackOfStringsTest extends TestCase
     #[TestDox('foreach iterates in LIFO order')]
     public function test_foreach_iterates_lifo(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that iterating a stack with
-        // foreach yields values in LIFO order (last
-        // pushed first)
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('first');
         $unit->push('second');
         $unit->push('third');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $result = [];
         foreach ($unit as $value) {
             $result[] = $value;
         }
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             ['third', 'second', 'first'],
             $result,
         );
-
     }
 
     #[TestDox('foreach on empty stack produces no iterations')]
     public function test_foreach_empty_stack(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that iterating an empty stack
-        // produces no iterations
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $result = [];
         foreach ($unit as $value) {
             $result[] = $value;
         }
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame([], $result);
-
     }
 
     #[TestDox('->toArray() returns values in LIFO order')]
     public function test_to_array_returns_lifo_order(): void
     {
-        // -----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that toArray() returns the elements in
-        // LIFO order (last pushed first), mirroring the behavior
-        // of pop() and the iterator
-
-        // -----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('first');
         $unit->push('second');
         $unit->push('third');
 
-        // -----------------------------------------------------------------
-        // perform the change
-
         $result = $unit->toArray();
-
-        // -----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             ['third', 'second', 'first'],
@@ -517,32 +339,15 @@ class StackOfStringsTest extends TestCase
     #[TestDox('iteration does not modify the stack')]
     public function test_iteration_does_not_modify(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that iterating a stack does
-        // not remove any elements — the stack is
-        // unchanged after iteration
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new StackOfStrings();
         $unit->push('first');
         $unit->push('second');
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         foreach ($unit as $value) {
             // consume the iterator
         }
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertCount(2, $unit);
         $this->assertSame('second', $unit->peek());
-
     }
 }

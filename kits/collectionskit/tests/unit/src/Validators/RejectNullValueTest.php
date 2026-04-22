@@ -50,6 +50,78 @@ class RejectNullValueTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\CollectionsKit\\Validators namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new \ReflectionClass(RejectNullValue::class);
+        $this->assertSame(
+            'StusDevKit\\CollectionsKit\\Validators',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(RejectNullValue::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes only ::check() as a public static method')]
+    public function test_exposes_only_check(): void
+    {
+        $reflection = new \ReflectionClass(RejectNullValue::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === RejectNullValue::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['check'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::check() is declared public static')]
+    public function test_check_is_public_static(): void
+    {
+        $method = new \ReflectionMethod(RejectNullValue::class, 'check');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::check() parameter names in order')]
+    public function test_check_parameter_names(): void
+    {
+        $method = new \ReflectionMethod(RejectNullValue::class, 'check');
+        $paramNames = array_map(
+            fn(\ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['value', 'collectionType'], $paramNames);
+    }
+
+    #[TestDox('::check() returns void')]
+    public function test_check_returns_void(): void
+    {
+        $method = new \ReflectionMethod(RejectNullValue::class, 'check');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+        $this->assertSame('void', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // check()
     //
     // ----------------------------------------------------------------
@@ -78,28 +150,10 @@ class RejectNullValueTest extends TestCase
     public function test_accepts_non_null_values(
         mixed $value,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() does not throw for
-        // non-null values, including falsy values like false,
-        // 0, and empty string
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // nothing to do
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         RejectNullValue::check(
             value: $value,
             collectionType: 'TestCollection',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         // if we get here without an exception, the test passes
         $this->expectNotToPerformAssertions();
@@ -108,19 +162,7 @@ class RejectNullValueTest extends TestCase
     #[TestDox('::check() throws NullValueNotAllowed for null value')]
     public function test_throws_for_null_value(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() throws a
-        // NullValueNotAllowed exception when the value is null
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $this->expectException(NullValueNotAllowedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         RejectNullValue::check(
             value: null,
@@ -131,20 +173,7 @@ class RejectNullValueTest extends TestCase
     #[TestDox('::check() exception message includes the collection type')]
     public function test_exception_includes_collection_type(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the exception message includes
-        // the collection type, so the caller knows which
-        // collection rejected the null value
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $collectionType = 'ListOfStrings';
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         try {
             RejectNullValue::check(
@@ -153,9 +182,6 @@ class RejectNullValueTest extends TestCase
             );
             $this->fail('Expected NullValueNotAllowed exception');
         } catch (NullValueNotAllowedException $e) {
-            // ----------------------------------------------------------------
-            // test the results
-
             $this->assertStringContainsString(
                 $collectionType,
                 $e->getMessage(),

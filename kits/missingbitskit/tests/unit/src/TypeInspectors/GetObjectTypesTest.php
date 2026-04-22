@@ -45,6 +45,10 @@ use Closure;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleInterface;
@@ -58,6 +62,106 @@ class GetObjectTypesTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetObjectTypes::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetObjectTypes::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetObjectTypes::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetObjectTypes::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetObjectTypes::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetObjectTypes::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetObjectTypes::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetObjectTypes::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetObjectTypes::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetObjectTypes::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -65,19 +169,10 @@ class GetObjectTypesTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetObjectTypes class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * the GetObjectTypes class can be instantiated as an invokable object
+         */
         $unit = new GetObjectTypes();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetObjectTypes::class, $unit);
     }
@@ -108,26 +203,14 @@ class GetObjectTypesTest extends TestCase
     #[DataProvider('nonObjectProvider')]
     public function test_invoke_rejects_non_object_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that any input which is not an object
-        // is rejected by the __invoke() type-guard and produces
-        // an empty type list
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * any input which is not an object is rejected by the __invoke() type-
+         * guard and produces an empty type list
+         */
         $unit = new GetObjectTypes();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -141,31 +224,18 @@ class GetObjectTypesTest extends TestCase
     #[TestDox('::from() returns class name and object for a plain object')]
     public function test_from_returns_expected_types_for_plain_object(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an object with no parents,
-        // interfaces, or traits produces just the class name plus
-        // 'object'. 'mixed' is not emitted here: it is the
-        // duck-type marker owned by GetDuckTypes, not by per-type
-        // inspectors.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an object with no parents, interfaces, or traits produces just the
+         * class name plus 'object'. 'mixed' is not emitted here: it is the
+         * duck-type marker owned by GetDuckTypes, not by per-type inspectors.
+         */
         $input = new stdClass();
         $expected = [
             stdClass::class => stdClass::class,
             'object' => 'object',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetObjectTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -173,18 +243,12 @@ class GetObjectTypesTest extends TestCase
     #[TestDox('::from() returns full class surface for an object with parent, interface, and trait')]
     public function test_from_returns_full_class_surface(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that every branch of an object's type
-        // surface is reported - parent, interface, trait - ending
-        // with the universal 'object' token. 'mixed' is not
-        // emitted here: it is the duck-type marker owned by
-        // GetDuckTypes, not by per-type inspectors.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * every branch of an object's type surface is reported - parent,
+         * interface, trait - ending with the universal 'object' token. 'mixed'
+         * is not emitted here: it is the duck-type marker owned by
+         * GetDuckTypes, not by per-type inspectors.
+         */
         $input = new SampleClass();
         $expected = [
             SampleClass::class => SampleClass::class,
@@ -194,13 +258,7 @@ class GetObjectTypesTest extends TestCase
             'object' => 'object',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetObjectTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -208,16 +266,10 @@ class GetObjectTypesTest extends TestCase
     #[TestDox('::from() adds callable for a Closure instance')]
     public function test_from_adds_callable_for_closure(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a Closure - callable at the
-        // instance level but whose class name 'Closure' is not a
-        // global function - is still reported as 'callable'
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a Closure - callable at the instance level but whose class name
+         * 'Closure' is not a global function - is still reported as 'callable'
+         */
         $input = fn(): int => 1;
         $expected = [
             Closure::class => Closure::class,
@@ -225,13 +277,7 @@ class GetObjectTypesTest extends TestCase
             'object' => 'object',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetObjectTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -239,17 +285,11 @@ class GetObjectTypesTest extends TestCase
     #[TestDox('::from() adds callable for an object that defines __invoke()')]
     public function test_from_adds_callable_for_invokable_object(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an object whose class declares
-        // __invoke() is reported as 'callable' - the
-        // class-name-based is_callable() check would miss this, so
-        // GetObjectTypes must look at the instance
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an object whose class declares __invoke() is reported as 'callable' -
+         * the class-name-based is_callable() check would miss this, so
+         * GetObjectTypes must look at the instance
+         */
         $input = new SampleInvokable();
         $expected = [
             SampleInvokable::class => SampleInvokable::class,
@@ -257,13 +297,7 @@ class GetObjectTypesTest extends TestCase
             'object' => 'object',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetObjectTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

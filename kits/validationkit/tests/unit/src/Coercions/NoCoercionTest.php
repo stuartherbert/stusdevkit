@@ -52,31 +52,90 @@ class NoCoercionTest extends TestCase
 {
     // ================================================================
     //
-    // Interface Compliance
+    // Identity
     //
     // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Coercions namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new \ReflectionClass(NoCoercion::class);
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Coercions',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(NoCoercion::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
 
     #[TestDox('implements ValueCoercion')]
     public function test_implements_value_coercion(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
+        $reflection = new \ReflectionClass(NoCoercion::class);
+        $this->assertContains(
+            ValueCoercion::class,
+            $reflection->getInterfaceNames(),
+        );
+    }
 
-        // this test proves that NoCoercion implements the
-        // ValueCoercion interface
+    #[TestDox('declares only coerce as its own public method')]
+    public function test_declares_own_method_set(): void
+    {
+        $reflection = new \ReflectionClass(NoCoercion::class);
+        $ownMethods = [];
+        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === NoCoercion::class) {
+                $ownMethods[] = $m->getName();
+            }
+        }
+        sort($ownMethods);
+        $this->assertSame(['coerce'], $ownMethods);
+    }
 
-        // ----------------------------------------------------------------
-        // setup your test
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
 
-        $unit = new NoCoercion();
+    #[TestDox('->coerce() is declared public (instance method)')]
+    public function test_coerce_is_public_instance(): void
+    {
+        $method = new \ReflectionMethod(NoCoercion::class, 'coerce');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
 
-        // ----------------------------------------------------------------
-        // perform the change
+    #[TestDox('->coerce() parameter names in order')]
+    public function test_coerce_parameter_names(): void
+    {
+        $method = new \ReflectionMethod(NoCoercion::class, 'coerce');
+        $paramNames = array_map(fn(\ReflectionParameter $p) => $p->getName(), $method->getParameters());
+        $this->assertSame(['data'], $paramNames);
+    }
 
-        // ----------------------------------------------------------------
-        // test the results
+    #[TestDox('->coerce() declares $data as mixed')]
+    public function test_coerce_parameter_types(): void
+    {
+        $method = new \ReflectionMethod(NoCoercion::class, 'coerce');
+        $type = $method->getParameters()[0]->getType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
 
-        $this->assertInstanceOf(ValueCoercion::class, $unit);
+    #[TestDox('->coerce() declares return type mixed')]
+    public function test_coerce_return_type(): void
+    {
+        $method = new \ReflectionMethod(NoCoercion::class, 'coerce');
+        $type = $method->getReturnType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
     }
 
     // ================================================================
@@ -105,24 +164,9 @@ class NoCoercionTest extends TestCase
     public function test_returns_input_unchanged(
         mixed $inputValue,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that NoCoercion passes every
-        // value through without modification
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new NoCoercion();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($inputValue, $actualResult);
     }

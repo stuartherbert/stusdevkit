@@ -44,6 +44,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleInterface;
@@ -56,6 +60,106 @@ class GetClassTypesTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetClassTypes::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetClassTypes::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetClassTypes::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetClassTypes::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetClassTypes::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassTypes::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassTypes::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetClassTypes::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassTypes::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['className'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassTypes::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -63,19 +167,8 @@ class GetClassTypesTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetClassTypes class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /** GetClassTypes is instantiable as an invokable object */
         $unit = new GetClassTypes();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetClassTypes::class, $unit);
     }
@@ -108,26 +201,14 @@ class GetClassTypesTest extends TestCase
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke() rejects any input that
-        // is not a string naming a known class, interface, or
-        // trait in the current process
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke() rejects any input that is not a string naming
+         * a known class, interface, or trait in the current process
+         */
         $unit = new GetClassTypes();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -141,33 +222,22 @@ class GetClassTypesTest extends TestCase
     #[TestDox('::from() returns class and object for a simple class')]
     public function test_from_returns_expected_types_for_simple_class(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class with no parents,
-        // interfaces, or traits produces just the class name plus
-        // the universal 'object' type-hint token.
-        //
-        // 'mixed' is deliberately NOT in the output. mixed is a
-        // duck-type marker meaning "any value" - true of every
-        // PHP value, not a satisfaction claim about classes - so
-        // it adds no information here.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class with no parents, interfaces, or traits produces
+         * just the class name plus the universal 'object' type-hint
+         * token.
+         *
+         * 'mixed' is deliberately NOT in the output. mixed is a
+         * duck-type marker meaning "any value" - true of every PHP
+         * value, not a satisfaction claim about classes - so it
+         * adds no information here.
+         */
         $expected = [
             stdClass::class => stdClass::class,
             'object' => 'object',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassTypes::from(stdClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -175,21 +245,16 @@ class GetClassTypesTest extends TestCase
     #[TestDox('::from() returns class, parent, interface, trait, and object for a class with all three')]
     public function test_from_returns_full_class_surface(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when a class extends a parent,
-        // implements an interface, and uses a trait, every branch
-        // of its type surface appears in the returned type list,
-        // ending with the universal 'object' token.
-        //
-        // 'mixed' is deliberately NOT in the output - see
-        // test_from_returns_expected_types_for_simple_class for
-        // the rationale.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when a class extends a parent, implements an interface,
+         * and uses a trait, every branch of its type surface
+         * appears in the returned type list, ending with the
+         * universal 'object' token.
+         *
+         * 'mixed' is deliberately NOT in the output - see
+         * test_from_returns_expected_types_for_simple_class for the
+         * rationale.
+         */
         $expected = [
             SampleClass::class => SampleClass::class,
             SampleParent::class => SampleParent::class,
@@ -198,13 +263,7 @@ class GetClassTypesTest extends TestCase
             'object' => 'object',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassTypes::from(SampleClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

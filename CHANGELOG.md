@@ -134,7 +134,7 @@ This CHANGELOG is automatically compiled.
 
 #### DependencyKit
 
-- generate manual page for ResolveParameter ([64e4a39](https://github.com/stuartherbert/stusdevkit/commit/64e4a39)) — Stuart Herbert <stuart@stuartherbert.com>
+- generate manual page for ResolveParameter ([4d6f7c5](https://github.com/stuartherbert/stusdevkit/commit/4d6f7c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - experimenting with AI-generated docs ([024e8e3](https://github.com/stuartherbert/stusdevkit/commit/024e8e3)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### Engineering Standards

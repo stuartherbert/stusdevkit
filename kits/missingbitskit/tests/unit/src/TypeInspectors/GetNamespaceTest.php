@@ -43,6 +43,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleClass;
 use StusDevKit\MissingBitsKit\TypeInspectors\GetNamespace;
@@ -52,6 +56,78 @@ class GetNamespaceTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetNamespace::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetNamespace::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes only ::from() as a public method')]
+    public function test_exposes_only_from(): void
+    {
+        $reflection = new ReflectionClass(GetNamespace::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetNamespace::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetNamespace::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetNamespace::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('::from() returns string')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetNamespace::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('string', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // from() - class name input
     //
     // ----------------------------------------------------------------
@@ -59,26 +135,14 @@ class GetNamespaceTest extends TestCase
     #[TestDox('::from() returns the namespace part of a fully-qualified class name')]
     public function test_from_returns_namespace_for_namespaced_class_name(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when given a namespaced
-        // class-string, from() returns everything up to but not
-        // including the final backslash separator
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when given a namespaced class-string, from() returns everything up to
+         * but not including the final backslash separator
+         */
         $input = SampleClass::class;
         $expected = 'StusDevKit\\MissingBitsKit\\Tests\\Fixtures\\TypeInspectors';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNamespace::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -86,26 +150,14 @@ class GetNamespaceTest extends TestCase
     #[TestDox('::from() returns empty string for a class name without a namespace')]
     public function test_from_returns_empty_for_global_class_name(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class-string with no backslash
-        // separator (i.e. a class in the global namespace)
-        // produces an empty namespace string
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class-string with no backslash separator (i.e. a class in the
+         * global namespace) produces an empty namespace string
+         */
         $input = stdClass::class;
         $expected = '';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNamespace::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -119,26 +171,14 @@ class GetNamespaceTest extends TestCase
     #[TestDox('::from() returns the namespace for a namespaced object instance')]
     public function test_from_returns_namespace_for_namespaced_object(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when given an object, from()
-        // resolves to the class name and returns the namespace
-        // part
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when given an object, from() resolves to the class name and returns
+         * the namespace part
+         */
         $input = new SampleClass();
         $expected = 'StusDevKit\\MissingBitsKit\\Tests\\Fixtures\\TypeInspectors';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNamespace::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -146,26 +186,14 @@ class GetNamespaceTest extends TestCase
     #[TestDox('::from() returns empty string for an object of a global-namespace class')]
     public function test_from_returns_empty_for_global_object(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an object whose class lives in
-        // the global namespace (e.g. stdClass) produces an empty
-        // namespace string
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an object whose class lives in the global namespace (e.g. stdClass)
+         * produces an empty namespace string
+         */
         $input = new stdClass();
         $expected = '';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNamespace::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

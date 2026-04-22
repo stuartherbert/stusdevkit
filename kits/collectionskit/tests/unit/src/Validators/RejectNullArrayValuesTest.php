@@ -48,6 +48,78 @@ class RejectNullArrayValuesTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\CollectionsKit\\Validators namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new \ReflectionClass(RejectNullArrayValues::class);
+        $this->assertSame(
+            'StusDevKit\\CollectionsKit\\Validators',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(RejectNullArrayValues::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes only ::check() as a public static method')]
+    public function test_exposes_only_check(): void
+    {
+        $reflection = new \ReflectionClass(RejectNullArrayValues::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === RejectNullArrayValues::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['check'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::check() is declared public static')]
+    public function test_check_is_public_static(): void
+    {
+        $method = new \ReflectionMethod(RejectNullArrayValues::class, 'check');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::check() parameter names in order')]
+    public function test_check_parameter_names(): void
+    {
+        $method = new \ReflectionMethod(RejectNullArrayValues::class, 'check');
+        $paramNames = array_map(
+            fn(\ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['data', 'collectionType'], $paramNames);
+    }
+
+    #[TestDox('::check() returns void')]
+    public function test_check_returns_void(): void
+    {
+        $method = new \ReflectionMethod(RejectNullArrayValues::class, 'check');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+        $this->assertSame('void', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // check()
     //
     // ----------------------------------------------------------------
@@ -55,27 +127,10 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() accepts an empty array')]
     public function test_accepts_empty_array(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() does not throw for an
-        // empty array
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // nothing to do
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         RejectNullArrayValues::check(
             data: [],
             collectionType: 'TestCollection',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         // if we get here without an exception, the test passes
         $this->expectNotToPerformAssertions();
@@ -84,16 +139,6 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() accepts an array with no null values')]
     public function test_accepts_array_without_nulls(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() does not throw for an
-        // array containing only non-null values, including
-        // falsy values like false, 0, and empty string
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $data = [
             'a string',
             42,
@@ -105,16 +150,10 @@ class RejectNullArrayValuesTest extends TestCase
             ['nested'],
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         RejectNullArrayValues::check(
             data: $data,
             collectionType: 'TestCollection',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         // if we get here without an exception, the test passes
         $this->expectNotToPerformAssertions();
@@ -123,20 +162,7 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() throws NullValueNotAllowed when array contains null')]
     public function test_throws_when_array_contains_null(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() throws a
-        // NullValueNotAllowed exception when the array
-        // contains a null value
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $this->expectException(NullValueNotAllowedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         RejectNullArrayValues::check(
             data: ['alpha', null, 'bravo'],
@@ -147,19 +173,7 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() throws when null is the first value')]
     public function test_throws_when_null_is_first(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() detects null at the
-        // start of the array
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $this->expectException(NullValueNotAllowedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         RejectNullArrayValues::check(
             data: [null, 'alpha', 'bravo'],
@@ -170,19 +184,7 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() throws when null is the last value')]
     public function test_throws_when_null_is_last(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() detects null at the
-        // end of the array
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $this->expectException(NullValueNotAllowedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         RejectNullArrayValues::check(
             data: ['alpha', 'bravo', null],
@@ -193,19 +195,7 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() throws when array has multiple null values')]
     public function test_throws_when_multiple_nulls(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that check() detects arrays with
-        // more than one null value
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $this->expectException(NullValueNotAllowedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         RejectNullArrayValues::check(
             data: [null, 'alpha', null],
@@ -216,20 +206,7 @@ class RejectNullArrayValuesTest extends TestCase
     #[TestDox('::check() exception message includes the collection type')]
     public function test_exception_includes_collection_type(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the exception message includes
-        // the collection type, so the caller knows which
-        // collection rejected the null value
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $collectionType = 'DictOfStrings';
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         try {
             RejectNullArrayValues::check(
@@ -238,9 +215,6 @@ class RejectNullArrayValuesTest extends TestCase
             );
             $this->fail('Expected NullValueNotAllowed exception');
         } catch (NullValueNotAllowedException $e) {
-            // ----------------------------------------------------------------
-            // test the results
-
             $this->assertStringContainsString(
                 $collectionType,
                 $e->getMessage(),

@@ -41,6 +41,8 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
+use ReflectionParameter;
 
 use function StusDevKit\MissingBitsKit\uri_resolve_reference;
 
@@ -57,6 +59,73 @@ use function StusDevKit\MissingBitsKit\uri_resolve_reference;
 class UriResolveReferenceTest extends TestCase
 {
     private const BASE_URI = 'http://a/b/c/d;p?q';
+
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('is a function in the StusDevKit\\MissingBitsKit namespace')]
+    public function test_exists_in_expected_namespace(): void
+    {
+        $this->assertTrue(
+            \function_exists(
+                'StusDevKit\\MissingBitsKit\\uri_resolve_reference',
+            ),
+        );
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\uri_resolve_reference',
+        );
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::uri_resolve_reference() parameter names in order')]
+    public function test_parameter_names(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\uri_resolve_reference',
+        );
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $reflection->getParameters(),
+        );
+        $this->assertSame(['base', 'ref'], $paramNames);
+    }
+
+    #[TestDox('::uri_resolve_reference() parameter types in order')]
+    public function test_parameter_types(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\uri_resolve_reference',
+        );
+        $paramTypes = array_map(
+            fn(ReflectionParameter $p) => (string) $p->getType(),
+            $reflection->getParameters(),
+        );
+        $this->assertSame(['string', 'string'], $paramTypes);
+    }
+
+    #[TestDox('::uri_resolve_reference() return type')]
+    public function test_return_type(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\uri_resolve_reference',
+        );
+        $this->assertSame(
+            'string',
+            (string) $reflection->getReturnType(),
+        );
+    }
 
     // ================================================================
     //
@@ -102,22 +171,14 @@ class UriResolveReferenceTest extends TestCase
         string $ref,
         string $expected,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // these test cases come directly from RFC 3986
-        // Section 5.4.1 "Normal Examples"
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * these test cases come directly from RFC 3986 Section
+         * 5.4.1 "Normal Examples"
+         */
         $result = uri_resolve_reference(
             base: self::BASE_URI,
             ref: $ref,
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $result);
     }
@@ -161,22 +222,14 @@ class UriResolveReferenceTest extends TestCase
         string $ref,
         string $expected,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // these test cases come directly from RFC 3986
-        // Section 5.4.2 "Abnormal Examples"
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * these test cases come directly from RFC 3986 Section
+         * 5.4.2 "Abnormal Examples"
+         */
         $result = uri_resolve_reference(
             base: self::BASE_URI,
             ref: $ref,
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $result);
     }
@@ -190,24 +243,15 @@ class UriResolveReferenceTest extends TestCase
     #[TestDox('resolves fragment-only ref against base')]
     public function test_fragment_only_ref(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a fragment-only ref (used
-        // for $anchor and JSON Pointer $defs references)
-        // resolves by replacing only the fragment of the
-        // base URI
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * a fragment-only ref (used for $anchor and JSON Pointer
+         * $defs references) resolves by replacing only the fragment
+         * of the base URI
+         */
         $result = uri_resolve_reference(
             base: 'https://example.com/schemas/person',
             ref: '#/$defs/Name',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             'https://example.com/schemas/person#/$defs/Name',
@@ -218,23 +262,15 @@ class UriResolveReferenceTest extends TestCase
     #[TestDox('resolves relative file ref against base')]
     public function test_relative_file_ref(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a relative file ref
-        // resolves against the base URI's path, which is
-        // the common JSON Schema external $ref pattern
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * a relative file ref resolves against the base URI's
+         * path, which is the common JSON Schema external $ref
+         * pattern
+         */
         $result = uri_resolve_reference(
             base: 'https://example.com/schemas/person.json',
             ref: 'address.json',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             'https://example.com/schemas/address.json',
@@ -245,23 +281,14 @@ class UriResolveReferenceTest extends TestCase
     #[TestDox('resolves relative file ref with fragment')]
     public function test_relative_file_ref_with_fragment(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a relative file ref with
-        // a fragment resolves the path and keeps the
-        // fragment — e.g. other.json#/$defs/Foo
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * a relative file ref with a fragment resolves the path
+         * and keeps the fragment — e.g. other.json#/$defs/Foo
+         */
         $result = uri_resolve_reference(
             base: 'https://example.com/schemas/person.json',
             ref: 'other.json#/$defs/Foo',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             'https://example.com/schemas/other.json#/$defs/Foo',
@@ -272,23 +299,14 @@ class UriResolveReferenceTest extends TestCase
     #[TestDox('absolute ref is returned unchanged')]
     public function test_absolute_ref_returned_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an absolute URI ref is
-        // returned without modification — it already
-        // identifies its target
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * an absolute URI ref is returned without modification —
+         * it already identifies its target
+         */
         $result = uri_resolve_reference(
             base: 'https://example.com/schemas/person.json',
             ref: 'https://other.com/schemas/address.json',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             'https://other.com/schemas/address.json',
@@ -299,23 +317,14 @@ class UriResolveReferenceTest extends TestCase
     #[TestDox('anchor-only ref resolves against base')]
     public function test_anchor_only_ref(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a plain-name fragment
-        // (used for $anchor references in JSON Schema)
-        // resolves by replacing the base's fragment
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * a plain-name fragment (used for $anchor references in
+         * JSON Schema) resolves by replacing the base's fragment
+         */
         $result = uri_resolve_reference(
             base: 'https://example.com/schemas/person',
             ref: '#name-def',
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             'https://example.com/schemas/person#name-def',

@@ -45,12 +45,96 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
 use StusDevKit\DateTimeKit\When;
 use StusDevKit\ValidationKit\Coercions\CoerceToWhen;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 
 #[TestDox('CoerceToWhen')]
 class CoerceToWhenTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Coercions namespace')]
+    public function test_lives_in_coercions_namespace(): void
+    {
+        $reflection = new ReflectionClass(CoerceToWhen::class);
+
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Coercions',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(CoerceToWhen::class);
+
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+        $this->assertFalse($reflection->isAbstract());
+    }
+
+    #[TestDox('implements ValueCoercion')]
+    public function test_implements_value_coercion(): void
+    {
+        $reflection = new ReflectionClass(CoerceToWhen::class);
+
+        $this->assertTrue(
+            $reflection->implementsInterface(ValueCoercion::class),
+        );
+    }
+
+    #[TestDox('declares exactly one public method: ->coerce()')]
+    public function test_declares_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(CoerceToWhen::class);
+        $methodNames = array_map(
+            static fn (ReflectionMethod $m): string => $m->getName(),
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+        );
+        sort($methodNames);
+
+        $this->assertSame(['coerce'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->coerce() accepts one parameter $data of type mixed')]
+    public function test_coerce_signature_parameters(): void
+    {
+        $method = new ReflectionMethod(CoerceToWhen::class, 'coerce');
+        $parameters = $method->getParameters();
+
+        $this->assertCount(1, $parameters);
+        $this->assertSame('data', $parameters[0]->getName());
+
+        $type = $parameters[0]->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
+
+    #[TestDox('->coerce() returns mixed')]
+    public function test_coerce_signature_return_type(): void
+    {
+        $method = new ReflectionMethod(CoerceToWhen::class, 'coerce');
+        $returnType = $method->getReturnType();
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('mixed', $returnType->getName());
+    }
+
     // ================================================================
     //
     // ISO 8601 String Coercion
@@ -60,25 +144,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() coerces ISO 8601 (ATOM) string to When')]
     public function test_coerces_atom_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen converts an
-        // ISO 8601 ATOM-format string to a When instance
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $input = '2026-01-15T10:30:00+00:00';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             When::class,
@@ -99,25 +168,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() coerces lenient date string to When')]
     public function test_coerces_lenient_date_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen falls back to
-        // lenient parsing for non-ATOM date strings
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $input = '2026-01-15';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             When::class,
@@ -138,25 +192,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() coerces integer timestamp to When')]
     public function test_coerces_integer_timestamp(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen converts an
-        // integer Unix timestamp to a When instance
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $timestamp = 1700000000;
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($timestamp);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             When::class,
@@ -177,25 +216,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() coerces DateTimeImmutable to When')]
     public function test_coerces_datetimeimmutable(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen converts a
-        // DateTimeImmutable instance to a When instance
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $input = new DateTimeImmutable('2026-01-15T10:30:00+00:00');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             When::class,
@@ -216,25 +240,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() returns an existing When instance')]
     public function test_returns_existing_when_instance(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen passes through
-        // an existing When instance, returning the same object
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $input = When::from('2026-01-15T10:30:00+00:00');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             When::class,
@@ -252,25 +261,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() returns unparseable string unchanged')]
     public function test_returns_unparseable_string_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen returns a string
-        // unchanged when it cannot be parsed as a date
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $input = 'not-a-date';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('not-a-date', $actualResult);
     }
@@ -278,24 +272,9 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() returns null unchanged')]
     public function test_returns_null_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen returns null
-        // unchanged
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce(null);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertNull($actualResult);
     }
@@ -303,24 +282,9 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() returns float unchanged')]
     public function test_returns_float_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen returns a float
-        // unchanged (only int timestamps are coerced)
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce(3.14);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(3.14, $actualResult);
     }
@@ -328,25 +292,10 @@ class CoerceToWhenTest extends TestCase
     #[TestDox('->coerce() returns array unchanged')]
     public function test_returns_array_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToWhen returns an array
-        // unchanged
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToWhen();
         $input = ['2026-01-15'];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($input, $actualResult);
     }

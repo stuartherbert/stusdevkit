@@ -40,12 +40,92 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
+use ReflectionParameter;
 
 use function StusDevKit\MissingBitsKit\object_merge;
 
 #[TestDox('object_merge()')]
 class ObjectMergeTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('is a function in the StusDevKit\\MissingBitsKit namespace')]
+    public function test_exists_in_expected_namespace(): void
+    {
+        $this->assertTrue(
+            \function_exists(
+                'StusDevKit\\MissingBitsKit\\object_merge',
+            ),
+        );
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\object_merge',
+        );
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::object_merge() parameter names in order')]
+    public function test_parameter_names(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\object_merge',
+        );
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $reflection->getParameters(),
+        );
+        $this->assertSame(['target', 'sources'], $paramNames);
+    }
+
+    #[TestDox('::object_merge() parameter types in order')]
+    public function test_parameter_types(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\object_merge',
+        );
+        $paramTypes = array_map(
+            fn(ReflectionParameter $p) => (string) $p->getType(),
+            $reflection->getParameters(),
+        );
+        $this->assertSame(['object', 'object'], $paramTypes);
+    }
+
+    #[TestDox('::object_merge() variadic parameter is sources')]
+    public function test_variadic_parameter(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\object_merge',
+        );
+        $params = $reflection->getParameters();
+        $this->assertFalse($params[0]->isVariadic());
+        $this->assertTrue($params[1]->isVariadic());
+    }
+
+    #[TestDox('::object_merge() return type')]
+    public function test_return_type(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\object_merge',
+        );
+        $this->assertSame(
+            'void',
+            (string) $reflection->getReturnType(),
+        );
+    }
+
     // ================================================================
     //
     // Single Source
@@ -55,25 +135,14 @@ class ObjectMergeTest extends TestCase
     #[TestDox('copies properties from source onto target')]
     public function test_copies_properties_from_source(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that object_merge() copies all
-        // properties from the source object onto the target
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * copies all properties from the source object onto the
+         * target
+         */
         $target = (object) ['name' => 'Alice'];
         $source = (object) ['age' => 30];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Alice', $target->name);
         $this->assertSame(30, $target->age);
@@ -82,26 +151,14 @@ class ObjectMergeTest extends TestCase
     #[TestDox('overwrites existing properties on target')]
     public function test_overwrites_existing_properties(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when source has a property
-        // that already exists on the target, the target's
-        // value is overwritten
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when source has a property that already exists on the
+         * target, the target's value is overwritten
+         */
         $target = (object) ['name' => 'Alice', 'age' => 25];
         $source = (object) ['age' => 30];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Alice', $target->name);
         $this->assertSame(30, $target->age);
@@ -110,25 +167,11 @@ class ObjectMergeTest extends TestCase
     #[TestDox('does not modify source object')]
     public function test_does_not_modify_source(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the source object is not
-        // modified by the merge
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** the source object is not modified by the merge */
         $target = (object) ['name' => 'Alice'];
         $source = (object) ['age' => 30];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertFalse(
             property_exists($source, 'name'),
@@ -139,25 +182,11 @@ class ObjectMergeTest extends TestCase
     #[TestDox('handles empty source object')]
     public function test_handles_empty_source(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that merging an empty source
-        // leaves the target unchanged
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** merging an empty source leaves the target unchanged */
         $target = (object) ['name' => 'Alice'];
         $source = new \stdClass();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Alice', $target->name);
     }
@@ -165,25 +194,11 @@ class ObjectMergeTest extends TestCase
     #[TestDox('handles empty target object')]
     public function test_handles_empty_target(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that merging onto an empty target
-        // copies all source properties
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** merging onto an empty target copies all source properties */
         $target = new \stdClass();
         $source = (object) ['name' => 'Alice', 'age' => 30];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Alice', $target->name);
         $this->assertSame(30, $target->age);
@@ -198,27 +213,15 @@ class ObjectMergeTest extends TestCase
     #[TestDox('merges multiple sources in order')]
     public function test_merges_multiple_sources(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that object_merge() accepts
-        // multiple source objects and merges them left
-        // to right onto the target
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * accepts multiple source objects and merges them left to
+         * right onto the target
+         */
         $target = (object) ['name' => 'Alice'];
         $source1 = (object) ['age' => 30];
         $source2 = (object) ['email' => 'alice@example.com'];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source1, $source2);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Alice', $target->name);
         $this->assertSame(30, $target->age);
@@ -231,26 +234,15 @@ class ObjectMergeTest extends TestCase
     #[TestDox('later sources overwrite earlier sources')]
     public function test_later_sources_overwrite_earlier(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when multiple sources have
-        // the same property, the last source wins
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when multiple sources have the same property, the last
+         * source wins
+         */
         $target = (object) ['name' => 'Alice'];
         $source1 = (object) ['name' => 'Bob'];
         $source2 = (object) ['name' => 'Charlie'];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source1, $source2);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Charlie', $target->name);
     }
@@ -258,24 +250,13 @@ class ObjectMergeTest extends TestCase
     #[TestDox('handles no sources')]
     public function test_handles_no_sources(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that calling object_merge() with
-        // no source arguments leaves the target unchanged
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * calling object_merge() with no source arguments leaves
+         * the target unchanged
+         */
         $target = (object) ['name' => 'Alice'];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Alice', $target->name);
     }
@@ -289,25 +270,11 @@ class ObjectMergeTest extends TestCase
     #[TestDox('copies null values')]
     public function test_copies_null_values(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that null property values are
-        // copied, not skipped
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** null property values are copied, not skipped */
         $target = (object) ['name' => 'Alice'];
         $source = (object) ['name' => null];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertNull($target->name);
     }
@@ -315,26 +282,15 @@ class ObjectMergeTest extends TestCase
     #[TestDox('copies nested objects by reference')]
     public function test_copies_nested_objects_by_reference(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that nested object values are
-        // copied by reference (shallow copy), not cloned
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * nested object values are copied by reference (shallow
+         * copy), not cloned
+         */
         $inner = (object) ['x' => 1];
         $target = new \stdClass();
         $source = (object) ['nested' => $inner];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         object_merge($target, $source);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($inner, $target->nested);
     }

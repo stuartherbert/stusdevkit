@@ -66,25 +66,13 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('is declared as an interface')]
     public function test_is_declared_as_an_interface(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // StaticallyArrayable must be an interface (not a class,
         // abstract class, or trait). Implementations rely on this so
         // they can declare `implements StaticallyArrayable`.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $reflection = new ReflectionClass(StaticallyArrayable::class);
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $reflection->isInterface();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertTrue($actual);
     }
@@ -92,26 +80,14 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('lives in the StusDevKit\\MissingBitsKit\\Arrays namespace')]
     public function test_lives_in_the_expected_namespace(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the published namespace is part of the contract - callers
         // type-hint against the FQN, so moving it is a breaking
         // change that must go through a major version bump.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = 'StusDevKit\\MissingBitsKit\\Arrays';
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $actual = (new ReflectionClass(StaticallyArrayable::class))
             ->getNamespaceName();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -125,31 +101,19 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('exposes only a toArray() method')]
     public function test_exposes_only_a_toArray_method(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the interface exists to require a single method, toArray().
         // Adding a second method is a breaking change for every
         // implementer, so the method set is pinned by enumeration -
         // any addition fails with a diff that names the new method,
         // rather than a cryptic count mismatch.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = ['toArray'];
         $reflection = new ReflectionClass(StaticallyArrayable::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $actual = array_map(
             static fn ($method) => $method->getName(),
             $reflection->getMethods(),
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -157,24 +121,12 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('::toArray() is declared')]
     public function test_declares_a_toArray_method(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the single contract method is `toArray()`. Renaming it is
         // a breaking change for every implementer.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $reflection = new ReflectionClass(StaticallyArrayable::class);
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $reflection->hasMethod('toArray');
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertTrue($actual);
     }
@@ -188,27 +140,15 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('::toArray() is public')]
     public function test_toArray_is_public(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // interface methods must be public for implementers to
         // satisfy them. Pin the visibility so a silent downgrade to
         // protected / private (not currently legal in PHP interfaces,
         // but defensive against future language changes) is caught.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $method = (new ReflectionClass(StaticallyArrayable::class))
             ->getMethod('toArray');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $method->isPublic();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertTrue($actual);
     }
@@ -216,27 +156,15 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('::toArray() is static')]
     public function test_toArray_is_static(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the whole point of StaticallyArrayable is that the data
         // lives on the type, not the instance. Removing `static`
         // silently turns the contract into an instance-level one
         // and defeats the reason for a separate interface.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $method = (new ReflectionClass(StaticallyArrayable::class))
             ->getMethod('toArray');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $method->isStatic();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertTrue($actual);
     }
@@ -244,27 +172,15 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('::toArray() takes no parameters')]
     public function test_toArray_takes_no_parameters(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the contract promises a parameter-less call: the type's
         // full array representation, no options, no filters. Adding
         // a required parameter would break every call site.
-
-        // ----------------------------------------------------------------
-        // setup your test
 
         $expected = 0;
         $method = (new ReflectionClass(StaticallyArrayable::class))
             ->getMethod('toArray');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $method->getNumberOfParameters();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -272,15 +188,9 @@ class StaticallyArrayableTest extends TestCase
     #[TestDox('::toArray() declares an `array` return type')]
     public function test_toArray_declares_an_array_return_type(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the runtime return type is `array`. Richer element types
         // (e.g. `array<string, string>`) live in the docblock for
         // PHPStan; the native return type pins the runtime shape.
-
-        // ----------------------------------------------------------------
-        // setup your test
 
         $expected = 'array';
         $method = (new ReflectionClass(StaticallyArrayable::class))
@@ -288,13 +198,7 @@ class StaticallyArrayableTest extends TestCase
         $returnType = $method->getReturnType();
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $returnType->getName();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

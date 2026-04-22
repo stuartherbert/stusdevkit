@@ -44,6 +44,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\BaseInterface;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\ChildOfInterfaceParent;
@@ -59,6 +63,106 @@ class GetClassInterfacesTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetClassInterfaces::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetClassInterfaces::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetClassInterfaces::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetClassInterfaces::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetClassInterfaces::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassInterfaces::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassInterfaces::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetClassInterfaces::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassInterfaces::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['className'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassInterfaces::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -66,19 +170,8 @@ class GetClassInterfacesTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetClassInterfaces class can
-        // be instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /** GetClassInterfaces is instantiable as an invokable object */
         $unit = new GetClassInterfaces();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetClassInterfaces::class, $unit);
     }
@@ -111,25 +204,14 @@ class GetClassInterfacesTest extends TestCase
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke() rejects any input that
-        // is not a string naming a known class or interface
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke() rejects any input that is not a string naming
+         * a known class or interface
+         */
         $unit = new GetClassInterfaces();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -143,24 +225,12 @@ class GetClassInterfacesTest extends TestCase
     #[TestDox('::from() returns empty array when it implements nothing')]
     public function test_from_returns_empty_array_when_no_interfaces(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class implementing no
-        // interfaces returns an empty array
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class implementing no interfaces returns an empty array
+         */
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassInterfaces::from(stdClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -168,26 +238,15 @@ class GetClassInterfacesTest extends TestCase
     #[TestDox('::from() returns a directly implemented interface')]
     public function test_from_returns_direct_interface(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an interface declared on the
-        // class itself appears in the return value
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an interface declared on the class itself appears in the
+         * return value
+         */
         $expected = [
             SampleInterface::class => SampleInterface::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassInterfaces::from(SampleClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -195,26 +254,15 @@ class GetClassInterfacesTest extends TestCase
     #[TestDox('::from() returns an interface inherited from a parent class')]
     public function test_from_returns_inherited_interface(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when a parent class declares an
-        // interface, the child class still reports that interface
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when a parent class declares an interface, the child
+         * class still reports that interface
+         */
         $expected = [
             InheritedInterface::class => InheritedInterface::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassInterfaces::from(ChildOfInterfaceParent::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -222,28 +270,16 @@ class GetClassInterfacesTest extends TestCase
     #[TestDox('::from() walks a 2-deep interface hierarchy')]
     public function test_from_walks_interface_hierarchy(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when a class implements an
-        // interface that itself extends another interface, both
-        // interfaces are reported
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when a class implements an interface that itself extends
+         * another interface, both interfaces are reported
+         */
         $expected = [
             ExtendedInterface::class => ExtendedInterface::class,
             BaseInterface::class => BaseInterface::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassInterfaces::from(ClassWithExtendedInterface::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

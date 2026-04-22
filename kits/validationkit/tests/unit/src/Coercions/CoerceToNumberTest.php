@@ -44,11 +44,62 @@ namespace StusDevKit\ValidationKit\Tests\Unit\Coercions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use StusDevKit\ValidationKit\Coercions\CoerceToNumber;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
+
+use function get_class_methods;
+use function sort;
 
 #[TestDox('CoerceToNumber')]
 class CoerceToNumberTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Coercions namespace')]
+    public function test_lives_in_coercions_namespace(): void
+    {
+        $reflection = new \ReflectionClass(CoerceToNumber::class);
+
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Coercions',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(CoerceToNumber::class);
+
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+        $this->assertFalse($reflection->isEnum());
+    }
+
+    #[TestDox('implements ValueCoercion')]
+    public function test_implements_value_coercion(): void
+    {
+        $reflection = new ReflectionClass(CoerceToNumber::class);
+        $this->assertContains(
+            ValueCoercion::class,
+            $reflection->getInterfaceNames(),
+        );
+    }
+
+    #[TestDox('defines public methods: coerce')]
+    public function test_defines_expected_public_methods(): void
+    {
+        $methodNames = get_class_methods(CoerceToNumber::class);
+        sort($methodNames);
+
+        $this->assertSame(['coerce'], $methodNames);
+    }
+
     // ================================================================
     //
     // Coercions to int
@@ -73,25 +124,9 @@ class CoerceToNumberTest extends TestCase
         string $inputValue,
         int $expectedResult,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToNumber converts
-        // numeric strings without decimal points or
-        // scientific notation to int
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToNumber();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expectedResult, $actualResult);
     }
@@ -121,26 +156,9 @@ class CoerceToNumberTest extends TestCase
         string $inputValue,
         float $expectedResult,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToNumber converts
-        // numeric strings with decimal points or scientific
-        // notation to float, preserving the int/float
-        // distinction
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToNumber();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expectedResult, $actualResult);
     }
@@ -168,24 +186,9 @@ class CoerceToNumberTest extends TestCase
         bool $inputValue,
         int $expectedResult,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToNumber converts
-        // booleans to int (not float)
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToNumber();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expectedResult, $actualResult);
     }
@@ -213,24 +216,9 @@ class CoerceToNumberTest extends TestCase
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToNumber returns values
-        // unchanged when they cannot be converted
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToNumber();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($inputValue, $actualResult);
     }

@@ -44,12 +44,116 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\TypeInspectors\GetIntegerTypes;
 
 #[TestDox(GetIntegerTypes::class)]
 class GetIntegerTypesTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetIntegerTypes::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetIntegerTypes::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetIntegerTypes::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetIntegerTypes::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetIntegerTypes::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetIntegerTypes::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetIntegerTypes::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetIntegerTypes::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetIntegerTypes::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetIntegerTypes::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
     // ================================================================
     //
     // Structure
@@ -59,19 +163,10 @@ class GetIntegerTypesTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetIntegerTypes class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * the GetIntegerTypes class can be instantiated as an invokable object
+         */
         $unit = new GetIntegerTypes();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetIntegerTypes::class, $unit);
     }
@@ -103,27 +198,15 @@ class GetIntegerTypesTest extends TestCase
     #[DataProvider('nonIntegerProvider')]
     public function test_invoke_rejects_non_integer_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that any input which is not strictly a
-        // PHP int is rejected by the __invoke() type-guard and
-        // produces an empty type list - no loose-typing coercion
-        // (e.g. treating '123' as an integer) is applied
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * any input which is not strictly a PHP int is rejected by the
+         * __invoke() type-guard and produces an empty type list - no loose-
+         * typing coercion (e.g. treating '123' as an integer) is applied
+         */
         $unit = new GetIntegerTypes();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -152,30 +235,18 @@ class GetIntegerTypesTest extends TestCase
     #[DataProvider('integerProvider')]
     public function test_from_returns_expected_types(int $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that GetIntegerTypes::from() returns
-        // the same 'numeric', 'int' list regardless of the
-        // specific integer value. 'mixed' is not emitted here:
-        // it is the duck-type marker owned by GetDuckTypes, not
-        // by per-type inspectors.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * GetIntegerTypes::from() returns the same 'numeric', 'int' list
+         * regardless of the specific integer value. 'mixed' is not emitted
+         * here: it is the duck-type marker owned by GetDuckTypes, not by per-
+         * type inspectors.
+         */
         $expected = [
             'numeric' => 'numeric',
             'int' => 'int',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetIntegerTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

@@ -44,6 +44,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleToString;
 use StusDevKit\MissingBitsKit\TypeInspectors\GetNumericType;
@@ -53,6 +57,106 @@ class GetNumericTypeTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetNumericType::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetNumericType::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetNumericType::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetNumericType::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetNumericType::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetNumericType::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetNumericType::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetNumericType::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetNumericType::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetNumericType::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -60,19 +164,10 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetNumericType class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * the GetNumericType class can be instantiated as an invokable object
+         */
         $unit = new GetNumericType();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetNumericType::class, $unit);
     }
@@ -103,26 +198,14 @@ class GetNumericTypeTest extends TestCase
     #[DataProvider('nonNumericProvider')]
     public function test_invoke_rejects_non_numeric_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that any input which is not numeric is
-        // rejected by the __invoke() guard and produces an empty
-        // type list
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * any input which is not numeric is rejected by the __invoke() guard
+         * and produces an empty type list
+         */
         $unit = new GetNumericType();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -130,27 +213,16 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('->__invoke() returns empty array for Stringable whose string is non-numeric')]
     public function test_invoke_rejects_stringable_with_non_numeric_value(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke coerces a Stringable to a
-        // string (SampleToString produces 'some text') and then
-        // rejects it because the resulting string is not numeric
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke coerces a Stringable to a string (SampleToString produces
+         * 'some text') and then rejects it because the resulting string is not
+         * numeric
+         */
         $unit = new GetNumericType();
         $input = new SampleToString();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -178,28 +250,16 @@ class GetNumericTypeTest extends TestCase
     #[DataProvider('integerProvider')]
     public function test_from_returns_expected_types_for_integer(int $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that passing an integer produces the
-        // numeric family list - no 'string' is added because the
-        // input was never a string
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * passing an integer produces the numeric family list - no 'string' is
+         * added because the input was never a string
+         */
         $expected = [
             'numeric' => 'numeric',
             'int' => 'int',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNumericType::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -226,28 +286,16 @@ class GetNumericTypeTest extends TestCase
     #[DataProvider('floatProvider')]
     public function test_from_returns_expected_types_for_float(float $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that passing a float produces the
-        // numeric family list - no 'string' is added because the
-        // input was never a string
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * passing a float produces the numeric family list - no 'string' is
+         * added because the input was never a string
+         */
         $expected = [
             'numeric' => 'numeric',
             'float' => 'float',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNumericType::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -261,17 +309,11 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('::from() returns numeric, int, and string for an integer-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_int_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string containing an integer
-        // value produces the numeric family list plus 'string' -
-        // the 'string' marker carries the fact that the original
-        // input was a string, not a coerced int
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string containing an integer value produces the numeric family list
+         * plus 'string' - the 'string' marker carries the fact that the
+         * original input was a string, not a coerced int
+         */
         $input = '123';
         $expected = [
             'numeric' => 'numeric',
@@ -279,13 +321,7 @@ class GetNumericTypeTest extends TestCase
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNumericType::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -293,17 +329,11 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('::from() returns numeric, float, and string for a float-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_float_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string containing a decimal
-        // value produces the numeric family list plus 'string' -
-        // the 'string' marker carries the fact that the original
-        // input was a string, not a coerced float
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string containing a decimal value produces the numeric family list
+         * plus 'string' - the 'string' marker carries the fact that the
+         * original input was a string, not a coerced float
+         */
         $input = '45.6';
         $expected = [
             'numeric' => 'numeric',
@@ -311,13 +341,7 @@ class GetNumericTypeTest extends TestCase
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNumericType::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -338,25 +362,13 @@ class GetNumericTypeTest extends TestCase
     #[DataProvider('nonNumericStringProvider')]
     public function test_from_returns_empty_for_non_numeric_string(string $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that strings whose content is not
-        // numeric produce an empty type list - the `is_numeric()`
-        // check guards the body of from()
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * strings whose content is not numeric produce an empty type list - the
+         * `is_numeric()` check guards the body of from()
+         */
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetNumericType::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

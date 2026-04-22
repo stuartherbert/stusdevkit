@@ -126,8 +126,14 @@ class ContainerStack implements ContainerInterface
             return true;
         }
 
-        // special case - we've never seen this before
-        if ($this->unresolvedMap[$id]) {
+        // special case - we've already proven this id has no home
+        // in any of the layered containers
+        //
+        // footgun! the isset() guard is load-bearing: accessing an
+        // undefined key under strict mode triggers a PHP warning,
+        // which PHPUnit promotes to a test failure under
+        // failOnWarning.
+        if (isset($this->unresolvedMap[$id])) {
             return false;
         }
 

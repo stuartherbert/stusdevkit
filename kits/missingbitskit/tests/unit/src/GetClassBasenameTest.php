@@ -40,6 +40,8 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
+use ReflectionParameter;
 use stdClass;
 
 use function StusDevKit\MissingBitsKit\get_class_basename;
@@ -47,76 +49,111 @@ use function StusDevKit\MissingBitsKit\get_class_basename;
 #[TestDox('get_class_basename()')]
 class GetClassBasenameTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('is a function in the StusDevKit\\MissingBitsKit namespace')]
+    public function test_exists_in_expected_namespace(): void
+    {
+        $this->assertTrue(
+            \function_exists(
+                'StusDevKit\\MissingBitsKit\\get_class_basename',
+            ),
+        );
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\get_class_basename',
+        );
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::get_class_basename() parameter names in order')]
+    public function test_parameter_names(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\get_class_basename',
+        );
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $reflection->getParameters(),
+        );
+        $this->assertSame(['fqcn'], $paramNames);
+    }
+
+    #[TestDox('::get_class_basename() parameter types in order')]
+    public function test_parameter_types(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\get_class_basename',
+        );
+        $paramTypes = array_map(
+            fn(ReflectionParameter $p) => (string) $p->getType(),
+            $reflection->getParameters(),
+        );
+        $this->assertSame(['string'], $paramTypes);
+    }
+
+    #[TestDox('::get_class_basename() return type')]
+    public function test_return_type(): void
+    {
+        $reflection = new ReflectionFunction(
+            'StusDevKit\\MissingBitsKit\\get_class_basename',
+        );
+        $this->assertSame(
+            'string',
+            (string) $reflection->getReturnType(),
+        );
+    }
+
+    // ================================================================
+    //
+    // Behaviour
+    //
+    // ----------------------------------------------------------------
+
     #[TestDox('returns short name for namespaced class')]
     public function test_returns_short_name(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that get_class_basename()
-        // strips the namespace and returns only the
-        // class name
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /** strips the namespace and returns only the class name */
         $result = get_class_basename(self::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(
             'GetClassBasenameTest',
             $result,
         );
-
     }
 
     #[TestDox('returns class name for non-namespaced class')]
     public function test_returns_name_for_non_namespaced(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that get_class_basename()
-        // works for classes without a namespace
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /** works for classes without a namespace */
         $result = get_class_basename(stdClass::class);
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame('stdClass', $result);
-
     }
 
     #[TestDox('returns short name from an object instance')]
     public function test_returns_short_name_from_object(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that get_class_basename()
-        // works when passed a fully-qualified class name
-        // obtained from an object via ::class
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * works when passed a fully-qualified class name obtained
+         * from an object via ::class
+         */
         $obj = new stdClass();
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $result = get_class_basename($obj::class);
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame('stdClass', $result);
-
     }
 }

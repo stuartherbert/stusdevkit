@@ -46,6 +46,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionNamedType;
 use StusDevKit\DependencyKit\Reflection\ResolveParameters;
 use StusDevKit\DependencyKit\Tests\Fixtures\Reflection\AbstractClassFixture;
@@ -62,7 +63,14 @@ use StusDevKit\ExceptionsKit\Exceptions\InvalidFunctionException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidMethodException;
 
 /**
- * Tests for the ResolveParameters utility.
+ * Contract + behaviour tests for the ResolveParameters utility.
+ *
+ * ResolveParameters is a permissive raw-reflection helper that
+ * exposes four public static factories (forCallable, forFunction,
+ * forMethod, forConstructor). These tests pin the class identity
+ * (namespace, kind, exposed method set), the shape of each factory
+ * (public, static, return type, parameter list), and the behaviour
+ * of each factory against a minimal in-memory PSR-11 container.
  */
 #[TestDox(ResolveParameters::class)]
 class ResolveParametersTest extends TestCase
@@ -133,14 +141,80 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    #[TestDox('is declared as a class')]
+    public function test_is_declared_as_a_class(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // ResolveParameters is a plain class exposing static factory
+        // methods - not a trait, not an interface, not an enum.
+        // Pinning this prevents a silent reshape (e.g. promoting to
+        // an interface or a trait) from slipping past review.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(ResolveParameters::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (! $reflection->isInterface())
+            && (! $reflection->isTrait())
+            && (! $reflection->isEnum());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('exposes only forCallable(), forFunction(), forMethod() and forConstructor() as public methods')]
+    public function test_exposes_only_the_four_published_factories(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the class exists to supply four public static factories.
+        // Any new public method is a surface-area expansion that every
+        // caller inherits, so the method set is pinned by enumeration
+        // - an addition fails with a diff that names the new method,
+        // rather than a cryptic count mismatch.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = [
+            'forFunction',
+            'forCallable',
+            'forMethod',
+            'forConstructor',
+        ];
+        $reflection = new ReflectionClass(ResolveParameters::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($method) => $method->getName(),
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
     // ================================================================
     //
-    // forCallable() method shape
+    // ::forCallable() shape
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares a forCallable() method')]
-    public function test_declares_a_forCallable_method(): void
+    #[TestDox('::forCallable() is declared')]
+    public function test_forCallable_is_declared(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -249,9 +323,106 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    #[TestDox('::forCallable() declares $callable and $container as parameters in that order')]
+    public function test_forCallable_declares_callable_and_container_in_that_order(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published parameter set is pinned by enumeration, in
+        // order. Adding, removing, renaming, or reordering parameters
+        // is a breaking change for every call site and must show up
+        // here as a diff that names the specific drift.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['callable', 'container'];
+        $method = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forCallable');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($param) => $param->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forCallable() declares $callable as callable')]
+    public function test_forCallable_declares_callable_as_callable(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the first parameter uses PHP's `callable` pseudo-type so
+        // the boundary enforces the same shape rules PHP itself
+        // recognises - in particular, rejecting private and
+        // protected methods at the call site rather than letting
+        // them slip through. Widening this is a breaking change.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'callable';
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forCallable')
+            ->getParameters()[0];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forCallable() declares $container as ContainerInterface')]
+    public function test_forCallable_declares_container_as_ContainerInterface(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the container is typed to the PSR-11 abstraction so the
+        // utility works with any compliant container. Binding to a
+        // specific implementation would make it unusable for the
+        // wider PSR-11 ecosystem.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ContainerInterface::class;
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forCallable')
+            ->getParameters()[1];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
     // ================================================================
     //
-    // forCallable() behaviour - dispatch by callable shape
+    // ::forCallable() behaviour - dispatch by callable shape
     //
     // ----------------------------------------------------------------
 
@@ -264,58 +435,50 @@ class ResolveParametersTest extends TestCase
      * parameter.
      *
      * @return iterable<string, array{
-     *   0: string,
-     *   1: callable,
-     *   2: array<string, mixed>,
-     *   3: array<string, mixed>
+     *   0: callable,
+     *   1: array<string, mixed>,
+     *   2: array<string, mixed>
      * }>
      */
     public static function callableShapeProvider(): iterable
     {
         yield 'a Closure' => [
-            'a Closure',
             static fn (int $x): int => $x,
             ['int' => 42],
             ['x' => 42],
         ];
 
         yield 'a first-class callable' => [
-            'a first-class callable',
             CallableTargetClass::staticMethod(...),
             ['int' => 42],
             ['x' => 42],
         ];
 
         yield 'an invokable object' => [
-            'an invokable object',
             new InvokableFixture(),
             ['int' => 42],
             ['x' => 42],
         ];
 
         yield 'an [object, method] array' => [
-            'an [object, method] array',
             [new CallableTargetClass(), 'instanceMethod'],
             ['int' => 42],
             ['x' => 42],
         ];
 
         yield 'a [class-string, method] array' => [
-            'a [class-string, method] array',
             [CallableTargetClass::class, 'staticMethod'],
             ['int' => 42],
             ['x' => 42],
         ];
 
         yield 'a "Class::method" string' => [
-            'a "Class::method" string',
             CallableTargetClass::class . '::staticMethod',
             ['int' => 42],
             ['x' => 42],
         ];
 
         yield 'a global function name' => [
-            'a global function name',
             'strlen',
             ['string' => 'hello'],
             ['string' => 'hello'],
@@ -326,10 +489,9 @@ class ResolveParametersTest extends TestCase
      * @param array<string, mixed> $services
      * @param array<string, mixed> $expected
      */
-    #[TestDox('::forCallable() resolves parameters for $shapeDescription')]
+    #[TestDox('::forCallable() resolves parameters for $_dataName')]
     #[DataProvider('callableShapeProvider')]
     public function test_forCallable_resolves_parameters_for_shape(
-        string $shapeDescription,
         callable $callable,
         array $services,
         array $expected,
@@ -347,10 +509,6 @@ class ResolveParametersTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        // `$shapeDescription` is carried for TestDox interpolation;
-        // it does not drive the assertion.
-        unset($shapeDescription);
-
         $container = $this->container($services);
 
         // ----------------------------------------------------------------
@@ -366,12 +524,12 @@ class ResolveParametersTest extends TestCase
 
     // ================================================================
     //
-    // forFunction() method shape
+    // ::forFunction() shape
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares a forFunction() method')]
-    public function test_declares_a_forFunction_method(): void
+    #[TestDox('::forFunction() is declared')]
+    public function test_forFunction_is_declared(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -479,9 +637,105 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    #[TestDox('::forFunction() declares $func and $container as parameters in that order')]
+    public function test_forFunction_declares_func_and_container_in_that_order(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published parameter set is pinned by enumeration, in
+        // order. Adding, removing, renaming, or reordering parameters
+        // is a breaking change for every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['func', 'container'];
+        $method = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forFunction');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($param) => $param->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forFunction() declares $func as Closure|string')]
+    public function test_forFunction_declares_func_as_closure_or_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // `forFunction` accepts exactly two shapes: a `Closure`
+        // (including first-class callables, which PHP materialises as
+        // a Closure) or a global function name string. Widening this
+        // to `callable` would silently re-admit the other callable
+        // shapes this factory deliberately rejects.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'Closure|string';
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forFunction')
+            ->getParameters()[0];
+        $paramType = $param->getType();
+        $this->assertNotNull($paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (string) $paramType;
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forFunction() declares $container as ContainerInterface')]
+    public function test_forFunction_declares_container_as_ContainerInterface(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the container is typed to the PSR-11 abstraction so the
+        // utility works with any compliant container. Binding to a
+        // specific implementation would make it unusable for the
+        // wider PSR-11 ecosystem.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ContainerInterface::class;
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forFunction')
+            ->getParameters()[1];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
     // ================================================================
     //
-    // forFunction() behaviour
+    // ::forFunction() behaviour
     //
     // ----------------------------------------------------------------
 
@@ -593,12 +847,12 @@ class ResolveParametersTest extends TestCase
 
     // ================================================================
     //
-    // forMethod() method shape
+    // ::forMethod() shape
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares a forMethod() method')]
-    public function test_declares_a_forMethod_method(): void
+    #[TestDox('::forMethod() is declared')]
+    public function test_forMethod_is_declared(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -706,9 +960,132 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    #[TestDox('::forMethod() declares $target, $method and $container as parameters in that order')]
+    public function test_forMethod_declares_target_method_and_container_in_that_order(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published parameter set is pinned by enumeration, in
+        // order. Adding, removing, renaming, or reordering parameters
+        // is a breaking change for every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['target', 'method', 'container'];
+        $method = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forMethod');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($param) => $param->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forMethod() declares $target as object|string')]
+    public function test_forMethod_declares_target_as_object_or_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // `$target` accepts either an object (instance method) or a
+        // class-string (static method), so `method_exists()` can find
+        // the method in either case. Narrowing the type would cut off
+        // one call shape without warning.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'object|string';
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forMethod')
+            ->getParameters()[0];
+        $paramType = $param->getType();
+        $this->assertNotNull($paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (string) $paramType;
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forMethod() declares $method as string')]
+    public function test_forMethod_declares_method_as_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the method name is always supplied as a string - that's
+        // what `method_exists()` and `ReflectionMethod` both accept.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'string';
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forMethod')
+            ->getParameters()[1];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forMethod() declares $container as ContainerInterface')]
+    public function test_forMethod_declares_container_as_ContainerInterface(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the container is typed to the PSR-11 abstraction so the
+        // utility works with any compliant container.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ContainerInterface::class;
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forMethod')
+            ->getParameters()[2];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
     // ================================================================
     //
-    // forMethod() behaviour
+    // ::forMethod() behaviour
     //
     // ----------------------------------------------------------------
 
@@ -865,12 +1242,12 @@ class ResolveParametersTest extends TestCase
 
     // ================================================================
     //
-    // forConstructor() method shape
+    // ::forConstructor() shape
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares a forConstructor() method')]
-    public function test_declares_a_forConstructor_method(): void
+    #[TestDox('::forConstructor() is declared')]
+    public function test_forConstructor_is_declared(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -978,9 +1355,103 @@ class ResolveParametersTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    #[TestDox('::forConstructor() declares $class and $container as parameters in that order')]
+    public function test_forConstructor_declares_class_and_container_in_that_order(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published parameter set is pinned by enumeration, in
+        // order. Adding, removing, renaming, or reordering parameters
+        // is a breaking change for every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['class', 'container'];
+        $method = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forConstructor');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = array_map(
+            static fn ($param) => $param->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forConstructor() declares $class as string')]
+    public function test_forConstructor_declares_class_as_string(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // `$class` is deliberately typed as plain `string` rather
+        // than `class-string` - the factory reports a clear
+        // InvalidClassException for strings that do not name a
+        // declared class, and a plain string lets callers perform
+        // "is this a class at all?" probes without tripping PHPStan.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'string';
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forConstructor')
+            ->getParameters()[0];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::forConstructor() declares $container as ContainerInterface')]
+    public function test_forConstructor_declares_container_as_ContainerInterface(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the container is typed to the PSR-11 abstraction so the
+        // utility works with any compliant container.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ContainerInterface::class;
+        $param = (new ReflectionClass(ResolveParameters::class))
+            ->getMethod('forConstructor')
+            ->getParameters()[1];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
     // ================================================================
     //
-    // forConstructor() behaviour
+    // ::forConstructor() behaviour
     //
     // ----------------------------------------------------------------
 

@@ -44,6 +44,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\ChildOfTraitParent;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\ClassWithNestedTrait;
@@ -59,6 +63,106 @@ class GetClassTraitsTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetClassTraits::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetClassTraits::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetClassTraits::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetClassTraits::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetClassTraits::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassTraits::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassTraits::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetClassTraits::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassTraits::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassTraits::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -66,19 +170,8 @@ class GetClassTraitsTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetClassTraits class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /** GetClassTraits is instantiable as an invokable object */
         $unit = new GetClassTraits();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetClassTraits::class, $unit);
     }
@@ -111,25 +204,14 @@ class GetClassTraitsTest extends TestCase
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke() rejects any input that
-        // is not a string naming a known class or trait
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke() rejects any input that is not a string naming
+         * a known class or trait
+         */
         $unit = new GetClassTraits();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -143,25 +225,13 @@ class GetClassTraitsTest extends TestCase
     #[TestDox('::from() returns empty array for a class that uses no traits')]
     public function test_from_returns_empty_for_class_without_traits(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class using no traits produces
-        // an empty trait list - GetClassTraits reports traits, not
-        // the class itself
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class using no traits produces an empty trait list -
+         * GetClassTraits reports traits, not the class itself
+         */
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassTraits::from(stdClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -169,26 +239,15 @@ class GetClassTraitsTest extends TestCase
     #[TestDox('::from() returns a directly used trait')]
     public function test_from_returns_directly_used_trait(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class with a trait declared
-        // directly via `use` reports that trait
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class with a trait declared directly via `use` reports
+         * that trait
+         */
         $expected = [
             SampleTrait::class => SampleTrait::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassTraits::from(SampleClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -196,26 +255,15 @@ class GetClassTraitsTest extends TestCase
     #[TestDox('::from() returns a trait inherited from a parent class')]
     public function test_from_returns_inherited_trait(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a trait declared on a parent
-        // class is still reported when looking up the child class
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a trait declared on a parent class is still reported
+         * when looking up the child class
+         */
         $expected = [
             InheritedTrait::class => InheritedTrait::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassTraits::from(ChildOfTraitParent::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -223,28 +271,17 @@ class GetClassTraitsTest extends TestCase
     #[TestDox('::from() walks traits used by other traits')]
     public function test_from_walks_traits_used_by_traits(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when a class uses a trait which
-        // itself uses another trait, both traits are reported -
-        // the walk is recursive, not just one level deep
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when a class uses a trait which itself uses another
+         * trait, both traits are reported - the walk is recursive,
+         * not just one level deep
+         */
         $expected = [
             OuterTrait::class => OuterTrait::class,
             NestedTrait::class => NestedTrait::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassTraits::from(ClassWithNestedTrait::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

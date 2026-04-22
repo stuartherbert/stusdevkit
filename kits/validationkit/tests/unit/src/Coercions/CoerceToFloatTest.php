@@ -51,6 +51,94 @@ class CoerceToFloatTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Coercions namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new \ReflectionClass(CoerceToFloat::class);
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Coercions',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(CoerceToFloat::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('implements ValueCoercion')]
+    public function test_implements_ValueCoercion(): void
+    {
+        $reflection = new \ReflectionClass(CoerceToFloat::class);
+        $this->assertContains(
+            \StusDevKit\ValidationKit\Contracts\ValueCoercion::class,
+            $reflection->getInterfaceNames(),
+        );
+    }
+
+    #[TestDox('declares only coerce as its own public method')]
+    public function test_declares_own_method_set(): void
+    {
+        $reflection = new \ReflectionClass(CoerceToFloat::class);
+        $ownMethods = [];
+        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === CoerceToFloat::class) {
+                $ownMethods[] = $m->getName();
+            }
+        }
+        sort($ownMethods);
+        $this->assertSame(['coerce'], $ownMethods);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->coerce() is declared public (instance method)')]
+    public function test_coerce_is_public_instance(): void
+    {
+        $method = new \ReflectionMethod(CoerceToFloat::class, 'coerce');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->coerce() parameter names in order')]
+    public function test_coerce_parameter_names(): void
+    {
+        $method = new \ReflectionMethod(CoerceToFloat::class, 'coerce');
+        $paramNames = array_map(fn(\ReflectionParameter $p) => $p->getName(), $method->getParameters());
+        $this->assertSame(['data'], $paramNames);
+    }
+
+    #[TestDox('->coerce() declares $data as mixed')]
+    public function test_coerce_parameter_types(): void
+    {
+        $method = new \ReflectionMethod(CoerceToFloat::class, 'coerce');
+        $type = $method->getParameters()[0]->getType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
+
+    #[TestDox('->coerce() declares return type mixed')]
+    public function test_coerce_return_type(): void
+    {
+        $method = new \ReflectionMethod(CoerceToFloat::class, 'coerce');
+        $type = $method->getReturnType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
+
+    // ================================================================
+    //
     // Successful Coercions
     //
     // ----------------------------------------------------------------
@@ -73,30 +161,18 @@ class CoerceToFloatTest extends TestCase
         ];
     }
 
+    /**
+     * CoerceToFloat converts compatible values to floats.
+     */
     #[DataProvider('provideCoercibleValues')]
     #[TestDox('->coerce() coerces to float')]
     public function test_coerces_to_float(
         mixed $inputValue,
         float $expectedResult,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToFloat converts
-        // compatible values to floats
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToFloat();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expectedResult, $actualResult);
     }
@@ -119,29 +195,18 @@ class CoerceToFloatTest extends TestCase
         ];
     }
 
+    /**
+     * CoerceToFloat returns values unchanged when they cannot be
+     * converted to float.
+     */
     #[DataProvider('provideNonCoercibleValues')]
     #[TestDox('->coerce() returns non-coercible value unchanged')]
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToFloat returns values
-        // unchanged when they cannot be converted to float
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new CoerceToFloat();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($inputValue, $actualResult);
     }

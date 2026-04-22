@@ -46,6 +46,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use StusDevKit\ValidationKit\Contracts\ValueTransformer;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
+use StusDevKit\ValidationKit\Transformers\BaseTransformer;
 use StusDevKit\ValidationKit\Transformers\LowerCaseTransformer;
 
 #[TestDox('LowerCaseTransformer')]
@@ -53,29 +54,44 @@ class LowerCaseTransformerTest extends TestCase
 {
     // ================================================================
     //
-    // Interface Compliance
+    // Identity
     //
     // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Transformers namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new \ReflectionClass(LowerCaseTransformer::class);
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Transformers',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new \ReflectionClass(LowerCaseTransformer::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('extends BaseTransformer')]
+    public function test_extends_BaseTransformer(): void
+    {
+        $reflection = new \ReflectionClass(LowerCaseTransformer::class);
+        $parent = $reflection->getParentClass();
+        $this->assertNotFalse($parent);
+        $this->assertSame(
+            BaseTransformer::class,
+            $parent->getName(),
+        );
+    }
 
     #[TestDox('implements ValueTransformer')]
     public function test_implements_value_transformer(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that LowerCaseTransformer
-        // implements the ValueTransformer interface
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new LowerCaseTransformer();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             ValueTransformer::class,
@@ -83,9 +99,69 @@ class LowerCaseTransformerTest extends TestCase
         );
     }
 
+    #[TestDox('declares only process as its own public method')]
+    public function test_declares_own_method_set(): void
+    {
+        $reflection = new \ReflectionClass(LowerCaseTransformer::class);
+        $ownMethods = [];
+        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === LowerCaseTransformer::class) {
+                $ownMethods[] = $m->getName();
+            }
+        }
+        sort($ownMethods);
+        $this->assertSame(['process'], $ownMethods);
+    }
+
     // ================================================================
     //
-    // transform()
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->process() is declared public (instance method)')]
+    public function test_process_is_public_instance(): void
+    {
+        $method = new \ReflectionMethod(LowerCaseTransformer::class, 'process');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->process() parameter names in order')]
+    public function test_process_parameter_names(): void
+    {
+        $method = new \ReflectionMethod(LowerCaseTransformer::class, 'process');
+        $paramNames = array_map(fn(\ReflectionParameter $p) => $p->getName(), $method->getParameters());
+        $this->assertSame(['data', 'context'], $paramNames);
+    }
+
+    #[TestDox('->process() declares $data as mixed and $context as ValidationContext')]
+    public function test_process_parameter_types(): void
+    {
+        $method = new \ReflectionMethod(LowerCaseTransformer::class, 'process');
+        $params = $method->getParameters();
+
+        $dataType = $params[0]->getType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $dataType);
+        $this->assertSame('mixed', $dataType->getName());
+
+        $contextType = $params[1]->getType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $contextType);
+        $this->assertSame(ValidationContext::class, $contextType->getName());
+    }
+
+    #[TestDox('->process() declares return type mixed')]
+    public function test_process_return_type(): void
+    {
+        $method = new \ReflectionMethod(LowerCaseTransformer::class, 'process');
+        $type = $method->getReturnType();
+        $this->assertInstanceOf(\ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
+
+    // ================================================================
+    //
+    // Behaviour
     //
     // ----------------------------------------------------------------
 
@@ -104,31 +180,19 @@ class LowerCaseTransformerTest extends TestCase
         ];
     }
 
+    /**
+     * LowerCaseTransformer uses mb_strtolower so accented
+     * characters are lowercased correctly.
+     */
     #[DataProvider('provideLowerCaseCases')]
     #[TestDox('->process() converts to lower case')]
     public function test_converts_to_lower_case(
         string $inputValue,
         string $expectedResult,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that LowerCaseTransformer
-        // converts strings to lower case with Unicode
-        // support via mb_strtolower
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $unit = new LowerCaseTransformer();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->process(data: $inputValue, context: new ValidationContext());
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expectedResult, $actualResult);
     }

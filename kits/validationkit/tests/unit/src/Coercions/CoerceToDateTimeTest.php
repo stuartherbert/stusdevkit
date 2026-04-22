@@ -45,11 +45,109 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
 use StusDevKit\ValidationKit\Coercions\CoerceToDateTime;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 
 #[TestDox('CoerceToDateTime')]
 class CoerceToDateTimeTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Coercions namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(CoerceToDateTime::class);
+
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Coercions',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(CoerceToDateTime::class);
+
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+        $this->assertFalse($reflection->isEnum());
+    }
+
+    #[TestDox('implements ValueCoercion')]
+    public function test_implements_value_coercion(): void
+    {
+        $reflection = new ReflectionClass(CoerceToDateTime::class);
+
+        $this->assertTrue($reflection->implementsInterface(ValueCoercion::class));
+    }
+
+    #[TestDox('publishes exactly the coerce() method')]
+    public function test_publishes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(CoerceToDateTime::class);
+
+        $ownMethods = array_values(array_filter(
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+            static fn (ReflectionMethod $m): bool
+                => $m->getDeclaringClass()->getName() === CoerceToDateTime::class,
+        ));
+        $methodNames = array_map(
+            static fn (ReflectionMethod $m): string => $m->getName(),
+            $ownMethods,
+        );
+        sort($methodNames);
+
+        $this->assertSame(['coerce'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->coerce() is an instance method')]
+    public function test_coerce_is_instance_method(): void
+    {
+        $method = new ReflectionMethod(CoerceToDateTime::class, 'coerce');
+
+        $this->assertFalse($method->isStatic());
+        $this->assertTrue($method->isPublic());
+    }
+
+    #[TestDox('->coerce() accepts a single mixed $data parameter')]
+    public function test_coerce_accepts_single_mixed_parameter(): void
+    {
+        $method = new ReflectionMethod(CoerceToDateTime::class, 'coerce');
+
+        $params = $method->getParameters();
+
+        $this->assertCount(1, $params);
+        $this->assertSame('data', $params[0]->getName());
+
+        $type = $params[0]->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
+
+    #[TestDox('->coerce() returns mixed')]
+    public function test_coerce_returns_mixed(): void
+    {
+        $method = new ReflectionMethod(CoerceToDateTime::class, 'coerce');
+
+        $type = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $type);
+        $this->assertSame('mixed', $type->getName());
+    }
+
     // ================================================================
     //
     // ISO 8601 String Coercion
@@ -59,25 +157,11 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() coerces ISO 8601 (ATOM) string to DateTimeImmutable')]
     public function test_coerces_atom_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime converts an
-        // ISO 8601 ATOM-format string to a DateTimeImmutable
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** converts an ISO 8601 ATOM-format string to a DateTimeImmutable */
         $unit = new CoerceToDateTime();
         $input = '2026-01-15T10:30:00+00:00';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             DateTimeImmutable::class,
@@ -98,25 +182,11 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() coerces lenient date string to DateTimeImmutable')]
     public function test_coerces_lenient_date_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime falls back
-        // to lenient parsing for non-ATOM date strings
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** falls back to lenient parsing for non-ATOM date strings */
         $unit = new CoerceToDateTime();
         $input = '2026-01-15';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             DateTimeImmutable::class,
@@ -137,25 +207,11 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() coerces integer timestamp to DateTimeImmutable')]
     public function test_coerces_integer_timestamp(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime converts an
-        // integer Unix timestamp to a DateTimeImmutable
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** converts an integer Unix timestamp to a DateTimeImmutable */
         $unit = new CoerceToDateTime();
         $timestamp = 1700000000;
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($timestamp);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(
             DateTimeImmutable::class,
@@ -176,26 +232,11 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() returns unparseable string unchanged')]
     public function test_returns_unparseable_string_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime returns a
-        // string unchanged when it cannot be parsed as a
-        // date
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** a string that cannot be parsed as a date is returned unchanged */
         $unit = new CoerceToDateTime();
         $input = 'not-a-date';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('not-a-date', $actualResult);
     }
@@ -203,24 +244,10 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() returns null unchanged')]
     public function test_returns_null_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime returns null
-        // unchanged
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** null is returned unchanged */
         $unit = new CoerceToDateTime();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce(null);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertNull($actualResult);
     }
@@ -228,24 +255,10 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() returns float unchanged')]
     public function test_returns_float_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime returns a
-        // float unchanged (only int timestamps are coerced)
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** a float is returned unchanged — only int timestamps are coerced */
         $unit = new CoerceToDateTime();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce(3.14);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(3.14, $actualResult);
     }
@@ -253,25 +266,11 @@ class CoerceToDateTimeTest extends TestCase
     #[TestDox('->coerce() returns array unchanged')]
     public function test_returns_array_unchanged(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToDateTime returns an
-        // array unchanged
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /** an array is returned unchanged */
         $unit = new CoerceToDateTime();
         $input = ['2026-01-15'];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($input, $actualResult);
     }

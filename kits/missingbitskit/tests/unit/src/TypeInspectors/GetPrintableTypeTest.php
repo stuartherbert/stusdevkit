@@ -45,6 +45,10 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleInvokable;
@@ -55,6 +59,94 @@ class GetPrintableTypeTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetPrintableType::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetPrintableType::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes only ::from() as a public method')]
+    public function test_exposes_only_from(): void
+    {
+        $reflection = new ReflectionClass(GetPrintableType::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetPrintableType::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['from'], $methodNames);
+    }
+
+    #[TestDox('publishes FLAG_NONE, FLAG_CLASSNAME, FLAG_CALLABLE_DETAILS, FLAG_SCALAR_VALUE, and FLAG_DEFAULTS as public constants')]
+    public function test_publishes_expected_flag_constants(): void
+    {
+        $reflection = new ReflectionClass(GetPrintableType::class);
+        $constants = array_keys($reflection->getConstants());
+        sort($constants);
+        $expected = [
+            'FLAG_CALLABLE_DETAILS',
+            'FLAG_CLASSNAME',
+            'FLAG_DEFAULTS',
+            'FLAG_NONE',
+            'FLAG_SCALAR_VALUE',
+        ];
+        $this->assertSame($expected, $constants);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetPrintableType::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetPrintableType::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item', 'options'], $paramNames);
+    }
+
+    #[TestDox('::from() returns string')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetPrintableType::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('string', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -62,20 +154,11 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetPrintableType class can be
-        // instantiated - even though all its public API is static,
-        // it should still be constructible
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * the GetPrintableType class can be instantiated - even though all its
+         * public API is static, it should still be constructible
+         */
         $unit = new GetPrintableType();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetPrintableType::class, $unit);
     }
@@ -117,22 +200,12 @@ class GetPrintableTypeTest extends TestCase
         int $options,
         string $expected,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that scalar values produce their
-        // gettype() name, optionally followed by `<value>` when
-        // FLAG_SCALAR_VALUE is set. Booleans format as
-        // `<true>`/`<false>` rather than `<1>`/`<>` so the output
-        // is readable.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * scalar values produce their gettype() name, optionally followed by
+         * `<value>` when FLAG_SCALAR_VALUE is set. Booleans format as
+         * `<true>`/`<false>` rather than `<1>`/`<>` so the output is readable.
+         */
         $actual = GetPrintableType::from($input, $options);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -146,26 +219,14 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns just "object" for a plain object when FLAG_CLASSNAME is not set')]
     public function test_from_returns_plain_object_without_classname_flag(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an object value reduces to the
-        // string 'object' when the caller has not asked for
-        // classname detail
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an object value reduces to the string 'object' when the caller has
+         * not asked for classname detail
+         */
         $input = new stdClass();
         $expected = 'object';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_NONE);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -173,26 +234,14 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns object<ClassName> when FLAG_CLASSNAME is set')]
     public function test_from_returns_object_with_classname(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a plain object reports its class
-        // name inside an `object<...>` wrapper when the caller
-        // has asked for classname detail
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a plain object reports its class name inside an `object<...>` wrapper
+         * when the caller has asked for classname detail
+         */
         $input = new SampleClass();
         $expected = 'object<StusDevKit\\MissingBitsKit\\Tests\\Fixtures\\TypeInspectors\\SampleClass>';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_CLASSNAME);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -200,27 +249,15 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns object<ClassName> for an invokable object with defaults')]
     public function test_from_returns_object_for_invokable_with_defaults(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an object defining __invoke() is
-        // still reported as an object (with classname) rather
-        // than as a callable - the object dispatch runs before
-        // the callable dispatch
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an object defining __invoke() is still reported as an object (with
+         * classname) rather than as a callable - the object dispatch runs
+         * before the callable dispatch
+         */
         $input = new SampleInvokable();
         $expected = 'object<StusDevKit\\MissingBitsKit\\Tests\\Fixtures\\TypeInspectors\\SampleInvokable>';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_DEFAULTS);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -234,27 +271,15 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "callable" for a Closure when FLAG_CALLABLE_DETAILS is not set')]
     public function test_from_returns_plain_callable_for_closure_without_details(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a Closure is always routed to
-        // the callable formatter - its closure-ness is not gated
-        // by FLAG_CLASSNAME - so without FLAG_CALLABLE_DETAILS,
-        // it emits the bare 'callable' token
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a Closure is always routed to the callable formatter - its closure-
+         * ness is not gated by FLAG_CLASSNAME - so without
+         * FLAG_CALLABLE_DETAILS, it emits the bare 'callable' token
+         */
         $input = fn(): int => 1;
         $expected = 'callable';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_NONE);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -262,28 +287,16 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "callable<Closure>" for a Closure when FLAG_CALLABLE_DETAILS alone is set')]
     public function test_from_returns_closure_detail_without_classname(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that FLAG_CALLABLE_DETAILS alone is
-        // enough to reveal that the value is a Closure - the
-        // caller does not also have to pass FLAG_CLASSNAME. This
-        // guards against the earlier bug where the closure-aware
-        // branch sat behind the classname gate.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * FLAG_CALLABLE_DETAILS alone is enough to reveal that the value is a
+         * Closure - the caller does not also have to pass FLAG_CLASSNAME. This
+         * guards against the earlier bug where the closure-aware branch sat
+         * behind the classname gate.
+         */
         $input = fn(): int => 1;
         $expected = 'callable<Closure>';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_CALLABLE_DETAILS);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -291,27 +304,15 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "callable<Closure>" for a Closure with defaults')]
     public function test_from_returns_callable_closure_detail_for_closure(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a Closure with the default flag
-        // set is rendered as `callable<Closure>` - the class name
-        // is hidden behind the 'Closure' literal because all
-        // closures share the same anonymous class
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a Closure with the default flag set is rendered as
+         * `callable<Closure>` - the class name is hidden behind the 'Closure'
+         * literal because all closures share the same anonymous class
+         */
         $input = fn(): int => 1;
         $expected = 'callable<Closure>';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_DEFAULTS);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -325,26 +326,14 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "callable" for a callable string without FLAG_CALLABLE_DETAILS')]
     public function test_from_returns_plain_callable_for_callable_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string naming a callable
-        // function produces just 'callable' when no details were
-        // requested
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string naming a callable function produces just 'callable' when no
+         * details were requested
+         */
         $input = 'strlen';
         $expected = 'callable';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_NONE);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -352,26 +341,14 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "callable<function>" for a callable string with FLAG_CALLABLE_DETAILS')]
     public function test_from_returns_callable_with_function_name(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that when details are requested, a
-        // callable string is rendered with the function name
-        // inside `callable<...>`
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * when details are requested, a callable string is rendered with the
+         * function name inside `callable<...>`
+         */
         $input = 'strlen';
         $expected = 'callable<strlen>';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_CALLABLE_DETAILS);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -379,26 +356,14 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "callable<Class::method>" for a [Class, method] callable array with FLAG_CALLABLE_DETAILS')]
     public function test_from_returns_callable_with_static_method(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a `[ClassName, 'method']` array
-        // callable renders as `callable<ClassName::method>` when
-        // details are requested
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a `[ClassName, 'method']` array callable renders as
+         * `callable<ClassName::method>` when details are requested
+         */
         $input = [DateTimeImmutable::class, 'createFromFormat'];
         $expected = 'callable<DateTimeImmutable::createFromFormat>';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($input, GetPrintableType::FLAG_CALLABLE_DETAILS);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -412,26 +377,14 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "null" for a null input')]
     public function test_from_returns_null_output_for_null(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that null falls through to the
-        // catch-all branch and is normalised to the lowercase
-        // 'null' token (PHP's own keyword spelling), not
-        // gettype()'s 'NULL'
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * null falls through to the catch-all branch and is normalised to the
+         * lowercase 'null' token (PHP's own keyword spelling), not gettype()'s
+         * 'NULL'
+         */
         $expected = 'null';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from(null);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -439,25 +392,13 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "array" for a non-callable array input')]
     public function test_from_returns_array_output_for_array(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a plain (non-callable) array
-        // falls through to the catch-all gettype() branch and
-        // produces 'array'
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a plain (non-callable) array falls through to the catch-all gettype()
+         * branch and produces 'array'
+         */
         $expected = 'array';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from([1, 2, 3]);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -465,33 +406,18 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() returns "resource" for a resource input')]
     public function test_from_returns_resource_output_for_resource(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that an open PHP resource falls
-        // through to the catch-all gettype() branch and produces
-        // 'resource'
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * an open PHP resource falls through to the catch-all gettype() branch
+         * and produces 'resource'
+         */
         $handle = tmpfile();
         $this->assertNotFalse($handle);
 
         $expected = 'resource';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($handle);
 
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($expected, $actual);
-
-        // ----------------------------------------------------------------
-        // tidy up
 
         fclose($handle);
     }
@@ -499,30 +425,18 @@ class GetPrintableTypeTest extends TestCase
     #[TestDox('::from() collapses a closed resource back to "resource"')]
     public function test_from_collapses_closed_resource(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a closed resource - which
-        // gettype() reports as 'resource (closed)' - is
-        // normalised back to the clean 'resource' token, so
-        // callers do not see the unusable parenthesised form
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a closed resource - which gettype() reports as 'resource (closed)' -
+         * is normalised back to the clean 'resource' token, so callers do not
+         * see the unusable parenthesised form
+         */
         $handle = tmpfile();
         $this->assertNotFalse($handle);
         fclose($handle);
 
         $expected = 'resource';
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetPrintableType::from($handle);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

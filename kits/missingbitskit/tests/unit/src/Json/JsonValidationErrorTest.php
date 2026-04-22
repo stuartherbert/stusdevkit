@@ -69,26 +69,14 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('lives in the StusDevKit\\MissingBitsKit\\Json namespace')]
     public function test_lives_in_the_expected_namespace(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the published namespace is part of the contract - callers
         // type-hint against the FQN, so moving it is a breaking
         // change that must go through a major version bump.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = 'StusDevKit\\MissingBitsKit\\Json';
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $actual = (new ReflectionClass(JsonValidationError::class))
             ->getNamespaceName();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -102,32 +90,20 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('exposes only __construct(), getCode() and getMessage() as public methods')]
     public function test_exposes_only_the_expected_public_methods(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the stored fields are private - callers reach them only
         // through the getters, so the published surface is the
         // constructor + getters. Pin the set by enumeration so any
         // addition, rename, or new getter is caught with a diff
         // that names the change.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = ['__construct', 'getCode', 'getMessage'];
         $reflection = new ReflectionClass(JsonValidationError::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $actual = array_map(
             static fn ($method) => $method->getName(),
             $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
         );
         sort($actual);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -141,9 +117,6 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('::__construct() declares $code and $message as parameters in that order')]
     public function test_construct_declares_expected_parameters(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the parameter names are part of the published surface -
         // callers use named arguments for any call with more than
         // one parameter, so renaming a parameter is a breaking
@@ -151,23 +124,14 @@ class JsonValidationErrorTest extends TestCase
         // so either kind of change is caught with a diff that
         // names the offender.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = ['code', 'message'];
         $method = (new ReflectionClass(JsonValidationError::class))
             ->getMethod('__construct');
-
-        // ----------------------------------------------------------------
-        // perform the change
 
         $actual = array_map(
             static fn ($parameter) => $parameter->getName(),
             $method->getParameters(),
         );
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -181,27 +145,15 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('->getCode() declares an int return type')]
     public function test_getCode_declares_an_int_return_type(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
         // the return type is part of the published contract -
         // widening (e.g. to `int|string`) or narrowing (e.g. to a
         // specific union of JSON_ERROR_* constants) is a breaking
         // change for callers that type-hint around it.
 
-        // ----------------------------------------------------------------
-        // setup your test
-
         $method = (new ReflectionClass(JsonValidationError::class))
             ->getMethod('getCode');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertNotNull($returnType);
         $this->assertSame('int', (string) $returnType);
@@ -216,19 +168,10 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('->getMessage() declares a string return type')]
     public function test_getMessage_declares_a_string_return_type(): void
     {
-        // ----------------------------------------------------------------
-        // setup your test
-
         $method = (new ReflectionClass(JsonValidationError::class))
             ->getMethod('getMessage');
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertNotNull($returnType);
         $this->assertSame('string', (string) $returnType);
@@ -243,21 +186,12 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('->getCode() returns the $code passed to the constructor')]
     public function test_getCode_returns_the_code_passed_to_the_constructor(): void
     {
-        // ----------------------------------------------------------------
-        // setup your test
-
         $error = new JsonValidationError(
             code: 4,
             message: 'Syntax error',
         );
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $error->getCode();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame(4, $actual);
     }
@@ -265,21 +199,12 @@ class JsonValidationErrorTest extends TestCase
     #[TestDox('->getMessage() returns the $message passed to the constructor')]
     public function test_getMessage_returns_the_message_passed_to_the_constructor(): void
     {
-        // ----------------------------------------------------------------
-        // setup your test
-
         $error = new JsonValidationError(
             code: 4,
             message: 'Syntax error',
         );
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $error->getMessage();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame('Syntax error', $actual);
     }

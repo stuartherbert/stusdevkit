@@ -44,6 +44,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use Stringable;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleToString;
@@ -54,6 +58,106 @@ class GetStringTypesTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetStringTypes::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetStringTypes::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetStringTypes::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetStringTypes::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetStringTypes::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetStringTypes::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetStringTypes::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetStringTypes::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetStringTypes::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['item'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetStringTypes::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -61,19 +165,10 @@ class GetStringTypesTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetStringTypes class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /**
+         * the GetStringTypes class can be instantiated as an invokable object
+         */
         $unit = new GetStringTypes();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetStringTypes::class, $unit);
     }
@@ -104,26 +199,14 @@ class GetStringTypesTest extends TestCase
     #[DataProvider('nonStringProvider')]
     public function test_invoke_rejects_non_string_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke() rejects any value that
-        // is neither a PHP string nor an object that PHP would
-        // coerce to a string via `Stringable`
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke() rejects any value that is neither a PHP string nor an
+         * object that PHP would coerce to a string via `Stringable`
+         */
         $unit = new GetStringTypes();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -137,18 +220,12 @@ class GetStringTypesTest extends TestCase
     #[TestDox('->__invoke() coerces a Stringable object and returns the expected type list')]
     public function test_invoke_coerces_stringable_object(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke() coerces a Stringable
-        // object to a string and then produces the same type list
-        // it would produce for that string directly. 'mixed' is
-        // not emitted here: it is the duck-type marker owned by
-        // GetDuckTypes, not by per-type inspectors.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke() coerces a Stringable object to a string and then produces
+         * the same type list it would produce for that string directly. 'mixed'
+         * is not emitted here: it is the duck-type marker owned by
+         * GetDuckTypes, not by per-type inspectors.
+         */
         $unit = new GetStringTypes();
         $input = new SampleToString();
         $expected = [
@@ -156,13 +233,7 @@ class GetStringTypesTest extends TestCase
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -189,28 +260,16 @@ class GetStringTypesTest extends TestCase
     #[DataProvider('plainStringProvider')]
     public function test_from_returns_expected_types_for_plain_string(string $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string which is not callable and
-        // not numeric produces just 'string'. 'mixed' is not
-        // emitted here: it is the duck-type marker owned by
-        // GetDuckTypes, not by per-type inspectors.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string which is not callable and not numeric produces just
+         * 'string'. 'mixed' is not emitted here: it is the duck-type marker
+         * owned by GetDuckTypes, not by per-type inspectors.
+         */
         $expected = [
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetStringTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -224,29 +283,17 @@ class GetStringTypesTest extends TestCase
     #[TestDox('::from() returns callable and string for a callable string')]
     public function test_from_returns_expected_types_for_callable_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string which is the name of a
-        // callable function is surfaced with 'callable' prepended
-        // to the string family
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string which is the name of a callable function is surfaced with
+         * 'callable' prepended to the string family
+         */
         $input = 'strlen';
         $expected = [
             'callable' => 'callable',
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetStringTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -260,16 +307,10 @@ class GetStringTypesTest extends TestCase
     #[TestDox('::from() returns numeric, int, and string for an integer-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_int_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string whose content is an
-        // integer value is surfaced with the numeric family
-        // alongside the string family
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string whose content is an integer value is surfaced with the
+         * numeric family alongside the string family
+         */
         $input = '123';
         $expected = [
             'numeric' => 'numeric',
@@ -277,13 +318,7 @@ class GetStringTypesTest extends TestCase
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetStringTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -291,16 +326,10 @@ class GetStringTypesTest extends TestCase
     #[TestDox('::from() returns numeric, float, and string for a float-shaped numeric string')]
     public function test_from_returns_expected_types_for_numeric_float_string(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a string whose content is a
-        // decimal value is surfaced with the numeric family
-        // alongside the string family
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a string whose content is a decimal value is surfaced with the
+         * numeric family alongside the string family
+         */
         $input = '45.6';
         $expected = [
             'numeric' => 'numeric',
@@ -308,13 +337,7 @@ class GetStringTypesTest extends TestCase
             'string' => 'string',
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetStringTypes::from($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

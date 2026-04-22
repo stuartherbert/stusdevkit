@@ -44,6 +44,10 @@ namespace StusDevKit\MissingBitsKit\Tests\Unit\TypeInspectors;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleParent;
@@ -57,6 +61,106 @@ class GetClassHierarchyTest extends TestCase
 {
     // ================================================================
     //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
+    public function test_lives_in_expected_namespace(): void
+    {
+        $reflection = new ReflectionClass(GetClassHierarchy::class);
+        $this->assertSame(
+            'StusDevKit\\MissingBitsKit\\TypeInspectors',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is declared as a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(GetClassHierarchy::class);
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+    }
+
+    #[TestDox('exposes __invoke() and ::from() as its public methods')]
+    public function test_exposes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(GetClassHierarchy::class);
+        $methodNames = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === GetClassHierarchy::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+        sort($methodNames);
+        $this->assertSame(['__invoke', 'from'], $methodNames);
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->__invoke() is declared public, non-static')]
+    public function test_invoke_is_public_non_static(): void
+    {
+        $method = new ReflectionMethod(GetClassHierarchy::class, '__invoke');
+        $this->assertTrue($method->isPublic());
+        $this->assertFalse($method->isStatic());
+    }
+
+    #[TestDox('->__invoke() parameter names in order')]
+    public function test_invoke_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassHierarchy::class, '__invoke');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['input'], $paramNames);
+    }
+
+    #[TestDox('->__invoke() returns array')]
+    public function test_invoke_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassHierarchy::class, '__invoke');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    #[TestDox('::from() is declared public static')]
+    public function test_from_is_public_static(): void
+    {
+        $method = new ReflectionMethod(GetClassHierarchy::class, 'from');
+        $this->assertTrue($method->isPublic());
+        $this->assertTrue($method->isStatic());
+    }
+
+    #[TestDox('::from() parameter names in order')]
+    public function test_from_parameter_names(): void
+    {
+        $method = new ReflectionMethod(GetClassHierarchy::class, 'from');
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+        $this->assertSame(['className'], $paramNames);
+    }
+
+    #[TestDox('::from() returns array')]
+    public function test_from_return_type(): void
+    {
+        $method = new ReflectionMethod(GetClassHierarchy::class, 'from');
+        $returnType = $method->getReturnType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
+
+    // ================================================================
+    //
     // Structure
     //
     // ----------------------------------------------------------------
@@ -64,19 +168,8 @@ class GetClassHierarchyTest extends TestCase
     #[TestDox('::__construct() returns a new instance')]
     public function test_can_instantiate(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that the GetClassHierarchy class can be
-        // instantiated as an invokable object
-
-        // ----------------------------------------------------------------
-        // perform the change
-
+        /** GetClassHierarchy is instantiable as an invokable object */
         $unit = new GetClassHierarchy();
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertInstanceOf(GetClassHierarchy::class, $unit);
     }
@@ -109,28 +202,16 @@ class GetClassHierarchyTest extends TestCase
     #[DataProvider('nonClassStringProvider')]
     public function test_invoke_rejects_non_class_input(mixed $input): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that __invoke() rejects any input that
-        // is not a string naming a known class or interface - so
-        // non-strings, and strings that do not resolve to anything
-        // loaded in the current process, both produce an empty
-        // type list
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * __invoke() rejects any input that is not a string naming
+         * a known class or interface - so non-strings, and strings
+         * that do not resolve to anything loaded in the current
+         * process, both produce an empty type list
+         */
         $unit = new GetClassHierarchy();
         $expected = [];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $unit($input);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -144,27 +225,15 @@ class GetClassHierarchyTest extends TestCase
     #[TestDox('::from() returns only the class itself when it has no parents')]
     public function test_from_returns_only_class_when_no_parents(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class with no parent class
-        // produces a hierarchy list containing only the class
-        // itself
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class with no parent class produces a hierarchy list
+         * containing only the class itself
+         */
         $expected = [
             stdClass::class => stdClass::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassHierarchy::from(stdClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -172,28 +241,16 @@ class GetClassHierarchyTest extends TestCase
     #[TestDox('::from() returns class plus its parent for a 2-deep hierarchy')]
     public function test_from_returns_class_and_parent(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that a class extending one parent
-        // produces a hierarchy list of the class followed by its
-        // parent
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * a class extending one parent produces a hierarchy list of
+         * the class followed by its parent
+         */
         $expected = [
             SampleClass::class => SampleClass::class,
             SampleParent::class => SampleParent::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassHierarchy::from(SampleClass::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }
@@ -201,29 +258,18 @@ class GetClassHierarchyTest extends TestCase
     #[TestDox('::from() returns the full chain for a 3-deep hierarchy')]
     public function test_from_returns_full_three_level_hierarchy(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that from() walks the entire parent
-        // chain - not just the immediate parent - and returns
-        // every ancestor in order (child, parent, grandparent)
-
-        // ----------------------------------------------------------------
-        // setup your test
-
+        /**
+         * from() walks the entire parent chain - not just the
+         * immediate parent - and returns every ancestor in order
+         * (child, parent, grandparent)
+         */
         $expected = [
             ThreeLevelChild::class => ThreeLevelChild::class,
             ThreeLevelParent::class => ThreeLevelParent::class,
             ThreeLevelGrandparent::class => ThreeLevelGrandparent::class,
         ];
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassHierarchy::from(ThreeLevelChild::class);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($expected, $actual);
     }

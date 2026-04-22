@@ -76,30 +76,17 @@ class GetClassInstantiabilityTest extends TestCase
     //
     // ----------------------------------------------------------------
 
+    /**
+     * the published namespace is part of the contract - callers
+     * import by FQN, so moving the class is a breaking change
+     * that must go through a major version bump.
+     */
     #[TestDox('lives in the StusDevKit\\MissingBitsKit\\Reflection namespace')]
     public function test_lives_in_the_expected_namespace(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the published namespace is part of the contract - callers
-        // import by FQN, so moving the class is a breaking change
-        // that must go through a major version bump.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = 'StusDevKit\\MissingBitsKit\\Reflection';
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = (new ReflectionClass(GetClassInstantiability::class))
             ->getNamespaceName();
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($expected, $actual);
     }
 
@@ -109,129 +96,72 @@ class GetClassInstantiabilityTest extends TestCase
     //
     // ----------------------------------------------------------------
 
+    /**
+     * the single entry point to this class is `from()`. Renaming
+     * it is a breaking change for every caller.
+     */
     #[TestDox('::from() is declared')]
     public function test_declares_a_from_method(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the single entry point to this class is `from()`. Renaming
-        // it is a breaking change for every caller.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $reflection = new ReflectionClass(GetClassInstantiability::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $reflection->hasMethod('from');
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertTrue($actual);
     }
 
+    /**
+     * the method must be public for callers to reach it. A
+     * silent downgrade to protected / private would break every
+     * call site.
+     */
     #[TestDox('::from() is public')]
     public function test_from_is_public(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the method must be public for callers to reach it. A
-        // silent downgrade to protected / private would break every
-        // call site.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $method = (new ReflectionClass(GetClassInstantiability::class))
             ->getMethod('from');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $method->isPublic();
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertTrue($actual);
     }
 
+    /**
+     * GetClassInstantiability is a stateless utility; its single
+     * method is called without an instance. Silently dropping
+     * `static` would force every call site to instantiate.
+     */
     #[TestDox('::from() is static')]
     public function test_from_is_static(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // GetClassInstantiability is a stateless utility; its single
-        // method is called without an instance. Silently dropping
-        // `static` would force every call site to instantiate.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $method = (new ReflectionClass(GetClassInstantiability::class))
             ->getMethod('from');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $method->isStatic();
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertTrue($actual);
     }
 
+    /**
+     * the contract accepts a single class-string and nothing
+     * else. Adding a required parameter would break every call
+     * site; adding an optional one would widen the contract in
+     * a way that deserves a deliberate decision.
+     */
     #[TestDox('::from() takes exactly one parameter')]
     public function test_from_takes_exactly_one_parameter(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the contract accepts a single class-string and nothing
-        // else. Adding a required parameter would break every call
-        // site; adding an optional one would widen the contract in
-        // a way that deserves a deliberate decision.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = 1;
         $method = (new ReflectionClass(GetClassInstantiability::class))
             ->getMethod('from');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $method->getNumberOfParameters();
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * the runtime parameter type is plain `string`. Narrower
+     * types (class-string, non-empty-string) live in the
+     * docblock for PHPStan only - the runtime accepts any
+     * string, because the inspector's job includes reporting
+     * CLASS_DOES_NOT_EXIST for garbage input.
+     */
     #[TestDox("::from()'s parameter has a string type")]
     public function test_from_parameter_has_a_string_type(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the runtime parameter type is plain `string`. Narrower
-        // types (class-string, non-empty-string) live in the
-        // docblock for PHPStan only - the runtime accepts any
-        // string, because the inspector's job includes reporting
-        // CLASS_DOES_NOT_EXIST for garbage input.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = 'string';
         $method = (new ReflectionClass(GetClassInstantiability::class))
             ->getMethod('from');
@@ -239,45 +169,24 @@ class GetClassInstantiabilityTest extends TestCase
         $this->assertCount(1, $parameters);
         $paramType = $parameters[0]->getType();
         $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $paramType->getName();
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * the return type is the enum itself, not a bool or string
+     * or mixed. Callers pattern-match on the returned case, so
+     * the return type is the primary shape callers depend on.
+     */
     #[TestDox('::from() declares a ClassInstantiability return type')]
     public function test_from_declares_a_ClassInstantiability_return_type(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the return type is the enum itself, not a bool or string
-        // or mixed. Callers pattern-match on the returned case, so
-        // the return type is the primary shape callers depend on.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         $expected = ClassInstantiability::class;
         $method = (new ReflectionClass(GetClassInstantiability::class))
             ->getMethod('from');
         $returnType = $method->getReturnType();
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = $returnType->getName();
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($expected, $actual);
     }
 
@@ -367,6 +276,12 @@ class GetClassInstantiabilityTest extends TestCase
         ];
     }
 
+    /**
+     * each row pins the mapping from an input shape to the
+     * single ClassInstantiability case the inspector should
+     * return. Together the rows enumerate every reason the
+     * enum documents, plus the happy-path cases.
+     */
     #[TestDox('::from() returns $expectedCaseName for $inputDescription')]
     #[DataProvider('inputProvider')]
     public function test_from_returns_expected_case_for_input(
@@ -374,17 +289,6 @@ class GetClassInstantiabilityTest extends TestCase
         string $classname,
         string $expectedCaseName,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // each row pins the mapping from an input shape to the
-        // single ClassInstantiability case the inspector should
-        // return. Together the rows enumerate every reason the
-        // enum documents, plus the happy-path cases.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
         // `$inputDescription` is carried for TestDox interpolation;
         // it does not drive the assertion.
         unset($inputDescription);
@@ -394,15 +298,7 @@ class GetClassInstantiabilityTest extends TestCase
         // narrows the type for PHPStan.
         $expected = constant(ClassInstantiability::class . '::' . $expectedCaseName);
         $this->assertInstanceOf(ClassInstantiability::class, $expected);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actual = GetClassInstantiability::from($classname);
-
-        // ----------------------------------------------------------------
-        // test the results
-
         $this->assertSame($expected, $actual);
     }
 }

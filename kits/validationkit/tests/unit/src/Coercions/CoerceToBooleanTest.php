@@ -44,11 +44,133 @@ namespace StusDevKit\ValidationKit\Tests\Unit\Coercions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
 use StusDevKit\ValidationKit\Coercions\CoerceToBoolean;
+use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 
 #[TestDox('CoerceToBoolean')]
 class CoerceToBooleanTest extends TestCase
 {
+    // ================================================================
+    //
+    // Identity
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lives in the StusDevKit\\ValidationKit\\Coercions namespace')]
+    public function test_lives_in_coercions_namespace(): void
+    {
+        $reflection = new ReflectionClass(CoerceToBoolean::class);
+
+        $this->assertSame(
+            'StusDevKit\\ValidationKit\\Coercions',
+            $reflection->getNamespaceName(),
+        );
+    }
+
+    #[TestDox('is a class')]
+    public function test_is_a_class(): void
+    {
+        $reflection = new ReflectionClass(CoerceToBoolean::class);
+
+        $this->assertFalse($reflection->isInterface());
+        $this->assertFalse($reflection->isTrait());
+        $this->assertFalse($reflection->isEnum());
+        $this->assertFalse($reflection->isAbstract());
+    }
+
+    #[TestDox('implements ValueCoercion')]
+    public function test_implements_value_coercion(): void
+    {
+        $reflection = new ReflectionClass(CoerceToBoolean::class);
+        $this->assertContains(
+            ValueCoercion::class,
+            $reflection->getInterfaceNames(),
+        );
+    }
+
+    #[TestDox('publishes exactly [__construct, coerce] as its own public methods')]
+    public function test_publishes_expected_public_methods(): void
+    {
+        $reflection = new ReflectionClass(CoerceToBoolean::class);
+
+        // collect only methods declared on CoerceToBoolean itself,
+        // so inherited PHPUnit/TestCase methods don't leak in
+        $ownPublicMethods = array_values(array_filter(
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+            static fn (ReflectionMethod $method): bool =>
+                $method->getDeclaringClass()->getName()
+                === CoerceToBoolean::class,
+        ));
+
+        $methodNames = array_map(
+            static fn (ReflectionMethod $method): string => $method->getName(),
+            $ownPublicMethods,
+        );
+        sort($methodNames);
+
+        $this->assertSame(['__construct', 'coerce'], $methodNames);
+    }
+
+    #[TestDox('pins DEFAULT_STRINGS to the documented lookup table')]
+    public function test_default_strings_constant_value(): void
+    {
+        $this->assertSame(
+            [
+                'true'  => true,
+                '1'     => true,
+                'yes'   => true,
+                'false' => false,
+                '0'     => false,
+                'no'    => false,
+                ''      => false,
+            ],
+            CoerceToBoolean::DEFAULT_STRINGS,
+        );
+    }
+
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::__construct() accepts an optional array of string-to-bool mappings')]
+    public function test_construct_signature(): void
+    {
+        $reflection = new ReflectionMethod(
+            CoerceToBoolean::class,
+            '__construct',
+        );
+
+        $parameters = $reflection->getParameters();
+        $this->assertCount(1, $parameters);
+
+        $strings = $parameters[0];
+        $this->assertSame('strings', $strings->getName());
+        $this->assertSame('array', (string) $strings->getType());
+        $this->assertTrue($strings->isDefaultValueAvailable());
+    }
+
+    #[TestDox('->coerce() accepts mixed and returns mixed')]
+    public function test_coerce_signature(): void
+    {
+        $reflection = new ReflectionMethod(
+            CoerceToBoolean::class,
+            'coerce',
+        );
+
+        $parameters = $reflection->getParameters();
+        $this->assertCount(1, $parameters);
+
+        $data = $parameters[0];
+        $this->assertSame('data', $data->getName());
+        $this->assertSame('mixed', (string) $data->getType());
+
+        $this->assertSame('mixed', (string) $reflection->getReturnType());
+    }
+
     // ================================================================
     //
     // Coercions to true
@@ -79,24 +201,11 @@ class CoerceToBooleanTest extends TestCase
     public function test_coerces_truthy_to_true(
         mixed $inputValue,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToBoolean converts
-        // truthy strings and non-zero numbers to true
-
-        // ----------------------------------------------------------------
-        // setup your test
+        /** CoerceToBoolean converts truthy strings and non-zero numbers to true. */
 
         $unit = new CoerceToBoolean();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertTrue($actualResult);
     }
@@ -130,24 +239,11 @@ class CoerceToBooleanTest extends TestCase
     public function test_coerces_falsy_to_false(
         mixed $inputValue,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToBoolean converts
-        // falsy strings and zero numbers to false
-
-        // ----------------------------------------------------------------
-        // setup your test
+        /** CoerceToBoolean converts falsy strings and zero numbers to false. */
 
         $unit = new CoerceToBoolean();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertFalse($actualResult);
     }
@@ -175,25 +271,14 @@ class CoerceToBooleanTest extends TestCase
     public function test_returns_non_coercible_unchanged(
         mixed $inputValue,
     ): void {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that CoerceToBoolean returns
-        // values unchanged when they cannot be recognised
-        // as boolean
-
-        // ----------------------------------------------------------------
-        // setup your test
+        /**
+         * CoerceToBoolean returns values unchanged when they cannot be
+         * recognised as boolean.
+         */
 
         $unit = new CoerceToBoolean();
 
-        // ----------------------------------------------------------------
-        // perform the change
-
         $actualResult = $unit->coerce($inputValue);
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertSame($inputValue, $actualResult);
     }
@@ -207,25 +292,14 @@ class CoerceToBooleanTest extends TestCase
     #[TestDox('->coerce() honours custom strings that replace built-in defaults')]
     public function test_custom_strings_replace_defaults(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that custom string mappings
-        // replace the built-in defaults entirely, so only
-        // the custom strings are recognised
-
-        // ----------------------------------------------------------------
-        // setup your test
+        /**
+         * Custom string mappings replace the built-in defaults entirely,
+         * so only the custom strings are recognised.
+         */
 
         $unit = new CoerceToBoolean(
             strings: ['on' => true, 'off' => false],
         );
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        // ----------------------------------------------------------------
-        // test the results
 
         // custom strings work
         $this->assertTrue($unit->coerce('on'));
@@ -239,25 +313,14 @@ class CoerceToBooleanTest extends TestCase
     #[TestDox('->coerce() matches custom strings case-insensitively')]
     public function test_custom_strings_are_case_insensitive(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that custom string mappings are
-        // matched case-insensitively, because the input is
-        // lowercased before lookup
-
-        // ----------------------------------------------------------------
-        // setup your test
+        /**
+         * Custom string mappings are matched case-insensitively, because
+         * the input is lowercased before lookup.
+         */
 
         $unit = new CoerceToBoolean(
             strings: ['on' => true, 'off' => false],
         );
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        // ----------------------------------------------------------------
-        // test the results
 
         $this->assertTrue($unit->coerce('ON'));
         $this->assertTrue($unit->coerce('On'));
@@ -268,15 +331,10 @@ class CoerceToBooleanTest extends TestCase
     #[TestDox('->coerce() works with DEFAULT_STRINGS merged with custom strings')]
     public function test_defaults_can_be_merged_with_custom(): void
     {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that users can keep the built-in
-        // defaults and add custom strings by merging the
-        // DEFAULTS constant with their own array
-
-        // ----------------------------------------------------------------
-        // setup your test
+        /**
+         * Users can keep the built-in defaults and add custom strings by
+         * merging the DEFAULTS constant with their own array.
+         */
 
         /** @var array<string, bool> $strings */
         $strings = [
@@ -284,12 +342,6 @@ class CoerceToBooleanTest extends TestCase
             ...['on' => true, 'off' => false]
         ];
         $unit = new CoerceToBoolean(strings: $strings);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        // ----------------------------------------------------------------
-        // test the results
 
         // custom strings work
         $this->assertTrue($unit->coerce('on'));
