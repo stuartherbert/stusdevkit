@@ -80,6 +80,10 @@ class Json
      */
     public const DEFAULT_DEPTH = 512;
 
+    private function __construct()
+    {
+    }
+
     /**
      * convert the given `$input` to a JSON-format string.
      *
@@ -115,7 +119,7 @@ class Json
      *   resource or a circular reference), or when nesting
      *   exceeds `$depth`.
      */
-    public function encode(
+    public static function encode(
         mixed $input,
         int $flags = self::DEFAULT_ENCODE_FLAGS,
         int $depth = self::DEFAULT_DEPTH,
@@ -126,6 +130,10 @@ class Json
         // wrap the PHP builtin
         $retval = json_encode($input, $flags, $depth);
 
+        // with JSON_THROW_ON_ERROR forced on above, json_encode()
+        // either returns a string or throws - the `false` branch
+        // of its declared return type is unreachable here.
+        //
         // keep phpstan happy
         Assert::assertIsString($retval, "json_encode() failed to return a string");
 
@@ -150,23 +158,24 @@ class Json
      * deliberate departure from the raw `json_decode()` contract
      * that catches callers used to the builtin's behaviour.
      *
-     * **`$associative = null` means "JSON objects become
-     * `\stdClass`".**
+     * **`$associative` has a THREE-valued footgun: `null`, `true`,
+     * `false`.**
      *
-     * `null` here is not "no preference" — PHP treats it as "use
-     * the default", and that default is `\stdClass`, not an
-     * associative array. Pass `true` explicitly when you want
-     * associative-array output. The wrapper does not flip this
-     * default, because doing so would put it out of sync with
-     * `json_decode()`.
+     * `null` (the default) and `false` both return JSON objects as
+     * `\stdClass` instances — `null` is "use the PHP default", and
+     * that default happens to be `\stdClass`. Only `true` returns
+     * associative arrays. A reader who assumes `false` means "turn
+     * associative mode off" gets it right for the wrong reason;
+     * passing `true` is the only way to opt *in*. The wrapper does
+     * not flip this default, because doing so would put it out of
+     * sync with `json_decode()`.
      *
      * @param string $input
      *   the JSON string to decode
      * @param ?bool $associative
-     *   `null` (the default) returns JSON objects as `\stdClass`
-     *   instances, matching `json_decode()`. `true` returns JSON
-     *   objects as associative arrays. `false` is equivalent to
-     *   `null`.
+     *   `true` returns JSON objects as associative arrays; `null`
+     *   (the default) and `false` both return JSON objects as
+     *   `\stdClass` instances, matching `json_decode()`.
      * @param int<1,max> $depth
      *   maximum nesting depth; exceeding it throws
      *   `\JsonException`.
@@ -179,13 +188,12 @@ class Json
      *   when `$input` is not a valid JSON document, or when
      *   nesting exceeds `$depth`.
      */
-    public function decode(
+    public static function decode(
         string $input,
         ?bool $associative = null,
         int $depth = self::DEFAULT_DEPTH,
         int $flags = self::DEFAULT_DECODE_FLAGS,
-    ): mixed
-    {
+    ): mixed {
         // make sure exceptions-on-error are enabled
         $flags |= JSON_THROW_ON_ERROR;
 
@@ -200,47 +208,59 @@ class Json
      * Unlike `encode()` and `decode()`, this method never throws
      * on a malformed document: it reports the verdict in the
      * return value instead, so callers can branch on validity
-     * without setting up a `try`/`catch`. An empty list means
-     * the input is valid; a non-empty list carries the errors
-     * that were found.
+     * without setting up a `try`/`catch`. `null` means the input
+     * is valid; a `JsonValidationError` carries the failure
+     * reason.
      *
      * The recommended idiom is to compare the return value
      * explicitly:
      *
      * ```
-     * if ($json->validate($input) === []) {
+     * if (Json::validate($input) === null) {
      *     // $input is valid JSON
      * }
      * ```
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * **`$flags` is NOT a general `JSON_*` bitmask.**
+     *
+     * Unlike `encode()` and `decode()`, `json_validate()` only
+     * understands `0` or `JSON_INVALID_UTF8_IGNORE`. Passing any
+     * other `JSON_*` constant is a silent no-op at best and a
+     * type error at static-analysis time - the narrow type below
+     * is what the PHP builtin actually accepts.
      *
      * @param string $input
      *   the string to inspect
      * @param int<1,max> $depth
      *   maximum nesting depth; a document that nests deeper than
      *   this is reported as invalid.
-     * @param int $flags
-     *   bitmask of `JSON_*` validate flags.
-     *
-     * @return list<JsonValidationError>
-     *   empty list on success; on failure, the list of errors
-     *   found in `$input`.
+     * @param 0|JSON_INVALID_UTF8_IGNORE $flags
+     *   either `0` (the default) or `JSON_INVALID_UTF8_IGNORE`.
+     *   No other `JSON_*` constant is accepted by the underlying
+     *   `json_validate()` builtin.
      */
-    public function validate(
+    public static function validate(
         string $input,
         int $depth = self::DEFAULT_DEPTH,
         int $flags = self::DEFAULT_VALIDATE_FLAGS,
-    ): array
-    {
-        // @phpstan-ignore argument.type
+    ): ?JsonValidationError {
+        // happy path: nothing to report
         if (json_validate($input, $depth, $flags)) {
-            return [];
+            return null;
         }
 
-        return [
-            new JsonValidationError(
-                code: json_last_error(),
-                message: json_last_error_msg(),
-            ),
-        ];
+        // json_validate() populates json_last_error() /
+        // json_last_error_msg() on failure - this is documented
+        // PHP behaviour and the ONLY way to get the reason out
+        // of the builtin. It is NOT the same surface as the
+        // thrown \JsonException from json_decode(); those two
+        // report through different channels on purpose.
+        return new JsonValidationError(
+            code: json_last_error(),
+            message: json_last_error_msg(),
+        );
     }
 }

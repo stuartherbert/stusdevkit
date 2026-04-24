@@ -28,7 +28,7 @@ class Json
     /**
      * convert the given `$input` to a JSON-format string.
      */
-    public function encode(
+    public static function encode(
         mixed $input,
         int $flags = self::DEFAULT_ENCODE_FLAGS,
         int $depth = self::DEFAULT_DEPTH,
@@ -37,7 +37,7 @@ class Json
     /**
      * convert the given `$input` JSON string into a PHP value.
      */
-    public function decode(
+    public static function decode(
         string $input,
         ?bool $associative = null,
         int $depth = self::DEFAULT_DEPTH,
@@ -48,11 +48,11 @@ class Json
      * validate the given `$input` to see if it really is a
      * JSON-format string.
      */
-    public function validate(
+    public static function validate(
         string $input,
         int $depth = self::DEFAULT_DEPTH,
         int $flags = self::DEFAULT_VALIDATE_FLAGS,
-    ): array;
+    ): ?JsonValidationError;
 }
 ```
 
@@ -71,12 +71,14 @@ failure always throws a
 instead of silently returning `false` or `null`. Both
 [`Json::encode()`](encode.md) and [`Json::decode()`](decode.md) always
 OR [`JSON_THROW_ON_ERROR`](https://www.php.net/manual/en/json.constants.php)
-into the caller's flags, so error handling is consistent regardless
-of what flags the caller passes.
+into the caller's flags, so error handling is consistent regardless of
+what flags the caller passes.
 
-The four `DEFAULT_*` class constants name the library's defaults so
-callers can pass them through (or override them) without sprinkling
-magic numbers through their own code.
+The class is a static utility — the constructor is `private`, and every
+operation is reached through `Json::method()`. The four `DEFAULT_*`
+class constants name the library's defaults so callers can pass them
+through (or override them) without sprinkling magic numbers through
+their own code.
 
 ## Methods
 
@@ -94,9 +96,9 @@ _None._
 ## Contract (from tests)
 
 ```
-StusDevKit\MissingBitsKit\Json\Json
+Json (StusDevKit\MissingBitsKit\Tests\Unit\Json\Json)
  ✔ lives in the StusDevKit\MissingBitsKit\Json namespace
- ✔ is a concrete class
+ ✔ has a private constructor
  ✔ exposes only encode(), decode() and validate() as public methods
  ✔ exposes only the expected public class constants
  ✔ DEFAULT_DECODE_FLAGS has the value 0
@@ -116,8 +118,8 @@ _No tagged releases yet._
 ## See Also
 
 - [`JsonValidationError`](../JsonValidationError/README.md) — the
-  value object returned by [`Json::validate()`](validate.md) for
-  each error in a malformed document
+  value object returned by [`Json::validate()`](validate.md) when
+  the input is not valid JSON
 
 ## Issues
 

@@ -67,16 +67,8 @@ use const PHP_INT_MAX;
  * identity and shape pin the published surface, and the behaviour
  * sections exercise encode(), decode() and validate() end-to-end.
  */
-#[TestDox(Json::class)]
 class JsonTest extends TestCase
 {
-    private Json $json;
-
-    protected function setUp(): void
-    {
-        $this->json = new Json();
-    }
-
     // ================================================================
     //
     // Class identity
@@ -86,28 +78,40 @@ class JsonTest extends TestCase
     #[TestDox('lives in the StusDevKit\\MissingBitsKit\\Json namespace')]
     public function test_lives_in_the_expected_namespace(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // the published namespace is part of the contract - callers
         // type-hint against the FQN, so moving it is a breaking
         // change that must go through a major version bump.
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expected = 'StusDevKit\\MissingBitsKit\\Json';
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actual = (new ReflectionClass(Json::class))->getNamespaceName();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('is a concrete class')]
-    public function test_is_a_concrete_class(): void
+    #[TestDox('has a private constructor')]
+    public function test_has_a_private_constructor(): void
     {
-        // callers `new Json()` to get a wrapper. Making the class
-        // abstract, an interface, or a trait is a breaking change.
+        // the class is a static utility — callers never instantiate it.
+        // A public or protected constructor would be a design bug.
 
         $reflection = new ReflectionClass(Json::class);
+        $constructor = $reflection->getConstructor();
 
-        $this->assertFalse($reflection->isAbstract());
-        $this->assertFalse($reflection->isInterface());
-        $this->assertFalse($reflection->isTrait());
+        $this->assertNotNull($constructor);
+        $this->assertTrue($constructor->isPrivate());
     }
 
     // ================================================================
@@ -201,7 +205,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->encode() declares $input, $flags and $depth as parameters in that order')]
+    #[TestDox('::encode() declares $input, $flags and $depth as parameters in that order')]
     public function test_encode_declares_expected_parameters(): void
     {
         // the parameter names are part of the published surface -
@@ -228,7 +232,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->encode() encodes an associative array as a JSON object')]
+    #[TestDox('::encode() encodes an associative array as a JSON object')]
     public function test_encodes_an_associative_array_as_a_json_object(): void
     {
         $input = [
@@ -240,76 +244,76 @@ class JsonTest extends TestCase
         ];
         $expected = '{"string":"value","int":123,"bool":true,"null":null,"array":[1,2,3]}';
 
-        $actual = $this->json->encode($input);
+        $actual = Json::encode($input);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() encodes an empty array as []')]
+    #[TestDox('::encode() encodes an empty array as []')]
     public function test_encodes_an_empty_array_as_a_json_array(): void
     {
         $input = [];
         $expected = '[]';
 
-        $actual = $this->json->encode($input);
+        $actual = Json::encode($input);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() encodes an empty stdClass as {}')]
+    #[TestDox('::encode() encodes an empty stdClass as {}')]
     public function test_encodes_an_empty_stdclass_as_a_json_object(): void
     {
         $input = new stdClass();
         $expected = '{}';
 
-        $actual = $this->json->encode($input);
+        $actual = Json::encode($input);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() encodes null as the root value')]
+    #[TestDox('::encode() encodes null as the root value')]
     public function test_encodes_null_as_the_root_value(): void
     {
         $expected = 'null';
 
-        $actual = $this->json->encode(null);
+        $actual = Json::encode(null);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() encodes boolean true as the root value')]
+    #[TestDox('::encode() encodes boolean true as the root value')]
     public function test_encodes_boolean_true_as_the_root_value(): void
     {
-        $actual = $this->json->encode(true);
+        $actual = Json::encode(true);
 
         $this->assertSame('true', $actual);
     }
 
-    #[TestDox('->encode() encodes boolean false as the root value')]
+    #[TestDox('::encode() encodes boolean false as the root value')]
     public function test_encodes_boolean_false_as_the_root_value(): void
     {
-        $actual = $this->json->encode(false);
+        $actual = Json::encode(false);
 
         $this->assertSame('false', $actual);
     }
 
-    #[TestDox('->encode() encodes an integer as the root value')]
+    #[TestDox('::encode() encodes an integer as the root value')]
     public function test_encodes_an_integer_as_the_root_value(): void
     {
-        $actual = $this->json->encode(42);
+        $actual = Json::encode(42);
 
         $this->assertSame('42', $actual);
     }
 
-    #[TestDox('->encode() encodes a string as the root value')]
+    #[TestDox('::encode() encodes a string as the root value')]
     public function test_encodes_a_string_as_the_root_value(): void
     {
-        $actual = $this->json->encode('hello world');
+        $actual = Json::encode('hello world');
 
         $this->assertSame('"hello world"', $actual);
     }
 
-    #[TestDox('->encode() encodes PHP_INT_MAX without precision loss')]
+    #[TestDox('::encode() encodes PHP_INT_MAX without precision loss')]
     public function test_encodes_php_int_max_without_precision_loss(): void
     {
         // PHP's json_encode() writes integers as decimal digits, and
@@ -320,13 +324,13 @@ class JsonTest extends TestCase
 
         $input = PHP_INT_MAX;
 
-        $encoded = $this->json->encode($input);
-        $decoded = $this->json->decode($encoded);
+        $encoded = Json::encode($input);
+        $decoded = Json::decode($encoded);
 
         $this->assertSame(PHP_INT_MAX, $decoded);
     }
 
-    #[TestDox('->encode() escapes special characters in strings and round-trips cleanly')]
+    #[TestDox('::encode() escapes special characters in strings and round-trips cleanly')]
     public function test_escapes_special_characters_in_strings(): void
     {
         // encode() must produce JSON that decodes back to the same
@@ -340,13 +344,13 @@ class JsonTest extends TestCase
             'tab'       => "col1\tcol2",
         ];
 
-        $encoded = $this->json->encode($input);
-        $decoded = $this->json->decode($encoded, true);
+        $encoded = Json::encode($input);
+        $decoded = Json::decode($encoded, true);
 
         $this->assertSame($input, $decoded);
     }
 
-    #[TestDox('->encode() preserves unicode characters through a round-trip')]
+    #[TestDox('::encode() preserves unicode characters through a round-trip')]
     public function test_preserves_unicode_characters_through_a_round_trip(): void
     {
         $input = [
@@ -356,13 +360,13 @@ class JsonTest extends TestCase
             'arabic'  => 'مرحبا',
         ];
 
-        $encoded = $this->json->encode($input);
-        $decoded = $this->json->decode($encoded, true);
+        $encoded = Json::encode($input);
+        $decoded = Json::decode($encoded, true);
 
         $this->assertSame($input, $decoded);
     }
 
-    #[TestDox('->encode() encodes deeply nested arrays')]
+    #[TestDox('::encode() encodes deeply nested arrays')]
     public function test_encodes_deeply_nested_arrays(): void
     {
         $input = [
@@ -376,12 +380,12 @@ class JsonTest extends TestCase
         ];
         $expected = '{"level1":{"level2":{"level3":{"value":"deep"}}}}';
 
-        $actual = $this->json->encode($input);
+        $actual = Json::encode($input);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() encodes nested stdClass objects')]
+    #[TestDox('::encode() encodes nested stdClass objects')]
     public function test_encodes_nested_stdclass_objects(): void
     {
         $inner = new stdClass();
@@ -392,7 +396,7 @@ class JsonTest extends TestCase
 
         $expected = '{"nested":{"value":"deep"}}';
 
-        $actual = $this->json->encode($outer);
+        $actual = Json::encode($outer);
 
         $this->assertSame($expected, $actual);
     }
@@ -403,7 +407,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->encode() respects JSON_PRETTY_PRINT')]
+    #[TestDox('::encode() respects JSON_PRETTY_PRINT')]
     public function test_encode_respects_json_pretty_print(): void
     {
         $input = ['a', 'b'];
@@ -414,34 +418,34 @@ class JsonTest extends TestCase
             ]
             JSON;
 
-        $actual = $this->json->encode($input, JSON_PRETTY_PRINT);
+        $actual = Json::encode($input, JSON_PRETTY_PRINT);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() respects JSON_UNESCAPED_SLASHES')]
+    #[TestDox('::encode() respects JSON_UNESCAPED_SLASHES')]
     public function test_encode_respects_json_unescaped_slashes(): void
     {
         $input = ['url' => 'https://example.com'];
         $expected = '{"url":"https://example.com"}';
 
-        $actual = $this->json->encode($input, JSON_UNESCAPED_SLASHES);
+        $actual = Json::encode($input, JSON_UNESCAPED_SLASHES);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() respects JSON_UNESCAPED_UNICODE')]
+    #[TestDox('::encode() respects JSON_UNESCAPED_UNICODE')]
     public function test_encode_respects_json_unescaped_unicode(): void
     {
         $input = ['greeting' => '你好'];
         $expected = '{"greeting":"你好"}';
 
-        $actual = $this->json->encode($input, JSON_UNESCAPED_UNICODE);
+        $actual = Json::encode($input, JSON_UNESCAPED_UNICODE);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() accepts combined flags via bitwise OR')]
+    #[TestDox('::encode() accepts combined flags via bitwise OR')]
     public function test_encode_accepts_combined_flags_via_bitwise_or(): void
     {
         // callers commonly OR flags together (e.g. "unescaped
@@ -456,12 +460,12 @@ class JsonTest extends TestCase
         $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
         $expected = '{"url":"https://example.com/path","greeting":"你好"}';
 
-        $actual = $this->json->encode($input, $flags);
+        $actual = Json::encode($input, $flags);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->encode() accepts JSON_THROW_ON_ERROR from the caller as a no-op')]
+    #[TestDox('::encode() accepts JSON_THROW_ON_ERROR from the caller as a no-op')]
     public function test_encode_accepts_json_throw_on_error_as_a_no_op(): void
     {
         // encode() always ORs JSON_THROW_ON_ERROR into the mask. If
@@ -472,7 +476,7 @@ class JsonTest extends TestCase
         $input = ['key' => 'value'];
         $expected = '{"key":"value"}';
 
-        $actual = $this->json->encode($input, JSON_THROW_ON_ERROR);
+        $actual = Json::encode($input, JSON_THROW_ON_ERROR);
 
         $this->assertSame($expected, $actual);
     }
@@ -483,7 +487,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->encode() throws JsonException on a circular reference')]
+    #[TestDox('::encode() throws JsonException on a circular reference')]
     public function test_encode_throws_on_a_circular_reference(): void
     {
         // json_encode() returns false (and sets an error) on a
@@ -496,10 +500,10 @@ class JsonTest extends TestCase
 
         $this->expectException(JsonException::class);
 
-        $this->json->encode($input);
+        Json::encode($input);
     }
 
-    #[TestDox('->encode() throws JsonException when depth is exceeded')]
+    #[TestDox('::encode() throws JsonException when depth is exceeded')]
     public function test_encode_throws_when_depth_is_exceeded(): void
     {
         // a 3-level structure at depth=2 must fail
@@ -507,10 +511,10 @@ class JsonTest extends TestCase
 
         $this->expectException(JsonException::class);
 
-        $this->json->encode(input: $input, flags: 0, depth: 2);
+        Json::encode(input: $input, flags: 0, depth: 2);
     }
 
-    #[TestDox('->encode() throws JsonException when given a resource')]
+    #[TestDox('::encode() throws JsonException when given a resource')]
     public function test_encode_throws_when_given_a_resource(): void
     {
         // resources have no JSON representation. json_encode() would
@@ -520,7 +524,7 @@ class JsonTest extends TestCase
 
         $this->expectException(JsonException::class);
 
-        $this->json->encode($resource);
+        Json::encode($resource);
     }
 
     // ================================================================
@@ -529,7 +533,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->decode() declares $input, $associative, $depth and $flags as parameters in that order')]
+    #[TestDox('::decode() declares $input, $associative, $depth and $flags as parameters in that order')]
     public function test_decode_declares_expected_parameters(): void
     {
         // the parameter names are part of the published surface -
@@ -556,7 +560,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->decode() decodes a JSON object as stdClass by default')]
+    #[TestDox('::decode() decodes a JSON object as stdClass by default')]
     public function test_decodes_a_json_object_as_stdclass_by_default(): void
     {
         // `associative` defaults to null, which json_decode()
@@ -565,87 +569,87 @@ class JsonTest extends TestCase
 
         $json = '{"name":"John","age":30}';
 
-        $actual = $this->json->decode($json);
+        $actual = Json::decode($json);
 
         $this->assertInstanceOf(stdClass::class, $actual);
         $this->assertSame('John', $actual->name);
         $this->assertSame(30, $actual->age);
     }
 
-    #[TestDox('->decode() decodes a JSON object as an associative array when associative is true')]
+    #[TestDox('::decode() decodes a JSON object as an associative array when associative is true')]
     public function test_decodes_a_json_object_as_an_associative_array(): void
     {
         $json = '{"key":"value","number":123}';
         $expected = ['key' => 'value', 'number' => 123];
 
-        $actual = $this->json->decode($json, true);
+        $actual = Json::decode($json, true);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->decode() decodes a JSON array')]
+    #[TestDox('::decode() decodes a JSON array')]
     public function test_decodes_a_json_array(): void
     {
         $json = '[1, 2, 3, "four", true]';
         $expected = [1, 2, 3, 'four', true];
 
-        $actual = $this->json->decode($json, true);
+        $actual = Json::decode($json, true);
 
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON string primitive')]
+    #[TestDox('::decode() decodes root-level JSON string primitive')]
     public function test_decodes_root_level_string_primitive(): void
     {
-        $actual = $this->json->decode('"hello world"');
+        $actual = Json::decode('"hello world"');
 
         $this->assertSame('hello world', $actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON integer primitive')]
+    #[TestDox('::decode() decodes root-level JSON integer primitive')]
     public function test_decodes_root_level_integer_primitive(): void
     {
-        $actual = $this->json->decode('42');
+        $actual = Json::decode('42');
 
         $this->assertSame(42, $actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON negative integer primitive')]
+    #[TestDox('::decode() decodes root-level JSON negative integer primitive')]
     public function test_decodes_root_level_negative_integer_primitive(): void
     {
-        $actual = $this->json->decode('-17');
+        $actual = Json::decode('-17');
 
         $this->assertSame(-17, $actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON float primitive')]
+    #[TestDox('::decode() decodes root-level JSON float primitive')]
     public function test_decodes_root_level_float_primitive(): void
     {
-        $actual = $this->json->decode('3.14159');
+        $actual = Json::decode('3.14159');
 
         $this->assertSame(3.14159, $actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON boolean true primitive')]
+    #[TestDox('::decode() decodes root-level JSON boolean true primitive')]
     public function test_decodes_root_level_boolean_true_primitive(): void
     {
-        $actual = $this->json->decode('true');
+        $actual = Json::decode('true');
 
         $this->assertTrue($actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON boolean false primitive')]
+    #[TestDox('::decode() decodes root-level JSON boolean false primitive')]
     public function test_decodes_root_level_boolean_false_primitive(): void
     {
-        $actual = $this->json->decode('false');
+        $actual = Json::decode('false');
 
         $this->assertFalse($actual);
     }
 
-    #[TestDox('->decode() decodes root-level JSON null primitive')]
+    #[TestDox('::decode() decodes root-level JSON null primitive')]
     public function test_decodes_root_level_null_primitive(): void
     {
-        $actual = $this->json->decode('null');
+        $actual = Json::decode('null');
 
         $this->assertNull($actual);
     }
@@ -656,7 +660,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->decode() respects JSON_BIGINT_AS_STRING')]
+    #[TestDox('::decode() respects JSON_BIGINT_AS_STRING')]
     public function test_decode_respects_json_bigint_as_string(): void
     {
         // a 20-digit integer exceeds PHP_INT_MAX on a 64-bit
@@ -667,7 +671,7 @@ class JsonTest extends TestCase
 
         $json = '{"big":99999999999999999999}';
 
-        $actual = $this->json->decode(
+        $actual = Json::decode(
             input: $json,
             associative: true,
             flags: JSON_BIGINT_AS_STRING,
@@ -676,13 +680,13 @@ class JsonTest extends TestCase
         $this->assertSame(['big' => '99999999999999999999'], $actual);
     }
 
-    #[TestDox('->decode() succeeds when nesting is within the custom depth limit')]
+    #[TestDox('::decode() succeeds when nesting is within the custom depth limit')]
     public function test_decode_succeeds_within_custom_depth_limit(): void
     {
         $json = '{"level1":{"level2":{"level3":"value"}}}';
         $expected = ['level1' => ['level2' => ['level3' => 'value']]];
 
-        $actual = $this->json->decode(
+        $actual = Json::decode(
             input: $json,
             associative: true,
             depth: 5,
@@ -697,33 +701,33 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->decode() throws JsonException on syntactically invalid JSON')]
+    #[TestDox('::decode() throws JsonException on syntactically invalid JSON')]
     public function test_decode_throws_on_syntactically_invalid_json(): void
     {
         $invalidJson = '{"key": "unclosed quote}';
 
         $this->expectException(JsonException::class);
 
-        $this->json->decode($invalidJson);
+        Json::decode($invalidJson);
     }
 
-    #[TestDox('->decode() throws JsonException on an empty string')]
+    #[TestDox('::decode() throws JsonException on an empty string')]
     public function test_decode_throws_on_an_empty_string(): void
     {
         $this->expectException(JsonException::class);
 
-        $this->json->decode('');
+        Json::decode('');
     }
 
-    #[TestDox('->decode() throws JsonException on a whitespace-only string')]
+    #[TestDox('::decode() throws JsonException on a whitespace-only string')]
     public function test_decode_throws_on_a_whitespace_only_string(): void
     {
         $this->expectException(JsonException::class);
 
-        $this->json->decode("   \n\t  ");
+        Json::decode("   \n\t  ");
     }
 
-    #[TestDox('->decode() throws JsonException when depth is exceeded')]
+    #[TestDox('::decode() throws JsonException when depth is exceeded')]
     public function test_decode_throws_when_depth_is_exceeded(): void
     {
         // a 3-level structure at depth=2 must fail
@@ -731,7 +735,7 @@ class JsonTest extends TestCase
 
         $this->expectException(JsonException::class);
 
-        $this->json->decode(input: $json, associative: true, depth: 2);
+        Json::decode(input: $json, associative: true, depth: 2);
     }
 
     // ================================================================
@@ -740,7 +744,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->encode() and ->decode() are inverse operations')]
+    #[TestDox('::encode() and ::decode() are inverse operations')]
     public function test_encode_and_decode_are_inverse_operations(): void
     {
         // the two operations are contracts on each other: any value
@@ -756,8 +760,8 @@ class JsonTest extends TestCase
             'array'  => [1, 2, 3],
         ];
 
-        $encoded = $this->json->encode($original);
-        $decoded = $this->json->decode($encoded, true);
+        $encoded = Json::encode($original);
+        $decoded = Json::decode($encoded, true);
 
         $this->assertSame($original, $decoded);
     }
@@ -768,7 +772,7 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->validate() declares $input, $depth and $flags as parameters in that order')]
+    #[TestDox('::validate() declares $input, $depth and $flags as parameters in that order')]
     public function test_validate_declares_expected_parameters(): void
     {
         // the parameter names are part of the published surface -
@@ -795,24 +799,24 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->validate() returns an empty array for valid JSON')]
-    public function test_validate_returns_an_empty_array_for_valid_json(): void
+    #[TestDox('::validate() returns null for valid JSON')]
+    public function test_validate_returns_null_for_valid_json(): void
     {
         $json = '{"a":1}';
 
-        $actual = $this->json->validate($json);
+        $actual = Json::validate($json);
 
-        $this->assertSame([], $actual);
+        $this->assertNull($actual);
     }
 
     #[DataProvider('getValidJsonPrimitivesProvider')]
-    #[TestDox('->validate() accepts valid JSON primitive $json')]
+    #[TestDox('::validate() accepts valid JSON primitive $json')]
     public function test_validate_accepts_valid_json_primitive(
         string $json,
     ): void {
-        $actual = $this->json->validate($json);
+        $actual = Json::validate($json);
 
-        $this->assertSame([], $actual);
+        $this->assertNull($actual);
     }
 
     /**
@@ -834,7 +838,7 @@ class JsonTest extends TestCase
         ];
     }
 
-    #[TestDox('->validate() accepts valid JSON with surrounding whitespace')]
+    #[TestDox('::validate() accepts valid JSON with surrounding whitespace')]
     public function test_validate_accepts_valid_json_with_surrounding_whitespace(): void
     {
         // json_validate() follows json_decode() - both accept leading
@@ -844,19 +848,19 @@ class JsonTest extends TestCase
 
         $json = '   {"a": 1}   ';
 
-        $actual = $this->json->validate($json);
+        $actual = Json::validate($json);
 
-        $this->assertSame([], $actual);
+        $this->assertNull($actual);
     }
 
-    #[TestDox('->validate() accepts JSON within the custom depth limit')]
+    #[TestDox('::validate() accepts JSON within the custom depth limit')]
     public function test_validate_accepts_json_within_the_custom_depth_limit(): void
     {
         $json = '{"level1":{"level2":{"level3":"value"}}}';
 
-        $actual = $this->json->validate($json, 5);
+        $actual = Json::validate($json, 5);
 
-        $this->assertSame([], $actual);
+        $this->assertNull($actual);
     }
 
     // ================================================================
@@ -865,40 +869,29 @@ class JsonTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->validate() returns a JsonValidationError for invalid JSON')]
+    #[TestDox('::validate() returns a JsonValidationError for invalid JSON')]
     public function test_validate_returns_error_details_for_invalid_json(): void
     {
-        // the documented shape on failure is a list of
-        // `JsonValidationError`. Pin that the list carries at
-        // least one error, that each entry is a
-        // `JsonValidationError`, and that the first error's
-        // `getCode()` is non-zero / `getMessage()` is non-empty -
-        // so a silent change to the error surface is caught.
+        // the documented shape on failure is a JsonValidationError
+        // with non-zero code and non-empty message. Pin all three
+        // facts so a silent change to the error surface is caught.
 
         $invalidJson = '{"a":1'; // missing closing brace
 
-        $actual = $this->json->validate($invalidJson);
+        $actual = Json::validate($invalidJson);
 
-        $this->assertNotSame([], $actual);
-        $this->assertContainsOnlyInstancesOf(
-            JsonValidationError::class,
-            $actual,
-        );
-        $this->assertNotSame(0, $actual[0]->getCode());
-        $this->assertNotSame('', $actual[0]->getMessage());
+        $this->assertInstanceOf(JsonValidationError::class, $actual);
+        $this->assertNotSame(0, $actual->getCode());
+        $this->assertNotSame('', $actual->getMessage());
     }
 
     #[DataProvider('getInvalidJsonProvider')]
-    #[TestDox('->validate() rejects invalid JSON: $json')]
+    #[TestDox('::validate() rejects invalid JSON: $json')]
     public function test_validate_rejects_invalid_json(string $json): void
     {
-        $actual = $this->json->validate($json);
+        $actual = Json::validate($json);
 
-        $this->assertNotSame([], $actual);
-        $this->assertContainsOnlyInstancesOf(
-            JsonValidationError::class,
-            $actual,
-        );
+        $this->assertInstanceOf(JsonValidationError::class, $actual);
     }
 
     /**
@@ -921,18 +914,14 @@ class JsonTest extends TestCase
         ];
     }
 
-    #[TestDox('->validate() rejects JSON exceeding the custom depth limit')]
+    #[TestDox('::validate() rejects JSON exceeding the custom depth limit')]
     public function test_validate_rejects_json_exceeding_the_custom_depth_limit(): void
     {
         // a 3-level structure at depth=2 must be rejected
         $json = '{"level1":{"level2":{"level3":"value"}}}';
 
-        $actual = $this->json->validate($json, 2);
+        $actual = Json::validate($json, 2);
 
-        $this->assertNotSame([], $actual);
-        $this->assertContainsOnlyInstancesOf(
-            JsonValidationError::class,
-            $actual,
-        );
+        $this->assertInstanceOf(JsonValidationError::class, $actual);
     }
 }

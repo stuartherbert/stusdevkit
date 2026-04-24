@@ -43,8 +43,8 @@ class JsonValidationError
 ## Description
 
 `JsonValidationError` is the value object
-[`Json::validate()`](../Json/validate.md) returns for each error it
-finds in a malformed document. It carries two fields:
+[`Json::validate()`](../Json/validate.md) returns when the input is
+not valid JSON. It carries two fields:
 
 - the numeric error code from
   [`json_last_error()`](https://www.php.net/manual/en/function.json-last-error.php)
