@@ -162,7 +162,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- Json wrapper is now a static utility ([aac1f38](https://github.com/stuartherbert/stusdevkit/commit/aac1f38)) — Stuart Herbert <stuart@stuartherbert.com>
+- Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### CollectionsKit

@@ -241,6 +241,122 @@ The same principle applies to enum case sets, property sets,
 parameter sets, and any other "the API surface is exactly these
 members" contract.
 
+## Structure the test body as explain / setup / perform / test
+
+Every test method body is divided into four labelled steps, in this
+order, separated by a `// ---` divider line:
+
+1. **explain your test** — prose explaining *why* this test exists.
+   What contract is it pinning down? What would a failure mean?
+   This is the test's docblock, lifted into the body so it reads
+   inline with the code that proves the claim.
+2. **setup your test** — build fixtures, expected values, input
+   data, reflection handles. No calls to the code under test yet.
+3. **perform the change** — exactly the call(s) under test.
+   Separating this from setup means a reader can see the
+   code-under-test at a glance, without hunting through fixture
+   construction.
+4. **test the results** — assertions. Everything above this line
+   has built up the inputs and captured the outputs; this block
+   converts them into pass/fail.
+
+### Allowed
+
+```php
+#[TestDox('lives in the StusDevKit\\MissingBitsKit\\Json namespace')]
+public function test_lives_in_the_expected_namespace(): void
+{
+    // ----------------------------------------------------------------
+    // explain your test
+
+    // the published namespace is part of the contract - callers
+    // type-hint against the FQN, so moving it is a breaking
+    // change that must go through a major version bump.
+
+    // ----------------------------------------------------------------
+    // setup your test
+
+    $expected = 'StusDevKit\\MissingBitsKit\\Json';
+
+    // ----------------------------------------------------------------
+    // perform the change
+
+    $actual = (new ReflectionClass(Json::class))->getNamespaceName();
+
+    // ----------------------------------------------------------------
+    // test the results
+
+    $this->assertSame($expected, $actual);
+}
+```
+
+A reader scanning the body sees the four beats as distinct visual
+blocks. The "explain" block reads as the test's own docblock; the
+"perform" block is the single call under test; the "test" block is
+where the claim is enforced.
+
+### Not allowed
+
+```php
+public function test_lives_in_the_expected_namespace(): void
+{
+    // the published namespace is part of the contract
+    $expected = 'StusDevKit\\MissingBitsKit\\Json';
+    $actual = (new ReflectionClass(Json::class))->getNamespaceName();
+    $this->assertSame($expected, $actual);
+}
+```
+
+The four beats are still there, but they're not visually separated.
+A reader has to parse every line to work out which one is setup,
+which one is the call under test, and which one is the assertion —
+information the dividers make free.
+
+### Exception-path tests
+
+When the assertion is `$this->expectException(...)`, the call is
+*setting an expectation* rather than *testing a result* — PHPUnit
+checks the expectation when the test method returns. That means
+the last block has a different label, and it lands **before**
+"perform the change" because PHPUnit requires the expectation to
+be registered before the call that throws:
+
+```php
+#[TestDox('::encode() throws JsonException on a circular reference')]
+public function test_encode_throws_on_a_circular_reference(): void
+{
+    // ----------------------------------------------------------------
+    // explain your test
+
+    // json_encode() returns false (and sets an error) on a
+    // circular reference. The wrapper forces JSON_THROW_ON_ERROR,
+    // so the caller must see a JsonException instead of a
+    // silently false-valued return.
+
+    // ----------------------------------------------------------------
+    // setup your test
+
+    $input = [];
+    $input['self'] = &$input;
+
+    // ----------------------------------------------------------------
+    // set test expectations
+
+    $this->expectException(JsonException::class);
+
+    // ----------------------------------------------------------------
+    // perform the change
+
+    Json::encode($input);
+}
+```
+
+Use "set test expectations" for any assertion that registers a
+check to be verified later (e.g. `expectException`,
+`expectExceptionMessage`, `expectOutputString`). Use "test the
+results" for assertions that inspect captured values directly
+(`assertSame`, `assertNull`, `assertInstanceOf` on a `$actual`).
+
 ## Group tests into identity / shape / behaviour sections
 
 Use `// ===` section separators to split a test file into sections,
