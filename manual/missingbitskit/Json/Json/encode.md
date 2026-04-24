@@ -111,6 +111,7 @@ _None yet._
 ```
 Json (StusDevKit\MissingBitsKit\Tests\Unit\Json\Json)
  ✔ ::encode() declares $input, $flags and $depth as parameters in that order
+ ✔ ::encode() returns string
  ✔ ::encode() encodes an associative array as a JSON object
  ✔ ::encode() encodes an empty array as []
  ✔ ::encode() encodes an empty stdClass as {}

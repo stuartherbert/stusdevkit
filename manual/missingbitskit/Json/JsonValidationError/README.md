@@ -77,6 +77,10 @@ StusDevKit\MissingBitsKit\Json\JsonValidationError
  ✔ lives in the StusDevKit\MissingBitsKit\Json namespace
  ✔ exposes only __construct(), getCode() and getMessage() as public methods
  ✔ ::__construct() declares $code and $message as parameters in that order
+ ✔ ->getCode() declares an int return type
+ ✔ ->getMessage() declares a string return type
+ ✔ ->getCode() returns the $code passed to the constructor
+ ✔ ->getMessage() returns the $message passed to the constructor
 ```
 
 ## Source

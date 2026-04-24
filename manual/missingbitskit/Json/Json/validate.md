@@ -121,6 +121,9 @@ _None yet._
 ```
 Json (StusDevKit\MissingBitsKit\Tests\Unit\Json\Json)
  ✔ ::validate() declares $input, $depth and $flags as parameters in that order
+ ✔ ::validate() returns ?JsonValidationError
+ ✔ ::validate() never throws for valid input
+ ✔ ::validate() never throws for invalid input
  ✔ ::validate() returns null for valid JSON
  ✔ ::validate() accepts valid JSON primitive [1, 2, 3]
  ✔ ::validate() accepts valid JSON primitive "hello"
@@ -134,6 +137,7 @@ Json (StusDevKit\MissingBitsKit\Tests\Unit\Json\Json)
  ✔ ::validate() accepts valid JSON primitive {}
  ✔ ::validate() accepts valid JSON with surrounding whitespace
  ✔ ::validate() accepts JSON within the custom depth limit
+ ✔ ::validate() accepts JSON_INVALID_UTF8_IGNORE as a flags value
  ✔ ::validate() returns a JsonValidationError for invalid JSON
  ✔ ::validate() rejects invalid JSON: {"unclosed brace
  ✔ ::validate() rejects invalid JSON: [1, 2, 3,]

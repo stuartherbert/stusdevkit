@@ -134,6 +134,7 @@ _None yet._
 ```
 Json (StusDevKit\MissingBitsKit\Tests\Unit\Json\Json)
  ✔ ::decode() declares $input, $associative, $depth and $flags as parameters in that order
+ ✔ ::decode() returns mixed
  ✔ ::decode() decodes a JSON object as stdClass by default
  ✔ ::decode() decodes a JSON object as an associative array when associative is true
  ✔ ::decode() decodes a JSON array

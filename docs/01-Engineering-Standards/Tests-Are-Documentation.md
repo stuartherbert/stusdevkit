@@ -344,6 +344,9 @@ public function test_encode_throws_on_a_circular_reference(): void
 
     $this->expectException(JsonException::class);
 
+    // the exception message and code are produced by PHP's
+    // json_encode() builtin - they are not part of our contract.
+
     // ----------------------------------------------------------------
     // perform the change
 
@@ -356,6 +359,43 @@ check to be verified later (e.g. `expectException`,
 `expectExceptionMessage`, `expectOutputString`). Use "test the
 results" for assertions that inspect captured values directly
 (`assertSame`, `assertNull`, `assertInstanceOf` on a `$actual`).
+
+### Assert the exception message and code when they are ours
+
+`expectException()` on its own only pins the exception class. The
+message and code are part of the exception's contract too, and
+an exception test must cover them **when they are ours**. The
+decision hinges on who *wrote* the message and picked the code,
+not on who declared the class:
+
+**Ours — assert the full message AND the code.** Use
+`expectExceptionMessage()` (full message, not a substring) and
+`expectExceptionCode()` in this case.
+
+- Our own exception class, thrown by our code
+- A PHP / third-party exception class we throw ourselves with a
+  message and code that we constructed (e.g. throwing
+  `\InvalidArgumentException` with our own wording)
+- An exception we caught from a foreign source and re-threw with
+  our own message and code
+
+**Not ours — assert the class only, and comment why.** Skip the
+message and code assertions, and replace them with a short
+inline comment in the "set test expectations" block naming the
+foreign source and stating that the message and code are not
+part of our contract. The comment makes the omission deliberate
+rather than a gap.
+
+- A PHP builtin that throws on its own (e.g. `\JsonException`
+  from `json_encode()` / `json_decode()`)
+- A third-party library exception we let propagate without
+  decorating
+
+The full-message match (not substring) for ours-category tests
+means every wording change is visible in the diff. That is the
+point — our wording is part of our contract, and silent drift in
+the message our callers read is as much a regression as a silent
+drift in a return value.
 
 ## Group tests into identity / shape / behaviour sections
 
