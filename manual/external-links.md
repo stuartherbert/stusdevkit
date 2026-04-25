@@ -26,6 +26,7 @@ pre-flight report flags it and asks the author to add an entry.
 | `Stringable` | https://www.php.net/manual/en/class.stringable.php |
 | `function_exists()` | https://www.php.net/manual/en/function.function-exists.php |
 | `class_exists()` | https://www.php.net/manual/en/function.class-exists.php |
+| `interface_exists()` | https://www.php.net/manual/en/function.interface-exists.php |
 | `json_decode()` | https://www.php.net/manual/en/function.json-decode.php |
 | `json_encode()` | https://www.php.net/manual/en/function.json-encode.php |
 | `json_last_error()` | https://www.php.net/manual/en/function.json-last-error.php |
@@ -36,6 +37,7 @@ pre-flight report flags it and asks the author to add an entry.
 | `is_string()` | https://www.php.net/manual/en/function.is-string.php |
 | `is_array()` | https://www.php.net/manual/en/function.is-array.php |
 | `is_object()` | https://www.php.net/manual/en/function.is-object.php |
+| `trait_exists()` | https://www.php.net/manual/en/function.trait-exists.php |
 | `__invoke` | https://www.php.net/manual/en/language.oop5.magic.php#object.invoke |
 | `__call` | https://www.php.net/manual/en/language.oop5.overloading.php#object.call |
 | `__callStatic` | https://www.php.net/manual/en/language.oop5.overloading.php#object.callstatic |
