@@ -16,6 +16,21 @@ The primary goal of this project is to provide a PHP framework that will be stab
 - simple, solid solutions over clever, fragile code
 - usage-driven automated regression tests
 
+## Engineering Standards — Always Consult First
+
+A compiled knowledge base covers every subsystem. Before working on,
+analyzing, or reviewing any subsystem, read its article — it contains
+cross-file coupling, threading invariants, and gotchas you cannot derive
+from reading individual source files.
+
+The full index is imported below.
+
+@docs/01-Engineering-Standards/README.md
+
+Read all engineering standards in `docs/01-Engineering-Standards` at the start of every session.
+
+Read any relevant engineering standard file before working on related topics. The directory contents may grow over time — always discover rather than assume a fixed set of documents.
+
 ## Architecture & Structure
 
 ### Concept
