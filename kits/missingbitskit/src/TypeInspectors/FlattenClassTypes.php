@@ -66,11 +66,11 @@ namespace StusDevKit\MissingBitsKit\TypeInspectors;
  * before their ancestors, which is what callers probing in list
  * order would expect.
  *
- * Here Be Dragons.
- * ================
+ * Here Be Dragons
+ * ===============
  *
- * **Autoloading side effect.** The "is this a class-like?" probe
- * is implemented with `class_exists($name)` and
+ * **Autoloading side effect — this is a footgun.** The "is this a
+ * class-like?" probe calls `class_exists($name)` and
  * `interface_exists($name)`, both of which **fire the registered
  * autoloaders** by default for unknown names. In the motivating
  * caller (a reflection-driven DI resolver), every name in

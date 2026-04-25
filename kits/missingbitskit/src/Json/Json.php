@@ -48,9 +48,9 @@ use StusDevKit\AssertionsKit\Assert;
 /**
  * Provides error-safe wrappers around PHP's builtins:
  *
- * - `json_encode()`
- * - `json_decode()`
- * - `json_validate()`
+ * - `encode()` — wraps `json_encode()`, always throws on failure
+ * - `decode()` — wraps `json_decode()`, always throws on failure
+ * - `validate()` — wraps `json_validate()`, never throws
  *
  * Originally added to ensure that any `json_encode()` or `json_decode()`
  * failures always throw exceptions.

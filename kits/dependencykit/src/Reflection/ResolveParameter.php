@@ -62,8 +62,8 @@ class ResolveParameter
      * Retrieve a value for the given parameter, using its type, from
      * the given PSR-11 DI container.
      *
-     * Here Be Dragons.
-     * ================
+     * Here Be Dragons
+     * ===============
      *
      * **Union-type resolution order is best-effort, not a contract.**
      *

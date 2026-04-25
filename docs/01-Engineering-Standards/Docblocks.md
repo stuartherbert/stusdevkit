@@ -84,7 +84,7 @@ reason, not a claim about current usage).
 
 Docblock warnings — hazards, caveats, unguaranteed behaviour,
 non-obvious footguns — go under a `Here Be Dragons` section
-heading (with a `===` underline). Use colourful language inside
+heading (with an underline matching the heading length). Use colourful language inside
 the section: "footgun", "silently wins", "will have you chasing
 ghosts". The goal is to make the hazard land, not to be neutral.
 

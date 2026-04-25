@@ -79,20 +79,20 @@ class FlattenReflectionType
      *  - **mixed unions** put classes first (in declaration order)
      *    and scalars last (in canonical order).
      *
-     * Here Be Dragons.
-     * ================
+     * Here Be Dragons
+     * ===============
      *
-     * The ordering guarantee above is derived from PHP's text
-     * representation, so it is **only as stable as that
-     * representation**. A future PHP release could in principle
-     * change the canonical scalar ordering, or alter how it
-     * stringifies unions in some other way, and the output of
-     * from() would shift with it. Callers that need guaranteed
+     * **The ordering guarantee is only as stable as PHP's text
+     * representation — and that's a moving target.** A future PHP
+     * release could change the canonical scalar ordering, or alter
+     * how it stringifies unions in some other way, and the output
+     * of from() would shift with it. Callers that need guaranteed
      * behaviour across PHP versions - or that care about anything
      * stronger than "class-only unions preserve declaration order
-     * on the PHP we tested against" - should treat this as
-     * best-effort and write their own walker against the
-     * ReflectionType tree directly.
+     * on the PHP we tested against" - should treat this as best-
+     * effort and write their own walker against the ReflectionType
+     * tree directly. Don't rely on this ordering for load-bearing
+     * logic.
      *
      * **Intersection types are refused.** An intersection `A&B`
      * means "a value that satisfies both A and B simultaneously".

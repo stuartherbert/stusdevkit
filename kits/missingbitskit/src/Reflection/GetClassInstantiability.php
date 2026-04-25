@@ -67,7 +67,8 @@ use ReflectionClass;
  * declares a private constructor reports as `IsAbstract`, not
  * `ConstructorNotPublic`.
  *
- * ## Here Be Dragons
+ * Here Be Dragons
+ * ===============
  *
  * - **Autoloading runs.** `new ReflectionClass($classname)` triggers
  *   the autoloader. Passing a class-string you don't trust will load
