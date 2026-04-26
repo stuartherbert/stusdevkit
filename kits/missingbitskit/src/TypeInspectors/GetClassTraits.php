@@ -47,9 +47,15 @@ namespace StusDevKit\MissingBitsKit\TypeInspectors;
 class GetClassTraits
 {
     /**
-     * does this class use traits?
+     * does this class use traits? if so, which ones does it use?
+     *
+     * @param mixed $input
+     *   the value to examine
+     *
+     *   returns an empty list if `$input` is not a valid class-string
      *
      * @return array<string,string>
+     *   a list of PHP traits that `$input` uses
      */
     public function __invoke(mixed $input): array
     {

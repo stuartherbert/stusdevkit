@@ -132,6 +132,10 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### MissingBitsKit
+
+- add manual pages for many classes ([07c3642](https://github.com/stuartherbert/stusdevkit/commit/07c3642)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### DependencyKit
 
 - generate manual page for ResolveParameter ([4d6f7c5](https://github.com/stuartherbert/stusdevkit/commit/4d6f7c5)) — Stuart Herbert <stuart@stuartherbert.com>

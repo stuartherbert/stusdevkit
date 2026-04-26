@@ -45,6 +45,13 @@ namespace StusDevKit\MissingBitsKit\Arrays;
  * Any class that implements StaticallyArrayable can return its
  * type-level state as a PHP array via a static method call.
  *
+ * It is up to each class to determine (and to document!) exactly what
+ * data it will return. Classes are not required to return any hidden
+ * internal data (for example).
+ *
+ * This is our equivalent of the built-in Stringable interface, only
+ * for arrays.
+ *
  * Originally added for enums: the set of cases is a property of
  * the type, not of any individual case. A static `toArray()` exposes
  * that set in a form suitable for data-provider driven tests, config
@@ -59,6 +66,12 @@ namespace StusDevKit\MissingBitsKit\Arrays;
 interface StaticallyArrayable
 {
     /**
+     * Exports the contents of this static class as an array.
+     *
+     * Any class that implements this interface should add their own
+     * docblock, explaining exactly what data this method exports
+     * for that particular class.
+     *
      * @return array<TKey, TValue>
      */
     public static function toArray(): array;

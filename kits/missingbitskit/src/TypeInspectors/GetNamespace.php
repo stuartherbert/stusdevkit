@@ -53,6 +53,9 @@ class GetNamespace
      *         the item to examine
      * @return string
      *         the class's namespace
+     *
+     *         returns an empty string if the class is in the
+     *         global namespace
      */
     public static function from(string|object $item): string
     {

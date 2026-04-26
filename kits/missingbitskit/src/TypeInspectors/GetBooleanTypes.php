@@ -48,7 +48,13 @@ class GetBooleanTypes
     /**
      * do we have a PHP bool? If so, what types does it match?
      *
+     * @param mixed $input
+     *   the value to examine
+     *
+     *   returns an empty list if `$input` is not a boolean
+     *
      * @return array<string,string>
+     *   a list of PHP types that `$input` can match
      */
     public function __invoke(mixed $input): array
     {
@@ -65,7 +71,7 @@ class GetBooleanTypes
      * @param  bool $item
      *         the item to examine
      * @return array<string,string>
-     *         a map of matching PHP pseudo-types
+     *         a map of matching PHP strict types
      */
     public static function from(bool $item): array
     {

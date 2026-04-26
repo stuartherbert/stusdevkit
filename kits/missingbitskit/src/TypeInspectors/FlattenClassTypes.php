@@ -87,6 +87,8 @@ namespace StusDevKit\MissingBitsKit\TypeInspectors;
  * probes into every registered prefix, or (for PSR-0-style
  * loaders) surprising cascade loads. If that's a concern, strip
  * non-class-like names at the caller before handing them in.
+ *
+ * @internal
  */
 class FlattenClassTypes
 {

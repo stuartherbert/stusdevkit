@@ -47,7 +47,11 @@ namespace StusDevKit\MissingBitsKit\TypeInspectors;
 class GetDuckTypes
 {
     /**
+     * @param mixed $item
+     *        the item to examine
+     *
      * @return array<string,string>
+     *         a list of type(s) that this item can be
      */
     public function __invoke(mixed $item): array
     {

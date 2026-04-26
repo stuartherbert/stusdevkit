@@ -51,7 +51,13 @@ class GetStringTypes
      * get a full list of types that a string might satisfy
      *
      * @param mixed $input
+     *        the item to be inspected
+     *
      * @return array<string,string>
+     *         the list of PHP types that `$input` can satisfy
+     *
+     *         returns an empty list if `$input` is not a string
+     *         or not Stringable
      */
     public function __invoke(mixed $input): array
     {
@@ -60,8 +66,12 @@ class GetStringTypes
 
         // special case
         if (is_object($input) && $input instanceof Stringable) {
-            $input = (string)$input;
             $retval['Stringable'] = 'Stringable';
+            $retval['string'] = 'string';
+
+            // we don't want this to match against `callable` et al
+            // so terminate this here
+            return $retval;
         }
 
         if (!is_string($input)) {
@@ -95,7 +105,7 @@ class GetStringTypes
         // special case - strings can be numbers too
         $retval = [
             ...$retval,
-            ...GetNumericType::from($item),
+            ...GetNumericTypes::from($item),
         ];
 
         // add in the basic types. 'mixed' is deliberately NOT

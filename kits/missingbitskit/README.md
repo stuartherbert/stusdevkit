@@ -54,7 +54,7 @@ The returned map is ordered from most-specific to most-general, and always ends 
 | `GetBooleanTypes` | `true` / `false` / `bool` / `mixed` |
 | `GetFloatTypes` | `numeric`, `float`, `mixed` |
 | `GetIntegerTypes` | `numeric`, `int`, `mixed` |
-| `GetNumericType` | Shared helper used by other inspectors for `is_numeric()` values |
+| `GetNumericTypes` | Shared helper used by other inspectors for `is_numeric()` values |
 | `GetStringTypes` | Adds `callable` / `numeric` where the string also satisfies those shapes |
 | `GetObjectTypes` | Types an object satisfies — thin wrapper around `GetClassTypes` |
 | `GetClassTypes` | Full type surface for a class-string — parents, interfaces, traits, `callable` (if `__invoke` is defined), `object`, `mixed` |

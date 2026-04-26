@@ -46,7 +46,7 @@ use Stringable;
 /**
  * do we have a numeric type? if so, what is it?
  */
-class GetNumericType
+class GetNumericTypes
 {
     /**
      * do we have a PHP numeric type? If so, what types does it match?

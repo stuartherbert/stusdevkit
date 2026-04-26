@@ -49,6 +49,11 @@ class GetFloatTypes
     /**
      * do we have a PHP float? If so, what types does it match?
      *
+     * @param mixed $input
+     *   the value to examine
+     *
+     *   returns an empty list if `$input` is not a float
+     *
      * @return array<string,string>
      */
     public function __invoke(mixed $input): array

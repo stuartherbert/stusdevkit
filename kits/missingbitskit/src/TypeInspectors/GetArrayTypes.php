@@ -42,14 +42,21 @@ declare(strict_types=1);
 namespace StusDevKit\MissingBitsKit\TypeInspectors;
 
 /**
- * get a full list of strict types than an array can satisfy
+ * get a full list of strict types that an array can satisfy
  */
 class GetArrayTypes
 {
     /**
-     * do we have a PHP array? If so, what types does it match?
+     * Do we have a PHP array? If so, what types does it match?
+     *
+     * @param mixed $input
+     *     the array to examine
+     *
+     *     if $input is not an array, we return an empty list
+     *     of types
      *
      * @return array<string,string>
+     *     a list of PHP types that the array can match
      */
     public function __invoke(mixed $input): array
     {
@@ -64,9 +71,9 @@ class GetArrayTypes
      * get a full list of strict types than an array can satisfy
      *
      * @param  array<array-key,mixed> $item
-     *         the item to examine
+     *         the array to examine
      * @return array<string,string>
-     *         the array's list of types
+     *         the list of PHP types that the array can match
      */
     public static function from(array $item): array
     {

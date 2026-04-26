@@ -50,10 +50,10 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use stdClass;
 use StusDevKit\MissingBitsKit\Tests\Fixtures\TypeInspectors\SampleToString;
-use StusDevKit\MissingBitsKit\TypeInspectors\GetNumericType;
+use StusDevKit\MissingBitsKit\TypeInspectors\GetNumericTypes;
 
-#[TestDox(GetNumericType::class)]
-class GetNumericTypeTest extends TestCase
+#[TestDox(GetNumericTypes::class)]
+class GetNumericTypesTest extends TestCase
 {
     // ================================================================
     //
@@ -64,7 +64,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('lives in the StusDevKit\\MissingBitsKit\\TypeInspectors namespace')]
     public function test_lives_in_expected_namespace(): void
     {
-        $reflection = new ReflectionClass(GetNumericType::class);
+        $reflection = new ReflectionClass(GetNumericTypes::class);
         $this->assertSame(
             'StusDevKit\\MissingBitsKit\\TypeInspectors',
             $reflection->getNamespaceName(),
@@ -74,7 +74,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('is declared as a class')]
     public function test_is_a_class(): void
     {
-        $reflection = new ReflectionClass(GetNumericType::class);
+        $reflection = new ReflectionClass(GetNumericTypes::class);
         $this->assertFalse($reflection->isInterface());
         $this->assertFalse($reflection->isTrait());
     }
@@ -82,10 +82,10 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('exposes __invoke() and ::from() as its public methods')]
     public function test_exposes_expected_public_methods(): void
     {
-        $reflection = new ReflectionClass(GetNumericType::class);
+        $reflection = new ReflectionClass(GetNumericTypes::class);
         $methodNames = [];
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
-            if ($m->getDeclaringClass()->getName() === GetNumericType::class) {
+            if ($m->getDeclaringClass()->getName() === GetNumericTypes::class) {
                 $methodNames[] = $m->getName();
             }
         }
@@ -102,7 +102,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('->__invoke() is declared public, non-static')]
     public function test_invoke_is_public_non_static(): void
     {
-        $method = new ReflectionMethod(GetNumericType::class, '__invoke');
+        $method = new ReflectionMethod(GetNumericTypes::class, '__invoke');
         $this->assertTrue($method->isPublic());
         $this->assertFalse($method->isStatic());
     }
@@ -110,7 +110,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('->__invoke() parameter names in order')]
     public function test_invoke_parameter_names(): void
     {
-        $method = new ReflectionMethod(GetNumericType::class, '__invoke');
+        $method = new ReflectionMethod(GetNumericTypes::class, '__invoke');
         $paramNames = array_map(
             fn(ReflectionParameter $p) => $p->getName(),
             $method->getParameters(),
@@ -121,7 +121,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('->__invoke() returns array')]
     public function test_invoke_return_type(): void
     {
-        $method = new ReflectionMethod(GetNumericType::class, '__invoke');
+        $method = new ReflectionMethod(GetNumericTypes::class, '__invoke');
         $returnType = $method->getReturnType();
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('array', $returnType->getName());
@@ -130,7 +130,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('::from() is declared public static')]
     public function test_from_is_public_static(): void
     {
-        $method = new ReflectionMethod(GetNumericType::class, 'from');
+        $method = new ReflectionMethod(GetNumericTypes::class, 'from');
         $this->assertTrue($method->isPublic());
         $this->assertTrue($method->isStatic());
     }
@@ -138,7 +138,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('::from() parameter names in order')]
     public function test_from_parameter_names(): void
     {
-        $method = new ReflectionMethod(GetNumericType::class, 'from');
+        $method = new ReflectionMethod(GetNumericTypes::class, 'from');
         $paramNames = array_map(
             fn(ReflectionParameter $p) => $p->getName(),
             $method->getParameters(),
@@ -149,7 +149,7 @@ class GetNumericTypeTest extends TestCase
     #[TestDox('::from() returns array')]
     public function test_from_return_type(): void
     {
-        $method = new ReflectionMethod(GetNumericType::class, 'from');
+        $method = new ReflectionMethod(GetNumericTypes::class, 'from');
         $returnType = $method->getReturnType();
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('array', $returnType->getName());
@@ -165,11 +165,11 @@ class GetNumericTypeTest extends TestCase
     public function test_can_instantiate(): void
     {
         /**
-         * the GetNumericType class can be instantiated as an invokable object
+         * the GetNumericTypes class can be instantiated as an invokable object
          */
-        $unit = new GetNumericType();
+        $unit = new GetNumericTypes();
 
-        $this->assertInstanceOf(GetNumericType::class, $unit);
+        $this->assertInstanceOf(GetNumericTypes::class, $unit);
     }
 
     // ================================================================
@@ -202,7 +202,7 @@ class GetNumericTypeTest extends TestCase
          * any input which is not numeric is rejected by the __invoke() guard
          * and produces an empty type list
          */
-        $unit = new GetNumericType();
+        $unit = new GetNumericTypes();
         $expected = [];
 
         $actual = $unit($input);
@@ -218,7 +218,7 @@ class GetNumericTypeTest extends TestCase
          * 'some text') and then rejects it because the resulting string is not
          * numeric
          */
-        $unit = new GetNumericType();
+        $unit = new GetNumericTypes();
         $input = new SampleToString();
         $expected = [];
 
@@ -259,7 +259,7 @@ class GetNumericTypeTest extends TestCase
             'int' => 'int',
         ];
 
-        $actual = GetNumericType::from($input);
+        $actual = GetNumericTypes::from($input);
 
         $this->assertSame($expected, $actual);
     }
@@ -295,7 +295,7 @@ class GetNumericTypeTest extends TestCase
             'float' => 'float',
         ];
 
-        $actual = GetNumericType::from($input);
+        $actual = GetNumericTypes::from($input);
 
         $this->assertSame($expected, $actual);
     }
@@ -321,7 +321,7 @@ class GetNumericTypeTest extends TestCase
             'string' => 'string',
         ];
 
-        $actual = GetNumericType::from($input);
+        $actual = GetNumericTypes::from($input);
 
         $this->assertSame($expected, $actual);
     }
@@ -341,7 +341,7 @@ class GetNumericTypeTest extends TestCase
             'string' => 'string',
         ];
 
-        $actual = GetNumericType::from($input);
+        $actual = GetNumericTypes::from($input);
 
         $this->assertSame($expected, $actual);
     }
@@ -368,7 +368,7 @@ class GetNumericTypeTest extends TestCase
          */
         $expected = [];
 
-        $actual = GetNumericType::from($input);
+        $actual = GetNumericTypes::from($input);
 
         $this->assertSame($expected, $actual);
     }

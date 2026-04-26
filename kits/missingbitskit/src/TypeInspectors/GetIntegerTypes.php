@@ -49,7 +49,13 @@ class GetIntegerTypes
     /**
      * do we have a PHP int? If so, what types does it match?
      *
+     * @param mixed $input
+     *   the item to examine
+     *
+     *   returns an empty array if `$input` is not an integer
+     *
      * @return array<string,string>
+     * a list of PHP types that `$input` matches
      */
     public function __invoke(mixed $input): array
     {
@@ -66,7 +72,7 @@ class GetIntegerTypes
      * @param  int $item
      *         the item to examine
      * @return array<string,string>
-     *         a map of matching PHP pseudo-types
+     *         a map of matching PHP types
      */
     public static function from(int $item): array
     {

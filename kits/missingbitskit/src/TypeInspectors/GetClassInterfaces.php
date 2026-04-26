@@ -48,7 +48,13 @@ class GetClassInterfaces
     /**
      * do we have a PHP interface? If so, what types does it match?
      *
+     * @param mixed $input
+     *   the value to examine
+     *
+     *   returns an empty list if `$input` is not a valid class-string
+     *
      * @return array<string,string>
+     *   a list of PHP types that `$input` can match
      */
     public function __invoke(mixed $input): array
     {
