@@ -149,61 +149,6 @@ class CollectionAsStackTest extends TestCase
 
     // ================================================================
     //
-    // Shape
-    //
-    // ----------------------------------------------------------------
-    //
-    // CollectionAsStack adds a LIFO stack API on top of
-    // CollectionOfAnything. Shape of the inherited surface is pinned
-    // on the parent class; this section pins the public methods
-    // declared by CollectionAsStack itself, plus the signatures of
-    // each one so that an accidental change to a parameter or return
-    // type fails this test.
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('declares exactly the expected set of own public methods')]
-    public function test_declares_expected_own_public_methods(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // pin the exact surface the class introduces so that new
-        // public methods force a conscious update to this test.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $expected = [
-            'getIterator',
-            'maybePeek',
-            'maybePop',
-            'peek',
-            'pop',
-            'push',
-            'toArray',
-        ];
-        $reflection = new ReflectionClass(CollectionAsStack::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $ownMethods = [];
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
-            if ($m->getDeclaringClass()->getName() === CollectionAsStack::class) {
-                $ownMethods[] = $m->getName();
-            }
-        }
-        sort($ownMethods);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($expected, $ownMethods);
-    }
-
-    // ================================================================
-    //
     // Construction
     //
     // ----------------------------------------------------------------
@@ -264,6 +209,66 @@ class CollectionAsStackTest extends TestCase
         // assertion handled by expectException() above
     }
 
+    // ================================================================
+    //
+    // Shape
+    //
+    // ----------------------------------------------------------------
+    //
+    // CollectionAsStack adds a LIFO stack API on top of
+    // CollectionOfAnything. Shape of the inherited surface is pinned
+    // on the parent class; this section pins the public methods
+    // declared by CollectionAsStack itself. The signature test for
+    // each individual method lives next to its behaviour tests in
+    // the matching section below.
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('declares exactly the expected set of own public methods')]
+    public function test_declares_expected_own_public_methods(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // pin the exact surface the class introduces so that new
+        // public methods force a conscious update to this test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = [
+            'getIterator',
+            'maybePeek',
+            'maybePop',
+            'peek',
+            'pop',
+            'push',
+            'toArray',
+        ];
+        $reflection = new ReflectionClass(CollectionAsStack::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $ownMethods = [];
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+            if ($m->getDeclaringClass()->getName() === CollectionAsStack::class) {
+                $ownMethods[] = $m->getName();
+            }
+        }
+        sort($ownMethods);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $ownMethods);
+    }
+
+    // ================================================================
+    //
+    // push
+    //
+    // ----------------------------------------------------------------
 
     #[TestDox('->push() accepts a mixed value and returns static')]
     public function test_push_signature(): void
@@ -296,176 +301,6 @@ class CollectionAsStackTest extends TestCase
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('static', $returnType->getName());
     }
-
-    #[TestDox('->pop() takes no parameters and returns mixed')]
-    public function test_pop_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // pop() is a pure remove-and-return; no parameters, no
-        // defaults.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(CollectionAsStack::class, 'pop');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(0, $method->getNumberOfParameters());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('mixed', $returnType->getName());
-    }
-
-    #[TestDox('->maybePop() takes no parameters and returns mixed')]
-    public function test_maybe_pop_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // maybePop() returns null on empty; mixed covers both the
-        // stored TValue and the null sentinel.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(CollectionAsStack::class, 'maybePop');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(0, $method->getNumberOfParameters());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('mixed', $returnType->getName());
-    }
-
-    #[TestDox('->peek() takes no parameters and returns mixed')]
-    public function test_peek_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // peek() is pop() without the removal; same signature
-        // shape.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(CollectionAsStack::class, 'peek');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(0, $method->getNumberOfParameters());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('mixed', $returnType->getName());
-    }
-
-    #[TestDox('->maybePeek() takes no parameters and returns mixed')]
-    public function test_maybe_peek_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // maybePeek() returns null on empty; mixed covers both
-        // cases.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(CollectionAsStack::class, 'maybePeek');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(0, $method->getNumberOfParameters());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('mixed', $returnType->getName());
-    }
-
-    #[TestDox('->toArray() takes no parameters and returns array')]
-    public function test_to_array_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // toArray() overrides the parent's FIFO-order conversion
-        // with a LIFO-order conversion; signature must still
-        // match the parent so Arrayable is satisfied.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(CollectionAsStack::class, 'toArray');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(0, $method->getNumberOfParameters());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('array', $returnType->getName());
-    }
-
-    #[TestDox('->getIterator() takes no parameters and returns ArrayIterator')]
-    public function test_get_iterator_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // overrides IteratorAggregate::getIterator to yield LIFO;
-        // the return type must still be ArrayIterator to satisfy
-        // the parent.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(CollectionAsStack::class, 'getIterator');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(0, $method->getNumberOfParameters());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame(ArrayIterator::class, $returnType->getName());
-    }
-
-    // ================================================================
-    //
-    // push
-    //
-    // ----------------------------------------------------------------
 
     #[TestDox('->push() adds a value to the top of the stack')]
     public function test_push_adds_value(): void
@@ -557,6 +392,33 @@ class CollectionAsStackTest extends TestCase
     //
     // ----------------------------------------------------------------
 
+    #[TestDox('->pop() takes no parameters and returns mixed')]
+    public function test_pop_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // pop() is a pure remove-and-return; no parameters, no
+        // defaults.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsStack::class, 'pop');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $method->getNumberOfParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('mixed', $returnType->getName());
+    }
+
     #[TestDox('->pop() returns the top value and removes it from the stack')]
     public function test_pop_returns_and_removes_top(): void
     {
@@ -620,6 +482,33 @@ class CollectionAsStackTest extends TestCase
     //
     // ----------------------------------------------------------------
 
+    #[TestDox('->maybePop() takes no parameters and returns mixed')]
+    public function test_maybe_pop_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // maybePop() returns null on empty; mixed covers both the
+        // stored TValue and the null sentinel.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsStack::class, 'maybePop');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $method->getNumberOfParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('mixed', $returnType->getName());
+    }
+
     #[TestDox('->maybePop() returns the top value and removes it from the stack')]
     public function test_maybe_pop_returns_and_removes_top(): void
     {
@@ -681,6 +570,33 @@ class CollectionAsStackTest extends TestCase
     // peek
     //
     // ----------------------------------------------------------------
+
+    #[TestDox('->peek() takes no parameters and returns mixed')]
+    public function test_peek_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // peek() is pop() without the removal; same signature
+        // shape.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsStack::class, 'peek');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $method->getNumberOfParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('mixed', $returnType->getName());
+    }
 
     #[TestDox('->peek() returns the top value without removing it')]
     public function test_peek_returns_top_without_removing(): void
@@ -746,6 +662,33 @@ class CollectionAsStackTest extends TestCase
     //
     // ----------------------------------------------------------------
 
+    #[TestDox('->maybePeek() takes no parameters and returns mixed')]
+    public function test_maybe_peek_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // maybePeek() returns null on empty; mixed covers both
+        // cases.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsStack::class, 'maybePeek');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $method->getNumberOfParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('mixed', $returnType->getName());
+    }
+
     #[TestDox('->maybePeek() returns the top value without removing it')]
     public function test_maybe_peek_returns_top_without_removing(): void
     {
@@ -808,6 +751,34 @@ class CollectionAsStackTest extends TestCase
     // toArray
     //
     // ----------------------------------------------------------------
+
+    #[TestDox('->toArray() takes no parameters and returns array')]
+    public function test_to_array_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toArray() overrides the parent's FIFO-order conversion
+        // with a LIFO-order conversion; signature must still
+        // match the parent so Arrayable is satisfied.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsStack::class, 'toArray');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $method->getNumberOfParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('array', $returnType->getName());
+    }
 
     #[TestDox('->toArray() returns values in LIFO order (top first)')]
     public function test_to_array_returns_lifo_order(): void
@@ -873,6 +844,34 @@ class CollectionAsStackTest extends TestCase
     // getIterator / foreach
     //
     // ----------------------------------------------------------------
+
+    #[TestDox('->getIterator() takes no parameters and returns ArrayIterator')]
+    public function test_get_iterator_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // overrides IteratorAggregate::getIterator to yield LIFO;
+        // the return type must still be ArrayIterator to satisfy
+        // the parent.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsStack::class, 'getIterator');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(0, $method->getNumberOfParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame(ArrayIterator::class, $returnType->getName());
+    }
 
     #[TestDox('->getIterator() yields values in LIFO order (top to bottom)')]
     public function test_get_iterator_yields_lifo(): void
