@@ -39,11 +39,13 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Tests\Unit\Lists;
 
 use ArrayIterator;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Lists\ListOfFloats;
+use StusDevKit\CollectionsKit\Lists\ListOfIntegers;
 
 #[TestDox('ListOfFloats')]
 class ListOfFloatsTest extends TestCase
@@ -565,6 +567,36 @@ class ListOfFloatsTest extends TestCase
             $unit->toArray(),
         );
         $this->assertSame($unit, $result);
+    }
+
+    #[TestDox('->merge() cannot merge ListOfIntegers')]
+    public function test_merge_cannot_merge_list_of_integers(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that ListOfFloats::merge() does not accept
+        // a ListOfIntegers
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new ListOfFloats();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // we need to suppress the PHPStan error, so that our test
+        // will get the opportunity to run in our CI pipeline
+        //
+        // @phpstan-ignore argument.type
+        $unit->merge(new ListOfIntegers([1,2,3,4]));
+
+        // ----------------------------------------------------------------
+        // test the results
+
     }
 
     // ================================================================

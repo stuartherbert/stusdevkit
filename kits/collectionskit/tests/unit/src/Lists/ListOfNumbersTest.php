@@ -39,11 +39,15 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Tests\Unit\Lists;
 
 use ArrayIterator;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use StusDevKit\CollectionsKit\Lists\ListOfFloats;
+use StusDevKit\CollectionsKit\Lists\ListOfIntegers;
 use StusDevKit\CollectionsKit\Lists\ListOfNumbers;
+use StusDevKit\CollectionsKit\Lists\ListOfStrings;
 
 #[TestDox('ListOfNumbers')]
 class ListOfNumbersTest extends TestCase
@@ -539,6 +543,96 @@ class ListOfNumbersTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
+    #[TestDox('->merge() can merge ListOfFloats')]
+    public function test_merge_can_merge_list_of_floats(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that ListOfNumbers::merge() accepts a
+        // ListOfFloats (one of its child types)
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var ListOfNumbers<int|float> $unit */
+        $unit = new ListOfNumbers();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->merge(new ListOfFloats([1.1,2.2,3.3,4.4]));
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            [ 1.1,2.2,3.3,4.4 ],
+            $unit->toArray(),
+        );
+    }
+
+    #[TestDox('->merge() can merge ListOfIntegers')]
+    public function test_merge_can_merge_list_of_integers(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that ListOfNumbers::merge() accepts a
+        // ListOfIntegers (one of its child types)
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var ListOfNumbers<int|float> $unit */
+        $unit = new ListOfNumbers();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->merge(new ListOfIntegers([1,2,3,4]));
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals(
+            [ 1,2,3,4 ],
+            $unit->toArray(),
+        );
+    }
+
+    #[TestDox('->merge() cannot merge ListOfStrings')]
+    public function test_merge_cannot_merge_list_of_strings(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that ListOfNumbers::merge() rejects a
+        // ListOfStrings, because string is not a subtype of the
+        // numeric (int|float) values that ListOfNumbers stores
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var ListOfNumbers<int|float> $unit */
+        $unit = new ListOfNumbers();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $this->expectException(InvalidArgumentException::class);
+
+        // we need to suppress the PHPStan error, so that our test
+        // will get the opportunity to run in our CI pipeline
+        //
+        // @phpstan-ignore argument.type
+        $unit->merge(new ListOfStrings(['alpha', 'bravo']));
+
+        // ----------------------------------------------------------------
+        // test the results
+
+    }
+
     // ================================================================
     //
     // mergeArray()
@@ -942,7 +1036,7 @@ class ListOfNumbersTest extends TestCase
     #[TestDox('->add() and merge methods support fluent chaining together')]
     public function test_add_and_merge_support_chaining(): void
     {
-        /** @var ListOfNumbers<int> $unit */
+        /** @var ListOfNumbers<int|float> $unit */
         $unit = new ListOfNumbers();
         $other = new ListOfNumbers([40]);
         $unit->add(10)

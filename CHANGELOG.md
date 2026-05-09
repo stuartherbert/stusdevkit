@@ -97,6 +97,11 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
+#### CollectionsKit
+
+- make sure merge() and mergeSelf() only accept compatible types ([74c1dd4](https://github.com/stuartherbert/stusdevkit/commit/74c1dd4)) — Stuart Herbert <stuart@stuartherbert.com>
+- StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - only GetDuckTypes now returns `mixed` ([04c1916](https://github.com/stuartherbert/stusdevkit/commit/04c1916)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -112,10 +117,6 @@ This CHANGELOG is automatically compiled.
 - Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
 - make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
 - Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### Tools
 
@@ -134,7 +135,7 @@ This CHANGELOG is automatically compiled.
 
 #### ExceptionsKit
 
-- initial docs for ExceptionsKit ([bf59b65](https://github.com/stuartherbert/stusdevkit/commit/bf59b65)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial docs for ExceptionsKit ([711aef1](https://github.com/stuartherbert/stusdevkit/commit/711aef1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
 

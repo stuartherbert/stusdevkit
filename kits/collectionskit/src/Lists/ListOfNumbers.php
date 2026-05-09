@@ -77,7 +77,7 @@ namespace StusDevKit\CollectionsKit\Lists;
  * @see https://github.com/phpstan/phpstan/issues/4801
  * @see https://github.com/phpstan/phpstan/discussions/6731
  *
- * @template TValue of int|float
+ * @template TValue of int|float = int|float
  * @template-extends CollectionAsList<TValue>
  */
 class ListOfNumbers extends CollectionAsList

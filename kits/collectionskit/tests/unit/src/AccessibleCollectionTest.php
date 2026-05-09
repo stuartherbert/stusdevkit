@@ -133,7 +133,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('array', $paramType->getName());
     }
 
-    #[TestDox('::mergeSelf() signature: mergeSelf(CollectionOfAnything $input): static')]
+    #[TestDox('::mergeSelf() signature: mergeSelf(AccessibleCollection $input): static')]
     public function test_mergeSelf_signature(): void
     {
         $method = new \ReflectionMethod(AccessibleCollection::class, 'mergeSelf');
@@ -144,7 +144,7 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame(['input'], $paramNames);
         $paramType = $method->getParameters()[0]->getType();
         $this->assertInstanceOf(\ReflectionNamedType::class, $paramType);
-        $this->assertSame(\StusDevKit\CollectionsKit\CollectionOfAnything::class, $paramType->getName());
+        $this->assertSame(\StusDevKit\CollectionsKit\AccessibleCollection::class, $paramType->getName());
     }
 
     #[TestDox('::first() signature: first(): mixed')]

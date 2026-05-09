@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\CollectionsKit;
 
+use InvalidArgumentException;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
 
@@ -50,7 +51,7 @@ use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
  * collections, and copying.
  *
  * This is the base class for Lists, Dictionaries, and
- * Indexes — collection types that allow unrestricted
+ * Indexes - collection types that allow unrestricted
  * access to their contents.
  *
  * Stacks intentionally do not extend this class because
@@ -70,9 +71,17 @@ class AccessibleCollection extends CollectionOfAnything
     // ----------------------------------------------------------------
 
     /**
-     * @param static|array<TKey, TValue> $input
+     * Add the given `$input` to this collection.
+     *
+     * Additional details:
+     * - Modifies this collection.
+     * - Does not return a copy of this collection.
+     *
+     * @template TIn of TValue
+     * @param AccessibleCollection<TKey, TIn>|array<TKey, TIn> $input
+     * @return $this
      */
-    public function merge(self|array $input): static
+    public function merge(AccessibleCollection|array $input): static
     {
         // special case
         if (is_array($input)) {
@@ -84,7 +93,18 @@ class AccessibleCollection extends CollectionOfAnything
     }
 
     /**
-     * @param array<TKey, TValue> $input
+     * Add the given `$input` to this collection.
+     *
+     * Useful if you already know that `$input` is an array.
+     * Otherwise, call {@see ::merge} instead.
+     *
+     * Additional details:
+     * - Modifies this collection.
+     * - Does not return a copy of this collection.
+     *
+     * @template TIn of TValue
+     * @param array<TKey, TIn> $input
+     * @return $this
      */
     public function mergeArray(array $input): static
     {
@@ -93,25 +113,83 @@ class AccessibleCollection extends CollectionOfAnything
             collectionType: $this->getCollectionTypeAsString(),
         );
 
-        $this->data = [
+        // TIn is bounded by `of TValue`, so every value in $input is
+        // already a TValue at runtime; PHPStan cannot collapse the
+        // spread's inferred TIn|TValue back down to TValue without
+        // this hint
+        /** @var array<TKey, TValue> $merged */
+        $merged = [
             ...$this->data,
             ...$input,
         ];
+        $this->data = $merged;
 
         return $this;
     }
 
     /**
-     * @param CollectionOfAnything<TKey,TValue> $input
+     * Copies the contents of `$input` into this collection.
+     *
+     * Additional details:
+     * - Does not modify `$input`.
+     * - Modifies this collection.
+     * - Does not return a copy of this collection.
+     *
+     * @template TIn of TValue
+     * @param AccessibleCollection<TKey, TIn> $input
+     * @return $this
+     *
+     * @throws InvalidArgumentException when `$input` is an
+     *         AccessibleCollection that is not a subtype of
+     *         `static` (e.g. a sibling or unrelated subclass).
      */
-    public function mergeSelf(CollectionOfAnything $input): static
+    public function mergeSelf(AccessibleCollection $input): static
     {
-        $this->data = [
+        // correctness!
+        if (! $this->canMerge($input)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "type mismatch: cannot merge %s into %s",
+                    $input->getCollectionTypeAsString(),
+                    $this->getCollectionTypeAsString()
+                )
+            );
+        }
+
+        // TIn is bounded by `of TValue`, so every value in $input is
+        // already a TValue at runtime; PHPStan cannot collapse the
+        // spread's inferred TIn|TValue back down to TValue without
+        // this hint
+        /** @var array<TKey, TValue> $merged */
+        $merged = [
             ...$this->data,
             ...$input->toArray(),
         ];
+        $this->data = $merged;
 
         return $this;
+    }
+
+    /**
+     * Determines if the given `$input` is compatible with this collection.
+     *
+     * Returns true when `$input` is an instance of the calling class
+     * (resolved via late-static binding) or any of its subclasses.
+     * For example, `ListOfNumbers::canMerge()` accepts any
+     * `ListOfNumbers`, `ListOfIntegers`, or `ListOfFloats`, but
+     * rejects `ListOfStrings` and unrelated `AccessibleCollection`
+     * subclasses.
+     *
+     * @template TIn of TValue
+     * @param AccessibleCollection<TKey, TIn> $input
+     */
+    protected function canMerge(AccessibleCollection $input): bool
+    {
+        // accept any instance of the late-static-bound class or its
+        // subclasses; this lets a parent collection absorb data from
+        // narrower child types (e.g. ListOfNumbers <- ListOfIntegers)
+        // while still rejecting siblings and unrelated collections
+        return $input instanceof static;
     }
 
     // ================================================================
@@ -121,6 +199,14 @@ class AccessibleCollection extends CollectionOfAnything
     // ----------------------------------------------------------------
 
     /**
+     * Returns the first value stored in this collection.
+     *
+     * Returns `null` if the collection is empty.
+     *
+     * This method is defined in a parent class.
+     * See your collection class's main docblock for a definition
+     * of what "first" means.
+     *
      * @return TValue|null
      */
     public function maybeFirst(): mixed
@@ -134,6 +220,14 @@ class AccessibleCollection extends CollectionOfAnything
     }
 
     /**
+     * Returns the first value stored in this collection.
+     *
+     * Throws an exception if this collection is empty.
+     *
+     * This method is defined in a parent class.
+     * See your collection class's main docblock for a definition
+     * of what "first" means.
+     *
      * @return TValue
      */
     public function first(): mixed
@@ -151,6 +245,14 @@ class AccessibleCollection extends CollectionOfAnything
     }
 
     /**
+     * Returns the last value of this collection.
+     *
+     * Returns `null` if the collection is empty.
+     *
+     * This method is defined in a parent class.
+     * See your collection class's docblock for a definition
+     * of what "last" means.
+     *
      * @return TValue|null
      */
     public function maybeLast(): mixed
@@ -164,6 +266,14 @@ class AccessibleCollection extends CollectionOfAnything
     }
 
     /**
+     * Returns the last value of this collection.
+     *
+     * Throws an exception if the collection is empty.
+     *
+     * This method is defined in a parent class.
+     * See your collection class's docblock for a definition
+     * of what "last" means.
+     *
      * @return TValue
      */
     public function last(): mixed
@@ -181,6 +291,10 @@ class AccessibleCollection extends CollectionOfAnything
     }
 
     /**
+     * Creates a copy of this collection.
+     *
+     * Useful if you want to work with immutable collections.
+     *
      * @return static<TKey,TValue>
      */
     public function copy(): static
