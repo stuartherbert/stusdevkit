@@ -174,7 +174,6 @@ class AccessibleCollectionTest extends TestCase
         // setup your test
 
         $expected = [
-            'copy',
             'first',
             'last',
             'maybeFirst',
@@ -409,33 +408,6 @@ class AccessibleCollectionTest extends TestCase
 
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('mixed', $returnType->getName());
-        $this->assertSame([], $method->getParameters());
-    }
-
-    #[TestDox('::copy() signature: copy(): static')]
-    public function test_copy_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // copy() returns a new instance of the late-static-bound
-        // class so callers always get the narrowest type.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(AccessibleCollection::class, 'copy');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('static', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
 
@@ -1371,98 +1343,6 @@ class AccessibleCollectionTest extends TestCase
         // test the results
 
         // assertion handled by expectException() above
-    }
-
-    // ================================================================
-    //
-    // copy()
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('->copy() returns a new instance with the same data')]
-    public function test_copy_returns_new_instance_with_same_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that copy() returns a new collection
-        // instance containing the same data as the original
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $expectedData = ['alpha', 'bravo', 'charlie'];
-        $unit = new AccessibleCollection($expectedData);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $copy = $unit->copy();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(AccessibleCollection::class, $copy);
-        $this->assertNotSame($unit, $copy);
-        $this->assertSame($expectedData, $copy->toArray());
-    }
-
-    #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
-    public function test_copy_returns_independent_instance(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that modifying the copied collection
-        // does not affect the original collection's data
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $originalData = ['alpha', 'bravo'];
-        $unit = new AccessibleCollection($originalData);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $copy = $unit->copy();
-        $copy->mergeArray(['charlie']);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($originalData, $unit->toArray());
-        $this->assertSame(
-            ['alpha', 'bravo', 'charlie'],
-            $copy->toArray(),
-        );
-    }
-
-    #[TestDox('->copy() of empty collection returns empty collection')]
-    public function test_copy_of_empty_collection(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that copying an empty collection
-        // returns a new, empty collection instance
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = new AccessibleCollection();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $copy = $unit->copy();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertNotSame($unit, $copy);
-        $this->assertSame([], $copy->toArray());
-        $this->assertCount(0, $copy);
     }
 
     // ================================================================

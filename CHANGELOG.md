@@ -170,15 +170,16 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### CollectionsKit
+
+- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([6cc6161](https://github.com/stuartherbert/stusdevkit/commit/6cc6161)) — Stuart Herbert <stuart@stuartherbert.com>
+- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
-- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 

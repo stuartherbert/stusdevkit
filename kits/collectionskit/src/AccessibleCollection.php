@@ -44,6 +44,7 @@ namespace StusDevKit\CollectionsKit;
 use InvalidArgumentException;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 /**
  * AccessibleCollection extends CollectionOfAnything with
@@ -56,6 +57,12 @@ use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
  *
  * Stacks intentionally do not extend this class because
  * they restrict access to the top element only.
+ *
+ * Originally added to share the first/last accessors,
+ * the merge family, and copy() across every collection
+ * type that allows unrestricted element access, while
+ * keeping that surface off the stack collection
+ * hierarchy.
  *
  * @template TKey of array-key
  * @template TValue of array|bool|callable|float|int|object|string
@@ -80,6 +87,13 @@ class AccessibleCollection extends CollectionOfAnything
      * @template TIn of TValue
      * @param AccessibleCollection<TKey, TIn>|array<TKey, TIn> $input
      * @return $this
+     *
+     * @throws NullValueNotAllowedException when `$input` is an
+     *         array containing a null value (propagated from
+     *         {@see ::mergeArray}).
+     * @throws InvalidArgumentException when `$input` is an
+     *         AccessibleCollection that is not a subtype of
+     *         `static` (propagated from {@see ::mergeSelf}).
      */
     public function merge(AccessibleCollection|array $input): static
     {
@@ -105,6 +119,11 @@ class AccessibleCollection extends CollectionOfAnything
      * @template TIn of TValue
      * @param array<TKey, TIn> $input
      * @return $this
+     *
+     * @throws NullValueNotAllowedException when any element in
+     *         `$input` is null. Enforced by
+     *         {@see RejectNullArrayValues} so that the
+     *         no-null invariant holds across every merge path.
      */
     public function mergeArray(array $input): static
     {
@@ -229,6 +248,11 @@ class AccessibleCollection extends CollectionOfAnything
      * of what "first" means.
      *
      * @return TValue
+     *
+     * @throws RuntimeException when this collection is empty.
+     *         The message names the offending collection type
+     *         via {@see ::getCollectionTypeAsString} so the
+     *         failure point is easy to diagnose.
      */
     public function first(): mixed
     {
@@ -275,6 +299,11 @@ class AccessibleCollection extends CollectionOfAnything
      * of what "last" means.
      *
      * @return TValue
+     *
+     * @throws RuntimeException when the collection is empty.
+     *         The message names the offending collection type
+     *         via {@see ::getCollectionTypeAsString} so the
+     *         failure point is easy to diagnose.
      */
     public function last(): mixed
     {
@@ -288,17 +317,5 @@ class AccessibleCollection extends CollectionOfAnything
             $this->getCollectionTypeAsString()
                 . " is empty",
         );
-    }
-
-    /**
-     * Creates a copy of this collection.
-     *
-     * Useful if you want to work with immutable collections.
-     *
-     * @return static<TKey,TValue>
-     */
-    public function copy(): static
-    {
-        return new static($this->data);
     }
 }

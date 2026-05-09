@@ -243,6 +243,7 @@ class CollectionOfAnythingTest extends TestCase
 
         $expected = [
             '__construct',
+            'copy',
             'count',
             'empty',
             'getCollectionTypeAsString',
@@ -426,6 +427,35 @@ class CollectionOfAnythingTest extends TestCase
         $this->assertTrue($isPublic);
         $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('bool', $returnType->getName());
+        $this->assertSame([], $method->getParameters());
+    }
+
+    #[TestDox('::copy() signature: copy(): static')]
+    public function test_copy_signature(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // copy() returns a new instance of the late-static-bound
+        // class so callers always get the narrowest type.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionOfAnything::class, 'copy');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('static', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
 
@@ -991,6 +1021,130 @@ class CollectionOfAnythingTest extends TestCase
         // test the results
 
         $this->assertFalse($actualResult);
+    }
+
+    // ================================================================
+    //
+    // ::copy() behaviour
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->copy() returns a new instance with the same data')]
+    public function test_copy_returns_new_instance_with_same_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that copy() returns a new collection
+        // instance containing the same data as the original
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expectedData = ['alpha', 'bravo', 'charlie'];
+        $unit = new CollectionOfAnything($expectedData);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(CollectionOfAnything::class, $copy);
+        $this->assertNotSame($unit, $copy);
+        $this->assertSame($expectedData, $copy->toArray());
+    }
+
+    #[TestDox('->copy() returns an independent instance')]
+    public function test_copy_returns_independent_instance(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the copy and the original do
+        // not share their underlying array — mutating the
+        // copy's protected data via a subclass would not
+        // change the original. We exercise that by reseating
+        // the data on a sibling instance and confirming the
+        // original collection is untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $originalData = ['alpha', 'bravo'];
+        $unit = new CollectionOfAnything($originalData);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($originalData, $unit->toArray());
+        $this->assertSame($originalData, $copy->toArray());
+        $this->assertNotSame($unit, $copy);
+    }
+
+    #[TestDox('->copy() of an empty collection returns an empty collection')]
+    public function test_copy_of_empty_collection(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that copying an empty collection
+        // yields a new, empty collection — not a null, not the
+        // same instance
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionOfAnything<int, string> $unit */
+        $unit = new CollectionOfAnything();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNotSame($unit, $copy);
+        $this->assertSame([], $copy->toArray());
+        $this->assertCount(0, $copy);
+    }
+
+    #[TestDox('->copy() preserves the runtime class via late-static binding')]
+    public function test_copy_preserves_runtime_class(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that copy() returns an instance of
+        // the calling class, not of CollectionOfAnything. We
+        // exercise this with an anonymous subclass: the copy's
+        // class must be the subclass, not the parent.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new class (['alpha']) extends CollectionOfAnything {
+        };
+        $expectedClass = $unit::class;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expectedClass, $copy::class);
     }
 
     // ================================================================

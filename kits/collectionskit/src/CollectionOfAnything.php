@@ -119,6 +119,8 @@ use function StusDevKit\MissingBitsKit\get_class_basename;
  * @see https://github.com/phpstan/phpstan/issues/4801
  * @see https://github.com/phpstan/phpstan/discussions/6731
  *
+ * @phpstan-consistent-constructor
+ *
  * @template TKey of array-key
  * @template TValue of array|bool|callable|float|int|object|string
  * @implements Arrayable<TKey, TValue>
@@ -251,6 +253,39 @@ class CollectionOfAnything implements Arrayable, Countable, IteratorAggregate
         // our return value — a boolean predicate on the stored
         // data size
         return count($this->data) === 0;
+    }
+
+    // ================================================================
+    //
+    // Copying
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * Creates a copy of this collection.
+     *
+     * Returns a new instance of the same runtime class containing
+     * the same stored data. The new instance does not share its
+     * underlying array with the original — mutating one leaves
+     * the other unchanged.
+     *
+     * Useful if you want to work with immutable collections: take
+     * a copy, hand it to code that may mutate it, and keep the
+     * original intact.
+     *
+     * Late-static binding ensures the copy is always an instance
+     * of the calling class, not of `CollectionOfAnything` — so a
+     * `ListOfNumbers` copy is itself a `ListOfNumbers`.
+     *
+     * @return static<TKey,TValue>
+     */
+    public function copy(): static
+    {
+        // construct a new instance of the late-static-bound class
+        // so subclasses always get back their own type; PHP copies
+        // the array on assignment, so the new collection's data
+        // does not share storage with this one
+        return new static($this->data);
     }
 
     // ================================================================
