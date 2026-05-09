@@ -53,6 +53,7 @@ use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Contracts\EntityWithUuid;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Indexes\IndexOfEntitiesWithUuids;
 use StusDevKit\CollectionsKit\Tests\Fixtures\EntityWithUuidFixture;
 
@@ -868,7 +869,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $this->assertSame($entity2, $actualResult);
     }
 
-    #[TestDox('->get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -889,7 +890,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithUuids does not contain missing',
         );
@@ -897,7 +898,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('->get() throws RuntimeException for empty index')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for empty index')]
     public function test_get_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -914,7 +915,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithUuids does not contain anything',
         );
@@ -939,7 +940,7 @@ class IndexOfEntitiesWithUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithUuids does not contain '
             . 'my-special-key',

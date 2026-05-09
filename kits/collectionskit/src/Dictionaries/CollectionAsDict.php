@@ -41,9 +41,10 @@ declare(strict_types=1);
 
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
-use RuntimeException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Validators\RejectNullValue;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 /**
  * CollectionAsDict holds a collection of data that has identity (ie, it has
@@ -90,8 +91,16 @@ class CollectionAsDict extends AccessibleCollection
     // ----------------------------------------------------------------
 
     /**
+     * Store a value in the collection.
+     *
+     * If the key already exists in this collection, its value will
+     * be replaced by the given `$value`.
+     *
+     * NOTE: you cannot store `null` values in this collection.
+     *
      * @param TKey $key
      * @param TValue $value
+     * @throws NullValueNotAllowedException
      */
     public function set(mixed $key, mixed $value): static
     {
@@ -112,6 +121,10 @@ class CollectionAsDict extends AccessibleCollection
     // ----------------------------------------------------------------
 
     /**
+     * Return a value from the collection.
+     *
+     * If we don't have a value for the given `$key`, we return `null`.
+     *
      * @param TKey $key
      * @return TValue|null
      */
@@ -125,8 +138,14 @@ class CollectionAsDict extends AccessibleCollection
     }
 
     /**
+     * Return a value from the collection.
+     *
+     * If we don't have a value for the given `$key`, we throw a
+     * {@see NoValueForKeyInCollectionException}.
+     *
      * @param TKey $key
      * @return TValue
+     * @throws NoValueForKeyInCollectionException
      */
     public function get($key): mixed
     {
@@ -134,7 +153,10 @@ class CollectionAsDict extends AccessibleCollection
             return $this->data[$key];
         }
 
-        throw new RuntimeException($this->getCollectionTypeAsString() . ' does not contain ' . $key);
+        throw new NoValueForKeyInCollectionException(
+            collectionType: $this->getCollectionTypeAsString(),
+            key: $key,
+        );
     }
 
     // ================================================================
@@ -144,7 +166,13 @@ class CollectionAsDict extends AccessibleCollection
     // ----------------------------------------------------------------
 
     /**
+     * Check to see if we have a value for the given `$key` in this
+     * collection.
+     *
      * @param TKey $key
+     * @return bool
+     * - `true` if we have a value for `$key`
+     * - `false` otherwise
      */
     public function has($key): bool
     {

@@ -51,6 +51,7 @@ use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 #[TestDox(CollectionAsDict::class)]
@@ -1014,14 +1015,16 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('bravo', $actualResult);
     }
 
-    #[TestDox('->get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the given key does not exist in the dict
+        // this test proves that get() throws a typed
+        // NoValueForKeyInCollectionException (an RFC 9457 problem
+        // details exception) when the given key does not exist in
+        // the dict — not a bare RuntimeException
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1031,7 +1034,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'CollectionAsDict does not contain missing',
         );
@@ -1039,14 +1042,14 @@ class CollectionAsDictTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('->get() throws RuntimeException for empty dict')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for empty dict')]
     public function test_get_throws_for_empty_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the dict is empty
+        // this test proves that get() throws
+        // NoValueForKeyInCollectionException when the dict is empty
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1056,7 +1059,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'CollectionAsDict does not contain anything',
         );
@@ -1122,8 +1125,8 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that the RuntimeException thrown by
-        // get() includes the missing key in its message
+        // this test proves that the exception thrown by get()
+        // includes the missing key in its message
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1133,7 +1136,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'CollectionAsDict does not contain my-special-key',
         );

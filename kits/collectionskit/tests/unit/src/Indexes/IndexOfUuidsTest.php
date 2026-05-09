@@ -52,6 +52,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Indexes\IndexOfUuids;
 use StusDevKit\CollectionsKit\Traits\UuidConversions;
 
@@ -827,7 +828,7 @@ class IndexOfUuidsTest extends TestCase
         $this->assertSame($uuid2, $actualResult);
     }
 
-    #[TestDox('->get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -845,7 +846,7 @@ class IndexOfUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfUuids does not contain missing',
         );
@@ -853,7 +854,7 @@ class IndexOfUuidsTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('->get() throws RuntimeException for empty index')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for empty index')]
     public function test_get_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -870,7 +871,7 @@ class IndexOfUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfUuids does not contain anything',
         );
@@ -922,7 +923,7 @@ class IndexOfUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfUuids does not contain my-special-key',
         );

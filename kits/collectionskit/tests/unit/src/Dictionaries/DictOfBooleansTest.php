@@ -50,6 +50,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfBooleans;
 
 #[TestDox(DictOfBooleans::class)]
@@ -886,7 +887,7 @@ class DictOfBooleansTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('->get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -903,7 +904,7 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'DictOfBooleans does not contain missing',
         );
@@ -911,7 +912,7 @@ class DictOfBooleansTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('->get() throws RuntimeException for empty dict')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for empty dict')]
     public function test_get_throws_for_empty_dict(): void
     {
         // ----------------------------------------------------------------
@@ -928,7 +929,7 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'DictOfBooleans does not contain anything',
         );
@@ -979,7 +980,7 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'DictOfBooleans does not contain my-special-flag',
         );

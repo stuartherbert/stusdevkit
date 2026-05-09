@@ -44,8 +44,8 @@ namespace StusDevKit\ValidationKit\Tests\Unit\JsonSchema;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use RuntimeException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\ValidationKit\JsonSchema\JsonSchemaIndex;
 use StusDevKit\ValidationKit\Validate;
 
@@ -179,9 +179,9 @@ class JsonSchemaIndexTest extends TestCase
 
     /**
      * get() on a missing key must throw. The inherited base
-     * contract raises RuntimeException; pin this so the registry's
-     * null-check on maybeGet() remains the correct guard against
-     * the throw.
+     * contract raises NoValueForKeyInCollectionException; pin this
+     * so the registry's null-check on maybeGet() remains the correct
+     * guard against the throw.
      */
     #[TestDox('->get() throws for an unknown key')]
     public function test_get_throws_for_unknown(): void
@@ -189,7 +189,7 @@ class JsonSchemaIndexTest extends TestCase
         /** @var JsonSchemaIndex $unit */
         $unit = new JsonSchemaIndex();
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
 
         $unit->get(key: 'missing');
     }

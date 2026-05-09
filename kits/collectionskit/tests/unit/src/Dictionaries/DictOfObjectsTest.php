@@ -51,6 +51,7 @@ use ReflectionMethod;
 use RuntimeException;
 use stdClass;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
 
 #[TestDox(DictOfObjects::class)]
@@ -875,7 +876,7 @@ class DictOfObjectsTest extends TestCase
         $this->assertSame($obj2, $actualResult);
     }
 
-    #[TestDox('->get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -892,7 +893,7 @@ class DictOfObjectsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'DictOfObjects does not contain missing',
         );
@@ -900,7 +901,7 @@ class DictOfObjectsTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('->get() throws RuntimeException for empty dict')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for empty dict')]
     public function test_get_throws_for_empty_dict(): void
     {
         // ----------------------------------------------------------------
@@ -917,7 +918,7 @@ class DictOfObjectsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'DictOfObjects does not contain anything',
         );
@@ -996,7 +997,7 @@ class DictOfObjectsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'DictOfObjects does not contain my-special-key',
         );

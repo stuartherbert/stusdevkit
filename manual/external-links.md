@@ -67,6 +67,8 @@ pre-flight report flags it and asks the author to add an entry.
 | `Exception::getTraceAsString()` | https://www.php.net/manual/en/exception.getTraceAsString |
 | `Exception::getPrevious()` | https://www.php.net/manual/en/exception.getPrevious |
 | `Exception::__toString()` | https://www.php.net/manual/en/exception.toString |
+| `InvalidArgumentException` | https://www.php.net/manual/en/class.invalidargumentexception.php |
+| `RuntimeException` | https://www.php.net/manual/en/class.runtimeexception.php |
 
 ## PSR standards
 

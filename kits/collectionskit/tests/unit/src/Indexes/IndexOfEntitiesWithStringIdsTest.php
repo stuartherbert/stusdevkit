@@ -51,6 +51,7 @@ use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Contracts\EntityWithStringId;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
+use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Indexes\IndexOfEntitiesWithStringIds;
 use StusDevKit\CollectionsKit\Tests\Fixtures\EntityWithStringIdFixture;
 
@@ -819,7 +820,7 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         $this->assertSame($entity2, $actualResult);
     }
 
-    #[TestDox('->get() throws RuntimeException for missing key')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for missing key')]
     public function test_get_throws_for_missing_key(): void
     {
         // ----------------------------------------------------------------
@@ -840,7 +841,7 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithStringIds does not contain missing',
         );
@@ -848,7 +849,7 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         $unit->get('missing');
     }
 
-    #[TestDox('->get() throws RuntimeException for empty index')]
+    #[TestDox('->get() throws NoValueForKeyInCollectionException for empty index')]
     public function test_get_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
@@ -865,7 +866,7 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithStringIds does not contain anything',
         );
@@ -890,7 +891,7 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NoValueForKeyInCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithStringIds does not contain '
             . 'my-special-key',
