@@ -106,7 +106,7 @@ class GetClassInstantiability
 {
     /**
      * inspect a string and return the single reason that disqualifies
-     * it from instantiation, or `Instantiable` if PHP will let you
+     * it from instantiation, or `INSTANTIABLE` if PHP will let you
      * `new` it.
      *
      * The parameter is declared as plain `string` on purpose: the

@@ -134,7 +134,8 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- add manual pages for many classes ([07c3642](https://github.com/stuartherbert/stusdevkit/commit/07c3642)) — Stuart Herbert <stuart@stuartherbert.com>
+- document more of MissingBitsKit ([b1b36fd](https://github.com/stuartherbert/stusdevkit/commit/b1b36fd)) — Stuart Herbert <stuart@stuartherbert.com>
+- add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
 
