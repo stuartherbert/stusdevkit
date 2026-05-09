@@ -1,5 +1,9 @@
 <?php
 
+// Stu's Dev Kit
+//
+// Building blocks for assembling the things you need to build, in a way
+// that will last.
 //
 // Copyright (c) 2026-present Stuart Herbert
 // All rights reserved.
@@ -32,7 +36,6 @@
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-//
 
 declare(strict_types=1);
 
@@ -41,11 +44,16 @@ namespace StusDevKit\CollectionsKit\Tests\Unit\Lists;
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use RuntimeException;
-use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Lists\CollectionAsList;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
-#[TestDox('CollectionAsList')]
+#[TestDox(CollectionAsList::class)]
 class CollectionAsListTest extends TestCase
 {
     // ================================================================
@@ -57,31 +65,87 @@ class CollectionAsListTest extends TestCase
     #[TestDox('lives in the StusDevKit\\CollectionsKit\\Lists namespace')]
     public function test_lives_in_expected_namespace(): void
     {
-        $reflection = new \ReflectionClass(CollectionAsList::class);
-        $this->assertSame(
-            'StusDevKit\\CollectionsKit\\Lists',
-            $reflection->getNamespaceName(),
-        );
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published namespace is part of the contract — every
+        // caller imports the class by FQN, so moving it is a
+        // breaking change that must go through a major version
+        // bump.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'StusDevKit\\CollectionsKit\\Lists';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (new ReflectionClass(
+            CollectionAsList::class,
+        ))->getNamespaceName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
     }
 
     #[TestDox('is declared as a class')]
     public function test_is_a_class(): void
     {
-        $reflection = new \ReflectionClass(CollectionAsList::class);
-        $this->assertFalse($reflection->isInterface());
-        $this->assertFalse($reflection->isTrait());
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published kind (class vs interface vs trait) is part
+        // of the contract — switching kinds breaks every consumer
+        // that depends on this type.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(CollectionAsList::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isInterface = $reflection->isInterface();
+        $isTrait = $reflection->isTrait();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($isInterface);
+        $this->assertFalse($isTrait);
     }
 
     #[TestDox('extends AccessibleCollection')]
     public function test_extends_AccessibleCollection(): void
     {
-        $reflection = new \ReflectionClass(CollectionAsList::class);
-        $parent = $reflection->getParentClass();
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the parent class fixes which inherited methods are
+        // available; changing it is a breaking change for every
+        // subclass and caller that relies on inherited behaviour.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = AccessibleCollection::class;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $parent = (new ReflectionClass(
+            CollectionAsList::class,
+        ))->getParentClass();
+
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertNotFalse($parent);
-        $this->assertSame(
-            \StusDevKit\CollectionsKit\AccessibleCollection::class,
-            $parent->getName(),
-        );
+        $this->assertSame($expected, $parent->getName());
     }
 
     // ================================================================
@@ -99,52 +163,147 @@ class CollectionAsListTest extends TestCase
     #[TestDox('declares only the add() method of its own')]
     public function test_declares_only_add_method(): void
     {
-        $reflection = new \ReflectionClass(CollectionAsList::class);
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published method set is part of the contract — adding
+        // or removing an own public method is a named diff that
+        // changes how callers interact with the class.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = ['add'];
+        $reflection = new ReflectionClass(CollectionAsList::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $ownMethods = [];
-        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
             if ($m->getDeclaringClass()->getName() === CollectionAsList::class) {
                 $ownMethods[] = $m->getName();
             }
         }
         sort($ownMethods);
-        $this->assertSame(['add'], $ownMethods);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $ownMethods);
     }
 
     #[TestDox('::add() is public and not static')]
     public function test_add_is_public_non_static(): void
     {
-        $method = new \ReflectionMethod(CollectionAsList::class, 'add');
-        $this->assertTrue($method->isPublic());
-        $this->assertFalse($method->isStatic());
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published modifiers (public + instance) are part of
+        // the contract — making add() static or non-public would
+        // break every existing call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsList::class, 'add');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertFalse($isStatic);
     }
 
     #[TestDox('::add() declares return type static')]
     public function test_add_declares_return_type(): void
     {
-        $method = new \ReflectionMethod(CollectionAsList::class, 'add');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the `static` return type is what enables fluent chaining
+        // on subclasses — losing it would silently break any
+        // call site that chains a subclass-specific method after
+        // ->add().
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsList::class, 'add');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('static', $returnType->getName());
     }
 
     #[TestDox('::add() accepts one parameter named $value')]
     public function test_add_parameter_names(): void
     {
-        $method = new \ReflectionMethod(CollectionAsList::class, 'add');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the parameter name is part of the contract because PHP
+        // 8+ supports named arguments at the call site — renaming
+        // $value would silently break callers using add(value: ...).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsList::class, 'add');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $paramNames = array_map(
-            fn(\ReflectionParameter $p) => $p->getName(),
+            fn(ReflectionParameter $p) => $p->getName(),
             $method->getParameters(),
         );
+
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame(['value'], $paramNames);
     }
 
     #[TestDox('::add() declares $value as mixed')]
     public function test_add_parameter_types(): void
     {
-        $method = new \ReflectionMethod(CollectionAsList::class, 'add');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the `mixed` declaration lets subclasses narrow the type
+        // via PHPDoc generics without a Liskov-violating native
+        // type override — narrowing the native type here would
+        // break every existing subclass.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(CollectionAsList::class, 'add');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $param = $method->getParameters()[0];
         $type = $param->getType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $type);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $type);
         $this->assertSame('mixed', $type->getName());
     }
 
@@ -154,45 +313,80 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * we can create a new, empty
-     * CollectionAsList
-     */
     #[TestDox('::__construct() creates an empty list')]
     public function test_can_instantiate_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that we can create a new, empty
+        // CollectionAsList
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // nothing to do
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(CollectionAsList::class, $unit);
         $this->assertCount(0, $unit);
     }
 
-    /**
-     * we can create a CollectionAsList
-     * and seed it with an initial array of data
-     */
     #[TestDox('::__construct() accepts initial data')]
     public function test_can_instantiate_with_initial_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that we can create a CollectionAsList
+        // and seed it with an initial array of data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo', 'charlie'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit = new CollectionAsList($expectedData);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertCount(3, $unit);
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    /**
-     * when constructed with a list-style
-     * array, the keys remain sequential integers
-     */
     #[TestDox('::__construct() preserves sequential integer keys')]
     public function test_constructor_preserves_sequential_integer_keys(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that when constructed with a list-style
+        // array, the keys remain sequential integers
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo', 'charlie'];
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit = new CollectionAsList($expectedData);
         $actualData = $unit->toArray();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame([0, 1, 2], array_keys($actualData));
     }
@@ -203,144 +397,240 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * add() appends a value to the end
-     * of the list with a sequential integer key
-     */
     #[TestDox('->add() appends a value to the list')]
     public function test_add_appends_value(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() appends a value to the end
+        // of the list with a sequential integer key
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->add('alpha');
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha'], $unit->toArray());
         $this->assertCount(1, $unit);
     }
 
-    /**
-     * calling add() multiple times appends
-     * each value in the order they were added
-     */
     #[TestDox('->add() appends multiple values in order')]
     public function test_add_appends_multiple_values_in_order(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that calling add() multiple times appends
+        // each value in the order they were added
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->add('alpha');
         $unit->add('bravo');
         $unit->add('charlie');
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame(['alpha', 'bravo', 'charlie'], $unit->toArray());
     }
 
-    /**
-     * add() appends a value after any
-     * data that was passed into the constructor
-     */
     #[TestDox('->add() appends to existing data')]
     public function test_add_appends_to_existing_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() appends a value after any
+        // data that was passed into the constructor
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->add('charlie');
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha', 'bravo', 'charlie'], $unit->toArray());
         $this->assertCount(3, $unit);
     }
 
-    /**
-     * add() returns the same collection
-     * instance for fluent method chaining
-     */
     #[TestDox('->add() returns $this for method chaining')]
     public function test_add_returns_this(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() returns the same collection
+        // instance for fluent method chaining
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->add('alpha');
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($unit, $result);
     }
 
-    /**
-     * add() calls can be chained together
-     * fluently to build up the list
-     */
     #[TestDox('->add() supports fluent chaining')]
     public function test_add_supports_fluent_chaining(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() calls can be chained together
+        // fluently to build up the list
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->add('alpha')
             ->add('bravo')
             ->add('charlie');
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame(['alpha', 'bravo', 'charlie'], $unit->toArray());
     }
 
-    /**
-     * values added via add() always
-     * receive sequential integer keys
-     */
     #[TestDox('->add() maintains sequential integer keys')]
     public function test_add_maintains_sequential_integer_keys(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that values added via add() always
+        // receive sequential integer keys
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->add('alpha');
         $unit->add('bravo');
         $unit->add('charlie');
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $actualData = $unit->toArray();
         $this->assertSame([0, 1, 2], array_keys($actualData));
     }
 
-    /**
-     * add() allows duplicate values
-     * in the list (unlike a set)
-     */
     #[TestDox('->add() can add duplicate values')]
     public function test_add_can_add_duplicate_values(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() allows duplicate values
+        // in the list (unlike a set)
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->add('alpha');
         $unit->add('alpha');
         $unit->add('alpha');
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha', 'alpha', 'alpha'], $unit->toArray());
         $this->assertCount(3, $unit);
     }
 
-    /**
-     * add() throws a
-     * NullValueNotAllowed exception when given a null value
-     */
     #[TestDox('->add() rejects null values')]
     public function test_add_rejects_null_values(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() throws a
+        // NullValueNotAllowed exception when given a null value
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
         $this->expectException(NullValueNotAllowedException::class);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->add(null);
     }
 
-    /**
-     * add() can store values of different
-     * types in the same list
-     */
     #[TestDox('->add() can add values of different types')]
     public function test_add_can_add_mixed_types(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() can store values of different
+        // types in the same list
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->add('a string');
         $unit->add(42);
         $unit->add(3.14);
         $unit->add(true);
         $unit->add(['nested' => 'array']);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['a string', 42, 3.14, true, ['nested' => 'array']],
@@ -355,47 +645,80 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * toArray() returns an empty array
-     * when the list contains no data
-     */
     #[TestDox('->toArray() returns empty array for empty list')]
     public function test_to_array_returns_empty_array_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that toArray() returns an empty array
+        // when the list contains no data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->toArray();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame([], $actualResult);
     }
 
-    /**
-     * toArray() returns all the data
-     * stored in the list
-     */
     #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that toArray() returns all the data
+        // stored in the list
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo', 'charlie'];
         $unit = new CollectionAsList($expectedData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->toArray();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $actualResult);
     }
 
-    /**
-     * toArray() includes data that was
-     * added using the add() method
-     */
     #[TestDox('->toArray() returns data added via add()')]
     public function test_to_array_returns_data_added_via_add(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that toArray() includes data that was
+        // added using the add() method
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $unit->add('alpha');
         $unit->add('bravo');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->toArray();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha', 'bravo'], $actualResult);
     }
@@ -406,60 +729,104 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * count() returns 0 when the
-     * list contains no data
-     */
     #[TestDox('->count() returns 0 for empty list')]
     public function test_count_returns_zero_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that count() returns 0 when the
+        // list contains no data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->count();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(0, $actualResult);
     }
 
-    /**
-     * count() returns the correct number
-     * of items stored in the list
-     */
     #[TestDox('->count() returns number of items in list')]
     public function test_count_returns_number_of_items(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that count() returns the correct number
+        // of items stored in the list
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $actualResult = $unit->count();
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame(3, $actualResult);
     }
 
-    /**
-     * the list works with PHP's built-in
-     * count() function via the Countable interface
-     */
     #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the list works with PHP's built-in
+        // count() function via the Countable interface
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = count($unit);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(3, $actualResult);
     }
 
-    /**
-     * count() correctly reflects items
-     * added via the add() method
-     */
     #[TestDox('->count() reflects items added via add()')]
     public function test_count_reflects_items_added_via_add(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that count() correctly reflects items
+        // added via the add() method
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $unit->add('alpha');
         $unit->add('bravo');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->count();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(2, $actualResult);
     }
@@ -470,87 +837,142 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * getIterator() returns an
-     * ArrayIterator instance
-     */
     #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that getIterator() returns an
+        // ArrayIterator instance
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->getIterator();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(ArrayIterator::class, $actualResult);
     }
 
-    /**
-     * the list can be used in a foreach
-     * loop via the IteratorAggregate interface
-     */
     #[TestDox('List can be iterated with foreach')]
     public function test_can_iterate_with_foreach(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the list can be used in a foreach
+        // loop via the IteratorAggregate interface
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo', 'charlie'];
         $unit = new CollectionAsList($expectedData);
         $actualData = [];
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         foreach ($unit as $key => $value) {
             $actualData[$key] = $value;
         }
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * iterating over an empty list
-     * does not execute the loop body
-     */
     #[TestDox('Iterating empty list produces no iterations')]
     public function test_iterating_empty_list_produces_no_iterations(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iterating over an empty list
+        // does not execute the loop body
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $iterationCount = 0;
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         foreach ($unit as $value) {
             $iterationCount++;
         }
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame(0, $iterationCount);
     }
 
-    /**
-     * iterating over a list produces
-     * sequential integer keys starting from 0
-     */
     #[TestDox('Iteration produces sequential integer keys')]
     public function test_iteration_produces_sequential_integer_keys(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iterating over a list produces
+        // sequential integer keys starting from 0
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
         $actualKeys = [];
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         foreach ($unit as $key => $value) {
             $actualKeys[] = $key;
         }
 
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertSame([0, 1, 2], $actualKeys);
     }
 
-    /**
-     * iterating over a list includes
-     * items that were added via the add() method
-     */
     #[TestDox('Iteration includes items added via add()')]
     public function test_iteration_includes_items_added_via_add(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that iterating over a list includes
+        // items that were added via the add() method
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $unit->add('alpha');
         $unit->add('bravo');
         $actualData = [];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         foreach ($unit as $value) {
             $actualData[] = $value;
         }
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha', 'bravo'], $actualData);
     }
@@ -561,17 +983,28 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * merge() can accept a plain PHP
-     * array and merge its contents into the list
-     */
     #[TestDox('->merge() can merge an array into the list')]
     public function test_merge_can_merge_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that merge() can accept a plain PHP
+        // array and merge its contents into the list
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo']);
         $toMerge = ['charlie', 'delta'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->merge($toMerge);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie', 'delta'],
@@ -580,17 +1013,28 @@ class CollectionAsListTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    /**
-     * merge() can accept another
-     * CollectionAsList and merge its contents
-     */
     #[TestDox('->merge() can merge another CollectionAsList')]
     public function test_merge_can_merge_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that merge() can accept another
+        // CollectionAsList and merge its contents
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo']);
         $other = new CollectionAsList(['charlie', 'delta']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->merge($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie', 'delta'],
@@ -605,17 +1049,28 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * mergeArray() appends the given
-     * array's contents to the list's data
-     */
     #[TestDox('->mergeArray() adds array items to the list')]
     public function test_merge_array_adds_items(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that mergeArray() appends the given
+        // array's contents to the list's data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha']);
         $toMerge = ['bravo', 'charlie'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->mergeArray($toMerge);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie'],
@@ -624,46 +1079,79 @@ class CollectionAsListTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    /**
-     * mergeArray() works correctly when
-     * the list is initially empty
-     */
     #[TestDox('->mergeArray() into empty list sets the data')]
     public function test_merge_array_into_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that mergeArray() works correctly when
+        // the list is initially empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $toMerge = ['alpha', 'bravo'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeArray($toMerge);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha', 'bravo'], $unit->toArray());
     }
 
-    /**
-     * merging an empty array does not
-     * alter the list's existing data
-     */
     #[TestDox('->mergeArray() with empty array leaves list unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that merging an empty array does not
+        // alter the list's existing data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo'];
         $unit = new CollectionAsList($expectedData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeArray([]);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $unit->toArray());
     }
 
-    /**
-     * mergeArray() returns the same
-     * list instance for fluent method chaining
-     */
     #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that mergeArray() returns the same
+        // list instance for fluent method chaining
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->mergeArray(['bravo']);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($unit, $result);
     }
@@ -674,17 +1162,28 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * mergeSelf() appends the contents
-     * of another CollectionAsList into this list
-     */
     #[TestDox('->mergeSelf() merges another list into this one')]
     public function test_merge_self_merges_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that mergeSelf() appends the contents
+        // of another CollectionAsList into this list
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha']);
         $other = new CollectionAsList(['bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie'],
@@ -693,34 +1192,56 @@ class CollectionAsListTest extends TestCase
         $this->assertSame($unit, $result);
     }
 
-    /**
-     * the list being merged from is not
-     * modified by the merge operation
-     */
     #[TestDox('->mergeSelf() does not modify the source list')]
     public function test_merge_self_does_not_modify_source(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that the list being merged from is not
+        // modified by the merge operation
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha']);
         $other = new CollectionAsList(['bravo']);
         $expectedOtherData = ['bravo'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedOtherData, $other->toArray());
     }
 
-    /**
-     * merging an empty list does not
-     * alter the existing data
-     */
     #[TestDox('->mergeSelf() with empty source leaves list unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that merging an empty list does not
+        // alter the existing data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo'];
         $unit = new CollectionAsList($expectedData);
         $other = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $unit->toArray());
     }
@@ -731,46 +1252,79 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * maybeFirst() returns the first item
-     * in the list when it is not empty
-     */
     #[TestDox('->maybeFirst() returns the first item')]
     public function test_maybe_first_returns_first_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maybeFirst() returns the first item
+        // in the list when it is not empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeFirst();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('alpha', $actualResult);
     }
 
-    /**
-     * maybeFirst() returns null when the
-     * list is empty, rather than throwing an exception
-     */
     #[TestDox('->maybeFirst() returns null for empty list')]
     public function test_maybe_first_returns_null_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maybeFirst() returns null when the
+        // list is empty, rather than throwing an exception
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeFirst();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertNull($actualResult);
     }
 
-    /**
-     * maybeFirst() returns the first item
-     * that was added via the add() method
-     */
     #[TestDox('->maybeFirst() returns the first item added via add()')]
     public function test_maybe_first_returns_first_item_added_via_add(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maybeFirst() returns the first item
+        // that was added via the add() method
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $unit->add('alpha');
         $unit->add('bravo');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeFirst();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('alpha', $actualResult);
     }
@@ -781,28 +1335,47 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * first() returns the first item in
-     * the list when it is not empty
-     */
     #[TestDox('->first() returns the first item')]
     public function test_first_returns_first_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that first() returns the first item in
+        // the list when it is not empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->first();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('alpha', $actualResult);
     }
 
-    /**
-     * first() throws a RuntimeException
-     * when the list is empty
-     */
     #[TestDox('->first() throws RuntimeException for empty list')]
     public function test_first_throws_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that first() throws a RuntimeException
+        // when the list is empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('CollectionAsList is empty');
@@ -816,46 +1389,79 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * maybeLast() returns the last item
-     * in the list when it is not empty
-     */
     #[TestDox('->maybeLast() returns the last item')]
     public function test_maybe_last_returns_last_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maybeLast() returns the last item
+        // in the list when it is not empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeLast();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('charlie', $actualResult);
     }
 
-    /**
-     * maybeLast() returns null when the
-     * list is empty, rather than throwing an exception
-     */
     #[TestDox('->maybeLast() returns null for empty list')]
     public function test_maybe_last_returns_null_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maybeLast() returns null when the
+        // list is empty, rather than throwing an exception
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeLast();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertNull($actualResult);
     }
 
-    /**
-     * maybeLast() returns the most recently
-     * added item via add()
-     */
     #[TestDox('->maybeLast() returns the last item added via add()')]
     public function test_maybe_last_returns_last_item_added_via_add(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that maybeLast() returns the most recently
+        // added item via add()
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $unit->add('alpha');
         $unit->add('bravo');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeLast();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('bravo', $actualResult);
     }
@@ -866,28 +1472,47 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * last() returns the last item in
-     * the list when it is not empty
-     */
     #[TestDox('->last() returns the last item')]
     public function test_last_returns_last_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that last() returns the last item in
+        // the list when it is not empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->last();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('charlie', $actualResult);
     }
 
-    /**
-     * last() throws a RuntimeException
-     * when the list is empty
-     */
     #[TestDox('->last() throws RuntimeException for empty list')]
     public function test_last_throws_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that last() throws a RuntimeException
+        // when the list is empty
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('CollectionAsList is empty');
@@ -901,35 +1526,57 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * copy() returns a new CollectionAsList
-     * instance containing the same data as the original
-     */
     #[TestDox('->copy() returns a new CollectionAsList with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that copy() returns a new CollectionAsList
+        // instance containing the same data as the original
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo', 'charlie'];
         $unit = new CollectionAsList($expectedData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(CollectionAsList::class, $copy);
         $this->assertNotSame($unit, $copy);
         $this->assertSame($expectedData, $copy->toArray());
     }
 
-    /**
-     * modifying the copied list does not
-     * affect the original list's data
-     */
     #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that modifying the copied list does not
+        // affect the original list's data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $originalData = ['alpha', 'bravo'];
         $unit = new CollectionAsList($originalData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $copy = $unit->copy();
         $copy->add('charlie');
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($originalData, $unit->toArray());
         $this->assertSame(
@@ -938,16 +1585,27 @@ class CollectionAsListTest extends TestCase
         );
     }
 
-    /**
-     * copying an empty list returns a new,
-     * empty CollectionAsList instance
-     */
     #[TestDox('->copy() of empty list returns empty list')]
     public function test_copy_of_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that copying an empty list returns a new,
+        // empty CollectionAsList instance
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(CollectionAsList::class, $copy);
         $this->assertNotSame($unit, $copy);
@@ -961,45 +1619,78 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * empty() returns true when the
-     * list has no data
-     */
     #[TestDox('->empty() returns true for empty list')]
     public function test_empty_returns_true_for_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that empty() returns true when the
+        // list has no data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->empty();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertTrue($actualResult);
     }
 
-    /**
-     * empty() returns false when the
-     * list contains data
-     */
     #[TestDox('->empty() returns false for non-empty list')]
     public function test_empty_returns_false_for_non_empty_list(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that empty() returns false when the
+        // list contains data
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['alpha']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->empty();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertFalse($actualResult);
     }
 
-    /**
-     * empty() returns false after an item
-     * has been added via add()
-     */
     #[TestDox('->empty() returns false after add()')]
     public function test_empty_returns_false_after_add(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that empty() returns false after an item
+        // has been added via add()
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
         $unit->add('alpha');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->empty();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertFalse($actualResult);
     }
@@ -1010,16 +1701,27 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * getCollectionTypeAsString() returns
-     * "CollectionAsList" (just the class name without namespace)
-     */
     #[TestDox('->getCollectionTypeAsString() returns the class basename')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that getCollectionTypeAsString() returns
+        // "CollectionAsList" (just the class name without namespace)
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->getCollectionTypeAsString();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('CollectionAsList', $actualResult);
     }
@@ -1030,17 +1732,28 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * for a list with exactly one item,
-     * both first() and last() return that same item
-     */
     #[TestDox('List with one item: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that for a list with exactly one item,
+        // both first() and last() return that same item
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new CollectionAsList(['only-item']);
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $first = $unit->first();
         $last = $unit->last();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('only-item', $first);
         $this->assertSame('only-item', $last);
@@ -1052,20 +1765,31 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    /**
-     * add() and merge methods can be
-     * chained together fluently
-     */
     #[TestDox('->add() and merge methods support fluent chaining together')]
     public function test_add_and_merge_support_chaining(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that add() and merge methods can be
+        // chained together fluently
+
+        // ----------------------------------------------------------------
+        // setup your test
+
         /** @var CollectionAsList<string> $unit */
         $unit = new CollectionAsList();
         $other = new CollectionAsList(['delta']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->add('alpha')
             ->mergeArray(['bravo', 'charlie'])
             ->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie', 'delta'],

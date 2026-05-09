@@ -99,7 +99,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- make sure merge() and mergeSelf() only accept compatible types ([74c1dd4](https://github.com/stuartherbert/stusdevkit/commit/74c1dd4)) — Stuart Herbert <stuart@stuartherbert.com>
+- make sure merge() and mergeSelf() only accept compatible types ([d417bfc](https://github.com/stuartherbert/stusdevkit/commit/d417bfc)) — Stuart Herbert <stuart@stuartherbert.com>
 - StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit

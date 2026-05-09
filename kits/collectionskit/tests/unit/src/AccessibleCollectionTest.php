@@ -1,5 +1,9 @@
 <?php
 
+// Stu's Dev Kit
+//
+// Building blocks for assembling the things you need to build, in a way
+// that will last.
 //
 // Copyright (c) 2026-present Stuart Herbert
 // All rights reserved.
@@ -32,7 +36,6 @@
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-//
 
 declare(strict_types=1);
 
@@ -41,11 +44,16 @@ namespace StusDevKit\CollectionsKit\Tests\Unit;
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
+use StusDevKit\CollectionsKit\CollectionOfAnything;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
-#[TestDox('AccessibleCollection')]
+#[TestDox(AccessibleCollection::class)]
 class AccessibleCollectionTest extends TestCase
 {
     // ================================================================
@@ -57,31 +65,87 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('lives in the StusDevKit\\CollectionsKit namespace')]
     public function test_lives_in_expected_namespace(): void
     {
-        $reflection = new \ReflectionClass(AccessibleCollection::class);
-        $this->assertSame(
-            'StusDevKit\\CollectionsKit',
-            $reflection->getNamespaceName(),
-        );
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published namespace is part of the contract — every
+        // caller imports the class by FQN, so moving it is a
+        // breaking change that must go through a major version
+        // bump.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'StusDevKit\\CollectionsKit';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = (new ReflectionClass(
+            AccessibleCollection::class,
+        ))->getNamespaceName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
     }
 
     #[TestDox('is declared as a class')]
     public function test_is_a_class(): void
     {
-        $reflection = new \ReflectionClass(AccessibleCollection::class);
-        $this->assertFalse($reflection->isInterface());
-        $this->assertFalse($reflection->isTrait());
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the published kind (class vs interface vs trait) is part
+        // of the contract — switching kinds breaks every consumer
+        // that depends on this type.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(AccessibleCollection::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isInterface = $reflection->isInterface();
+        $isTrait = $reflection->isTrait();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($isInterface);
+        $this->assertFalse($isTrait);
     }
 
     #[TestDox('extends CollectionOfAnything')]
     public function test_extends_CollectionOfAnything(): void
     {
-        $reflection = new \ReflectionClass(AccessibleCollection::class);
-        $parent = $reflection->getParentClass();
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the parent class fixes which inherited methods are
+        // available; changing it is a breaking change for every
+        // subclass and caller that relies on inherited behaviour.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = CollectionOfAnything::class;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $parent = (new ReflectionClass(
+            AccessibleCollection::class,
+        ))->getParentClass();
+
+        // ----------------------------------------------------------------
+        // test the results
+
         $this->assertNotFalse($parent);
-        $this->assertSame(
-            \StusDevKit\CollectionsKit\CollectionOfAnything::class,
-            $parent->getName(),
-        );
+        $this->assertSame($expected, $parent->getName());
     }
 
     // ================================================================
@@ -89,70 +153,180 @@ class AccessibleCollectionTest extends TestCase
     // Shape
     //
     // ----------------------------------------------------------------
+    //
+    // AccessibleCollection adds first/last accessors, copy(), and
+    // the merge family on top of CollectionOfAnything. Pin the
+    // exact set of own public methods plus the signature of each
+    // so any accidental change to the surface fails this test.
+    //
+    // ----------------------------------------------------------------
 
     #[TestDox('declares the expected set of own public methods')]
     public function test_declares_own_method_set(): void
     {
-        $reflection = new \ReflectionClass(AccessibleCollection::class);
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // pin the exact surface the class introduces so that new
+        // public methods force a conscious update to this test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = [
+            'copy',
+            'first',
+            'last',
+            'maybeFirst',
+            'maybeLast',
+            'merge',
+            'mergeArray',
+            'mergeSelf',
+        ];
+        $reflection = new ReflectionClass(AccessibleCollection::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $ownMethods = [];
-        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
             if ($m->getDeclaringClass()->getName() === AccessibleCollection::class) {
                 $ownMethods[] = $m->getName();
             }
         }
         sort($ownMethods);
-        $this->assertSame(
-            ['copy', 'first', 'last', 'maybeFirst', 'maybeLast', 'merge', 'mergeArray', 'mergeSelf'],
-            $ownMethods,
-        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $ownMethods);
     }
 
     #[TestDox('::merge() signature: merge(self|array $input): static')]
     public function test_merge_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'merge');
-        $this->assertTrue($method->isPublic());
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // merge() is the public entry point that dispatches to
+        // mergeArray() or mergeSelf(); its parameter name and
+        // static return type are part of the contract.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'merge');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('static', $returnType->getName());
-        $paramNames = array_map(fn(\ReflectionParameter $p) => $p->getName(), $method->getParameters());
         $this->assertSame(['input'], $paramNames);
     }
 
     #[TestDox('::mergeArray() signature: mergeArray(array $input): static')]
     public function test_mergeArray_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'mergeArray');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // mergeArray() takes a plain PHP array; the parameter type
+        // and static return type are part of the contract.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'mergeArray');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
-        $this->assertSame('static', $returnType->getName());
-        $paramNames = array_map(fn(\ReflectionParameter $p) => $p->getName(), $method->getParameters());
-        $this->assertSame(['input'], $paramNames);
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
         $paramType = $method->getParameters()[0]->getType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('static', $returnType->getName());
+        $this->assertSame(['input'], $paramNames);
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
         $this->assertSame('array', $paramType->getName());
     }
 
     #[TestDox('::mergeSelf() signature: mergeSelf(AccessibleCollection $input): static')]
     public function test_mergeSelf_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'mergeSelf');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // mergeSelf() takes a sibling collection; the parameter
+        // type pins the late-static-binding compatibility check.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'mergeSelf');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
-        $this->assertSame('static', $returnType->getName());
-        $paramNames = array_map(fn(\ReflectionParameter $p) => $p->getName(), $method->getParameters());
-        $this->assertSame(['input'], $paramNames);
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
         $paramType = $method->getParameters()[0]->getType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $paramType);
-        $this->assertSame(\StusDevKit\CollectionsKit\AccessibleCollection::class, $paramType->getName());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('static', $returnType->getName());
+        $this->assertSame(['input'], $paramNames);
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+        $this->assertSame(AccessibleCollection::class, $paramType->getName());
     }
 
     #[TestDox('::first() signature: first(): mixed')]
     public function test_first_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'first');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // first() takes no parameters and returns the stored value
+        // type; mixed covers all possible TValue specialisations.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'first');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('mixed', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
@@ -160,9 +334,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::maybeFirst() signature: maybeFirst(): mixed')]
     public function test_maybeFirst_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'maybeFirst');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // maybeFirst() returns null on empty; mixed covers both
+        // the stored TValue and the null sentinel.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'maybeFirst');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('mixed', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
@@ -170,9 +361,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::last() signature: last(): mixed')]
     public function test_last_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'last');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // last() takes no parameters and returns the stored value
+        // type; mixed covers all possible TValue specialisations.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'last');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('mixed', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
@@ -180,9 +388,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::maybeLast() signature: maybeLast(): mixed')]
     public function test_maybeLast_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'maybeLast');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // maybeLast() returns null on empty; mixed covers both
+        // the stored TValue and the null sentinel.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'maybeLast');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('mixed', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
@@ -190,9 +415,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::copy() signature: copy(): static')]
     public function test_copy_signature(): void
     {
-        $method = new \ReflectionMethod(AccessibleCollection::class, 'copy');
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // copy() returns a new instance of the late-static-bound
+        // class so callers always get the narrowest type.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(AccessibleCollection::class, 'copy');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $returnType = $method->getReturnType();
-        $this->assertInstanceOf(\ReflectionNamedType::class, $returnType);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
         $this->assertSame('static', $returnType->getName());
         $this->assertSame([], $method->getParameters());
     }
@@ -206,10 +448,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::__construct() creates an empty collection')]
     public function test_can_instantiate_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that we can create a new, empty
         // CollectionOfAnything
 
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // nothing to do
+
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit = new AccessibleCollection();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(AccessibleCollection::class, $unit);
         $this->assertCount(0, $unit);
@@ -218,12 +474,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::__construct() accepts initial data')]
     public function test_can_instantiate_with_initial_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that we can create a CollectionOfAnything
         // and seed it with an initial array of data
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $expectedData = ['alpha', 'bravo', 'charlie'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit = new AccessibleCollection($expectedData);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertCount(3, $unit);
         $this->assertSame($expectedData, $unit->toArray());
@@ -232,8 +500,14 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::__construct() accepts associative array')]
     public function test_can_instantiate_with_associative_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that we can create a CollectionOfAnything
         // with string keys (associative array)
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = [
             'first' => 'alpha',
@@ -241,7 +515,13 @@ class AccessibleCollectionTest extends TestCase
             'third' => 'charlie',
         ];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit = new AccessibleCollection($expectedData);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertCount(3, $unit);
         $this->assertSame($expectedData, $unit->toArray());
@@ -256,12 +536,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->toArray() returns empty array for empty collection')]
     public function test_to_array_returns_empty_array_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that toArray() returns an empty array
         // when the collection contains no data
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->toArray();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame([], $actualResult);
     }
@@ -269,13 +561,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->toArray() returns the internal data as a PHP array')]
     public function test_to_array_returns_internal_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that toArray() returns all the data
         // stored in the collection
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = ['alpha', 'bravo', 'charlie'];
         $unit = new AccessibleCollection($expectedData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->toArray();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $actualResult);
     }
@@ -289,12 +593,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->count() returns 0 for empty collection')]
     public function test_count_returns_zero_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that count() returns 0 when the
         // collection contains no data
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->count();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(0, $actualResult);
     }
@@ -302,12 +618,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->count() returns number of items in collection')]
     public function test_count_returns_number_of_items(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that count() returns the correct number
         // of items stored in the collection
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->count();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(3, $actualResult);
     }
@@ -315,12 +643,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->count() works with PHP count() function')]
     public function test_count_works_with_php_count_function(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that the collection works with PHP's
         // built-in count() function via the Countable interface
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = count($unit);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(3, $actualResult);
     }
@@ -334,12 +674,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->getIterator() returns an ArrayIterator')]
     public function test_get_iterator_returns_array_iterator(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that getIterator() returns an
         // ArrayIterator instance
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->getIterator();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(ArrayIterator::class, $actualResult);
     }
@@ -347,16 +699,28 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('Collection can be iterated with foreach')]
     public function test_can_iterate_with_foreach(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that the collection can be used in a
         // foreach loop via the IteratorAggregate interface
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = ['alpha', 'bravo', 'charlie'];
         $unit = new AccessibleCollection($expectedData);
         $actualData = [];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         foreach ($unit as $key => $value) {
             $actualData[$key] = $value;
         }
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $actualData);
     }
@@ -364,15 +728,27 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('Iterating empty collection produces no iterations')]
     public function test_iterating_empty_collection_produces_no_iterations(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that iterating over an empty collection
         // does not execute the loop body
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection();
         $iterationCount = 0;
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         foreach ($unit as $value) {
             $iterationCount++;
         }
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(0, $iterationCount);
     }
@@ -380,8 +756,14 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('Iteration preserves string keys')]
     public function test_iteration_preserves_string_keys(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that iterating preserves the associative
         // keys of the underlying data
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = [
             'first' => 'alpha',
@@ -390,9 +772,15 @@ class AccessibleCollectionTest extends TestCase
         $unit = new AccessibleCollection($expectedData);
         $actualData = [];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         foreach ($unit as $key => $value) {
             $actualData[$key] = $value;
         }
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $actualData);
     }
@@ -406,13 +794,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->merge() can merge an array into the collection')]
     public function test_merge_can_merge_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that merge() can accept a plain PHP
         // array and merge its contents into the collection
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection(['alpha', 'bravo']);
         $toMerge = ['charlie', 'delta'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->merge($toMerge);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie', 'delta'],
@@ -424,13 +824,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->merge() can merge another collection')]
     public function test_merge_can_merge_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that merge() can accept another
         // CollectionOfAnything and merge its contents
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection(['alpha', 'bravo']);
         $other = new AccessibleCollection(['charlie', 'delta']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->merge($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie', 'delta'],
@@ -448,13 +860,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeArray() adds array items to the collection')]
     public function test_merge_array_adds_items(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that mergeArray() appends the given
         // array's contents to the collection's data
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection(['alpha']);
         $toMerge = ['bravo', 'charlie'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->mergeArray($toMerge);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie'],
@@ -466,14 +890,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeArray() into empty collection sets the data')]
     public function test_merge_array_into_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that mergeArray() works correctly when
         // the collection is initially empty
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         /** @var AccessibleCollection<int, string> $unit */
         $unit = new AccessibleCollection();
         $toMerge = ['alpha', 'bravo'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeArray($toMerge);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(['alpha', 'bravo'], $unit->toArray());
     }
@@ -481,13 +917,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeArray() with empty array leaves collection unchanged')]
     public function test_merge_array_with_empty_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that merging an empty array does not
         // alter the collection's existing data
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = ['alpha', 'bravo'];
         $unit = new AccessibleCollection($expectedData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeArray([]);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $unit->toArray());
     }
@@ -495,16 +943,28 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeArray() with associative keys overwrites matching keys')]
     public function test_merge_array_overwrites_matching_string_keys(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that when merging associative arrays,
         // matching string keys are overwritten by the merged data
         // (standard PHP spread operator behavior)
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection([
             'name' => 'alpha',
             'value' => 100,
         ]);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeArray(['value' => 200, 'extra' => 'new']);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['name' => 'alpha', 'value' => 200, 'extra' => 'new'],
@@ -515,12 +975,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeArray() returns $this for method chaining')]
     public function test_merge_array_returns_this(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that mergeArray() returns the same
         // collection instance for fluent method chaining
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->mergeArray(['bravo']);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($unit, $result);
     }
@@ -534,13 +1006,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeSelf() merges another collection into this one')]
     public function test_merge_self_merges_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that mergeSelf() appends the contents
         // of another CollectionOfAnything into this collection
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection(['alpha']);
         $other = new AccessibleCollection(['bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $result = $unit->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie'],
@@ -552,14 +1036,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeSelf() does not modify the source collection')]
     public function test_merge_self_does_not_modify_source(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that the collection being merged from
         // is not modified by the merge operation
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection(['alpha']);
         $other = new AccessibleCollection(['bravo']);
         $expectedOtherData = ['bravo'];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedOtherData, $other->toArray());
     }
@@ -567,14 +1063,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->mergeSelf() with empty source leaves collection unchanged')]
     public function test_merge_self_with_empty_source(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that merging an empty collection does
         // not alter the existing data
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = ['alpha', 'bravo'];
         $unit = new AccessibleCollection($expectedData);
         $other = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $unit->toArray());
     }
@@ -588,12 +1096,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->maybeFirst() returns the first item')]
     public function test_maybe_first_returns_first_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that maybeFirst() returns the first item
         // in the collection when it is not empty
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeFirst();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('alpha', $actualResult);
     }
@@ -601,12 +1121,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->maybeFirst() returns null for empty collection')]
     public function test_maybe_first_returns_null_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that maybeFirst() returns null when the
         // collection is empty, rather than throwing an exception
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeFirst();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertNull($actualResult);
     }
@@ -614,16 +1146,28 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->maybeFirst() returns first item from associative array')]
     public function test_maybe_first_returns_first_from_associative(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that maybeFirst() correctly returns the
         // value associated with the first key in an associative
         // collection
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection([
             'x' => 'alpha',
             'y' => 'bravo',
         ]);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeFirst();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('alpha', $actualResult);
     }
@@ -637,12 +1181,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->first() returns the first item')]
     public function test_first_returns_first_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that first() returns the first item in
         // the collection when it is not empty
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->first();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('alpha', $actualResult);
     }
@@ -650,15 +1206,28 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->first() throws RuntimeException for empty collection')]
     public function test_first_throws_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that first() throws a RuntimeException
         // when the collection is empty
 
-        $unit = new AccessibleCollection();
+        // ----------------------------------------------------------------
+        // setup your test
 
+        $unit = new AccessibleCollection();
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('AccessibleCollection is empty');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->first();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // assertion handled by expectException() above
     }
 
     // ================================================================
@@ -670,12 +1239,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->maybeLast() returns the last item')]
     public function test_maybe_last_returns_last_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that maybeLast() returns the last item
         // in the collection when it is not empty
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeLast();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('charlie', $actualResult);
     }
@@ -683,12 +1264,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->maybeLast() returns null for empty collection')]
     public function test_maybe_last_returns_null_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that maybeLast() returns null when the
         // collection is empty, rather than throwing an exception
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeLast();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertNull($actualResult);
     }
@@ -696,16 +1289,28 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->maybeLast() returns last item from associative array')]
     public function test_maybe_last_returns_last_from_associative(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that maybeLast() correctly returns the
         // value associated with the last key in an associative
         // collection
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection([
             'x' => 'alpha',
             'y' => 'bravo',
         ]);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->maybeLast();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('bravo', $actualResult);
     }
@@ -719,12 +1324,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->last() returns the last item')]
     public function test_last_returns_last_item(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that last() returns the last item in
         // the collection when it is not empty
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha', 'bravo', 'charlie']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->last();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('charlie', $actualResult);
     }
@@ -732,15 +1349,28 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->last() throws RuntimeException for empty collection')]
     public function test_last_throws_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that last() throws a RuntimeException
         // when the collection is empty
 
-        $unit = new AccessibleCollection();
+        // ----------------------------------------------------------------
+        // setup your test
 
+        $unit = new AccessibleCollection();
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('AccessibleCollection is empty');
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->last();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // assertion handled by expectException() above
     }
 
     // ================================================================
@@ -752,13 +1382,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->copy() returns a new instance with the same data')]
     public function test_copy_returns_new_instance_with_same_data(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that copy() returns a new collection
         // instance containing the same data as the original
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = ['alpha', 'bravo', 'charlie'];
         $unit = new AccessibleCollection($expectedData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertInstanceOf(AccessibleCollection::class, $copy);
         $this->assertNotSame($unit, $copy);
@@ -768,14 +1410,26 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->copy() returns independent instance (modifying copy does not affect original)')]
     public function test_copy_returns_independent_instance(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that modifying the copied collection
         // does not affect the original collection's data
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $originalData = ['alpha', 'bravo'];
         $unit = new AccessibleCollection($originalData);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $copy = $unit->copy();
         $copy->mergeArray(['charlie']);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($originalData, $unit->toArray());
         $this->assertSame(
@@ -787,12 +1441,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->copy() of empty collection returns empty collection')]
     public function test_copy_of_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that copying an empty collection
         // returns a new, empty collection instance
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $copy = $unit->copy();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertNotSame($unit, $copy);
         $this->assertSame([], $copy->toArray());
@@ -808,12 +1474,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->empty() returns true for empty collection')]
     public function test_empty_returns_true_for_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that empty() returns true when the
         // collection has no data
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->empty();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertTrue($actualResult);
     }
@@ -821,12 +1499,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->empty() returns false for non-empty collection')]
     public function test_empty_returns_false_for_non_empty_collection(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that empty() returns false when the
         // collection contains data
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['alpha']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->empty();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertFalse($actualResult);
     }
@@ -840,12 +1530,24 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('->getCollectionTypeAsString() returns the class basename')]
     public function test_get_collection_type_as_string_returns_class_basename(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that getCollectionTypeAsString() returns
         // just the class name without the namespace prefix
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection();
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $actualResult = $unit->getCollectionTypeAsString();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('AccessibleCollection', $actualResult);
     }
@@ -859,13 +1561,25 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('Collection with one item: ->first() and ->last() return the same value')]
     public function test_single_item_first_and_last_are_same(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that for a collection with exactly one
         // item, both first() and last() return that same item
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $unit = new AccessibleCollection(['only-item']);
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $first = $unit->first();
         $last = $unit->last();
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame('only-item', $first);
         $this->assertSame('only-item', $last);
@@ -880,8 +1594,14 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('Collection can hold mixed types')]
     public function test_can_hold_mixed_types(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that CollectionOfAnything can store
         // values of different types in the same collection
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $expectedData = [
             'a string',
@@ -891,7 +1611,13 @@ class AccessibleCollectionTest extends TestCase
             ['nested' => 'array'],
         ];
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit = new AccessibleCollection($expectedData);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame($expectedData, $unit->toArray());
         $this->assertCount(5, $unit);
@@ -906,15 +1632,27 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('Merge methods support fluent chaining')]
     public function test_merge_methods_support_chaining(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that merge methods return the collection
         // instance, enabling fluent method chaining
+
+        // ----------------------------------------------------------------
+        // setup your test
 
         $unit = new AccessibleCollection(['alpha']);
         $other = new AccessibleCollection(['delta']);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit
             ->mergeArray(['bravo', 'charlie'])
             ->mergeSelf($other);
+
+        // ----------------------------------------------------------------
+        // test the results
 
         $this->assertSame(
             ['alpha', 'bravo', 'charlie', 'delta'],
@@ -931,27 +1669,54 @@ class AccessibleCollectionTest extends TestCase
     #[TestDox('::__construct() rejects array containing null')]
     public function test_constructor_rejects_null_in_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that the constructor throws a
         // NullValueNotAllowed exception when the initial data
         // array contains a null value
 
+        // ----------------------------------------------------------------
+        // setup your test
+
         $this->expectException(NullValueNotAllowedException::class);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         new AccessibleCollection(['alpha', null, 'bravo']); // @phpstan-ignore argument.type
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // assertion handled by expectException() above
     }
 
     #[TestDox('->mergeArray() rejects array containing null')]
     public function test_merge_array_rejects_null_in_array(): void
     {
+        // ----------------------------------------------------------------
+        // explain your test
+
         // this test proves that mergeArray() throws a
         // NullValueNotAllowed exception when the input array
         // contains a null value, and does not modify the
         // existing collection
 
-        $unit = new AccessibleCollection(['alpha']);
+        // ----------------------------------------------------------------
+        // setup your test
 
+        $unit = new AccessibleCollection(['alpha']);
         $this->expectException(NullValueNotAllowedException::class);
 
+        // ----------------------------------------------------------------
+        // perform the change
+
         $unit->mergeArray(['bravo', null]); // @phpstan-ignore argument.type
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // assertion handled by expectException() above
     }
 }
