@@ -56,19 +56,4 @@ use StusDevKit\CollectionsKit\Traits\UuidConversions;
 class DictOfUuids extends DictOfObjects
 {
     use UuidConversions;
-
-    /**
-     * Add a UUID to the dictionary.
-     *
-     * If there's an existing entry for `$key`, this will be overwritten
-     * with the given `$input`.
-     *
-     * @param string $key - name/ID to associate $input with
-     * @param UuidInterface $input - the UUID to store
-     */
-    public function add(string $key, UuidInterface $input): static
-    {
-        $this->data[$key] = $input;
-        return $this;
-    }
 }

@@ -48,8 +48,6 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 use ReflectionMethod;
-use ReflectionNamedType;
-use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
@@ -185,23 +183,22 @@ class DictOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares add plus trait public methods as its own')]
-    public function test_declares_own_method_set(): void
+    #[TestDox('declares only trait public methods as its own')]
+    public function test_declares_only_trait_public_methods(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // PHP reflection treats trait methods as declared by the
-        // using class, so the "own" methods we expect are add()
-        // and the methods contributed by UuidConversions. Locking
-        // the exact set means an accidental new method (or a trait
-        // method renamed) becomes a named diff rather than silent
-        // drift.
+        // using class, so the "own" methods we expect are exactly
+        // those contributed by UuidConversions. Locking the exact
+        // set means an accidental new method (or a trait method
+        // renamed) becomes a named diff rather than silent drift.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = ['add', 'toArrayOfStrings'];
+        $expected = ['toArrayOfStrings'];
         $reflection = new ReflectionClass(DictOfUuids::class);
 
         // ----------------------------------------------------------------
@@ -219,45 +216,6 @@ class DictOfUuidsTest extends TestCase
         // test the results
 
         $this->assertSame($expected, $ownMethods);
-    }
-
-    #[TestDox('::add() signature: add(string $key, UuidInterface $input): static')]
-    public function test_add_signature(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the published signature pins the method name, parameter
-        // list, and return type so any drift becomes a named diff
-        // rather than a silent break in callers.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(DictOfUuids::class, 'add');
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $returnType = $method->getReturnType();
-        $paramNames = array_map(
-            fn(ReflectionParameter $p) => $p->getName(),
-            $method->getParameters(),
-        );
-        $keyType = $method->getParameters()[0]->getType();
-        $inputType = $method->getParameters()[1]->getType();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($method->isPublic());
-        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
-        $this->assertSame('static', $returnType->getName());
-        $this->assertSame(['key', 'input'], $paramNames);
-        $this->assertInstanceOf(ReflectionNamedType::class, $keyType);
-        $this->assertSame('string', $keyType->getName());
-        $this->assertInstanceOf(ReflectionNamedType::class, $inputType);
-        $this->assertSame(UuidInterface::class, $inputType->getName());
     }
 
     // ================================================================
@@ -360,169 +318,6 @@ class DictOfUuidsTest extends TestCase
 
     // ================================================================
     //
-    // add()
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('->add() stores a UUID with a string key')]
-    public function test_add_stores_uuid_with_string_key(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that add() stores a UuidInterface at
-        // the given string key
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = new DictOfUuids();
-        $uuid = Uuid::uuid4();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit->add(key: 'user', input: $uuid);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($uuid, $unit->get('user'));
-        $this->assertCount(1, $unit);
-    }
-
-    #[TestDox('->add() overwrites existing UUID at same key')]
-    public function test_add_overwrites_existing_value(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that calling add() with an existing key
-        // overwrites the previous UUID
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $original = Uuid::uuid4();
-        $replacement = Uuid::uuid4();
-        $unit = new DictOfUuids(['user' => $original]);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit->add(key: 'user', input: $replacement);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($replacement, $unit->get('user'));
-        $this->assertNotSame($original, $unit->get('user'));
-        $this->assertCount(1, $unit);
-    }
-
-    #[TestDox('->add() adds to existing data')]
-    public function test_add_adds_to_existing_data(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that add() adds a new key-value pair
-        // alongside data passed into the constructor
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $uuid1 = Uuid::uuid4();
-        $uuid2 = Uuid::uuid4();
-        $uuid3 = Uuid::uuid4();
-        $unit = new DictOfUuids([
-            'user' => $uuid1,
-            'org' => $uuid2,
-        ]);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit->add(key: 'team', input: $uuid3);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(
-            [
-                'user' => $uuid1,
-                'org' => $uuid2,
-                'team' => $uuid3,
-            ],
-            $unit->toArray(),
-        );
-        $this->assertCount(3, $unit);
-    }
-
-    #[TestDox('->add() returns $this for method chaining')]
-    public function test_add_returns_this(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that add() returns the same collection
-        // instance for fluent method chaining
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = new DictOfUuids();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $result = $unit->add(key: 'user', input: Uuid::uuid4());
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($unit, $result);
-    }
-
-    #[TestDox('->add() supports fluent chaining')]
-    public function test_add_supports_fluent_chaining(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this test proves that add() calls can be chained
-        // together fluently to build up the dict
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $unit = new DictOfUuids();
-        $uuid1 = Uuid::uuid4();
-        $uuid2 = Uuid::uuid4();
-        $uuid3 = Uuid::uuid4();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit->add(key: 'user', input: $uuid1)
-            ->add(key: 'org', input: $uuid2)
-            ->add(key: 'team', input: $uuid3);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame(
-            [
-                'user' => $uuid1,
-                'org' => $uuid2,
-                'team' => $uuid3,
-            ],
-            $unit->toArray(),
-        );
-    }
-
-    // ================================================================
-    //
     // set()
     //
     // ----------------------------------------------------------------
@@ -577,6 +372,111 @@ class DictOfUuidsTest extends TestCase
         // test the results
 
         $this->assertSame($unit, $result);
+    }
+
+    #[TestDox('->set() overwrites existing UUID at same key')]
+    public function test_set_overwrites_existing_value(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that calling set() with an existing key
+        // overwrites the previous UUID
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $original = Uuid::uuid4();
+        $replacement = Uuid::uuid4();
+        $unit = new DictOfUuids(['user' => $original]);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->set(key: 'user', value: $replacement);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($replacement, $unit->get('user'));
+        $this->assertNotSame($original, $unit->get('user'));
+        $this->assertCount(1, $unit);
+    }
+
+    #[TestDox('->set() adds to existing data')]
+    public function test_set_adds_to_existing_data(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that set() adds a new key-value pair
+        // alongside data passed into the constructor
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $uuid1 = Uuid::uuid4();
+        $uuid2 = Uuid::uuid4();
+        $uuid3 = Uuid::uuid4();
+        $unit = new DictOfUuids([
+            'user' => $uuid1,
+            'org' => $uuid2,
+        ]);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->set(key: 'team', value: $uuid3);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            [
+                'user' => $uuid1,
+                'org' => $uuid2,
+                'team' => $uuid3,
+            ],
+            $unit->toArray(),
+        );
+        $this->assertCount(3, $unit);
+    }
+
+    #[TestDox('->set() supports fluent chaining')]
+    public function test_set_supports_fluent_chaining(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this test proves that set() calls can be chained
+        // together fluently to build up the dict
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = new DictOfUuids();
+        $uuid1 = Uuid::uuid4();
+        $uuid2 = Uuid::uuid4();
+        $uuid3 = Uuid::uuid4();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->set(key: 'user', value: $uuid1)
+            ->set(key: 'org', value: $uuid2)
+            ->set(key: 'team', value: $uuid3);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame(
+            [
+                'user' => $uuid1,
+                'org' => $uuid2,
+                'team' => $uuid3,
+            ],
+            $unit->toArray(),
+        );
     }
 
     // ================================================================
@@ -660,20 +560,20 @@ class DictOfUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('->has() returns true for key added via add()')]
-    public function test_has_returns_true_for_key_added_via_add(): void
+    #[TestDox('->has() returns true for key added via set()')]
+    public function test_has_returns_true_for_key_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that has() detects keys that were added
-        // via the add() method
+        // via the set() method
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: Uuid::uuid4());
+        $unit->set(key: 'user', value: Uuid::uuid4());
 
         // ----------------------------------------------------------------
         // perform the change
@@ -768,21 +668,21 @@ class DictOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('->maybeGet() returns UUID added via add()')]
-    public function test_maybe_get_returns_uuid_added_via_add(): void
+    #[TestDox('->maybeGet() returns UUID added via set()')]
+    public function test_maybe_get_returns_uuid_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that maybeGet() retrieves UUIDs that
-        // were stored using the add() method
+        // were stored using the set() method
 
         // ----------------------------------------------------------------
         // setup your test
 
         $uuid = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid);
+        $unit->set(key: 'user', value: $uuid);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -795,14 +695,14 @@ class DictOfUuidsTest extends TestCase
         $this->assertSame($uuid, $actualResult);
     }
 
-    #[TestDox('->maybeGet() returns the overwritten UUID after add()')]
+    #[TestDox('->maybeGet() returns the overwritten UUID after set()')]
     public function test_maybe_get_returns_overwritten_uuid(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that maybeGet() returns the most recent
-        // UUID after a key has been overwritten with add()
+        // UUID after a key has been overwritten with set()
 
         // ----------------------------------------------------------------
         // setup your test
@@ -810,7 +710,7 @@ class DictOfUuidsTest extends TestCase
         $original = Uuid::uuid4();
         $replacement = Uuid::uuid4();
         $unit = new DictOfUuids(['user' => $original]);
-        $unit->add(key: 'user', input: $replacement);
+        $unit->set(key: 'user', value: $replacement);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -909,21 +809,21 @@ class DictOfUuidsTest extends TestCase
         $unit->get('anything');
     }
 
-    #[TestDox('->get() returns UUID added via add()')]
-    public function test_get_returns_uuid_added_via_add(): void
+    #[TestDox('->get() returns UUID added via set()')]
+    public function test_get_returns_uuid_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that get() retrieves UUIDs that were
-        // stored using the add() method
+        // stored using the set() method
 
         // ----------------------------------------------------------------
         // setup your test
 
         $uuid = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid);
+        $unit->set(key: 'user', value: $uuid);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1023,14 +923,14 @@ class DictOfUuidsTest extends TestCase
         $this->assertSame($expectedData, $actualResult);
     }
 
-    #[TestDox('->toArray() returns data added via add()')]
-    public function test_to_array_returns_data_added_via_add(): void
+    #[TestDox('->toArray() returns data added via set()')]
+    public function test_to_array_returns_data_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that toArray() includes data that was
-        // added using the add() method
+        // added using the set() method
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1038,8 +938,8 @@ class DictOfUuidsTest extends TestCase
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid1);
-        $unit->add(key: 'org', input: $uuid2);
+        $unit->set(key: 'user', value: $uuid1);
+        $unit->set(key: 'org', value: $uuid2);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1144,21 +1044,21 @@ class DictOfUuidsTest extends TestCase
         $this->assertSame(3, $actualResult);
     }
 
-    #[TestDox('->count() reflects items added via add()')]
-    public function test_count_reflects_items_added_via_add(): void
+    #[TestDox('->count() reflects items added via set()')]
+    public function test_count_reflects_items_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that count() correctly reflects items
-        // added via the add() method
+        // added via the set() method
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: Uuid::uuid4());
-        $unit->add(key: 'org', input: Uuid::uuid4());
+        $unit->set(key: 'user', value: Uuid::uuid4());
+        $unit->set(key: 'org', value: Uuid::uuid4());
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1178,7 +1078,7 @@ class DictOfUuidsTest extends TestCase
         // explain your test
 
         // this test proves that overwriting an existing key via
-        // add() does not increase the count
+        // set() does not increase the count
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1188,7 +1088,7 @@ class DictOfUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit->add(key: 'user', input: Uuid::uuid4());
+        $unit->set(key: 'user', value: Uuid::uuid4());
 
         // ----------------------------------------------------------------
         // test the results
@@ -1323,14 +1223,14 @@ class DictOfUuidsTest extends TestCase
         $this->assertSame(['user', 'org', 'team'], $actualKeys);
     }
 
-    #[TestDox('Iteration includes items added via add()')]
-    public function test_iteration_includes_items_added_via_add(): void
+    #[TestDox('Iteration includes items added via set()')]
+    public function test_iteration_includes_items_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that iterating over a dict includes
-        // items that were added via the add() method
+        // items that were added via the set() method
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1338,8 +1238,8 @@ class DictOfUuidsTest extends TestCase
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid1);
-        $unit->add(key: 'org', input: $uuid2);
+        $unit->set(key: 'user', value: $uuid1);
+        $unit->set(key: 'org', value: $uuid2);
         $actualData = [];
 
         // ----------------------------------------------------------------
@@ -1820,14 +1720,14 @@ class DictOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('->maybeFirst() returns the first UUID added via add()')]
-    public function test_maybe_first_returns_first_uuid_added_via_add(): void
+    #[TestDox('->maybeFirst() returns the first UUID added via set()')]
+    public function test_maybe_first_returns_first_uuid_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that maybeFirst() returns the first
-        // UUID that was added via the add() method
+        // UUID that was added via the set() method
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1835,8 +1735,8 @@ class DictOfUuidsTest extends TestCase
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid1);
-        $unit->add(key: 'org', input: $uuid2);
+        $unit->set(key: 'user', value: $uuid1);
+        $unit->set(key: 'org', value: $uuid2);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1969,14 +1869,14 @@ class DictOfUuidsTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    #[TestDox('->maybeLast() returns the last UUID added via add()')]
-    public function test_maybe_last_returns_last_uuid_added_via_add(): void
+    #[TestDox('->maybeLast() returns the last UUID added via set()')]
+    public function test_maybe_last_returns_last_uuid_added_via_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that maybeLast() returns the most
-        // recently added UUID via add()
+        // recently added UUID via set()
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1984,8 +1884,8 @@ class DictOfUuidsTest extends TestCase
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid1);
-        $unit->add(key: 'org', input: $uuid2);
+        $unit->set(key: 'user', value: $uuid1);
+        $unit->set(key: 'org', value: $uuid2);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -2120,7 +2020,7 @@ class DictOfUuidsTest extends TestCase
         // perform the change
 
         $copy = $unit->copy();
-        $copy->add(key: 'team', input: $uuid3);
+        $copy->set(key: 'team', value: $uuid3);
 
         // ----------------------------------------------------------------
         // test the results
@@ -2214,20 +2114,20 @@ class DictOfUuidsTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('->empty() returns false after add()')]
-    public function test_empty_returns_false_after_add(): void
+    #[TestDox('->empty() returns false after set()')]
+    public function test_empty_returns_false_after_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that empty() returns false after a
-        // UUID has been added via add()
+        // UUID has been added via set()
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: Uuid::uuid4());
+        $unit->set(key: 'user', value: Uuid::uuid4());
 
         // ----------------------------------------------------------------
         // perform the change
@@ -2311,13 +2211,13 @@ class DictOfUuidsTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('->add() and merge methods support fluent chaining together')]
-    public function test_add_and_merge_support_chaining(): void
+    #[TestDox('->set() and merge methods support fluent chaining together')]
+    public function test_set_and_merge_support_chaining(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that add() and merge methods can be
+        // this test proves that set() and merge methods can be
         // chained together fluently
 
         // ----------------------------------------------------------------
@@ -2332,7 +2232,7 @@ class DictOfUuidsTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit->add(key: 'user', input: $uuid1)
+        $unit->set(key: 'user', value: $uuid1)
             ->mergeArray(['org' => $uuid2])
             ->mergeSelf($other);
 
@@ -2610,14 +2510,14 @@ class DictOfUuidsTest extends TestCase
         }
     }
 
-    #[TestDox('->toArrayOfStrings() includes items added via add()')]
-    public function test_to_array_of_strings_includes_items_from_add(): void
+    #[TestDox('->toArrayOfStrings() includes items added via set()')]
+    public function test_to_array_of_strings_includes_items_from_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // this test proves that toArrayOfStrings() includes items
-        // that were added via the add() method
+        // that were added via the set() method
 
         // ----------------------------------------------------------------
         // setup your test
@@ -2625,8 +2525,8 @@ class DictOfUuidsTest extends TestCase
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $unit = new DictOfUuids();
-        $unit->add(key: 'user', input: $uuid1);
-        $unit->add(key: 'org', input: $uuid2);
+        $unit->set(key: 'user', value: $uuid1);
+        $unit->set(key: 'org', value: $uuid2);
 
         // ----------------------------------------------------------------
         // perform the change

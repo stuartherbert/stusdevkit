@@ -173,7 +173,8 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([8ec6e76](https://github.com/stuartherbert/stusdevkit/commit/8ec6e76)) — Stuart Herbert <stuart@stuartherbert.com>
+- dropped DictOfUuids::add() - duplicates existing ::set() method ([91316c4](https://github.com/stuartherbert/stusdevkit/commit/91316c4)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
 - move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
 - moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
