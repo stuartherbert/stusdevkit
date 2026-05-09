@@ -132,9 +132,13 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ExceptionsKit
+
+- initial docs for ExceptionsKit ([bf59b65](https://github.com/stuartherbert/stusdevkit/commit/bf59b65)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
-- document more of MissingBitsKit ([b1b36fd](https://github.com/stuartherbert/stusdevkit/commit/b1b36fd)) — Stuart Herbert <stuart@stuartherbert.com>
+- document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
 - add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit

@@ -14,9 +14,12 @@ pre-flight report flags it and asks the author to add an entry.
 
 | Name | URL |
 |------|-----|
+| `ArrayIterator` | https://www.php.net/manual/en/class.arrayiterator.php |
 | `Closure` | https://www.php.net/manual/en/class.closure.php |
+| `Countable` | https://www.php.net/manual/en/class.countable.php |
 | `get_class()` | https://www.php.net/manual/en/function.get-class.php |
 | `gettype()` | https://www.php.net/manual/en/function.gettype.php |
+| `IteratorAggregate` | https://www.php.net/manual/en/class.iteratoraggregate.php |
 | `JSON_*` constants | https://www.php.net/manual/en/json.constants.php |
 | `JsonException` | https://www.php.net/manual/en/class.jsonexception.php |
 | `ReflectionClass` | https://www.php.net/manual/en/class.reflectionclass.php |
@@ -24,8 +27,13 @@ pre-flight report flags it and asks the author to add an entry.
 | `ReflectionFunctionAbstract` | https://www.php.net/manual/en/class.reflectionfunctionabstract.php |
 | `ReflectionMethod` | https://www.php.net/manual/en/class.reflectionmethod.php |
 | `ReflectionParameter` | https://www.php.net/manual/en/class.reflectionparameter.php |
+| `ReflectionType` | https://www.php.net/manual/en/class.reflectiontype.php |
+| `ReflectionNamedType` | https://www.php.net/manual/en/class.reflectionnamedtype.php |
+| `ReflectionUnionType` | https://www.php.net/manual/en/class.reflectionuniontype.php |
+| `ReflectionIntersectionType` | https://www.php.net/manual/en/class.reflectionintersectiontype.php |
 | `stdClass` | https://www.php.net/manual/en/class.stdclass.php |
 | `Stringable` | https://www.php.net/manual/en/class.stringable.php |
+| `BackedEnum` | https://www.php.net/manual/en/enum.backedenum.php |
 | `function_exists()` | https://www.php.net/manual/en/function.function-exists.php |
 | `class_exists()` | https://www.php.net/manual/en/function.class-exists.php |
 | `interface_exists()` | https://www.php.net/manual/en/function.interface-exists.php |
@@ -50,6 +58,15 @@ pre-flight report flags it and asks the author to add an entry.
 | `__invoke` | https://www.php.net/manual/en/language.oop5.magic.php#object.invoke |
 | `__call` | https://www.php.net/manual/en/language.oop5.overloading.php#object.call |
 | `__callStatic` | https://www.php.net/manual/en/language.oop5.overloading.php#object.callstatic |
+| `Throwable` | https://www.php.net/manual/en/class.throwable.php |
+| `Exception::getMessage()` | https://www.php.net/manual/en/exception.getMessage |
+| `Exception::getCode()` | https://www.php.net/manual/en/exception.getCode |
+| `Exception::getFile()` | https://www.php.net/manual/en/exception.getFile |
+| `Exception::getLine()` | https://www.php.net/manual/en/exception.getLine |
+| `Exception::getTrace()` | https://www.php.net/manual/en/exception.getTrace |
+| `Exception::getTraceAsString()` | https://www.php.net/manual/en/exception.getTraceAsString |
+| `Exception::getPrevious()` | https://www.php.net/manual/en/exception.getPrevious |
+| `Exception::__toString()` | https://www.php.net/manual/en/exception.toString |
 
 ## PSR standards
 
