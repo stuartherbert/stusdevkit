@@ -20,6 +20,11 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### CollectionsKit
+
+- added NoValueForKeyInCollectionException ([2844a44](https://github.com/stuartherbert/stusdevkit/commit/2844a44)) — Stuart Herbert <stuart@stuartherbert.com>
+- added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -81,10 +86,6 @@ This CHANGELOG is automatically compiled.
 - add Validate::nullish() ([f3e7be5](https://github.com/stuartherbert/stusdevkit/commit/f3e7be5)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial code commit ([319c6f6](https://github.com/stuartherbert/stusdevkit/commit/319c6f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 
@@ -172,7 +173,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([6cc6161](https://github.com/stuartherbert/stusdevkit/commit/6cc6161)) — Stuart Herbert <stuart@stuartherbert.com>
+- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
 - moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
