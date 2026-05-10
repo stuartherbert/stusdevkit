@@ -100,6 +100,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
+- CollectionAsStack (and children) now throw if a null is pushed onto the stack ([3efc1f5](https://github.com/stuartherbert/stusdevkit/commit/3efc1f5)) — Stuart Herbert <stuart@stuartherbert.com>
 - make sure merge() and mergeSelf() only accept compatible types ([d417bfc](https://github.com/stuartherbert/stusdevkit/commit/d417bfc)) — Stuart Herbert <stuart@stuartherbert.com>
 - StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
 
@@ -173,7 +174,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- dropped DictOfUuids::add() - duplicates existing ::set() method ([91316c4](https://github.com/stuartherbert/stusdevkit/commit/91316c4)) — Stuart Herbert <stuart@stuartherbert.com>
+- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
 - CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
 - move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
 - moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>

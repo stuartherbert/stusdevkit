@@ -386,6 +386,35 @@ class CollectionAsStackTest extends TestCase
         $this->assertSame('third', $unit->peek());
     }
 
+    #[TestDox('->push() rejects null values')]
+    public function test_push_rejects_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the constructor already rejects nulls, and pop()/peek()
+        // use null as the empty-stack sentinel — so push() must
+        // also reject null, or callers can silently break the
+        // invariant pop/peek depend on.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsStack<string> $unit */
+        $unit = new CollectionAsStack();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $this->expectException(NullValueNotAllowedException::class);
+        $this->expectExceptionMessage(
+            'CollectionAsStack does not accept null values',
+        );
+
+        /** @phpstan-ignore argument.type */
+        $unit->push(null);
+    }
+
     // ================================================================
     //
     // pop

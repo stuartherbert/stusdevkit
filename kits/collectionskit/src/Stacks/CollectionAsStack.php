@@ -44,6 +44,8 @@ namespace StusDevKit\CollectionsKit\Stacks;
 use ArrayIterator;
 use StusDevKit\CollectionsKit\CollectionOfAnything;
 use StusDevKit\CollectionsKit\Exceptions\EmptyStackException;
+use StusDevKit\CollectionsKit\Validators\RejectNullValue;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 /**
  * CollectionAsStack holds a collection of data as a
@@ -72,10 +74,28 @@ class CollectionAsStack extends CollectionOfAnything
     /**
      * push a value onto the top of the stack
      *
+     * NOTE: you cannot push `null` onto the stack — the constructor
+     * rejects null on construction, and pop() / peek() use null as
+     * their empty-stack sentinel, so accepting null here would break
+     * those guarantees.
+     *
      * @param TValue $value
+     * @throws NullValueNotAllowedException
+     *         if `$value` is null.
      */
     public function push(mixed $value): static
     {
+        // robustness!
+        //
+        // pop() / peek() / maybePop() / maybePeek() use `null` as
+        // the "stack is empty" signal. If we let null get pushed
+        // here, those accessors silently lie about the stack's
+        // contents.
+        RejectNullValue::check(
+            value: $value,
+            collectionType: $this->getCollectionTypeAsString(),
+        );
+
         $this->data[] = $value;
 
         return $this;
