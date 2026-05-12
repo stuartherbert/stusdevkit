@@ -137,7 +137,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- bring Hierarchy section up to latest approach ([dbed7c1](https://github.com/stuartherbert/stusdevkit/commit/dbed7c1)) — Stuart Herbert <stuart@stuartherbert.com>
+- bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>
 - document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
 - add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
 

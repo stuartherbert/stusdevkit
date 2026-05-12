@@ -259,21 +259,22 @@ class InvalidArgumentExceptionTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('::__construct() declares $detail as its only parameter')]
-    public function test_construct_declares_detail_as_its_only_parameter(): void
+    #[TestDox('::__construct() declares its parameters in the expected order')]
+    public function test_construct_declares_its_parameters_in_the_expected_order(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
         // the published parameter set is pinned by enumeration, in
-        // order. Adding, removing, renaming, or reordering parameters
-        // is a breaking change for every throw-site, so any drift
-        // shows up here as a diff naming the specific parameter.
+        // order. Callers use named arguments (`detail:`, `extra:`),
+        // so renaming is a breaking change; positional callers also
+        // exist, so reordering is too. A diff naming the specific
+        // drift is more useful than a count mismatch.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = ['detail'];
+        $expected = ['detail', 'extra'];
         $method = (new ReflectionClass(InvalidArgumentException::class))
             ->getMethod('__construct');
 
@@ -309,6 +310,41 @@ class InvalidArgumentExceptionTest extends TestCase
         $expected = 'string';
         $param = (new ReflectionClass(InvalidArgumentException::class))
             ->getMethod('__construct')->getParameters()[0];
+        $paramType = $param->getType();
+        $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $paramType->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::__construct() declares $extra as array')]
+    public function test_construct_declares_extra_as_array(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // `extra` must be a native `array` - the parent stores it in
+        // the `extra` slot and surfaces it through getExtra(). The
+        // PHPStan-narrowed `ProblemReportExtra` shape lives in the
+        // docblock; at the language level the type is plain `array`,
+        // and that is what call sites are required to satisfy.
+        // Widening to `mixed` or swapping to `iterable` would each
+        // change what a call site is allowed to pass and must be an
+        // intentional change.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'array';
+        $param = (new ReflectionClass(InvalidArgumentException::class))
+            ->getMethod('__construct')->getParameters()[1];
         $paramType = $param->getType();
         $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
 

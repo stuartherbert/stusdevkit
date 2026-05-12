@@ -86,8 +86,9 @@ _None yet._
 StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException
  ✔ ::__construct() is declared
  ✔ ::__construct() is public
- ✔ ::__construct() declares $detail as its only parameter
+ ✔ ::__construct() declares its parameters in the expected order
  ✔ ::__construct() declares $detail as string
+ ✔ ::__construct() declares $extra as array
  ✔ ::__construct() accepts a detail string
  ✔ ->getTypeAsString() returns the fixed type URI
  ✔ ->getStatus() returns 422
