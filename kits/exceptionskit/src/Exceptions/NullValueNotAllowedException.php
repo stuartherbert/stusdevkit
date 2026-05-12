@@ -53,6 +53,10 @@ namespace StusDevKit\ExceptionsKit\Exceptions;
  */
 class NullValueNotAllowedException extends Rfc9457ProblemDetailsException
 {
+    /**
+     * @param string $detail
+     *     a message explaining where a null value was encountered
+     */
     public function __construct(
         string $detail,
     ) {

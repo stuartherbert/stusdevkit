@@ -8,7 +8,15 @@ arbitrary extra data.
 
 ## Hierarchy
 
-_Extends `Exception`; implements `JsonSerializable`._
+**Extends:**
+
+- [`Exception`](https://www.php.net/manual/en/class.exception.php) (PHP built-in)
+
+**Implements:**
+
+- [`JsonSerializable`](https://www.php.net/manual/en/class.jsonserializable.php) (PHP built-in)
+
+**Uses:** _(none)_
 
 ## Synopsis
 

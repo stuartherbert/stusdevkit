@@ -50,12 +50,29 @@ namespace StusDevKit\ExceptionsKit\Exceptions;
  *
  *     throw new InvalidArgumentException(
  *         detail: '$name must be a non-empty string',
+ *         extra: [
+ *             'function' => __FUNCTION__,
+ *             'param_name' => '$name',
+ *             'reason' => 'must be a non-empty string',
+ *         ]
  *     );
+ *
+ * Intended as a structured replacement for PHP's built-in
+ * InvalidArgumentException.
+ *
+ * @phpstan-import-type ProblemReportExtra from Rfc9457ProblemDetailsException
  */
 class InvalidArgumentException extends Rfc9457ProblemDetailsException
 {
+    /**
+     * @param string $detail
+     *     a message explaining which argument is invalid, and why
+     * @param ProblemReportExtra $extra
+     *     any supporting data
+     */
     public function __construct(
         string $detail,
+        array $extra = [],
     ) {
         parent::__construct(
             // we have not sorted out documentation yet!
@@ -63,6 +80,7 @@ class InvalidArgumentException extends Rfc9457ProblemDetailsException
             status: 422,
             title: 'Invalid argument',
             detail: $detail,
+            extra: $extra,
         );
     }
 }

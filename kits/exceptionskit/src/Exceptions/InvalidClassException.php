@@ -53,6 +53,10 @@ namespace StusDevKit\ExceptionsKit\Exceptions;
  */
 class InvalidClassException extends Rfc9457ProblemDetailsException
 {
+    /**
+     * @param string $className
+     *     the class name that cannot be found / resolved
+     */
     public function __construct(
         string $className,
     ) {

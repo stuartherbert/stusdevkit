@@ -55,6 +55,16 @@ namespace StusDevKit\ExceptionsKit\Exceptions;
  */
 class InvalidMethodException extends Rfc9457ProblemDetailsException
 {
+    /**
+     * @param string $className
+     *     the class where we expect the given `$methodName` to
+     *     exist
+     * @param string $methodName
+     *     the method that does not exist on the given `$className`
+     *     (also does not exist on any parent classes or on any
+     *     traits used by the given `$className` or on any traits
+     *     used by any parent classes)
+     */
     public function __construct(
         string $className,
         string $methodName,

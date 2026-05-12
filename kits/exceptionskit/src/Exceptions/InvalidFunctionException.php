@@ -54,6 +54,10 @@ namespace StusDevKit\ExceptionsKit\Exceptions;
  */
 class InvalidFunctionException extends Rfc9457ProblemDetailsException
 {
+    /**
+     * @param string $functionName
+     *     the function that cannot be found / resolved
+     */
     public function __construct(
         string $functionName,
     ) {
