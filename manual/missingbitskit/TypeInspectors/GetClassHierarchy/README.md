@@ -6,7 +6,11 @@ Returns the complete set of parent classes in a PHP class's inheritance chain.
 
 ## Hierarchy
 
-_Standalone class._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

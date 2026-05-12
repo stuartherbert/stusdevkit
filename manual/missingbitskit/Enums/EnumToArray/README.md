@@ -7,7 +7,11 @@ a `name => value` map of every case.
 
 ## Hierarchy
 
-_Standalone trait._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

@@ -6,7 +6,11 @@ Returns the complete set of interfaces implemented by a PHP class or interface.
 
 ## Hierarchy
 
-_Standalone class._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

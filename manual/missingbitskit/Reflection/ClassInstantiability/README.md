@@ -7,7 +7,16 @@ via `new`, and — if not — which single reason disqualifies it.
 
 ## Hierarchy
 
-_String-backed enum implementing `StaticallyArrayable`._
+**Extends:** _(none)_
+
+**Implements:**
+
+- [`BackedEnum`](https://www.php.net/manual/en/enum.backedenum.php) (PHP built-in)
+- [`StaticallyArrayable`](../../Arrays/StaticallyArrayable/README.md)
+
+**Uses:**
+
+- [`EnumToArray`](../../Enums/EnumToArray/README.md)
 
 ## Synopsis
 

@@ -6,7 +6,11 @@ Extracts the namespace portion from a fully-qualified class name or object.
 
 ## Hierarchy
 
-_Standalone class._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

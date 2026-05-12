@@ -6,7 +6,11 @@ Returns the set of PHP type hints that a float value satisfies.
 
 ## Hierarchy
 
-_Standalone class._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

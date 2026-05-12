@@ -8,7 +8,11 @@ type hint.
 
 ## Hierarchy
 
-_Standalone class._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

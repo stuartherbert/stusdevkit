@@ -7,7 +7,16 @@ an intersection type that cannot be faithfully represented in that flat form.
 
 ## Hierarchy
 
-_Extends [`Rfc9457ProblemDetailsException`](../../../exceptionskit/Exceptions/Rfc9457ProblemDetailsException/README.md), which itself extends `Exception` (PHP built-in)._
+**Extends:**
+
+- [`Exception`](https://www.php.net/manual/en/class.exception.php) (PHP built-in)
+- [`Rfc9457ProblemDetailsException`](../../../exceptionskit/Exceptions/Rfc9457ProblemDetailsException/README.md)
+
+**Implements:**
+
+- [`JsonSerializable`](https://www.php.net/manual/en/class.jsonserializable.php) (PHP built-in, via [`Rfc9457ProblemDetailsException`](../../../exceptionskit/Exceptions/Rfc9457ProblemDetailsException/README.md))
+
+**Uses:** _(none)_
 
 ## Synopsis
 

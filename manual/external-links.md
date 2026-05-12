@@ -59,6 +59,8 @@ pre-flight report flags it and asks the author to add an entry.
 | `__call` | https://www.php.net/manual/en/language.oop5.overloading.php#object.call |
 | `__callStatic` | https://www.php.net/manual/en/language.oop5.overloading.php#object.callstatic |
 | `Throwable` | https://www.php.net/manual/en/class.throwable.php |
+| `Exception` | https://www.php.net/manual/en/class.exception.php |
+| `JsonSerializable` | https://www.php.net/manual/en/class.jsonserializable.php |
 | `Exception::getMessage()` | https://www.php.net/manual/en/exception.getMessage |
 | `Exception::getCode()` | https://www.php.net/manual/en/exception.getCode |
 | `Exception::getFile()` | https://www.php.net/manual/en/exception.getFile |

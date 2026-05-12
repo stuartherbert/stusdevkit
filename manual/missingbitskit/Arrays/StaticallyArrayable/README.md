@@ -7,7 +7,11 @@ type-level state as a PHP array via a static method call.
 
 ## Hierarchy
 
-_Standalone interface._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 

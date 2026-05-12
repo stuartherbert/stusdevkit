@@ -135,19 +135,20 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### MissingBitsKit
+
+- bring Hierarchy section up to latest approach ([dbed7c1](https://github.com/stuartherbert/stusdevkit/commit/dbed7c1)) — Stuart Herbert <stuart@stuartherbert.com>
+- document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
+- add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ExceptionsKit
 
-- generate initial docs ([66e4dff](https://github.com/stuartherbert/stusdevkit/commit/66e4dff)) — Stuart Herbert <stuart@stuartherbert.com>
+- generate initial docs ([18ddcb3](https://github.com/stuartherbert/stusdevkit/commit/18ddcb3)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial docs for ExceptionsKit ([711aef1](https://github.com/stuartherbert/stusdevkit/commit/711aef1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### CollectionsKit
 
 - initial documentation ([0a7a1f3](https://github.com/stuartherbert/stusdevkit/commit/0a7a1f3)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
-- add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
 

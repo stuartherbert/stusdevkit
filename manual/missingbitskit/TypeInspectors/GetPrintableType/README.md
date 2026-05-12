@@ -7,7 +7,11 @@ callable shapes, scalar values — controlled by a bitmask of flag constants.
 
 ## Hierarchy
 
-_Standalone class._
+**Extends:** _(none)_
+
+**Implements:** _(none)_
+
+**Uses:** _(none)_
 
 ## Synopsis
 
