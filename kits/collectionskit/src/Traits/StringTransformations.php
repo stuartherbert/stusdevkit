@@ -60,6 +60,9 @@ trait StringTransformations
      * Trims all strings in the collection using PHP's trim()
      * function.
      *
+     * @param string $characters
+     *      list of characters to trim from the front and end of every
+     *      string in the collection
      * @return static
      */
     public function applyTrim(string $characters = " \n\r\t\v\0"): static
@@ -76,6 +79,9 @@ trait StringTransformations
      * Left-trims all strings in the collection using PHP's ltrim()
      * function.
      *
+     * @param string $characters
+     *      list of characters to trim from the front of every string
+     *      in the collection
      * @return static
      */
     public function applyLtrim(string $characters = " \n\r\t\v\0"): static
@@ -92,6 +98,9 @@ trait StringTransformations
      * Right-trims all strings in the collection using PHP's rtrim()
      * function.
      *
+     * @param string $characters
+     *      list of characters to trim from the end of every string
+     *      in the collection
      * @return static
      */
     public function applyRtrim(string $characters = " \n\r\t\v\0"): static

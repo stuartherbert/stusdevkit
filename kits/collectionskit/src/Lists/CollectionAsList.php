@@ -43,6 +43,7 @@ namespace StusDevKit\CollectionsKit\Lists;
 
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Validators\RejectNullValue;
+use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 /**
  * CollectionAsList holds a collection of data as an array with sequential
@@ -88,7 +89,14 @@ class CollectionAsList extends AccessibleCollection
     // ----------------------------------------------------------------
 
     /**
+     * Add a new value to the end of the list.
+     *
+     * We don't do anything here to prevent duplicate values being added
+     * to the list.
+     *
      * @param TValue $value
+     * @throws NullValueNotAllowedException
+     *         if $value is null.
      */
     public function add(mixed $value): static
     {

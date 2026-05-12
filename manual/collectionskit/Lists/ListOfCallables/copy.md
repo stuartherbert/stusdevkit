@@ -1,0 +1,94 @@
+# ListOfCallables::copy()
+
+> `public function copy(): static`
+
+Creates a copy of this list.
+
+**Since:** _Upcoming Release_
+
+## Defined On
+
+Defined on [`StusDevKit\CollectionsKit\CollectionOfAnything`](../../CollectionOfAnything/README.md), using PHPStan template types set in [`StusDevKit\CollectionsKit\Lists\ListOfCallables`](README.md).
+
+## Signature
+
+```php
+declare(strict_types=1);
+namespace StusDevKit\CollectionsKit\Lists;
+
+class ListOfCallables extends CollectionAsList
+{
+    /**
+     * @return static<int, callable>
+     */
+    public function copy(): static
+}
+```
+
+> [!NOTE]
+> This is an inherited method whose types are narrowed by PHPStan generics.
+> The runtime PHP signature is `public function copy(): static`, inherited
+> from [`CollectionOfAnything::copy()`](../../CollectionOfAnything/copy.md).
+> The narrowed `static<int, callable>` return type shown above is bound by
+> `@extends CollectionAsList<callable>` on [`ListOfCallables`](README.md).
+
+## Description
+
+Returns a new `ListOfCallables` containing the same callables as this list. The two instances do not share storage — appending to or merging into the copy leaves the original unchanged, and vice versa.
+
+Useful if you want to work with immutable lists: take a copy, hand it to code that may mutate it, and keep the original intact.
+
+Late-static binding ensures the copy is always an instance of `ListOfCallables`, not of an ancestor — so the returned list is itself a `ListOfCallables`.
+
+## Parameters
+
+_None._
+
+## Return Values
+
+A new `ListOfCallables` instance containing the same callables in the same order. The PHP signature returns `static`, but the class's `@extends CollectionAsList<callable>` binding narrows the value type to `callable`. Copying an empty list returns an empty `ListOfCallables`.
+
+## Errors/Exceptions
+
+_None._
+
+## Here Be Dragons
+
+**The copy is shallow.** The new list holds the same callable references as the original. For closures and invokable objects, that means both lists point at the same underlying object — calling the closure from the copy is identical to calling it from the original, and any captured state is shared. The "independence" the copy provides is structural (adding/removing entries), not deep cloning of the callables themselves.
+
+## Examples
+
+_None yet._
+
+## Contract (from tests)
+
+```
+StusDevKit\CollectionsKit\Lists\ListOfCallables
+ ✔ ->copy() returns a new ListOfCallables with the same data
+ ✔ ->copy() returns independent instance (modifying copy does not affect original)
+ ✔ ->copy() of empty list returns empty list
+```
+
+## Source
+
+[`kits/collectionskit/src/CollectionOfAnything.php:282`](../../../../kits/collectionskit/src/CollectionOfAnything.php#L282)
+
+## Changelog
+
+_No tagged releases yet._
+
+## See Also
+
+- [`ListOfCallables`](README.md) — where the `<callable>` template parameter is bound
+- [`CollectionOfAnything::copy()`](../../CollectionOfAnything/copy.md) — the generic implementation this page specialises
+
+## Issues
+
+- [Open issues mentioning `ListOfCallables::copy()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aopen+%22ListOfCallables%3A%3Acopy()%22)
+- [Closed issues mentioning `ListOfCallables::copy()`](https://github.com/stuartherbert/stusdevkit/issues?q=is%3Aissue+is%3Aclosed+%22ListOfCallables%3A%3Acopy()%22)
+- [Report a new issue](https://github.com/stuartherbert/stusdevkit/issues/new?title=ListOfCallables%3A+%3Cdescribe+the+issue%3E)
+
+---
+
+_Generated from source code and PHPUnit TestDox output by the
+`generate-manual-page` skill._

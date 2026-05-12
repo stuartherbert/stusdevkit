@@ -48,6 +48,29 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
  * Create your own child classes to create type-safe collections of your
  * app / package's objects.
  *
+ * HERE BE DRAGONS:
+ *
+ * Objects are stored by reference, not by value. Three knock-on
+ * consequences bite callers who expect "collection" to mean
+ * "self-contained":
+ *
+ *   1. Mutating a retrieved object mutates the dict's copy too.
+ *      `$dict->get('key')->name = 'new'` is not a footgun — it's
+ *      working as designed — but it surprises callers who treat
+ *      get() as if it returned a value.
+ *
+ *   2. copy() is a shallow copy. The new dict has its own key set,
+ *      but the values are the same object instances. Mutating an
+ *      object retrieved from the copy mutates the same object in
+ *      the original.
+ *
+ *   3. mergeSelf() and mergeArray() transfer object references,
+ *      not clones. After the merge, both dicts hold pointers to
+ *      the same objects.
+ *
+ * If you need value semantics, clone before storing or before
+ * returning.
+ *
  * PHPSTAN NOTE:
  *
  * This class has template parameters (TKey, TValue) so that
@@ -72,7 +95,7 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
  * @see https://github.com/phpstan/phpstan/discussions/6731
  *
  * @template TKey of array-key
- * @template TValue of object
+ * @template TValue of object = object
  * @extends CollectionAsDict<TKey, TValue>
  * @phpstan-consistent-constructor
  */

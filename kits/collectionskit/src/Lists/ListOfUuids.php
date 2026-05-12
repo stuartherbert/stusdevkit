@@ -67,6 +67,12 @@ class ListOfUuids extends CollectionAsList
     // ----------------------------------------------------------------
 
     /**
+     * Return the contents of this collection as an array of
+     * strings.
+     *
+     * We do the type-conversion here, so that you don't have
+     * to do your own conversions throughout your code.
+     *
      * @return list<string>
      */
     public function toArrayOfStrings(): array

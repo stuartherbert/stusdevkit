@@ -100,7 +100,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- CollectionAsStack (and children) now throw if a null is pushed onto the stack ([3efc1f5](https://github.com/stuartherbert/stusdevkit/commit/3efc1f5)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsStack (and children) now throw if a null is pushed onto the stack ([9b656c1](https://github.com/stuartherbert/stusdevkit/commit/9b656c1)) — Stuart Herbert <stuart@stuartherbert.com>
 - make sure merge() and mergeSelf() only accept compatible types ([d417bfc](https://github.com/stuartherbert/stusdevkit/commit/d417bfc)) — Stuart Herbert <stuart@stuartherbert.com>
 - StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
 
@@ -134,6 +134,10 @@ This CHANGELOG is automatically compiled.
 - move CHANGELOG preamble into separate files, to improve readability ([53fdfb6](https://github.com/stuartherbert/stusdevkit/commit/53fdfb6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- initial documentation ([9a18ea0](https://github.com/stuartherbert/stusdevkit/commit/9a18ea0)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 

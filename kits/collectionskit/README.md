@@ -29,6 +29,21 @@ The second one is more about developer experience preference.
 - With a collections class, we can colocate all the relevant, repeated operations throughout our code, and add them as methods. They're easy to discover, and gaps are easy to spot.
 - We can also pick a type of collection (dictionary, list, index) that puts restrictions on how that collection works. This can add convenience (see index collections), and also avoid bugs by making sure the collection is used consistently throughout your libraries and apps.
 
+## Design Rule: Collections Never Store `null`
+
+Every collection in this kit rejects `null` as a stored value. Try to `set()`, `push()`, `add()`, or `merge()` a `null`, and you'll get a `NullValueNotAllowedException` immediately — at the call site, not later when something downstream silently breaks.
+
+**Why this rule exists.** The kit's `Maybe…` / non-`Maybe…` accessor pairs (`maybeGet()` / `get()`, `maybeFirst()` / `first()`, `maybePop()` / `pop()`, `maybePeek()` / `peek()`) all use `null` as the "no value here" sentinel:
+
+```php
+$dict->maybeGet('missing');  // null — key not in collection
+$stack->maybePop();          // null — stack is empty
+```
+
+If `null` were a valid stored value, those signatures would have to disambiguate "stored a null" from "absent" — typically by wrapping every value in an `Optional<T>`, or forcing callers to `has()` before every access. By keeping `null` out at the boundary, every accessor stays clean: a `null` return unambiguously means "empty / not found".
+
+**What to do if you genuinely need nullable values.** Wrap them in an object whose *properties* can be null, and store the wrapper. The collection requires the wrapper itself to be non-null, but its fields are unconstrained — so a `User` object with a nullable `$lastLoginAt` property goes in just fine.
+
 ## Types of Collection
 
 This library provides the following types of collection, each suited to a different relationship between keys and values.
