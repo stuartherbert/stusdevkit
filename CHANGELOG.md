@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### ExceptionsKit
 
-- added FileNotFoundException ([a2039b9](https://github.com/stuartherbert/stusdevkit/commit/a2039b9)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UnableToReadFileException ([9337912](https://github.com/stuartherbert/stusdevkit/commit/9337912)) — Stuart Herbert <stuart@stuartherbert.com>
+- added FileNotFoundException ([6ba8f25](https://github.com/stuartherbert/stusdevkit/commit/6ba8f25)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidMethodException ([ef0015a](https://github.com/stuartherbert/stusdevkit/commit/ef0015a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
