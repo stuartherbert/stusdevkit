@@ -20,6 +20,14 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### ExceptionsKit
+
+- added FileNotFoundException ([a2039b9](https://github.com/stuartherbert/stusdevkit/commit/a2039b9)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidMethodException ([ef0015a](https://github.com/stuartherbert/stusdevkit/commit/ef0015a)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
+- added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### CollectionsKit
 
 - added NoValueForKeyInCollectionException ([c1fd4de](https://github.com/stuartherbert/stusdevkit/commit/c1fd4de)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -47,13 +55,6 @@ This CHANGELOG is automatically compiled.
 - added DependencyNotFoundException ([29d4ce5](https://github.com/stuartherbert/stusdevkit/commit/29d4ce5)) — Stuart Herbert <stuart@stuartherbert.com>
 - add PSR container package ([2d399b9](https://github.com/stuartherbert/stusdevkit/commit/2d399b9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added skeleton ([fd014db](https://github.com/stuartherbert/stusdevkit/commit/fd014db)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### ExceptionsKit
-
-- added InvalidMethodException ([ef0015a](https://github.com/stuartherbert/stusdevkit/commit/ef0015a)) — Stuart Herbert <stuart@stuartherbert.com>
-- added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
-- added InvalidClassException ([3574803](https://github.com/stuartherbert/stusdevkit/commit/3574803)) — Stuart Herbert <stuart@stuartherbert.com>
-- added InvalidArgumentException ([88fc3e7](https://github.com/stuartherbert/stusdevkit/commit/88fc3e7)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingKitsBit
 
