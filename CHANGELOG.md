@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added IsArrayKey type guard ([a973b0a](https://github.com/stuartherbert/stusdevkit/commit/a973b0a)) — Stuart Herbert <stuart@stuartherbert.com>
+- added RequireArrayKey ([3a5abc3](https://github.com/stuartherbert/stusdevkit/commit/3a5abc3)) — Stuart Herbert <stuart@stuartherbert.com>
+- added IsArrayKey type guard ([1b1c041](https://github.com/stuartherbert/stusdevkit/commit/1b1c041)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ClassInstantiability enum ([a8ea4d4](https://github.com/stuartherbert/stusdevkit/commit/a8ea4d4)) — Stuart Herbert <stuart@stuartherbert.com>
 - added EnumToArray ([80d2ca6](https://github.com/stuartherbert/stusdevkit/commit/80d2ca6)) — Stuart Herbert <stuart@stuartherbert.com>
