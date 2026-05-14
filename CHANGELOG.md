@@ -20,6 +20,19 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### MissingBitsKit
+
+- added IsArrayKey type guard ([a973b0a](https://github.com/stuartherbert/stusdevkit/commit/a973b0a)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>
+- added ClassInstantiability enum ([a8ea4d4](https://github.com/stuartherbert/stusdevkit/commit/a8ea4d4)) — Stuart Herbert <stuart@stuartherbert.com>
+- added EnumToArray ([80d2ca6](https://github.com/stuartherbert/stusdevkit/commit/80d2ca6)) — Stuart Herbert <stuart@stuartherbert.com>
+- added StaticallyArrayable interface ([eb01012](https://github.com/stuartherbert/stusdevkit/commit/eb01012)) — Stuart Herbert <stuart@stuartherbert.com>
+- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
+- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
+- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
+- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### ExceptionsKit
 
 - added UnableToReadFileException ([3bf8b63](https://github.com/stuartherbert/stusdevkit/commit/3bf8b63)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -33,18 +46,6 @@ This CHANGELOG is automatically compiled.
 
 - added NoValueForKeyInCollectionException ([c1fd4de](https://github.com/stuartherbert/stusdevkit/commit/c1fd4de)) — Stuart Herbert <stuart@stuartherbert.com>
 - added CollectionAsStack and StackOfStrings ([23db293](https://github.com/stuartherbert/stusdevkit/commit/23db293)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>
-- added ClassInstantiability enum ([a8ea4d4](https://github.com/stuartherbert/stusdevkit/commit/a8ea4d4)) — Stuart Herbert <stuart@stuartherbert.com>
-- added EnumToArray ([80d2ca6](https://github.com/stuartherbert/stusdevkit/commit/80d2ca6)) — Stuart Herbert <stuart@stuartherbert.com>
-- added StaticallyArrayable interface ([eb01012](https://github.com/stuartherbert/stusdevkit/commit/eb01012)) — Stuart Herbert <stuart@stuartherbert.com>
-- added FlattenClassTypes ([74c552e](https://github.com/stuartherbert/stusdevkit/commit/74c552e)) — Stuart Herbert <stuart@stuartherbert.com>
-- added initial set of TypeInspector classes ([78d13cc](https://github.com/stuartherbert/stusdevkit/commit/78d13cc)) — Stuart Herbert <stuart@stuartherbert.com>
-- added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
-- added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
-- added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
 
@@ -102,7 +103,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- Json::encode() no longer depends on AssertionsKit ([896aff7](https://github.com/stuartherbert/stusdevkit/commit/896aff7)) — Stuart Herbert <stuart@stuartherbert.com>
+- Json::encode() no longer depends on AssertionsKit ([6e24cf1](https://github.com/stuartherbert/stusdevkit/commit/6e24cf1)) — Stuart Herbert <stuart@stuartherbert.com>
 - only GetDuckTypes now returns `mixed` ([04c1916](https://github.com/stuartherbert/stusdevkit/commit/04c1916)) — Stuart Herbert <stuart@stuartherbert.com>
 - FlattenReflectionType now throws if asked to flatten an intersection type ([da90743](https://github.com/stuartherbert/stusdevkit/commit/da90743)) — Stuart Herbert <stuart@stuartherbert.com>
 
