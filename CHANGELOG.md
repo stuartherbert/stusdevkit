@@ -100,16 +100,17 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
+#### MissingBitsKit
+
+- Json::encode() no longer depends on AssertionsKit ([896aff7](https://github.com/stuartherbert/stusdevkit/commit/896aff7)) — Stuart Herbert <stuart@stuartherbert.com>
+- only GetDuckTypes now returns `mixed` ([04c1916](https://github.com/stuartherbert/stusdevkit/commit/04c1916)) — Stuart Herbert <stuart@stuartherbert.com>
+- FlattenReflectionType now throws if asked to flatten an intersection type ([da90743](https://github.com/stuartherbert/stusdevkit/commit/da90743)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### CollectionsKit
 
 - CollectionAsStack (and children) now throw if a null is pushed onto the stack ([9b656c1](https://github.com/stuartherbert/stusdevkit/commit/9b656c1)) — Stuart Herbert <stuart@stuartherbert.com>
 - make sure merge() and mergeSelf() only accept compatible types ([d417bfc](https://github.com/stuartherbert/stusdevkit/commit/d417bfc)) — Stuart Herbert <stuart@stuartherbert.com>
 - StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- only GetDuckTypes now returns `mixed` ([04c1916](https://github.com/stuartherbert/stusdevkit/commit/04c1916)) — Stuart Herbert <stuart@stuartherbert.com>
-- FlattenReflectionType now throws if asked to flatten an intersection type ([da90743](https://github.com/stuartherbert/stusdevkit/commit/da90743)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
@@ -182,7 +183,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([f5ecb1d](https://github.com/stuartherbert/stusdevkit/commit/f5ecb1d)) — Stuart Herbert <stuart@stuartherbert.com>
+- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
 - drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
 - now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>

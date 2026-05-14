@@ -43,7 +43,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\MissingBitsKit\Json;
 
-use StusDevKit\AssertionsKit\Assert;
+use RuntimeException;
 
 /**
  * Provides error-safe wrappers around PHP's builtins:
@@ -135,7 +135,7 @@ class Json
         // of its declared return type is unreachable here.
         //
         // keep phpstan happy
-        Assert::assertIsString($retval, "json_encode() failed to return a string");
+        assert(is_string($retval), new RuntimeException("json_encode() failed to return a string"));
 
         // all done
         return $retval;
