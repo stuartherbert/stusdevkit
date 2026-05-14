@@ -50,6 +50,7 @@ use StusDevKit\AssertionsKit\Assert;
 use StusDevKit\AssertionsKit\Contracts\AssertApi;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\AssertionsKit\Tests\Fixtures\ValueObject;
+use StusDevKit\ExceptionsKit\Exceptions\FileNotFoundException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 
 #[TestDox(Assert::class)]
@@ -8304,8 +8305,8 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('::assertFileMatchesFormat() throws InvalidArgumentException when the actual file is not readable')]
-    public function test_assertFileMatchesFormat_throws_InvalidArgumentException_when_actual_file_not_readable(): void
+    #[TestDox('::assertFileMatchesFormat() throws FileNotFoundException when the actual file does not exist')]
+    public function test_assertFileMatchesFormat_throws_FileNotFoundException_when_actual_file_not_readable(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -8318,7 +8319,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8416,8 +8417,8 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('::assertFileMatchesFormatFile() throws InvalidArgumentException when the format file is not readable')]
-    public function test_assertFileMatchesFormatFile_throws_InvalidArgumentException_when_format_file_not_readable(): void
+    #[TestDox('::assertFileMatchesFormatFile() throws FileNotFoundException when the format file does not exist')]
+    public function test_assertFileMatchesFormatFile_throws_FileNotFoundException_when_format_file_not_readable(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -8430,7 +8431,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8441,8 +8442,8 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileMatchesFormatFile() throws InvalidArgumentException when the actual file is not readable')]
-    public function test_assertFileMatchesFormatFile_throws_InvalidArgumentException_when_actual_file_not_readable(): void
+    #[TestDox('::assertFileMatchesFormatFile() throws FileNotFoundException when the actual file does not exist')]
+    public function test_assertFileMatchesFormatFile_throws_FileNotFoundException_when_actual_file_not_readable(): void
     {
         // ----------------------------------------------------------------
         // explain your test
@@ -8455,7 +8456,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         $formatFile = __DIR__
             . '/../../fixtures/format-template.txt';
@@ -8529,7 +8530,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileEquals() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertFileEquals() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileEquals_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -8543,7 +8544,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8631,7 +8632,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileEqualsCanonicalizing() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertFileEqualsCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileEqualsCanonicalizing_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -8644,7 +8645,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8718,7 +8719,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileEqualsIgnoringCase() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertFileEqualsIgnoringCase() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileEqualsIgnoringCase_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -8731,7 +8732,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8802,7 +8803,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileNotEquals() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertFileNotEquals() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileNotEquals_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -8816,7 +8817,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8901,7 +8902,7 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('::assertFileNotEqualsCanonicalizing() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertFileNotEqualsCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileNotEqualsCanonicalizing_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -8912,7 +8913,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -8985,7 +8986,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileNotEqualsIgnoringCase() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertFileNotEqualsIgnoringCase() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileNotEqualsIgnoringCase_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -8996,7 +8997,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9066,7 +9067,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertStringEqualsFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertStringEqualsFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertStringEqualsFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9078,7 +9079,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9158,7 +9159,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertStringEqualsFileCanonicalizing() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertStringEqualsFileCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertStringEqualsFileCanonicalizing_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9169,7 +9170,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9243,7 +9244,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertStringEqualsFileIgnoringCase() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertStringEqualsFileIgnoringCase() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertStringEqualsFileIgnoringCase_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9254,7 +9255,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9326,7 +9327,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertStringNotEqualsFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertStringNotEqualsFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertStringNotEqualsFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9339,7 +9340,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9420,7 +9421,7 @@ class AssertTest extends TestCase
         }
     }
 
-    #[TestDox('::assertStringNotEqualsFileCanonicalizing() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertStringNotEqualsFileCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertStringNotEqualsFileCanonicalizing_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9431,7 +9432,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9503,7 +9504,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertStringNotEqualsFileIgnoringCase() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertStringNotEqualsFileIgnoringCase() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertStringNotEqualsFileIgnoringCase_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9514,7 +9515,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9748,7 +9749,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertJsonStringEqualsJsonFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertJsonStringEqualsJsonFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertJsonStringEqualsJsonFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9761,7 +9762,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9834,7 +9835,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertJsonStringNotEqualsJsonFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertJsonStringNotEqualsJsonFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertJsonStringNotEqualsJsonFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9846,7 +9847,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -9919,7 +9920,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertJsonFileEqualsJsonFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertJsonFileEqualsJsonFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertJsonFileEqualsJsonFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -9931,7 +9932,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -10004,7 +10005,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertJsonFileNotEqualsJsonFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertJsonFileNotEqualsJsonFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertJsonFileNotEqualsJsonFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -10016,7 +10017,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -10263,7 +10264,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertXmlStringEqualsXmlFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertXmlStringEqualsXmlFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertXmlStringEqualsXmlFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -10276,7 +10277,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -10348,7 +10349,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertXmlStringNotEqualsXmlFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertXmlStringNotEqualsXmlFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertXmlStringNotEqualsXmlFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -10360,7 +10361,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -10435,7 +10436,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertXmlFileEqualsXmlFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertXmlFileEqualsXmlFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertXmlFileEqualsXmlFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -10447,7 +10448,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -10520,7 +10521,7 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertXmlFileNotEqualsXmlFile() throws InvalidArgumentException when the expected file is not readable')]
+    #[TestDox('::assertXmlFileNotEqualsXmlFile() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertXmlFileNotEqualsXmlFile_throws_when_expected_file_not_readable(): void
     {
         // ----------------------------------------------------------------
@@ -10532,7 +10533,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(FileNotFoundException::class);
 
         // ----------------------------------------------------------------
         // perform the change

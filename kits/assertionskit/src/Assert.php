@@ -45,7 +45,9 @@ use ArrayAccess;
 use Countable;
 use StusDevKit\AssertionsKit\Contracts\AssertApi;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
+use StusDevKit\ExceptionsKit\Exceptions\FileNotFoundException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
+use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
 
 /**
  * Concrete implementation of the AssertApi contract.
@@ -2165,8 +2167,8 @@ class Assert implements AssertApi
         string $actual,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expected, 'expected');
-        $actualContents = self::readFileContents($actual, 'actual');
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
 
         if ($expectedContents === $actualContents) {
             return;
@@ -2187,8 +2189,8 @@ class Assert implements AssertApi
         string $actual,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expected, 'expected');
-        $actualContents = self::readFileContents($actual, 'actual');
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
 
         $expectedLines = explode("\n", $expectedContents);
         $actualLines = explode("\n", $actualContents);
@@ -2214,8 +2216,8 @@ class Assert implements AssertApi
         string $actual,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expected, 'expected');
-        $actualContents = self::readFileContents($actual, 'actual');
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
 
         if (mb_strtolower($expectedContents) === mb_strtolower($actualContents)) {
             return;
@@ -2236,8 +2238,8 @@ class Assert implements AssertApi
         string $actual,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expected, 'expected');
-        $actualContents = self::readFileContents($actual, 'actual');
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
 
         if ($expectedContents !== $actualContents) {
             return;
@@ -2258,8 +2260,8 @@ class Assert implements AssertApi
         string $actual,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expected, 'expected');
-        $actualContents = self::readFileContents($actual, 'actual');
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
 
         $expectedLines = explode("\n", $expectedContents);
         $actualLines = explode("\n", $actualContents);
@@ -2285,8 +2287,8 @@ class Assert implements AssertApi
         string $actual,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expected, 'expected');
-        $actualContents = self::readFileContents($actual, 'actual');
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
 
         if (mb_strtolower($expectedContents) !== mb_strtolower($actualContents)) {
             return;
@@ -2313,7 +2315,7 @@ class Assert implements AssertApi
         string $actualString,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
 
         if ($expectedContents === $actualString) {
             return;
@@ -2334,7 +2336,7 @@ class Assert implements AssertApi
         string $actualString,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
 
         $expectedLines = explode("\n", $expectedContents);
         $actualLines = explode("\n", $actualString);
@@ -2360,7 +2362,7 @@ class Assert implements AssertApi
         string $actualString,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
 
         if (mb_strtolower($expectedContents) === mb_strtolower($actualString)) {
             return;
@@ -2381,7 +2383,7 @@ class Assert implements AssertApi
         string $actualString,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
 
         if ($expectedContents !== $actualString) {
             return;
@@ -2402,7 +2404,7 @@ class Assert implements AssertApi
         string $actualString,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
 
         $expectedLines = explode("\n", $expectedContents);
         $actualLines = explode("\n", $actualString);
@@ -2428,7 +2430,7 @@ class Assert implements AssertApi
         string $actualString,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
 
         if (mb_strtolower($expectedContents) !== mb_strtolower($actualString)) {
             return;
@@ -3037,21 +3039,7 @@ class Assert implements AssertApi
         string $actualFile,
         string $message = '',
     ): void {
-        if (!is_file($actualFile) || !is_readable($actualFile)) {
-            throw new InvalidArgumentException(
-                detail: '$actualFile does not exist or is not'
-                    . ' readable: ' . $actualFile,
-            );
-        }
-
-        $actual = file_get_contents($actualFile);
-
-        if ($actual === false) {
-            throw new InvalidArgumentException(
-                detail: '$actualFile could not be read: '
-                    . $actualFile,
-            );
-        }
+        $actual = self::readFileContents($actualFile);
 
         $regex = self::formatToRegex($format);
 
@@ -3074,37 +3062,8 @@ class Assert implements AssertApi
         string $actualFile,
         string $message = '',
     ): void {
-        if (!is_file($formatFile) || !is_readable($formatFile)) {
-            throw new InvalidArgumentException(
-                detail: '$formatFile does not exist or is not'
-                    . ' readable: ' . $formatFile,
-            );
-        }
-
-        if (!is_file($actualFile) || !is_readable($actualFile)) {
-            throw new InvalidArgumentException(
-                detail: '$actualFile does not exist or is not'
-                    . ' readable: ' . $actualFile,
-            );
-        }
-
-        $format = file_get_contents($formatFile);
-
-        if ($format === false) {
-            throw new InvalidArgumentException(
-                detail: '$formatFile could not be read: '
-                    . $formatFile,
-            );
-        }
-
-        $actual = file_get_contents($actualFile);
-
-        if ($actual === false) {
-            throw new InvalidArgumentException(
-                detail: '$actualFile could not be read: '
-                    . $actualFile,
-            );
-        }
+        $format = self::readFileContents($formatFile);
+        $actual = self::readFileContents($actualFile);
 
         $regex = self::formatToRegex($format);
 
@@ -3197,7 +3156,7 @@ class Assert implements AssertApi
         string $actualJson,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
         $expected = json_decode($expectedContents);
         $actual = json_decode($actualJson);
 
@@ -3220,7 +3179,7 @@ class Assert implements AssertApi
         string $actualJson,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
         $expected = json_decode($expectedContents);
         $actual = json_decode($actualJson);
 
@@ -3243,8 +3202,8 @@ class Assert implements AssertApi
         string $actualFile,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
-        $actualContents = self::readFileContents($actualFile, 'actualFile');
+        $expectedContents = self::readFileContents($expectedFile);
+        $actualContents = self::readFileContents($actualFile);
         $expected = json_decode($expectedContents);
         $actual = json_decode($actualContents);
 
@@ -3267,8 +3226,8 @@ class Assert implements AssertApi
         string $actualFile,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
-        $actualContents = self::readFileContents($actualFile, 'actualFile');
+        $expectedContents = self::readFileContents($expectedFile);
+        $actualContents = self::readFileContents($actualFile);
         $expected = json_decode($expectedContents);
         $actual = json_decode($actualContents);
 
@@ -3341,7 +3300,7 @@ class Assert implements AssertApi
         string $actualXml,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
         $expectedDoc = self::loadXmlString($expectedContents);
         $actualDoc = self::loadXmlString($actualXml);
 
@@ -3364,7 +3323,7 @@ class Assert implements AssertApi
         string $actualXml,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
+        $expectedContents = self::readFileContents($expectedFile);
         $expectedDoc = self::loadXmlString($expectedContents);
         $actualDoc = self::loadXmlString($actualXml);
 
@@ -3387,8 +3346,8 @@ class Assert implements AssertApi
         string $actualFile,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
-        $actualContents = self::readFileContents($actualFile, 'actualFile');
+        $expectedContents = self::readFileContents($expectedFile);
+        $actualContents = self::readFileContents($actualFile);
         $expectedDoc = self::loadXmlString($expectedContents);
         $actualDoc = self::loadXmlString($actualContents);
 
@@ -3411,8 +3370,8 @@ class Assert implements AssertApi
         string $actualFile,
         string $message = '',
     ): void {
-        $expectedContents = self::readFileContents($expectedFile, 'expectedFile');
-        $actualContents = self::readFileContents($actualFile, 'actualFile');
+        $expectedContents = self::readFileContents($expectedFile);
+        $actualContents = self::readFileContents($actualFile);
         $expectedDoc = self::loadXmlString($expectedContents);
         $actualDoc = self::loadXmlString($actualContents);
 
@@ -3532,36 +3491,53 @@ class Assert implements AssertApi
     }
 
     /**
-     * Reads the contents of a file, throwing an
-     * AssertionFailedException if the file cannot be read.
+     * Reads the contents of a file.
      *
      * @param string $filePath
      * - the path to the file to read
-     * @param string $label
-     * - a label for the file (used in error messages)
      * @return string
      * - the file contents
-     * @throws InvalidArgumentException
-     * - if the file does not exist or cannot be read
+     * @throws FileNotFoundException
+     * - if no file exists at $filePath
+     * @throws UnableToReadFileException
+     * - if the file exists but cannot be read (either because it
+     *   is not readable, or because the low-level read operation
+     *   failed)
      */
     private static function readFileContents(
         string $filePath,
-        string $label,
     ): string {
-        if (!is_file($filePath) || !is_readable($filePath)) {
-            throw new InvalidArgumentException(
-                detail: '$' . $label
-                    . ' does not exist or is not readable: '
-                    . $filePath,
-            );
+        // robustness! the file must exist before we can read it
+        if (!is_file($filePath)) {
+            throw new FileNotFoundException(filePath: $filePath);
         }
 
-        $contents = file_get_contents($filePath);
+        // robustness! the file must be readable before we can read
+        // it. is_readable() does not emit a PHP warning, so there
+        // is no fresh error to capture for the exception's
+        // php_error slot - the optional phpError parameter is
+        // omitted (defaulting to null).
+        if (!is_readable($filePath)) {
+            throw new UnableToReadFileException(filePath: $filePath);
+        }
+
+        // clear PHP's last-error state so any warning emitted by
+        // file_get_contents() below can be captured cleanly via
+        // error_get_last() if the read fails. Skipping this would
+        // risk attributing a stale, unrelated PHP warning to a
+        // throw that did not actually trigger one.
+        error_clear_last();
+        $contents = @file_get_contents($filePath);
 
         if ($contents === false) {
-            throw new InvalidArgumentException(
-                detail: '$' . $label
-                    . ' could not be read: ' . $filePath,
+            // robustness! file_get_contents() returned false, so the
+            // read failed despite the file existing and being
+            // readable. The @-suppressed warning is still in PHP's
+            // last-error state - hand it to the exception so the
+            // diagnostic travels with the failure.
+            throw new UnableToReadFileException(
+                filePath: $filePath,
+                phpError: error_get_last(),
             );
         }
 

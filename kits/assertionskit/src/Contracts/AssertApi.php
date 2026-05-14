@@ -43,18 +43,12 @@ namespace StusDevKit\AssertionsKit\Contracts;
 
 use ArrayAccess;
 use Countable;
+use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 
 /**
- * Describes all assertion methods available in PHPUnit's
- * Assert class.
+ * A comprehensive set of general assertion methods.
  *
- * This interface extracts the public assertion API from
- * PHPUnit\Framework\Assert so that it can be implemented
- * by other assertion providers, enabling a common contract
- * for assertion behaviour across the codebase.
- *
- * All methods are static, matching PHPUnit's assertion
- * calling convention.
+ * Based on PHPUnit's Assert class's API.
  */
 interface AssertApi
 {
@@ -69,8 +63,17 @@ interface AssertApi
      * a list of keys.
      *
      * @param array<mixed>              $expected
+     *     the array that you are expecting
      * @param array<mixed>              $actual
+     *     the array that you are testing
      * @param non-empty-list<array-key> $keysToBeConsidered
+     *     a list of array keys to extract from `$actual` before
+     *     comparing to `$expected`
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
         array $expected,
@@ -84,8 +87,17 @@ interface AssertApi
      * of keys.
      *
      * @param array<mixed>              $expected
+     *      the array that you are expecting
      * @param array<mixed>              $actual
+     *      the array that you are testing
      * @param non-empty-list<array-key> $keysToBeIgnored
+     *      a list of array keys to remove from `$actual` before
+     *      testing against `$expected`
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArrayIsEqualToArrayIgnoringListOfKeys(
         array $expected,
@@ -101,6 +113,11 @@ interface AssertApi
      * @param array<mixed>              $expected
      * @param array<mixed>              $actual
      * @param non-empty-list<array-key> $keysToBeConsidered
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(
         array $expected,
@@ -116,6 +133,11 @@ interface AssertApi
      * @param array<mixed>              $expected
      * @param array<mixed>              $actual
      * @param non-empty-list<array-key> $keysToBeIgnored
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArrayIsIdenticalToArrayIgnoringListOfKeys(
         array $expected,
@@ -128,6 +150,11 @@ interface AssertApi
      * Asserts that an array has a specified key.
      *
      * @param array<mixed>|ArrayAccess<array-key, mixed> $array
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArrayHasKey(
         mixed $key,
@@ -139,6 +166,11 @@ interface AssertApi
      * Asserts that an array does not have a specified key.
      *
      * @param array<mixed>|ArrayAccess<array-key, mixed> $array
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArrayNotHasKey(
         mixed $key,
@@ -151,6 +183,11 @@ interface AssertApi
      * integer keys starting from 0).
      *
      * @phpstan-assert list<mixed> $array
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsList(
         mixed $array,
@@ -166,6 +203,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysAreIdentical(
         array $expected,
@@ -183,6 +225,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysAreIdenticalIgnoringOrder(
         array $expected,
@@ -199,6 +246,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysHaveIdenticalValues(
         array $expected,
@@ -216,6 +268,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysHaveIdenticalValuesIgnoringOrder(
         array $expected,
@@ -232,6 +289,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysAreEqual(
         array $expected,
@@ -249,6 +311,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysAreEqualIgnoringOrder(
         array $expected,
@@ -265,6 +332,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysHaveEqualValues(
         array $expected,
@@ -282,6 +354,11 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertArraysHaveEqualValuesIgnoringOrder(
         array $expected,
@@ -299,6 +376,11 @@ interface AssertApi
      * Asserts that a haystack contains a needle.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContains(
         mixed $needle,
@@ -311,6 +393,11 @@ interface AssertApi
      * loose comparison).
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsEquals(
         mixed $needle,
@@ -322,6 +409,11 @@ interface AssertApi
      * Asserts that a haystack does not contain a needle.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotContains(
         mixed $needle,
@@ -334,6 +426,11 @@ interface AssertApi
      * (using loose comparison).
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotContainsEquals(
         mixed $needle,
@@ -354,6 +451,11 @@ interface AssertApi
      * @phpstan-assert iterable<array<mixed>> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyArray(
         iterable $haystack,
@@ -367,6 +469,11 @@ interface AssertApi
      * @phpstan-assert iterable<bool> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyBool(
         iterable $haystack,
@@ -380,6 +487,11 @@ interface AssertApi
      * @phpstan-assert iterable<callable> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyCallable(
         iterable $haystack,
@@ -393,6 +505,11 @@ interface AssertApi
      * @phpstan-assert iterable<float> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyFloat(
         iterable $haystack,
@@ -406,6 +523,11 @@ interface AssertApi
      * @phpstan-assert iterable<int> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyInt(
         iterable $haystack,
@@ -419,6 +541,11 @@ interface AssertApi
      * @phpstan-assert iterable<iterable<mixed>> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyIterable(
         iterable $haystack,
@@ -432,6 +559,11 @@ interface AssertApi
      * @phpstan-assert iterable<null> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyNull(
         iterable $haystack,
@@ -445,6 +577,11 @@ interface AssertApi
      * @phpstan-assert iterable<numeric> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyNumeric(
         iterable $haystack,
@@ -458,6 +595,11 @@ interface AssertApi
      * @phpstan-assert iterable<object> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyObject(
         iterable $haystack,
@@ -471,6 +613,11 @@ interface AssertApi
      * @phpstan-assert iterable<resource> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyResource(
         iterable $haystack,
@@ -484,6 +631,11 @@ interface AssertApi
      * @phpstan-assert iterable<resource> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyClosedResource(
         iterable $haystack,
@@ -497,6 +649,11 @@ interface AssertApi
      * @phpstan-assert iterable<scalar> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyScalar(
         iterable $haystack,
@@ -510,6 +667,11 @@ interface AssertApi
      * @phpstan-assert iterable<string> $haystack
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyString(
         iterable $haystack,
@@ -526,6 +688,11 @@ interface AssertApi
      *
      * @param class-string<T> $className
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsOnlyInstancesOf(
         string $className,
@@ -544,6 +711,11 @@ interface AssertApi
      * of type array.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyArray(
         iterable $haystack,
@@ -555,6 +727,11 @@ interface AssertApi
      * of type bool.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyBool(
         iterable $haystack,
@@ -566,6 +743,11 @@ interface AssertApi
      * of type callable.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyCallable(
         iterable $haystack,
@@ -577,6 +759,11 @@ interface AssertApi
      * of type float.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyFloat(
         iterable $haystack,
@@ -588,6 +775,11 @@ interface AssertApi
      * of type int.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyInt(
         iterable $haystack,
@@ -599,6 +791,11 @@ interface AssertApi
      * of type iterable.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyIterable(
         iterable $haystack,
@@ -610,6 +807,11 @@ interface AssertApi
      * of type null.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyNull(
         iterable $haystack,
@@ -621,6 +823,11 @@ interface AssertApi
      * of type numeric.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyNumeric(
         iterable $haystack,
@@ -632,6 +839,11 @@ interface AssertApi
      * of type object.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyObject(
         iterable $haystack,
@@ -643,6 +855,11 @@ interface AssertApi
      * of type resource.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyResource(
         iterable $haystack,
@@ -654,6 +871,11 @@ interface AssertApi
      * of type closed resource.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyClosedResource(
         iterable $haystack,
@@ -665,6 +887,11 @@ interface AssertApi
      * of type scalar.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyScalar(
         iterable $haystack,
@@ -676,6 +903,11 @@ interface AssertApi
      * of type string.
      *
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyString(
         iterable $haystack,
@@ -688,6 +920,11 @@ interface AssertApi
      *
      * @param class-string    $className
      * @param iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertContainsNotOnlyInstancesOf(
         string $className,
@@ -706,6 +943,11 @@ interface AssertApi
      * or Traversable.
      *
      * @param Countable|iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertCount(
         int $expectedCount,
@@ -718,6 +960,11 @@ interface AssertApi
      * or Traversable is not a specific count.
      *
      * @param Countable|iterable<mixed> $haystack
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotCount(
         int $expectedCount,
@@ -733,6 +980,12 @@ interface AssertApi
 
     /**
      * Asserts that two variables are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertEquals(
         mixed $expected,
@@ -742,6 +995,12 @@ interface AssertApi
 
     /**
      * Asserts that two variables are equal (canonicalizing).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertEqualsCanonicalizing(
         mixed $expected,
@@ -751,6 +1010,12 @@ interface AssertApi
 
     /**
      * Asserts that two variables are equal (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertEqualsIgnoringCase(
         mixed $expected,
@@ -760,6 +1025,12 @@ interface AssertApi
 
     /**
      * Asserts that two variables are equal (with delta).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertEqualsWithDelta(
         mixed $expected,
@@ -770,6 +1041,12 @@ interface AssertApi
 
     /**
      * Asserts that two variables are not equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotEquals(
         mixed $expected,
@@ -780,6 +1057,12 @@ interface AssertApi
     /**
      * Asserts that two variables are not equal
      * (canonicalizing).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotEqualsCanonicalizing(
         mixed $expected,
@@ -790,6 +1073,12 @@ interface AssertApi
     /**
      * Asserts that two variables are not equal
      * (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotEqualsIgnoringCase(
         mixed $expected,
@@ -799,6 +1088,12 @@ interface AssertApi
 
     /**
      * Asserts that two variables are not equal (with delta).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotEqualsWithDelta(
         mixed $expected,
@@ -816,6 +1111,12 @@ interface AssertApi
     /**
      * Asserts that two objects are considered equal by
      * calling a comparator method on the actual object.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertObjectEquals(
         object $expected,
@@ -827,6 +1128,12 @@ interface AssertApi
     /**
      * Asserts that two objects are not considered equal by
      * calling a comparator method on the actual object.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertObjectNotEquals(
         object $expected,
@@ -843,6 +1150,12 @@ interface AssertApi
 
     /**
      * Asserts that a variable is empty.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertEmpty(
         mixed $actual,
@@ -851,6 +1164,12 @@ interface AssertApi
 
     /**
      * Asserts that a variable is not empty.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotEmpty(
         mixed $actual,
@@ -865,6 +1184,13 @@ interface AssertApi
 
     /**
      * Asserts that a value is greater than another value.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
+     *
      */
     public static function assertGreaterThan(
         mixed $minimum,
@@ -875,6 +1201,12 @@ interface AssertApi
     /**
      * Asserts that a value is greater than or equal to
      * another value.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertGreaterThanOrEqual(
         mixed $minimum,
@@ -884,6 +1216,12 @@ interface AssertApi
 
     /**
      * Asserts that a value is smaller than another value.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertLessThan(
         mixed $maximum,
@@ -894,6 +1232,12 @@ interface AssertApi
     /**
      * Asserts that a value is smaller than or equal to
      * another value.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertLessThanOrEqual(
         mixed $maximum,
@@ -910,6 +1254,12 @@ interface AssertApi
     /**
      * Asserts that the contents of one file is equal to the
      * contents of another file.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileEquals(
         string $expected,
@@ -920,6 +1270,12 @@ interface AssertApi
     /**
      * Asserts that the contents of one file is equal to the
      * contents of another file (canonicalizing).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileEqualsCanonicalizing(
         string $expected,
@@ -930,6 +1286,12 @@ interface AssertApi
     /**
      * Asserts that the contents of one file is equal to the
      * contents of another file (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileEqualsIgnoringCase(
         string $expected,
@@ -940,6 +1302,12 @@ interface AssertApi
     /**
      * Asserts that the contents of one file is not equal to
      * the contents of another file.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileNotEquals(
         string $expected,
@@ -950,6 +1318,12 @@ interface AssertApi
     /**
      * Asserts that the contents of one file is not equal to
      * the contents of another file (canonicalizing).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileNotEqualsCanonicalizing(
         string $expected,
@@ -960,6 +1334,12 @@ interface AssertApi
     /**
      * Asserts that the contents of one file is not equal to
      * the contents of another file (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileNotEqualsIgnoringCase(
         string $expected,
@@ -976,6 +1356,12 @@ interface AssertApi
     /**
      * Asserts that the contents of a string is equal
      * to the contents of a file.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringEqualsFile(
         string $expectedFile,
@@ -986,6 +1372,12 @@ interface AssertApi
     /**
      * Asserts that the contents of a string is equal
      * to the contents of a file (canonicalizing).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringEqualsFileCanonicalizing(
         string $expectedFile,
@@ -996,6 +1388,12 @@ interface AssertApi
     /**
      * Asserts that the contents of a string is equal
      * to the contents of a file (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringEqualsFileIgnoringCase(
         string $expectedFile,
@@ -1006,6 +1404,12 @@ interface AssertApi
     /**
      * Asserts that the contents of a string is not equal
      * to the contents of a file.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringNotEqualsFile(
         string $expectedFile,
@@ -1016,6 +1420,12 @@ interface AssertApi
     /**
      * Asserts that the contents of a string is not equal
      * to the contents of a file (canonicalizing).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringNotEqualsFileCanonicalizing(
         string $expectedFile,
@@ -1026,6 +1436,12 @@ interface AssertApi
     /**
      * Asserts that the contents of a string is not equal
      * to the contents of a file (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringNotEqualsFileIgnoringCase(
         string $expectedFile,
@@ -1041,6 +1457,12 @@ interface AssertApi
 
     /**
      * Asserts that a file/dir is readable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsReadable(
         string $filename,
@@ -1049,6 +1471,12 @@ interface AssertApi
 
     /**
      * Asserts that a file/dir exists and is not readable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotReadable(
         string $filename,
@@ -1057,6 +1485,12 @@ interface AssertApi
 
     /**
      * Asserts that a file/dir exists and is writable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsWritable(
         string $filename,
@@ -1065,6 +1499,12 @@ interface AssertApi
 
     /**
      * Asserts that a file/dir exists and is not writable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotWritable(
         string $filename,
@@ -1073,6 +1513,12 @@ interface AssertApi
 
     /**
      * Asserts that a directory exists.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDirectoryExists(
         string $directory,
@@ -1081,6 +1527,12 @@ interface AssertApi
 
     /**
      * Asserts that a directory does not exist.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDirectoryDoesNotExist(
         string $directory,
@@ -1089,6 +1541,12 @@ interface AssertApi
 
     /**
      * Asserts that a directory exists and is readable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDirectoryIsReadable(
         string $directory,
@@ -1097,6 +1555,12 @@ interface AssertApi
 
     /**
      * Asserts that a directory exists and is not readable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDirectoryIsNotReadable(
         string $directory,
@@ -1105,6 +1569,12 @@ interface AssertApi
 
     /**
      * Asserts that a directory exists and is writable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDirectoryIsWritable(
         string $directory,
@@ -1113,6 +1583,12 @@ interface AssertApi
 
     /**
      * Asserts that a directory exists and is not writable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDirectoryIsNotWritable(
         string $directory,
@@ -1121,6 +1597,12 @@ interface AssertApi
 
     /**
      * Asserts that a file exists.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileExists(
         string $filename,
@@ -1129,6 +1611,12 @@ interface AssertApi
 
     /**
      * Asserts that a file does not exist.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileDoesNotExist(
         string $filename,
@@ -1137,6 +1625,12 @@ interface AssertApi
 
     /**
      * Asserts that a file exists and is readable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileIsReadable(
         string $file,
@@ -1145,6 +1639,12 @@ interface AssertApi
 
     /**
      * Asserts that a file exists and is not readable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileIsNotReadable(
         string $file,
@@ -1153,6 +1653,12 @@ interface AssertApi
 
     /**
      * Asserts that a file exists and is writable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileIsWritable(
         string $file,
@@ -1161,6 +1667,12 @@ interface AssertApi
 
     /**
      * Asserts that a file exists and is not writable.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileIsNotWritable(
         string $file,
@@ -1177,6 +1689,12 @@ interface AssertApi
      * Asserts that a condition is true.
      *
      * @phpstan-assert true $condition
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertTrue(
         mixed $condition,
@@ -1187,6 +1705,12 @@ interface AssertApi
      * Asserts that a condition is not true.
      *
      * @phpstan-assert !true $condition
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotTrue(
         mixed $condition,
@@ -1197,6 +1721,12 @@ interface AssertApi
      * Asserts that a condition is false.
      *
      * @phpstan-assert false $condition
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFalse(
         mixed $condition,
@@ -1207,6 +1737,12 @@ interface AssertApi
      * Asserts that a condition is not false.
      *
      * @phpstan-assert !false $condition
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotFalse(
         mixed $condition,
@@ -1223,6 +1759,12 @@ interface AssertApi
      * Asserts that a variable is null.
      *
      * @phpstan-assert null $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNull(
         mixed $actual,
@@ -1233,6 +1775,12 @@ interface AssertApi
      * Asserts that a variable is not null.
      *
      * @phpstan-assert !null $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotNull(
         mixed $actual,
@@ -1247,6 +1795,12 @@ interface AssertApi
 
     /**
      * Asserts that a variable is finite.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFinite(
         mixed $actual,
@@ -1255,6 +1809,12 @@ interface AssertApi
 
     /**
      * Asserts that a variable is infinite.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertInfinite(
         mixed $actual,
@@ -1263,6 +1823,12 @@ interface AssertApi
 
     /**
      * Asserts that a variable is nan.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNan(
         mixed $actual,
@@ -1277,6 +1843,12 @@ interface AssertApi
 
     /**
      * Asserts that an object has a specified property.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertObjectHasProperty(
         string $propertyName,
@@ -1287,6 +1859,12 @@ interface AssertApi
     /**
      * Asserts that an object does not have a specified
      * property.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertObjectNotHasProperty(
         string $propertyName,
@@ -1309,6 +1887,12 @@ interface AssertApi
      *
      * @param ExpectedType $expected
      *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
+     *
      * @phpstan-assert =ExpectedType $actual
      */
     public static function assertSame(
@@ -1321,6 +1905,12 @@ interface AssertApi
      * Asserts that two variables do not have the same type
      * and value. Used on objects, it asserts that two
      * variables do not reference the same object.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotSame(
         mixed $expected,
@@ -1341,6 +1931,12 @@ interface AssertApi
      *
      * @param class-string<ExpectedType> $expected
      *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
+     *
      * @phpstan-assert =ExpectedType $actual
      */
     public static function assertInstanceOf(
@@ -1355,6 +1951,12 @@ interface AssertApi
      * @template ExpectedType of object
      *
      * @param class-string<ExpectedType> $expected
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      *
      * @phpstan-assert !ExpectedType $actual
      */
@@ -1374,6 +1976,12 @@ interface AssertApi
      * Asserts that a variable is of type array.
      *
      * @phpstan-assert array<mixed> $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsArray(
         mixed $actual,
@@ -1384,6 +1992,12 @@ interface AssertApi
      * Asserts that a variable is of type bool.
      *
      * @phpstan-assert bool $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsBool(
         mixed $actual,
@@ -1394,6 +2008,12 @@ interface AssertApi
      * Asserts that a variable is of type float.
      *
      * @phpstan-assert float $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsFloat(
         mixed $actual,
@@ -1404,6 +2024,12 @@ interface AssertApi
      * Asserts that a variable is of type int.
      *
      * @phpstan-assert int $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsInt(
         mixed $actual,
@@ -1414,6 +2040,12 @@ interface AssertApi
      * Asserts that a variable is of type numeric.
      *
      * @phpstan-assert numeric $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNumeric(
         mixed $actual,
@@ -1424,6 +2056,12 @@ interface AssertApi
      * Asserts that a variable is of type object.
      *
      * @phpstan-assert object $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsObject(
         mixed $actual,
@@ -1434,6 +2072,12 @@ interface AssertApi
      * Asserts that a variable is of type resource.
      *
      * @phpstan-assert resource $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsResource(
         mixed $actual,
@@ -1445,6 +2089,12 @@ interface AssertApi
      * closed.
      *
      * @phpstan-assert resource $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsClosedResource(
         mixed $actual,
@@ -1455,6 +2105,12 @@ interface AssertApi
      * Asserts that a variable is of type string.
      *
      * @phpstan-assert string $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsString(
         mixed $actual,
@@ -1465,6 +2121,12 @@ interface AssertApi
      * Asserts that a variable is of type scalar.
      *
      * @phpstan-assert scalar $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsScalar(
         mixed $actual,
@@ -1475,6 +2137,12 @@ interface AssertApi
      * Asserts that a variable is of type callable.
      *
      * @phpstan-assert callable $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsCallable(
         mixed $actual,
@@ -1485,6 +2153,12 @@ interface AssertApi
      * Asserts that a variable is of type iterable.
      *
      * @phpstan-assert iterable<mixed> $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsIterable(
         mixed $actual,
@@ -1501,6 +2175,12 @@ interface AssertApi
      * Asserts that a variable is not of type array.
      *
      * @phpstan-assert !array<mixed> $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotArray(
         mixed $actual,
@@ -1511,6 +2191,12 @@ interface AssertApi
      * Asserts that a variable is not of type bool.
      *
      * @phpstan-assert !bool $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotBool(
         mixed $actual,
@@ -1521,6 +2207,12 @@ interface AssertApi
      * Asserts that a variable is not of type float.
      *
      * @phpstan-assert !float $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotFloat(
         mixed $actual,
@@ -1531,6 +2223,12 @@ interface AssertApi
      * Asserts that a variable is not of type int.
      *
      * @phpstan-assert !int $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotInt(
         mixed $actual,
@@ -1541,6 +2239,12 @@ interface AssertApi
      * Asserts that a variable is not of type numeric.
      *
      * @phpstan-assert !numeric $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotNumeric(
         mixed $actual,
@@ -1551,6 +2255,12 @@ interface AssertApi
      * Asserts that a variable is not of type object.
      *
      * @phpstan-assert !object $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotObject(
         mixed $actual,
@@ -1561,6 +2271,12 @@ interface AssertApi
      * Asserts that a variable is not of type resource.
      *
      * @phpstan-assert !resource $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotResource(
         mixed $actual,
@@ -1571,6 +2287,12 @@ interface AssertApi
      * Asserts that a variable is not of type resource.
      *
      * @phpstan-assert !resource $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotClosedResource(
         mixed $actual,
@@ -1581,6 +2303,12 @@ interface AssertApi
      * Asserts that a variable is not of type string.
      *
      * @phpstan-assert !string $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotString(
         mixed $actual,
@@ -1591,6 +2319,12 @@ interface AssertApi
      * Asserts that a variable is not of type scalar.
      *
      * @phpstan-assert !scalar $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotScalar(
         mixed $actual,
@@ -1601,6 +2335,12 @@ interface AssertApi
      * Asserts that a variable is not of type callable.
      *
      * @phpstan-assert !callable $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotCallable(
         mixed $actual,
@@ -1611,6 +2351,12 @@ interface AssertApi
      * Asserts that a variable is not of type iterable.
      *
      * @phpstan-assert !iterable<mixed> $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertIsNotIterable(
         mixed $actual,
@@ -1626,6 +2372,12 @@ interface AssertApi
     /**
      * Asserts that a string matches a given regular
      * expression.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertMatchesRegularExpression(
         string $pattern,
@@ -1636,6 +2388,12 @@ interface AssertApi
     /**
      * Asserts that a string does not match a given regular
      * expression.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertDoesNotMatchRegularExpression(
         string $pattern,
@@ -1655,6 +2413,12 @@ interface AssertApi
      *
      * @param Countable|iterable<mixed> $expected
      * @param Countable|iterable<mixed> $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertSameSize(
         Countable|iterable $expected,
@@ -1668,6 +2432,12 @@ interface AssertApi
      *
      * @param Countable|iterable<mixed> $expected
      * @param Countable|iterable<mixed> $actual
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertNotSameSize(
         Countable|iterable $expected,
@@ -1684,6 +2454,12 @@ interface AssertApi
     /**
      * Asserts that a string contains another string,
      * ignoring line endings.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringContainsStringIgnoringLineEndings(
         string $needle,
@@ -1694,6 +2470,12 @@ interface AssertApi
     /**
      * Asserts that two strings are equal except for line
      * endings.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringEqualsStringIgnoringLineEndings(
         string $expected,
@@ -1703,6 +2485,12 @@ interface AssertApi
 
     /**
      * Asserts that a string matches a given format string.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringMatchesFormat(
         string $format,
@@ -1712,6 +2500,12 @@ interface AssertApi
 
     /**
      * Asserts that a string matches a given format file.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringMatchesFormatFile(
         string $formatFile,
@@ -1723,6 +2517,12 @@ interface AssertApi
      * Asserts that a string starts with a given prefix.
      *
      * @param non-empty-string $prefix
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringStartsWith(
         string $prefix,
@@ -1734,6 +2534,12 @@ interface AssertApi
      * Asserts that a string starts not with a given prefix.
      *
      * @param non-empty-string $prefix
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringStartsNotWith(
         string $prefix,
@@ -1743,6 +2549,12 @@ interface AssertApi
 
     /**
      * Asserts that a string contains another string.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringContainsString(
         string $needle,
@@ -1753,6 +2565,12 @@ interface AssertApi
     /**
      * Asserts that a string contains another string
      * (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringContainsStringIgnoringCase(
         string $needle,
@@ -1762,6 +2580,12 @@ interface AssertApi
 
     /**
      * Asserts that a string does not contain another string.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringNotContainsString(
         string $needle,
@@ -1772,6 +2596,12 @@ interface AssertApi
     /**
      * Asserts that a string does not contain another string
      * (ignoring case).
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringNotContainsStringIgnoringCase(
         string $needle,
@@ -1783,6 +2613,12 @@ interface AssertApi
      * Asserts that a string ends with a given suffix.
      *
      * @param non-empty-string $suffix
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringEndsWith(
         string $suffix,
@@ -1794,6 +2630,12 @@ interface AssertApi
      * Asserts that a string ends not with a given suffix.
      *
      * @param non-empty-string $suffix
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertStringEndsNotWith(
         string $suffix,
@@ -1810,6 +2652,12 @@ interface AssertApi
     /**
      * Asserts that a file's contents matches a given format
      * string.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileMatchesFormat(
         string $format,
@@ -1820,6 +2668,12 @@ interface AssertApi
     /**
      * Asserts that a file's contents matches a given format
      * file.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertFileMatchesFormatFile(
         string $formatFile,
@@ -1835,6 +2689,12 @@ interface AssertApi
 
     /**
      * Asserts that two XML files are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertXmlFileEqualsXmlFile(
         string $expectedFile,
@@ -1844,6 +2704,12 @@ interface AssertApi
 
     /**
      * Asserts that two XML files are not equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertXmlFileNotEqualsXmlFile(
         string $expectedFile,
@@ -1853,6 +2719,12 @@ interface AssertApi
 
     /**
      * Asserts that two XML documents are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertXmlStringEqualsXmlFile(
         string $expectedFile,
@@ -1862,6 +2734,12 @@ interface AssertApi
 
     /**
      * Asserts that two XML documents are not equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertXmlStringNotEqualsXmlFile(
         string $expectedFile,
@@ -1871,6 +2749,12 @@ interface AssertApi
 
     /**
      * Asserts that two XML documents are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertXmlStringEqualsXmlString(
         string $expectedXml,
@@ -1880,6 +2764,12 @@ interface AssertApi
 
     /**
      * Asserts that two XML documents are not equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertXmlStringNotEqualsXmlString(
         string $expectedXml,
@@ -1895,6 +2785,12 @@ interface AssertApi
 
     /**
      * Asserts that a string is a valid JSON string.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJson(
         string $actual,
@@ -1904,6 +2800,12 @@ interface AssertApi
     /**
      * Asserts that two given JSON encoded objects or arrays
      * are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJsonStringEqualsJsonString(
         string $expectedJson,
@@ -1914,6 +2816,12 @@ interface AssertApi
     /**
      * Asserts that two given JSON encoded objects or arrays
      * are not equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJsonStringNotEqualsJsonString(
         string $expectedJson,
@@ -1924,6 +2832,12 @@ interface AssertApi
     /**
      * Asserts that the generated JSON encoded object and the
      * content of the given file are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJsonStringEqualsJsonFile(
         string $expectedFile,
@@ -1934,6 +2848,12 @@ interface AssertApi
     /**
      * Asserts that the generated JSON encoded object and the
      * content of the given file are not equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJsonStringNotEqualsJsonFile(
         string $expectedFile,
@@ -1943,6 +2863,12 @@ interface AssertApi
 
     /**
      * Asserts that two JSON files are equal.
+     *
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJsonFileEqualsJsonFile(
         string $expectedFile,
@@ -1952,6 +2878,14 @@ interface AssertApi
 
     /**
      * Asserts that two JSON files are not equal.
+     *
+     * @param string $expectedFile
+     * @param string $actualFile
+     * @param string $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
      */
     public static function assertJsonFileNotEqualsJsonFile(
         string $expectedFile,

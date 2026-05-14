@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ExceptionsKit
 
-- added UnableToReadFileException ([9337912](https://github.com/stuartherbert/stusdevkit/commit/9337912)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UnableToReadFileException ([3bf8b63](https://github.com/stuartherbert/stusdevkit/commit/3bf8b63)) — Stuart Herbert <stuart@stuartherbert.com>
 - added FileNotFoundException ([6ba8f25](https://github.com/stuartherbert/stusdevkit/commit/6ba8f25)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidMethodException ([ef0015a](https://github.com/stuartherbert/stusdevkit/commit/ef0015a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added InvalidFunctionException ([11519c7](https://github.com/stuartherbert/stusdevkit/commit/11519c7)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -180,6 +180,13 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### AssertionsKit
+
+- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([f5ecb1d](https://github.com/stuartherbert/stusdevkit/commit/f5ecb1d)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
+- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### CollectionsKit
 
 - dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -235,9 +242,3 @@ This CHANGELOG is automatically compiled.
 #### ValidationLib
 
 - simplify processing pipeline ([d5cecd0](https://github.com/stuartherbert/stusdevkit/commit/d5cecd0)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### AssertionsKit
-
-- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
-- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
-- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>

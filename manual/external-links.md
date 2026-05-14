@@ -14,6 +14,7 @@ pre-flight report flags it and asks the author to add an entry.
 
 | Name | URL |
 |------|-----|
+| `ArrayAccess` | https://www.php.net/manual/en/class.arrayaccess.php |
 | `ArrayIterator` | https://www.php.net/manual/en/class.arrayiterator.php |
 | `Closure` | https://www.php.net/manual/en/class.closure.php |
 | `Countable` | https://www.php.net/manual/en/class.countable.php |
