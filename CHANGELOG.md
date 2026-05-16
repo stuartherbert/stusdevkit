@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added ArrayShape enum ([aa9d616](https://github.com/stuartherbert/stusdevkit/commit/aa9d616)) — Stuart Herbert <stuart@stuartherbert.com>
 - added RequireArrayKey ([b27857a](https://github.com/stuartherbert/stusdevkit/commit/b27857a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsArrayKey type guard ([1b1c041](https://github.com/stuartherbert/stusdevkit/commit/1b1c041)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -185,7 +186,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- introduce strict typing ([7bc3699](https://github.com/stuartherbert/stusdevkit/commit/7bc3699)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
 - file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
 - drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
