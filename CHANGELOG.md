@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added ArrayShape enum ([aa9d616](https://github.com/stuartherbert/stusdevkit/commit/aa9d616)) — Stuart Herbert <stuart@stuartherbert.com>
+- added GetArrayShape ([9a7d866](https://github.com/stuartherbert/stusdevkit/commit/9a7d866)) — Stuart Herbert <stuart@stuartherbert.com>
+- added ArrayShape enum ([7b470b0](https://github.com/stuartherbert/stusdevkit/commit/7b470b0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added RequireArrayKey ([b27857a](https://github.com/stuartherbert/stusdevkit/commit/b27857a)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsArrayKey type guard ([1b1c041](https://github.com/stuartherbert/stusdevkit/commit/1b1c041)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce JsonValidationError ([77ee86e](https://github.com/stuartherbert/stusdevkit/commit/77ee86e)) — Stuart Herbert <stuart@stuartherbert.com>

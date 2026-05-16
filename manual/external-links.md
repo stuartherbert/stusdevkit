@@ -36,6 +36,7 @@ pre-flight report flags it and asks the author to add an entry.
 | `Stringable` | https://www.php.net/manual/en/class.stringable.php |
 | `BackedEnum` | https://www.php.net/manual/en/enum.backedenum.php |
 | `function_exists()` | https://www.php.net/manual/en/function.function-exists.php |
+| `array_filter()` | https://www.php.net/manual/en/function.array-filter.php |
 | `array_is_list()` | https://www.php.net/manual/en/function.array-is-list.php |
 | `class_exists()` | https://www.php.net/manual/en/function.class-exists.php |
 | `interface_exists()` | https://www.php.net/manual/en/function.interface-exists.php |
