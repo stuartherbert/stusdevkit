@@ -406,28 +406,6 @@ class AssertTest extends TestCase
         Assert::assertTrue(false);
     }
 
-    #[TestDox('::assertTrue() throws AssertionFailedException when given a truthy non-boolean')]
-    public function test_assertTrue_throws_on_truthy_non_boolean(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // edge case: assertTrue uses strict identity (`=== true`),
-        // not truthiness, so a non-empty string - which would pass
-        // `if ($x)` - must still raise here. This is the whole
-        // reason to reach for assertTrue over assertNotEmpty.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertTrue(1);
-    }
-
     // ================================================================
     //
     // ::assertNotTrue() behaviour
@@ -543,28 +521,6 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertFalse(true);
-    }
-
-    #[TestDox('::assertFalse() throws AssertionFailedException when given a falsy non-boolean')]
-    public function test_assertFalse_throws_on_falsy_non_boolean(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // edge case: assertFalse uses strict identity (`=== false`),
-        // not falsiness, so integer 0 - which would pass `if (!$x)`
-        // - must still raise here. This is the whole reason to
-        // reach for assertFalse over assertEmpty.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFalse(0);
     }
 
     // ================================================================
@@ -2785,57 +2741,11 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    #[TestDox('::assertInstanceOf() throws AssertionFailedException when value is not an instance of the expected class')]
-    public function test_assertInstanceOf_throws_on_unrelated_type(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: a plain string has no class relationship to
-        // stdClass at all. The assertion must raise.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertInstanceOf(
-            expected: stdClass::class,
-            actual: 'string',
-        );
-    }
-
     // ================================================================
     //
     // ::assertNotInstanceOf() behaviour
     //
     // ----------------------------------------------------------------
-
-    #[TestDox('::assertNotInstanceOf() passes when value is of an unrelated type')]
-    public function test_assertNotInstanceOf_passes_on_unrelated_type(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: a string has no `instanceof` relationship to
-        // stdClass, so the negated assertion passes silently.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotInstanceOf(
-            expected: stdClass::class,
-            actual: 'string',
-        );
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
 
     #[TestDox('::assertNotInstanceOf() throws AssertionFailedException when value is an instance of the expected class')]
     public function test_assertNotInstanceOf_throws_on_exact_class(): void
@@ -4178,7 +4088,10 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
+        // we need to suppress the phpstan error here, in order to run
+        // the test
         Assert::assertArrayHasKey(
+            // @phpstan-ignore argument.type
             key: 1.5,
             array: ['a' => 1],
         );
@@ -4258,7 +4171,10 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
+        // we need to suppress the phpstan error here, in order to run
+        // the test
         Assert::assertArrayNotHasKey(
+            // @phpstan-ignore argument.type
             key: 1.5,
             array: ['a' => 1],
         );

@@ -43,11 +43,13 @@ namespace StusDevKit\AssertionsKit;
 
 use ArrayAccess;
 use Countable;
+use DateTimeInterface;
 use StusDevKit\AssertionsKit\Contracts\AssertApi;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 use StusDevKit\ExceptionsKit\Exceptions\FileNotFoundException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
+use StusDevKit\MissingBitsKit\Arrays\RequireArrayKey;
 
 /**
  * Concrete implementation of the AssertApi contract.
@@ -78,12 +80,8 @@ class Assert implements AssertApi
         array|ArrayAccess $array,
         string $message = '',
     ): void {
-        if (!is_int($key) && !is_string($key)) {
-            throw new InvalidArgumentException(
-                detail: '$key must be int or string, got '
-                    . get_debug_type($key),
-            );
-        }
+        // we cannot rely on PHPStan checking alone here
+        RequireArrayKey::check($key);
 
         if (is_array($array)) {
             if (array_key_exists($key, $array)) {
@@ -107,12 +105,8 @@ class Assert implements AssertApi
         array|ArrayAccess $array,
         string $message = '',
     ): void {
-        if (!is_int($key) && !is_string($key)) {
-            throw new InvalidArgumentException(
-                detail: '$key must be int or string, got '
-                    . get_debug_type($key),
-            );
-        }
+        // we cannot rely on PHPStan checking alone here
+        RequireArrayKey::check($key);
 
         if (is_array($array)) {
             if (!array_key_exists($key, $array)) {
@@ -1251,8 +1245,8 @@ class Assert implements AssertApi
     // ----------------------------------------------------------------
 
     public static function assertGreaterThan(
-        mixed $minimum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $minimum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
         if ($actual > $minimum) {
@@ -1270,8 +1264,8 @@ class Assert implements AssertApi
     }
 
     public static function assertGreaterThanOrEqual(
-        mixed $minimum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $minimum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
         if ($actual >= $minimum) {
@@ -1289,8 +1283,8 @@ class Assert implements AssertApi
     }
 
     public static function assertLessThan(
-        mixed $maximum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $maximum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
         if ($actual < $maximum) {
@@ -1308,8 +1302,8 @@ class Assert implements AssertApi
     }
 
     public static function assertLessThanOrEqual(
-        mixed $maximum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $maximum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
         if ($actual <= $maximum) {
@@ -1351,7 +1345,7 @@ class Assert implements AssertApi
     // ----------------------------------------------------------------
 
     public static function assertTrue(
-        mixed $condition,
+        bool $condition,
         string $message = '',
     ): void {
         if ($condition === true) {
@@ -1387,7 +1381,7 @@ class Assert implements AssertApi
     }
 
     public static function assertFalse(
-        mixed $condition,
+        bool $condition,
         string $message = '',
     ): void {
         if ($condition === false) {
@@ -1620,7 +1614,7 @@ class Assert implements AssertApi
 
     public static function assertInstanceOf(
         string $expected,
-        mixed $actual,
+        object $actual,
         string $message = '',
     ): void {
         if ($actual instanceof $expected) {
@@ -1639,7 +1633,7 @@ class Assert implements AssertApi
 
     public static function assertNotInstanceOf(
         string $expected,
-        mixed $actual,
+        object $actual,
         string $message = '',
     ): void {
         if (!($actual instanceof $expected)) {

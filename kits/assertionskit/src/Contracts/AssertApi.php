@@ -43,12 +43,32 @@ namespace StusDevKit\AssertionsKit\Contracts;
 
 use ArrayAccess;
 use Countable;
+use DateTimeInterface;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
 
 /**
  * A comprehensive set of general assertion methods.
  *
- * Based on PHPUnit's Assert class's API.
+ * Based on PHPUnit's Assert class's API, especially it's
+ * `expected, actual` parameter order and approach :chefs-kiss:
+ *
+ * Strict Typing
+ * =============
+ *
+ * AssertionKit is designed for use in production code, where strict
+ * typing is the norm.
+ *
+ * Parameters are typed as `mixed` when the assertion's purpose is:
+ * - to refine an unknown type,
+ * - to perform type-narrowing, or
+ * - when the operation legitimately accepts any type.
+ *
+ * Some parameters are typed as `mixed` and then narrowed via PHPStan
+ * pseudo-types. This is mostly for forwards-compatibility (e.g. if
+ * a future version of PHP accepts a wider `array-key` set of types).
+ *
+ * All other parameters have been given explicit types, even if
+ * the equivalent PHPUnit assertion accepts `mixed`.
  */
 interface AssertApi
 {
@@ -149,6 +169,7 @@ interface AssertApi
     /**
      * Asserts that an array has a specified key.
      *
+     * @param array-key $key
      * @param array<mixed>|ArrayAccess<array-key, mixed> $array
      * @param string                    $message
      *     optional error message
@@ -165,6 +186,7 @@ interface AssertApi
     /**
      * Asserts that an array does not have a specified key.
      *
+     * @param array-key $key
      * @param array<mixed>|ArrayAccess<array-key, mixed> $array
      * @param string                    $message
      *     optional error message
@@ -182,15 +204,15 @@ interface AssertApi
      * Asserts that the given value is a list (sequential
      * integer keys starting from 0).
      *
-     * @phpstan-assert list<mixed> $array
-     * @param string                    $message
+     * @phpstan-assert list<mixed> $actual
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
      */
     public static function assertIsList(
-        mixed $array,
+        mixed $actual,
         string $message = '',
     ): void;
 
@@ -203,7 +225,7 @@ interface AssertApi
      *
      * @param array<mixed> $expected
      * @param array<mixed> $actual
-     * @param string                    $message
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
@@ -373,9 +395,12 @@ interface AssertApi
     // ----------------------------------------------------------------
 
     /**
-     * Asserts that a haystack contains a needle.
+     * Asserts that a haystack contains a needle (strict comparison).
      *
+     * @param mixed $needle
+     *     the value that must be inside `$haystack`
      * @param iterable<mixed> $haystack
+     *     the value being searched
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -392,7 +417,10 @@ interface AssertApi
      * Asserts that a haystack contains a needle (using
      * loose comparison).
      *
+     * @param mixed $needle
+     *     the value that must be inside `$haystack`
      * @param iterable<mixed> $haystack
+     *     the value being searched
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -408,7 +436,10 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain a needle.
      *
+     * @param mixed $needle
+     *     the value that must not be inside `$haystack`
      * @param iterable<mixed> $haystack
+     *     the value being searched
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -425,8 +456,11 @@ interface AssertApi
      * Asserts that a haystack does not contain a needle
      * (using loose comparison).
      *
+     * @param mixed $needle
+     *     the value that must not be in `$haystack`
      * @param iterable<mixed> $haystack
-     * @param string                    $message
+     *     the value being searched
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
@@ -981,7 +1015,11 @@ interface AssertApi
     /**
      * Asserts that two variables are equal.
      *
-     * @param string                    $message
+     * @param mixed $expected
+     *     the value that you need
+     * @param mixed $actual
+     *     the value to compare to `$expected`
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
@@ -996,7 +1034,11 @@ interface AssertApi
     /**
      * Asserts that two variables are equal (canonicalizing).
      *
-     * @param string                    $message
+     * @param mixed $expected
+     *     the value that you need
+     * @param mixed $actual
+     *     the value to compare to `$expected`
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
@@ -1011,6 +1053,10 @@ interface AssertApi
     /**
      * Asserts that two variables are equal (ignoring case).
      *
+     * @param mixed $expected
+     *     the value that you need
+     * @param mixed $actual
+     *     the value to compare to `$expected`
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1026,6 +1072,12 @@ interface AssertApi
     /**
      * Asserts that two variables are equal (with delta).
      *
+     * @param mixed $expected
+     *     the value that you need
+     * @param mixed $actual
+     *     the value to compare to `$expected`
+     * @param float $delta
+     *     how much drift is allowed between the two values
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1042,6 +1094,10 @@ interface AssertApi
     /**
      * Asserts that two variables are not equal.
      *
+     * @param mixed $expected
+     *     the value that you want to avoid
+     * @param mixed $actual
+     *     the value to compare to `$expected`
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1058,6 +1114,10 @@ interface AssertApi
      * Asserts that two variables are not equal
      * (canonicalizing).
      *
+     * @param mixed $expected
+     *     the value that you want to avoid
+     * @param mixed $actual
+     *     the value to compare to `$expected`
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1074,6 +1134,10 @@ interface AssertApi
      * Asserts that two variables are not equal
      * (ignoring case).
      *
+     * @param mixed $expected
+     *     the value that you want to avoid
+     * @param mixed $actual
+     *     the value to compare to `$expected`
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1089,6 +1153,12 @@ interface AssertApi
     /**
      * Asserts that two variables are not equal (with delta).
      *
+     * @param mixed $expected
+     *     the value that you want to avoid
+     * @param mixed $actual
+     *     the value to compare to `$expected`
+     * @param float $delta
+     *     how close the two values can be
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1151,6 +1221,8 @@ interface AssertApi
     /**
      * Asserts that a variable is empty.
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1165,6 +1237,8 @@ interface AssertApi
     /**
      * Asserts that a variable is not empty.
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1185,6 +1259,10 @@ interface AssertApi
     /**
      * Asserts that a value is greater than another value.
      *
+     * @param int|float|string|DateTimeInterface $minimum
+     *     what value must `$actual` be greater than?
+     * @param int|float|string|DateTimeInterface $actual
+     *      the value to check `$minimum` against
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1193,8 +1271,8 @@ interface AssertApi
      *
      */
     public static function assertGreaterThan(
-        mixed $minimum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $minimum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void;
 
@@ -1202,6 +1280,10 @@ interface AssertApi
      * Asserts that a value is greater than or equal to
      * another value.
      *
+     * @param int|float|string|DateTimeInterface $minimum
+     *     what value must `$actual` be greater than or equal to?
+     * @param int|float|string|DateTimeInterface $actual
+     *      the value to check `$minimum` against
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1209,14 +1291,18 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertGreaterThanOrEqual(
-        mixed $minimum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $minimum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void;
 
     /**
      * Asserts that a value is smaller than another value.
      *
+     * @param int|float|string|DateTimeInterface $maximum
+     *     what value must `$actual` be smaller than?
+     * @param int|float|string|DateTimeInterface $actual
+     *      the value to check `$maximum` against
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1224,8 +1310,8 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertLessThan(
-        mixed $maximum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $maximum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void;
 
@@ -1233,6 +1319,10 @@ interface AssertApi
      * Asserts that a value is smaller than or equal to
      * another value.
      *
+     * @param int|float|string|DateTimeInterface $maximum
+     *     what value must `$actual` be smaller than or equal to?
+     * @param int|float|string|DateTimeInterface $actual
+     *      the value to check `$maximum` against
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1240,8 +1330,8 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertLessThanOrEqual(
-        mixed $maximum,
-        mixed $actual,
+        int|float|string|DateTimeInterface $maximum,
+        int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void;
 
@@ -1690,14 +1780,16 @@ interface AssertApi
      *
      * @phpstan-assert true $condition
      *
-     * @param string                    $message
+     * @param bool   $condition
+     *     the condition to check
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
      */
     public static function assertTrue(
-        mixed $condition,
+        bool $condition,
         string $message = '',
     ): void;
 
@@ -1722,14 +1814,16 @@ interface AssertApi
      *
      * @phpstan-assert false $condition
      *
-     * @param string                    $message
+     * @param bool   $condition
+     *     the condition to test
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
      */
     public static function assertFalse(
-        mixed $condition,
+        bool $condition,
         string $message = '',
     ): void;
 
@@ -1760,6 +1854,8 @@ interface AssertApi
      *
      * @phpstan-assert null $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1776,6 +1872,8 @@ interface AssertApi
      *
      * @phpstan-assert !null $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1796,6 +1894,8 @@ interface AssertApi
     /**
      * Asserts that a variable is finite.
      *
+     * @param float $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1803,13 +1903,15 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertFinite(
-        mixed $actual,
+        float $actual,
         string $message = '',
     ): void;
 
     /**
      * Asserts that a variable is infinite.
      *
+     * @param float $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1817,13 +1919,15 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertInfinite(
-        mixed $actual,
+        float $actual,
         string $message = '',
     ): void;
 
     /**
-     * Asserts that a variable is nan.
+     * Asserts that a variable is NaN (not a number).
      *
+     * @param float $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1831,7 +1935,7 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertNan(
-        mixed $actual,
+        float $actual,
         string $message = '',
     ): void;
 
@@ -1886,7 +1990,9 @@ interface AssertApi
      * @template ExpectedType
      *
      * @param ExpectedType $expected
-     *
+     *     the value to compare `$actual` against
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1906,6 +2012,10 @@ interface AssertApi
      * and value. Used on objects, it asserts that two
      * variables do not reference the same object.
      *
+     * @param mixed $expected
+     *     the value to compare `$actual` against
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1930,7 +2040,9 @@ interface AssertApi
      * @template ExpectedType of object
      *
      * @param class-string<ExpectedType> $expected
-     *
+     *     the value to compare `$actual` against
+     * @param object $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1941,7 +2053,7 @@ interface AssertApi
      */
     public static function assertInstanceOf(
         string $expected,
-        mixed $actual,
+        object $actual,
         string $message = '',
     ): void;
 
@@ -1951,8 +2063,10 @@ interface AssertApi
      * @template ExpectedType of object
      *
      * @param class-string<ExpectedType> $expected
-     *
-     * @param string                    $message
+     *     the value to compare `$actual` against
+     * @param object $actual
+     *     the value to check
+     * @param string $message
      *     optional error message
      *     will be included in any thrown exception
      *
@@ -1962,7 +2076,7 @@ interface AssertApi
      */
     public static function assertNotInstanceOf(
         string $expected,
-        mixed $actual,
+        object $actual,
         string $message = '',
     ): void;
 
@@ -1977,6 +2091,8 @@ interface AssertApi
      *
      * @phpstan-assert array<mixed> $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -1993,6 +2109,8 @@ interface AssertApi
      *
      * @phpstan-assert bool $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2009,6 +2127,8 @@ interface AssertApi
      *
      * @phpstan-assert float $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2025,6 +2145,8 @@ interface AssertApi
      *
      * @phpstan-assert int $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2041,6 +2163,8 @@ interface AssertApi
      *
      * @phpstan-assert numeric $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2057,6 +2181,8 @@ interface AssertApi
      *
      * @phpstan-assert object $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2073,6 +2199,8 @@ interface AssertApi
      *
      * @phpstan-assert resource $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2090,6 +2218,8 @@ interface AssertApi
      *
      * @phpstan-assert resource $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2106,6 +2236,8 @@ interface AssertApi
      *
      * @phpstan-assert string $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2122,6 +2254,8 @@ interface AssertApi
      *
      * @phpstan-assert scalar $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2138,6 +2272,8 @@ interface AssertApi
      *
      * @phpstan-assert callable $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2154,6 +2290,8 @@ interface AssertApi
      *
      * @phpstan-assert iterable<mixed> $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2176,6 +2314,8 @@ interface AssertApi
      *
      * @phpstan-assert !array<mixed> $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2192,6 +2332,8 @@ interface AssertApi
      *
      * @phpstan-assert !bool $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2208,6 +2350,8 @@ interface AssertApi
      *
      * @phpstan-assert !float $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2224,6 +2368,8 @@ interface AssertApi
      *
      * @phpstan-assert !int $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2240,6 +2386,8 @@ interface AssertApi
      *
      * @phpstan-assert !numeric $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2256,6 +2404,8 @@ interface AssertApi
      *
      * @phpstan-assert !object $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2272,6 +2422,8 @@ interface AssertApi
      *
      * @phpstan-assert !resource $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2288,6 +2440,8 @@ interface AssertApi
      *
      * @phpstan-assert !resource $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2304,6 +2458,8 @@ interface AssertApi
      *
      * @phpstan-assert !string $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2320,6 +2476,8 @@ interface AssertApi
      *
      * @phpstan-assert !scalar $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2336,6 +2494,8 @@ interface AssertApi
      *
      * @phpstan-assert !callable $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2352,6 +2512,8 @@ interface AssertApi
      *
      * @phpstan-assert !iterable<mixed> $actual
      *
+     * @param mixed $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2373,6 +2535,10 @@ interface AssertApi
      * Asserts that a string matches a given regular
      * expression.
      *
+     * @param string $pattern
+     *     the regex that `$actual` must match
+     * @param string $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2381,7 +2547,7 @@ interface AssertApi
      */
     public static function assertMatchesRegularExpression(
         string $pattern,
-        string $string,
+        string $actual,
         string $message = '',
     ): void;
 
@@ -2389,6 +2555,10 @@ interface AssertApi
      * Asserts that a string does not match a given regular
      * expression.
      *
+     * @param string $pattern
+     *     the regex that `$actual` must not match
+     * @param string $actual
+     *     the value to check
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -2397,7 +2567,7 @@ interface AssertApi
      */
     public static function assertDoesNotMatchRegularExpression(
         string $pattern,
-        string $string,
+        string $actual,
         string $message = '',
     ): void;
 
