@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added NormalisesForComparison interface ([7883968](https://github.com/stuartherbert/stusdevkit/commit/7883968)) — Stuart Herbert <stuart@stuartherbert.com>
 - added GetArrayShape ([a10c8ff](https://github.com/stuartherbert/stusdevkit/commit/a10c8ff)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ArrayShape enum ([7b470b0](https://github.com/stuartherbert/stusdevkit/commit/7b470b0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added RequireArrayKey ([b27857a](https://github.com/stuartherbert/stusdevkit/commit/b27857a)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -144,7 +145,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- tidy up Hierarchy section ([9861de8](https://github.com/stuartherbert/stusdevkit/commit/9861de8)) — Stuart Herbert <stuart@stuartherbert.com>
+- tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>
 - document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
 - add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
