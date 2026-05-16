@@ -7,8 +7,6 @@ ordered list of values, or as a key/value map.
 
 ## Hierarchy
 
-**Extends:** _(none)_
-
 **Implements:**
 
 - [`UnitEnum`](https://www.php.net/manual/en/class.unitenum.php) —
