@@ -46,7 +46,7 @@ namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
  * of its own type. Used to build cyclic object graphs by linking
  * two instances to each other, or by linking an instance to itself.
  *
- * Originally added to pin NormaliseForComparison's cycle-detection
+ * Originally added to pin GetNormalisedForComparison's cycle-detection
  * behaviour. Without cycle detection, a normaliser that walks
  * `$child` would recurse forever on cyclic graphs.
  */

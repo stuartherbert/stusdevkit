@@ -60,7 +60,7 @@ namespace StusDevKit\MissingBitsKit\Arrays;
  * surfaces.
  *
  * Originally extracted from the internal array-handling logic
- * of {@see StusDevKit\MissingBitsKit\NormaliseForComparison}.
+ * of {@see StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison}.
  */
 enum ArrayShape
 {

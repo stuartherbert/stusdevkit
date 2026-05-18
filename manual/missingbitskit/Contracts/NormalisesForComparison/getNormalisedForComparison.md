@@ -33,7 +33,7 @@ interface NormalisesForComparison
 
 `->getNormalisedForComparison()` is the sole method on
 [`NormalisesForComparison`](README.md). It is called by canonicalisers
-(typically [`NormaliseForComparison::from()`](../../NormaliseForComparison/from.md))
+(typically [`GetNormalisedForComparison::from()`](../../GetNormalisedForComparison/from.md))
 to obtain a representation of this object's state suitable for
 **structural** comparison — i.e. comparison by content rather
 than by object identity.
@@ -107,17 +107,17 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`NormaliseForComparison::from()`](../../NormaliseForComparison/from.md) —
+- [`GetNormalisedForComparison::from()`](../../GetNormalisedForComparison/from.md) —
   the recommended caller. Recognises any input that implements
   `NormalisesForComparison` and takes its return value verbatim
   without re-normalising.
 - [`CollectionAsDict::getNormalisedForComparison()`](../../../collectionskit/Dictionaries/CollectionAsDict/getNormalisedForComparison.md) —
   a worked example for dicts: returns a `ksort`-ed keyed array
-  with each value passed through `NormaliseForComparison::from()`.
+  with each value passed through `GetNormalisedForComparison::from()`.
 - [`CollectionAsList::getNormalisedForComparison()`](../../../collectionskit/Lists/CollectionAsList/getNormalisedForComparison.md) —
   a worked example for lists: drops the int keys via
   `array_values()` and passes each value through
-  `NormaliseForComparison::from()`.
+  `GetNormalisedForComparison::from()`.
 
 ## Issues
 

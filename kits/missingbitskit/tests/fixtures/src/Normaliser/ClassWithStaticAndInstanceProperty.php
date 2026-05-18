@@ -49,7 +49,7 @@ namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
  * compared unequal whenever the static slot drifted between the
  * two assertion calls.
  *
- * Originally added to pin NormaliseForComparison's static-property
+ * Originally added to pin GetNormalisedForComparison's static-property
  * skip - statics must NOT appear in the normalised output.
  */
 class ClassWithStaticAndInstanceProperty

@@ -44,7 +44,7 @@ appearance:
 - empty array → [`ArrayShape::LIST`](../ArrayShape/README.md#cases) (see Here Be Dragons below)
 
 Originally added so the helper class
-[`NormaliseForComparison`](../../NormaliseForComparison/README.md)
+[`GetNormalisedForComparison`](../../GetNormalisedForComparison/README.md)
 could handle list-shaped inputs (whose int keys are mere positions
 and can be dropped) differently from map-shaped inputs (whose
 keys ARE the identity and must be preserved).

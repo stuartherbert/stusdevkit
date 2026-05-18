@@ -42,36 +42,26 @@ declare(strict_types=1);
 namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
 
 /**
- * test fixture - extends {@see ParentWithPrivateProperty} and
- * deliberately re-declares `secret` as its own private property.
- * In PHP, parent's `secret` and child's `secret` are distinct
- * storage slots, so a faithful normaliser must surface both.
+ * test fixture - a plain class with an `array` property, so tests
+ * can exercise the recursion through "object → property holding
+ * an array" without needing a NormalisesForComparison implementor.
  *
- * Originally added to pin the qualification scheme used by
- * GetNormalisedForComparison when private property names collide
- * across a class hierarchy.
+ * Originally added to pin GetNormalisedForComparison's recursion
+ * across the object-array boundary. Holding the items as a public
+ * array (rather than a typed collection) keeps the fixture simple
+ * and lets a single class chain to itself for deeper-nesting
+ * scenarios: an outer instance whose `$items` contains an inner
+ * instance whose `$items` contains scalars exercises the recursion
+ * across four alternating layers.
  */
-class ChildOfParentWithPrivateProperty extends ParentWithPrivateProperty
+class ClassWithArrayProperty
 {
-    private string $secret = 'child secret';
-
-    private string $onlyInChild = 'child only';
-
     /**
-     * exposes the child's private state alongside the parent's.
-     *
-     * Same motivation as the parent's reader - static analysis
-     * cannot see reflection-based reads, so an in-language reader
-     * exists purely to satisfy `property.onlyWritten`. The merged
-     * array also documents which keys belong to which class.
-     *
-     * @return array<string,string>
+     * @param array<mixed> $items
      */
-    public function asArray(): array
-    {
-        return parent::asArray() + [
-            'secret' => $this->secret,
-            'onlyInChild' => $this->onlyInChild,
-        ];
+    public function __construct(
+        public string $label,
+        public array $items = [],
+    ) {
     }
 }

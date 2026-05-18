@@ -41,6 +41,8 @@ declare(strict_types=1);
 
 namespace StusDevKit\MissingBitsKit\Contracts;
 
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
+
 /**
  * Contract for objects that produce their own canonical form for
  * structural comparison.
@@ -69,10 +71,20 @@ namespace StusDevKit\MissingBitsKit\Contracts;
  * - **Implementors handle nested values themselves.** If the
  *   implementor's state contains values that need normalising
  *   (other objects, nested arrays, enums), the implementor must
- *   normalise each one - typically by calling
- *   `NormaliseForComparison::from()` on it - and splice the
- *   results into its return value. The caller will not do this
- *   work.
+ *   normalise each one by calling
+ *   {@see \StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison::fromNested}
+ *   on it and splicing the result into its return value. The
+ *   caller will not do this work.
+ *
+ * - **The supplied `$context` MUST be threaded through every
+ *   recursive call.** The context carries the parent walk's
+ *   visited-set, which is how cycles are detected. Calling
+ *   `GetNormalisedForComparison::from()` (no context) from inside
+ *   `getNormalisedForComparison()` starts a fresh walk that
+ *   cannot see what the parent already visited - on a
+ *   self-referencing graph this footguns into an infinite loop
+ *   that blows the stack. Use `fromNested($value, $context)`
+ *   from inside the implementor; never `from($value)`.
  *
  * - **Stability is the implementor's responsibility.** Two
  *   instances with the same logical state must produce the same
@@ -87,9 +99,18 @@ interface NormalisesForComparison
      * return the canonical representation of this object's state
      * for use in structural comparison.
      *
+     * `$context` carries the parent walk's cycle-detection state
+     * and MUST be passed through to any recursive normalisation of
+     * nested values via
+     * {@see \StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison::fromNested}.
      * See the class-level docblock for the full contract.
      *
+     * @param NormalisationContext $context
+     *      the parent walk's shared state; pass through to nested
+     *      `fromNested()` calls, do not construct your own.
      * @return mixed the object's state, suitable for comparison
      */
-    public function getNormalisedForComparison(): mixed;
+    public function getNormalisedForComparison(
+        NormalisationContext $context,
+    ): mixed;
 }

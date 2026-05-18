@@ -46,6 +46,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionNamedType;
 use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 
 #[TestDox(NormalisesForComparison::class)]
 class NormalisesForComparisonTest extends TestCase
@@ -185,7 +186,7 @@ class NormalisesForComparisonTest extends TestCase
         // explain your test
 
         // the method must be public for callers (like
-        // NormaliseForComparison) to invoke it on an arbitrary
+        // GetNormalisedForComparison) to invoke it on an arbitrary
         // implementor without reflection. Interface methods are
         // always public in PHP, but pin it explicitly so a future
         // refactor that swapped to an abstract class would still
@@ -208,21 +209,23 @@ class NormalisesForComparisonTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('::getNormalisedForComparison() takes zero parameters')]
-    public function test_method_takes_zero_parameters(): void
+    #[TestDox('::getNormalisedForComparison() takes exactly one parameter')]
+    public function test_method_takes_one_parameter(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // the contract is a pure getter on the implementor's own
-        // state. Adding a parameter would change the contract for
-        // every implementor and every caller, so pin the zero-arg
-        // shape.
+        // the contract carries one parameter - the
+        // NormalisationContext threaded down from the parent walk -
+        // and that is the whole API surface. Adding a second
+        // parameter changes the contract for every implementor;
+        // dropping the one we have re-introduces the cycle-loop
+        // footgun. Pin the count so drift fails this test.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = 0;
+        $expected = 1;
         $method = (new ReflectionClass(NormalisesForComparison::class))
             ->getMethod('getNormalisedForComparison');
 
@@ -235,6 +238,99 @@ class NormalisesForComparisonTest extends TestCase
         // test the results
 
         $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::getNormalisedForComparison() names its parameter $context')]
+    public function test_method_parameter_is_named_context(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // implementors copy the parameter name into their own
+        // signature (PHP allows renaming but every implementor in
+        // the kit uses `$context`), and docblock prose addresses
+        // the parameter by name. Pin the name so a rename in the
+        // interface flushes both downstream copies and docs at
+        // once.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = 'context';
+        $method = (new ReflectionClass(NormalisesForComparison::class))
+            ->getMethod('getNormalisedForComparison');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $method->getParameters()[0]->getName();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('::getNormalisedForComparison()\'s parameter is typed as NormalisationContext')]
+    public function test_method_parameter_is_typed_as_normalisation_context(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the typed parameter is what makes the cycle-safety
+        // guarantee load-bearing: an implementor cannot accept the
+        // context without typing it correctly, and the caller
+        // (GetNormalisedForComparison) cannot supply anything else.
+        // Widening to `mixed` or `object` would let implementors
+        // accept the wrong thing silently.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = (new ReflectionClass(NormalisesForComparison::class))
+            ->getMethod('getNormalisedForComparison');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $type = $method->getParameters()[0]->getType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $type);
+        $this->assertSame(NormalisationContext::class, $type->getName());
+    }
+
+    #[TestDox('::getNormalisedForComparison()\'s parameter is required, not optional')]
+    public function test_method_parameter_is_required(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a default-null parameter would re-introduce the loop
+        // footgun: implementors could forget to thread the context
+        // through their recursive calls and the compiler would let
+        // them. Pin that the parameter is required so forgetting
+        // becomes a static error rather than a runtime infinite
+        // loop.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = (new ReflectionClass(NormalisesForComparison::class))
+            ->getMethod('getNormalisedForComparison');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $parameter = $method->getParameters()[0];
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($parameter->isOptional());
+        $this->assertFalse($parameter->allowsNull());
     }
 
     #[TestDox('::getNormalisedForComparison() returns mixed')]

@@ -47,7 +47,7 @@ namespace StusDevKit\MissingBitsKit\Arrays;
  * string). Result is returned as an {@see ArrayShape} enum value.
  *
  * Originally added so the helper class
- * {@see StusDevKit\MissingBitsKit\NormaliseForComparison}
+ * {@see StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison}
  * can handle list-shaped inputs (whose int keys are mere positions
  * and can be dropped) differently to map-shaped inputs (whose
  * keys ARE the identity and must be preserved).

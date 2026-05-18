@@ -46,7 +46,7 @@ namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
  * and no constructor argument, so it stays uninitialised until the
  * caller sets it directly.
  *
- * Originally added to pin NormaliseForComparison's behaviour when
+ * Originally added to pin GetNormalisedForComparison's behaviour when
  * a reflected property cannot be read because it has never been
  * assigned a value.
  */

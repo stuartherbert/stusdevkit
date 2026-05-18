@@ -44,7 +44,7 @@ namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
 /**
  * test fixture - a pure (non-backed) enum.
  *
- * Originally added to pin NormaliseForComparison's behaviour on
+ * Originally added to pin GetNormalisedForComparison's behaviour on
  * pure enum cases. Pure enums have no properties at all, so a
  * reflection-based normaliser that treats them as ordinary objects
  * would collapse every case to the same empty-properties shape.

@@ -50,7 +50,7 @@ Implementing this interface lets the dict declare its own
 canonical form, so the comparison stays correct.
 
 The recommended in-tree caller is
-[`NormaliseForComparison::from()`](../../NormaliseForComparison/from.md) —
+[`GetNormalisedForComparison::from()`](../../GetNormalisedForComparison/from.md) —
 it special-cases any input that `implements NormalisesForComparison`
 and takes the implementor's return value verbatim without
 re-normalising.
@@ -67,7 +67,7 @@ re-normalising.
   implementor's state contains values that need normalising
   (other objects, nested arrays, enums), the implementor must
   normalise each one — typically by calling
-  [`NormaliseForComparison::from()`](../../NormaliseForComparison/from.md)
+  [`GetNormalisedForComparison::from()`](../../GetNormalisedForComparison/from.md)
   on it — and splice the results into its return value. The
   caller will not do this work.
 
@@ -98,7 +98,7 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`NormaliseForComparison`](../../NormaliseForComparison/README.md) —
+- [`GetNormalisedForComparison`](../../GetNormalisedForComparison/README.md) —
   the recommended caller. Knows how to walk arbitrary PHP values
   (scalars, arrays, enums, ordinary objects) AND defers to this
   contract whenever it meets an object that implements it.

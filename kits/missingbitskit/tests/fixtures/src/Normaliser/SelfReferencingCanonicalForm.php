@@ -41,37 +41,42 @@ declare(strict_types=1);
 
 namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
 
+use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
+
 /**
- * test fixture - extends {@see ParentWithPrivateProperty} and
- * deliberately re-declares `secret` as its own private property.
- * In PHP, parent's `secret` and child's `secret` are distinct
- * storage slots, so a faithful normaliser must surface both.
+ * test fixture - implements NormalisesForComparison, recursively
+ * threads the NormalisationContext through nested fromNested()
+ * calls, and exposes a self-referencing `$next` property so
+ * tests can build cyclic graphs across the interface branch.
  *
- * Originally added to pin the qualification scheme used by
- * GetNormalisedForComparison when private property names collide
- * across a class hierarchy.
+ * Originally added to pin the cycle-safety guarantee of the
+ * NormalisesForComparison contract. Without context-threading,
+ * an implementor that recursively normalises its own state via
+ * `GetNormalisedForComparison::from()` infinite-loops on
+ * self-references because every top-level `from()` call starts a
+ * fresh visited-set. The contract requires implementors to
+ * thread the supplied context through `fromNested()` instead, so
+ * the parent walk's cycle detection covers them too.
  */
-class ChildOfParentWithPrivateProperty extends ParentWithPrivateProperty
+class SelfReferencingCanonicalForm implements NormalisesForComparison
 {
-    private string $secret = 'child secret';
+    public ?SelfReferencingCanonicalForm $next = null;
 
-    private string $onlyInChild = 'child only';
+    public function __construct(
+        public string $label,
+    ) {
+    }
 
-    /**
-     * exposes the child's private state alongside the parent's.
-     *
-     * Same motivation as the parent's reader - static analysis
-     * cannot see reflection-based reads, so an in-language reader
-     * exists purely to satisfy `property.onlyWritten`. The merged
-     * array also documents which keys belong to which class.
-     *
-     * @return array<string,string>
-     */
-    public function asArray(): array
-    {
-        return parent::asArray() + [
-            'secret' => $this->secret,
-            'onlyInChild' => $this->onlyInChild,
+    public function getNormalisedForComparison(
+        NormalisationContext $context,
+    ): mixed {
+        return [
+            'label' => $this->label,
+            'next' => $this->next !== null
+                ? GetNormalisedForComparison::fromNested($this->next, $context)
+                : null,
         ];
     }
 }

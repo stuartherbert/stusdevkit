@@ -44,7 +44,7 @@ namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
 /**
  * test fixture - a string-backed enum.
  *
- * Originally added to pin NormaliseForComparison's behaviour on
+ * Originally added to pin GetNormalisedForComparison's behaviour on
  * backed enum cases. The backing value is part of the case's
  * identity and must appear in the normalised form so that two
  * backed enums with different values compare differently.

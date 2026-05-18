@@ -47,7 +47,7 @@ namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
  * {@see ChildOfParentWithPrivateProperty}, so the pair can
  * exercise same-name private fields across a class hierarchy.
  *
- * Originally added to pin NormaliseForComparison's handling of
+ * Originally added to pin GetNormalisedForComparison's handling of
  * inherited private properties: ReflectionObject::getProperties()
  * on a child instance does NOT return private properties declared
  * higher up the chain, so the normaliser has to walk parent classes

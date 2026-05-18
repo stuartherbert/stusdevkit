@@ -42,6 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\MissingBitsKit\Tests\Fixtures\Normaliser;
 
 use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 
 /**
  * test fixture - implements NormalisesForComparison and returns an
@@ -63,8 +64,9 @@ class ClassWithIntKeyedCanonicalForm implements NormalisesForComparison
 {
     public string $shouldNotAppear = 'reflection bypass';
 
-    public function getNormalisedForComparison(): mixed
-    {
+    public function getNormalisedForComparison(
+        NormalisationContext $context,
+    ): mixed {
         return [42 => 'alice', 7 => 'bob'];
     }
 }
