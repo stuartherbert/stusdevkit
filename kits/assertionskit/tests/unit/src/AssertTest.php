@@ -149,7 +149,7 @@ class AssertTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('publishes exactly the 165-method assertion surface declared by AssertApi')]
+    #[TestDox('publishes exactly the 161-method assertion surface declared by AssertApi')]
     public function test_publishes_the_expected_public_static_method_set(): void
     {
         // ----------------------------------------------------------------
@@ -158,7 +158,7 @@ class AssertTest extends TestCase
         // Assert's published surface IS the AssertApi method set - no
         // more, no less. Pin the full list by enumeration so drift on
         // a single method name shows up as a named diff rather than
-        // "expected 165, got 166".
+        // "expected 161, got 162".
         //
         // the enumerated list is kept alphabetically sorted so a new
         // method lands in its natural place, not at the end.
@@ -234,8 +234,6 @@ class AssertTest extends TestCase
             'assertFileIsNotWritable',
             'assertFileIsReadable',
             'assertFileIsWritable',
-            'assertFileMatchesFormat',
-            'assertFileMatchesFormatFile',
             'assertFileMatchesRegularExpression',
             'assertFileNotEquals',
             'assertFileNotEqualsIgnoringCase',
@@ -313,8 +311,6 @@ class AssertTest extends TestCase
             'assertStringEqualsFile',
             'assertStringEqualsFileIgnoringCase',
             'assertStringEqualsStringIgnoringLineEndings',
-            'assertStringMatchesFormat',
-            'assertStringMatchesFormatFile',
             'assertStringNotContainsString',
             'assertStringNotContainsStringIgnoringCase',
             'assertStringNotEqualsFile',
@@ -7173,126 +7169,6 @@ class AssertTest extends TestCase
 
     // ================================================================
     //
-    // ::assertStringMatchesFormat() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertStringMatchesFormat() passes when the string matches a %s placeholder (one-or-more characters)')]
-    public function test_assertStringMatchesFormat_passes_with_s_placeholder(): void
-    {
-        // %s stands for "one or more of any character" (greedy).
-        // It's the workhorse placeholder - pin it in isolation so
-        // a regression in %s handling surfaces here.
-
-        Assert::assertStringMatchesFormat(
-            format: 'Hello %s!',
-            string: 'Hello World!',
-        );
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertStringMatchesFormat() passes when the string matches a %d placeholder (one-or-more digits)')]
-    public function test_assertStringMatchesFormat_passes_with_d_placeholder(): void
-    {
-        // %d stands for "one or more digits" - reject anything that
-        // isn't numeric. The counterexample below locks down that
-        // contrast.
-
-        Assert::assertStringMatchesFormat(
-            format: 'Age: %d',
-            string: 'Age: 42',
-        );
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertStringMatchesFormat() passes when the string matches combined %s and %d placeholders')]
-    public function test_assertStringMatchesFormat_passes_with_combined_placeholders(): void
-    {
-        Assert::assertStringMatchesFormat(
-            format: 'Hello %s, you are %d years old.',
-            string: 'Hello World, you are 42 years old.',
-        );
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertStringMatchesFormat() throws AssertionFailedException when a %d placeholder meets a non-numeric substring')]
-    public function test_assertStringMatchesFormat_throws_when_d_meets_non_digit(): void
-    {
-        // counterexample to the %d contract: "forty-two" is not
-        // digits, so the match has to fail. A lazier implementation
-        // that treated %d like %s would silently pass this.
-
-        $this->expectException(AssertionFailedException::class);
-        Assert::assertStringMatchesFormat(
-            format: 'Age: %d',
-            string: 'Age: forty-two',
-        );
-    }
-
-    #[TestDox('::assertStringMatchesFormat() throws AssertionFailedException when the string does not match the format')]
-    public function test_assertStringMatchesFormat_throws_on_mismatch(): void
-    {
-        $this->expectException(AssertionFailedException::class);
-        Assert::assertStringMatchesFormat(
-            format: 'Hello %s, you are %d years old.',
-            string: 'Goodbye World',
-        );
-    }
-
-    // ================================================================
-    //
-    // ::assertStringMatchesFormatFile() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertStringMatchesFormatFile() passes when the string matches the format loaded from the fixture file')]
-    public function test_assertStringMatchesFormatFile_passes_on_matching_string(): void
-    {
-        // the fixture at tests/fixtures/format-template.txt holds
-        // the format 'Hello %s, you are %d years old.' - we pin
-        // the file-loading + match path together here.
-
-        $formatFile = __DIR__
-            . '/../../fixtures/format-template.txt';
-
-        Assert::assertStringMatchesFormatFile(
-            formatFile: $formatFile,
-            string: 'Hello World, you are 42 years old.',
-        );
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertStringMatchesFormatFile() throws AssertionFailedException when the string does not match the format loaded from the file')]
-    public function test_assertStringMatchesFormatFile_throws_on_mismatch(): void
-    {
-        $formatFile = __DIR__
-            . '/../../fixtures/format-template.txt';
-
-        $this->expectException(AssertionFailedException::class);
-        Assert::assertStringMatchesFormatFile(
-            formatFile: $formatFile,
-            string: 'Goodbye World',
-        );
-    }
-
-    #[TestDox('::assertStringMatchesFormatFile() throws FileNotFoundException when the format file does not exist')]
-    public function test_assertStringMatchesFormatFile_throws_FileNotFoundException_on_missing_file(): void
-    {
-        // the format file is loaded through readFileContents(),
-        // the shared helper behind every file-reading assertion,
-        // so a missing file surfaces as FileNotFoundException -
-        // consistent with assertFileMatchesFormatFile() and the
-        // rest of the kit.
-
-        $this->expectException(FileNotFoundException::class);
-        Assert::assertStringMatchesFormatFile(
-            formatFile: '/nonexistent/path/format.txt',
-            string: 'hello',
-        );
-    }
-
-    // ================================================================
-    //
     // ::assertMatchesRegularExpression() behaviour
     //
     // ----------------------------------------------------------------
@@ -8689,251 +8565,6 @@ class AssertTest extends TestCase
 
         Assert::assertIsNotWritable(
             filename: '/nonexistent/file.txt',
-        );
-    }
-
-    // ================================================================
-    //
-    // ::assertFileMatchesFormat() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertFileMatchesFormat() passes when file contents match the sprintf-style format')]
-    public function test_assertFileMatchesFormat_passes_on_matching_contents(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: the file holds a concrete string that the
-        // format placeholders (%s, %d) cover exactly. Scratch file
-        // wrapped in try/finally so it is cleaned up even on throw.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
-        self::assertIsString($tmpFile);
-
-        try {
-            file_put_contents(
-                $tmpFile,
-                'Hello World, you are 42 years old.',
-            );
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertFileMatchesFormat(
-                format: 'Hello %s, you are %d years old.',
-                actualFile: $tmpFile,
-            );
-
-            // ----------------------------------------------------------------
-            // test the results
-
-            $this->addToAssertionCount(1);
-        } finally {
-            // cleanup - scratch file removed even on throw.
-            unlink($tmpFile);
-        }
-    }
-
-    #[TestDox('::assertFileMatchesFormat() throws AssertionFailedException when file contents do not match the format')]
-    public function test_assertFileMatchesFormat_throws_on_non_matching_contents(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: "Goodbye World" cannot be squared with a
-        // format that demands "Hello %s, you are %d years old."
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
-        self::assertIsString($tmpFile);
-
-        try {
-            file_put_contents($tmpFile, 'Goodbye World');
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertFileMatchesFormat(
-                format: 'Hello %s, you are %d years old.',
-                actualFile: $tmpFile,
-            );
-        } finally {
-            // cleanup - scratch file removed even though the
-            // assertion was expected to throw.
-            unlink($tmpFile);
-        }
-    }
-
-    #[TestDox('::assertFileMatchesFormat() throws FileNotFoundException when the actual file does not exist')]
-    public function test_assertFileMatchesFormat_throws_FileNotFoundException_when_actual_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! a missing actual-file path is a caller error,
-        // not an assertion failure. The method distinguishes the two
-        // by raising InvalidArgumentException before touching the
-        // format regex.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileMatchesFormat(
-            format: 'Hello %s',
-            actualFile: '/nonexistent/path/file.txt',
-        );
-    }
-
-    // ================================================================
-    //
-    // ::assertFileMatchesFormatFile() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertFileMatchesFormatFile() passes when actual file contents match the format file')]
-    public function test_assertFileMatchesFormatFile_passes_on_matching_contents(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: the format template lives in a fixture file,
-        // the actual file is a scratch temp file with matching
-        // contents. Pins the round-trip through the filesystem.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $formatFile = __DIR__
-            . '/../../fixtures/format-template.txt';
-
-        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
-        self::assertIsString($tmpFile);
-
-        try {
-            file_put_contents(
-                $tmpFile,
-                'Hello World, you are 42 years old.',
-            );
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertFileMatchesFormatFile(
-                formatFile: $formatFile,
-                actualFile: $tmpFile,
-            );
-
-            // ----------------------------------------------------------------
-            // test the results
-
-            $this->addToAssertionCount(1);
-        } finally {
-            // cleanup - scratch file removed even on throw.
-            unlink($tmpFile);
-        }
-    }
-
-    #[TestDox('::assertFileMatchesFormatFile() throws AssertionFailedException when actual file contents do not match the format file')]
-    public function test_assertFileMatchesFormatFile_throws_on_non_matching_contents(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: the fixture format demands "Hello %s, you
-        // are %d years old." which "Goodbye World" does not
-        // satisfy.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        $formatFile = __DIR__
-            . '/../../fixtures/format-template.txt';
-
-        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
-        self::assertIsString($tmpFile);
-
-        try {
-            file_put_contents($tmpFile, 'Goodbye World');
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertFileMatchesFormatFile(
-                formatFile: $formatFile,
-                actualFile: $tmpFile,
-            );
-        } finally {
-            // cleanup - scratch file removed even though the
-            // assertion was expected to throw.
-            unlink($tmpFile);
-        }
-    }
-
-    #[TestDox('::assertFileMatchesFormatFile() throws FileNotFoundException when the format file does not exist')]
-    public function test_assertFileMatchesFormatFile_throws_FileNotFoundException_when_format_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! a missing format-file path is a caller error,
-        // not an assertion failure. The readability check on the
-        // format file runs first, so it surfaces its own exception
-        // type.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileMatchesFormatFile(
-            formatFile: '/nonexistent/path/format.txt',
-            actualFile: __FILE__,
-        );
-    }
-
-    #[TestDox('::assertFileMatchesFormatFile() throws FileNotFoundException when the actual file does not exist')]
-    public function test_assertFileMatchesFormatFile_throws_FileNotFoundException_when_actual_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! a missing actual-file path is a caller error.
-        // The format file is valid here, so this pins the second
-        // readability check - the one that fires after the format
-        // file has already been accepted.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        $formatFile = __DIR__
-            . '/../../fixtures/format-template.txt';
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileMatchesFormatFile(
-            formatFile: $formatFile,
-            actualFile: '/nonexistent/path/file.txt',
         );
     }
 

@@ -3083,42 +3083,6 @@ interface AssertApi
     ): void;
 
     /**
-     * Asserts that a string matches a given format string.
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     *     when the assertion fails
-     */
-    public static function assertStringMatchesFormat(
-        string $format,
-        string $string,
-        string $message = '',
-    ): void;
-
-    /**
-     * Asserts that a string matches a given format file.
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     *     when the assertion fails
-     * @throws FileNotFoundException
-     *     when a file referenced by this assertion does not exist
-     * @throws UnableToReadFileException
-     *     when a referenced file exists but cannot be read
-     */
-    public static function assertStringMatchesFormatFile(
-        string $formatFile,
-        string $string,
-        string $message = '',
-    ): void;
-
-    /**
      * Asserts that a string starts with a given prefix.
      *
      * @param non-empty-string $prefix
@@ -3253,54 +3217,6 @@ interface AssertApi
     public static function assertStringEndsNotWith(
         string $suffix,
         string $string,
-        string $message = '',
-    ): void;
-
-    // ================================================================
-    //
-    // File Format Assertions
-    //
-    // ----------------------------------------------------------------
-
-    /**
-     * Asserts that a file's contents matches a given format
-     * string.
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     *     when the assertion fails
-     * @throws FileNotFoundException
-     *     when a file referenced by this assertion does not exist
-     * @throws UnableToReadFileException
-     *     when a referenced file exists but cannot be read
-     */
-    public static function assertFileMatchesFormat(
-        string $format,
-        string $actualFile,
-        string $message = '',
-    ): void;
-
-    /**
-     * Asserts that a file's contents matches a given format
-     * file.
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     *     when the assertion fails
-     * @throws FileNotFoundException
-     *     when a file referenced by this assertion does not exist
-     * @throws UnableToReadFileException
-     *     when a referenced file exists but cannot be read
-     */
-    public static function assertFileMatchesFormatFile(
-        string $formatFile,
-        string $actualFile,
         string $message = '',
     ): void;
 

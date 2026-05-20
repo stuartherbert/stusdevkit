@@ -241,8 +241,6 @@ None of these are criticisms of PHPUnit or Sebastian's work. We're just building
 | `assertStringEndsNotWith()` | Assert that a string does not end with a given suffix |
 | `assertStringContainsStringIgnoringLineEndings()` | Assert that a string contains a substring, ignoring line endings |
 | `assertStringEqualsStringIgnoringLineEndings()` | Assert that two strings are equal, ignoring line endings |
-| `assertStringMatchesFormat()` | Assert that a string matches a format string |
-| `assertStringMatchesFormatFile()` | Assert that a string matches a format file |
 | `assertStringEqualsFile()` | Assert that a string equals the contents of a file |
 | `assertStringEqualsFileCanonicalizing()` | Assert string equals file contents after canonicalizing |
 | `assertStringEqualsFileIgnoringCase()` | Assert string equals file contents ignoring case |
@@ -276,8 +274,6 @@ None of these are criticisms of PHPUnit or Sebastian's work. We're just building
 | `assertFileNotEquals()` | Assert that two files do not have equal contents |
 | `assertFileNotEqualsCanonicalizing()` | Assert two files do not have equal contents after canonicalizing |
 | `assertFileNotEqualsIgnoringCase()` | Assert two files do not have equal contents ignoring case |
-| `assertFileMatchesFormat()` | Assert that a file matches a format string |
-| `assertFileMatchesFormatFile()` | Assert that a file matches a format file |
 
 ### XML
 

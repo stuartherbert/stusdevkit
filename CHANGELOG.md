@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- added assertFileMatchesRegularExpression() / assertFileDoesNotMatchRegularExpression() ([09ae536](https://github.com/stuartherbert/stusdevkit/commit/09ae536)) — Stuart Herbert <stuart@stuartherbert.com>
+- added assertFileMatchesRegularExpression() / assertFileDoesNotMatchRegularExpression() ([bce31d1](https://github.com/stuartherbert/stusdevkit/commit/bce31d1)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial build of PHPUnit assertions API ([b9e9711](https://github.com/stuartherbert/stusdevkit/commit/b9e9711)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
@@ -211,6 +211,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- drop format-string assertions (undocumented DSL) ([52244d8](https://github.com/stuartherbert/stusdevkit/commit/52244d8)) — Stuart Herbert <stuart@stuartherbert.com>
 - canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
 - file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
