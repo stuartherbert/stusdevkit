@@ -212,7 +212,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- remove assertNotTrue() ([fddf0a2](https://github.com/stuartherbert/stusdevkit/commit/fddf0a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove assertNotFalse() ([bae9567](https://github.com/stuartherbert/stusdevkit/commit/bae9567)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
 - drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
 - canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -149,7 +149,7 @@ class AssertTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('publishes exactly the 160-method assertion surface declared by AssertApi')]
+    #[TestDox('publishes exactly the 159-method assertion surface declared by AssertApi')]
     public function test_publishes_the_expected_public_static_method_set(): void
     {
         // ----------------------------------------------------------------
@@ -158,7 +158,7 @@ class AssertTest extends TestCase
         // Assert's published surface IS the AssertApi method set - no
         // more, no less. Pin the full list by enumeration so drift on
         // a single method name shows up as a named diff rather than
-        // "expected 160, got 161".
+        // "expected 159, got 160".
         //
         // the enumerated list is kept alphabetically sorted so a new
         // method lands in its natural place, not at the end.
@@ -290,7 +290,6 @@ class AssertTest extends TestCase
             'assertNotEqualsCanonicalizing',
             'assertNotEqualsIgnoringCase',
             'assertNotEqualsWithDelta',
-            'assertNotFalse',
             'assertNotInstanceOf',
             'assertNotNull',
             'assertNotSame',
@@ -446,77 +445,6 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertFalse(true);
-    }
-
-    // ================================================================
-    //
-    // ::assertNotFalse() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertNotFalse() passes when given boolean true')]
-    public function test_assertNotFalse_passes_on_true(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: true is the obvious not-false value, so the
-        // assertion must succeed silently.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotFalse(true);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertNotFalse() passes when given a falsy non-boolean')]
-    public function test_assertNotFalse_passes_on_falsy_non_boolean(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // edge case: assertNotFalse rejects only the literal
-        // boolean false. Integer 0 is NOT identical to false, so
-        // the assertion must succeed - this is the whole point of
-        // the "did the function return the sentinel false, or some
-        // other value?" contract that PHP's stream_get_contents-style
-        // APIs rely on.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotFalse(0);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertNotFalse() throws AssertionFailedException when given boolean false')]
-    public function test_assertNotFalse_throws_on_false(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: the literal boolean false is the one and
-        // only value this assertion rejects, so passing it must
-        // raise.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotFalse(false);
     }
 
     // ================================================================
