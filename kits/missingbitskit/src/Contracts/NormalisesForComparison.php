@@ -76,7 +76,7 @@ use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
  *   on it and splicing the result into its return value. The
  *   caller will not do this work.
  *
- * - **The supplied `$context` MUST be threaded through every
+ * - **The supplied `$context` MUST be passed through every
  *   recursive call.** The context carries the parent walk's
  *   visited-set, which is how cycles are detected. Calling
  *   `GetNormalisedForComparison::from()` (no context) from inside

@@ -126,7 +126,7 @@ StusDevKit\MissingBitsKit\DataInspectors\UnseenObjectException
 
 ## Source
 
-[`kits/missingbitskit/src/DataInspectors/UnseenObjectException.php:57`](../src/DataInspectors/UnseenObjectException.php#L57)
+[`kits/missingbitskit/src/DataInspectors/UnseenObjectException.php:57`](../../../../kits/missingbitskit/src/DataInspectors/UnseenObjectException.php#L57)
 
 ## Changelog
 

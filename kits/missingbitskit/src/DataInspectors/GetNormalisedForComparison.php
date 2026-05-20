@@ -71,6 +71,21 @@ class GetNormalisedForComparison
      * of a two-phase-constructed value object impossible.
      * Substituting a fixed sentinel keeps the comparison usable
      * while still making the uninitialised state visible in a diff.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * **Collision with real string values is possible.** The
+     * sentinel is the plain string `'__uninitialised__'`. If a
+     * real string property happens to hold that exact value, the
+     * canonical form silently wins both ways: an uninitialised
+     * property and a `'__uninitialised__'`-valued property
+     * canonicalise identically and compare equal. Realistic
+     * collision rate is near zero, but if your domain ever uses
+     * that literal as a meaningful value, implement
+     * {@see \StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison}
+     * on the enclosing value object so its canonical form bypasses
+     * the reflection walk entirely.
      */
     public const string UNINITIALISED_PROPERTY = '__uninitialised__';
 
@@ -109,6 +124,40 @@ class GetNormalisedForComparison
      *   loop on self-referencing graphs. See
      *   {@see fromNested}.
      *
+     * - **Closures collapse together.** Reflection sees no
+     *   user-declared properties on a `Closure`, so every closure
+     *   canonicalises to `['class' => 'Closure', 'properties' =>
+     *   []]`. Two closures with completely different bodies
+     *   silently compare equal. If your state holds callables,
+     *   normalise them yourself (e.g. via a stable identifier)
+     *   before handing them in.
+     *
+     * - **PHP `resource` values pass through verbatim.** File
+     *   handles, curl handles, and any other `resource` are
+     *   neither arrays nor objects, so the fallback returns them
+     *   unchanged. Two `fopen()` calls for the same path produce
+     *   different resource IDs and canonicalise unequal even
+     *   though they "mean" the same thing - a footgun if you
+     *   compare state that carries handles.
+     *
+     * - **`DateTime` / `DateTimeImmutable` expose raw internals.**
+     *   These have no `NormalisesForComparison` implementation
+     *   here, so they fall through to the reflection walk and
+     *   surface their private `date`, `timezone_type`, and
+     *   `timezone` fields. Two datetimes that represent the same
+     *   instant in different timezones canonicalise differently.
+     *   Wrap datetime-bearing state in a value object that
+     *   implements `NormalisesForComparison` rather than relying
+     *   on raw normalisation.
+     *
+     * - **`UNINITIALISED_PROPERTY` sentinel can collide with real
+     *   string values.** See
+     *   {@see UNINITIALISED_PROPERTY} for the full hazard. Short
+     *   version: a string property whose value is the literal
+     *   `'__uninitialised__'` is indistinguishable in the
+     *   canonical form from a property that was never
+     *   initialised.
+     *
      * @param mixed $input
      *      the value to normalise
      * @return mixed
@@ -130,7 +179,7 @@ class GetNormalisedForComparison
      * {@see \StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison}:
      * the implementor receives a `NormalisationContext` from the
      * parent walk and forwards it through every nested
-     * normalisation it performs. Threading the context keeps the
+     * normalisation it performs. Passing the context keeps the
      * parent's visited-set alive across the interface boundary,
      * so self-references in the implementor's own graph are
      * detected and emit `__cycle_ref` instead of recursing
@@ -138,9 +187,44 @@ class GetNormalisedForComparison
      *
      * Casual top-level callers should use {@see from} instead -
      * `fromNested()` is the protocol-internal entry point and
-     * deliberately requires a context, so forgetting to thread it
+     * deliberately requires a context, so forgetting to pass it
      * is a compile-time error rather than a silent revert to the
      * infinite-loop footgun.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * The same value-shape hazards that apply to {@see from} apply
+     * to `fromNested()` - the same dispatch sits behind both. The
+     * highlights, repeated here so the IDE hover on `fromNested()`
+     * carries them too:
+     *
+     * - **Return type may differ from input type.** Scalars round
+     *   trip, arrays may be re-indexed, objects always come back
+     *   as arrays. Treat the result as opaque.
+     *
+     * - **Closures collapse together.** Every closure canonicalises
+     *   to `['class' => 'Closure', 'properties' => []]`; two
+     *   different closures silently compare equal. Normalise
+     *   callables yourself (e.g. via a stable identifier) before
+     *   handing them in.
+     *
+     * - **PHP `resource` values pass through verbatim.** Two
+     *   `fopen()` calls for the same path produce different
+     *   resource IDs and canonicalise unequal even though they
+     *   "mean" the same thing.
+     *
+     * - **`DateTime` / `DateTimeImmutable` expose raw internals.**
+     *   No special-casing here; they fall through to reflection
+     *   and surface their private `date`, `timezone_type`, and
+     *   `timezone` fields. Two datetimes that represent the same
+     *   instant in different timezones canonicalise differently.
+     *   Wrap datetime-bearing state in a `NormalisesForComparison`
+     *   implementor instead.
+     *
+     * - **`UNINITIALISED_PROPERTY` sentinel can collide with real
+     *   string values.** See {@see UNINITIALISED_PROPERTY} for the
+     *   full hazard.
      *
      * @param mixed $input
      *      the value to normalise
@@ -165,7 +249,7 @@ class GetNormalisedForComparison
     // ----------------------------------------------------------------
 
     /**
-     * recursive entry point - dispatches by type, threading the
+     * recursive entry point - dispatches by type, passing the
      * shared context so cycles can be detected across a single
      * top-level call.
      */

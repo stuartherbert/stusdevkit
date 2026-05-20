@@ -216,7 +216,7 @@ class NormalisesForComparisonTest extends TestCase
         // explain your test
 
         // the contract carries one parameter - the
-        // NormalisationContext threaded down from the parent walk -
+        // NormalisationContext passed down from the parent walk -
         // and that is the whole API surface. Adding a second
         // parameter changes the contract for every implementor;
         // dropping the one we have re-introduces the cycle-loop
@@ -309,7 +309,7 @@ class NormalisesForComparisonTest extends TestCase
         // explain your test
 
         // a default-null parameter would re-introduce the loop
-        // footgun: implementors could forget to thread the context
+        // footgun: implementors could forget to pass the context
         // through their recursive calls and the compiler would let
         // them. Pin that the parameter is required so forgetting
         // becomes a static error rather than a runtime infinite

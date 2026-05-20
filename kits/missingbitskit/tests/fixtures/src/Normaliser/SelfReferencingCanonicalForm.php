@@ -47,17 +47,17 @@ use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 
 /**
  * test fixture - implements NormalisesForComparison, recursively
- * threads the NormalisationContext through nested fromNested()
+ * passes the NormalisationContext through nested fromNested()
  * calls, and exposes a self-referencing `$next` property so
  * tests can build cyclic graphs across the interface branch.
  *
  * Originally added to pin the cycle-safety guarantee of the
- * NormalisesForComparison contract. Without context-threading,
+ * NormalisesForComparison contract. Without context-passing,
  * an implementor that recursively normalises its own state via
  * `GetNormalisedForComparison::from()` infinite-loops on
  * self-references because every top-level `from()` call starts a
  * fresh visited-set. The contract requires implementors to
- * thread the supplied context through `fromNested()` instead, so
+ * pass the supplied context through `fromNested()` instead, so
  * the parent walk's cycle detection covers them too.
  */
 class SelfReferencingCanonicalForm implements NormalisesForComparison

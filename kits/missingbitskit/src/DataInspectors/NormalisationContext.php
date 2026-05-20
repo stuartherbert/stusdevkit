@@ -61,12 +61,10 @@ use SplObjectStorage;
  * their own, query its internals, or store it past the duration of
  * a single `getNormalisedForComparison()` call.
  *
- * Wraps `SplObjectStorage` so the storage choice stays an
- * implementation detail. Future additions to the protocol (a
- * depth counter, normalisation options, etc.) can land here
- * without breaking the
- * {@see \StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison}
- * interface again.
+ * Exists as a dedicated class so that the implementation can
+ * remain independent of the PHP runtime version.
+ *
+ * @internal
  */
 final class NormalisationContext
 {
@@ -89,6 +87,12 @@ final class NormalisationContext
      *
      * Pair with {@see visitIndexOf} to recover the index of the
      * earlier visit when this returns `true`.
+     *
+     * @param object $obj
+     *      the object that we want to check for
+     * @return bool
+     * - `true` if we have seen this object before
+     * - `false` otherwise
      */
     public function hasSeen(object $obj): bool
     {
@@ -96,32 +100,73 @@ final class NormalisationContext
     }
 
     /**
-     * return the visit index assigned to a previously-seen object.
+     * return the visit index assigned to the given object.
      *
-     * Caller MUST check {@see hasSeen} first - calling
-     * `visitIndexOf()` on an unseen object is a programmer error
-     * (SplObjectStorage will throw `UnexpectedValueException`).
+     * Visit indexes are assigned in order of first encounter (0,
+     * 1, 2, ...) and never change once assigned, so the returned
+     * value is stable for the lifetime of the context.
+     *
+     * Pair with {@see hasSeen} - calling `visitIndexOf()` on an
+     * object that has not been recorded is a programmer error
+     * and throws {@see UnseenObjectException}.
+     *
+     * @param object $obj
+     *      the object that we want to get the index of
+     * @return int
+     *      the zero-based visit index assigned at first sight
+     * @throws UnseenObjectException
+     *      if `$obj` has not been recorded via {@see markSeen}
      */
     public function visitIndexOf(object $obj): int
     {
+        // robustness!
+        // explicit existence check + our own typed exception keeps
+        // the underlying storage's own exception type
+        // (SplObjectStorage throws UnexpectedValueException on
+        // missing keys) from leaking through this class's
+        // boundary. The caller is expected to pair this with
+        // hasSeen() - reaching the throw means that protocol was
+        // broken.
+        if (! $this->seen->offsetExists($obj)) {
+            throw new UnseenObjectException($obj);
+        }
+
         return $this->seen[$obj];
     }
 
     /**
      * record an object as visited and return the visit index it
-     * was assigned.
+     * carries.
+     *
+     * Idempotent: if the object has been seen before, the existing
+     * first-visit index is returned and nothing else changes.
+     * Duplicate calls are safe; the "order of first encounter"
+     * invariant survives any call pattern.
      *
      * Visit indexes are assigned in order of first encounter (0,
      * 1, 2, ...), so structurally-equivalent cyclic graphs
      * normalise to the same back-references regardless of the
      * runtime object identities involved.
      *
-     * Calling `markSeen()` on an already-seen object overwrites
-     * its visit index; callers should check {@see hasSeen} first
-     * to keep the "order of first encounter" invariant intact.
+     * @param object $obj
+     *      the object that we want to record as visited
+     * @return int
+     * - the freshly-assigned visit index, on first sight
+     * - the existing first-visit index, on subsequent sights
      */
     public function markSeen(object $obj): int
     {
+        // robustness!
+        // if already seen, preserve the first-visit index instead
+        // of overwriting. Overwriting would corrupt the "order of
+        // first encounter" invariant - the very thing that makes
+        // structurally-equivalent cyclic graphs canonicalise to
+        // the same back-references run after run.
+        if ($this->seen->offsetExists($obj)) {
+            return $this->seen[$obj];
+        }
+
+        // first sight - assign the next index in encounter order
         $index = $this->seen->count();
         $this->seen[$obj] = $index;
         return $index;

@@ -288,7 +288,7 @@ class GetNormalisedForComparisonTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('detects a cycle through a NormalisesForComparison implementor that threads the context')]
+    #[TestDox('detects a cycle through a NormalisesForComparison implementor that passes the context')]
     public function test_self_referencing_implementor_emits_cycle_ref(): void
     {
         // ----------------------------------------------------------------
@@ -298,7 +298,7 @@ class GetNormalisedForComparisonTest extends TestCase
         // contract: an implementor whose canonical form references
         // itself must emit __cycle_ref rather than infinite-loop.
         //
-        // The contract requires implementors to thread the supplied
+        // The contract requires implementors to pass the supplied
         // NormalisationContext through every recursive normalisation
         // via fromNested(). The fixture does exactly that on its own
         // $next pointer. With $loopy->next = $loopy, the second
@@ -308,7 +308,7 @@ class GetNormalisedForComparisonTest extends TestCase
         // the visit index of the first encounter (0).
         //
         // Without the cycle-check before the interface branch and
-        // without the context being threaded, this test would hang
+        // without the context being passed, this test would hang
         // the test runner with a stack overflow - the exact
         // regression we're guarding against.
 

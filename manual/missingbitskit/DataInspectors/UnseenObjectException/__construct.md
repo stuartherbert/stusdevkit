@@ -60,7 +60,7 @@ Its class name is stored in `extra['class_name']`.
 
 ## Source
 
-[`kits/missingbitskit/src/DataInspectors/UnseenObjectException.php:68`](../src/DataInspectors/UnseenObjectException.php#L68)
+[`kits/missingbitskit/src/DataInspectors/UnseenObjectException.php:68`](../../../../kits/missingbitskit/src/DataInspectors/UnseenObjectException.php#L68)
 
 ## Changelog
 
