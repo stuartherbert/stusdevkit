@@ -52,6 +52,9 @@ use RuntimeException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
+use StusDevKit\CollectionsKit\Lists\CollectionAsList;
+use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
 #[TestDox(CollectionAsDict::class)]
@@ -155,7 +158,7 @@ class CollectionAsDictTest extends TestCase
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares only get/has/maybeGet/set as its own public methods')]
+    #[TestDox('declares only get/getNormalisedForComparison/has/maybeGet/set as its own public methods')]
     public function test_declares_own_method_set(): void
     {
         // ----------------------------------------------------------------
@@ -168,7 +171,7 @@ class CollectionAsDictTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = ['get', 'has', 'maybeGet', 'set'];
+        $expected = ['get', 'getNormalisedForComparison', 'has', 'maybeGet', 'set'];
         $reflection = new ReflectionClass(CollectionAsDict::class);
 
         // ----------------------------------------------------------------
@@ -2514,5 +2517,177 @@ class CollectionAsDictTest extends TestCase
 
         $this->assertSame('alpha', $getResult);
         $this->assertSame($getResult, $maybeGetResult);
+    }
+
+    // ================================================================
+    //
+    // NormalisesForComparison contract
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('implements NormalisesForComparison')]
+    public function test_implements_normalises_for_comparison(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // every CollectionAsDict opts into the canonical-comparison
+        // contract so structural equality on dicts preserves the
+        // key→value identity that a generic reflection walk would
+        // silently drop.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(CollectionAsDict::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $reflection->implementsInterface(NormalisesForComparison::class);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('->getNormalisedForComparison() returns the keyed data with int/string keys preserved')]
+    public function test_canonical_form_preserves_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the dict's keys are the identity. The caller takes our
+        // return value verbatim (per the NormalisesForComparison
+        // contract), so the keyed map goes through unchanged - the
+        // int-keyed-dict-vs-list ambiguity that motivated the
+        // contract simply does not apply.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsDict<int,string> $unit */
+        $unit = new CollectionAsDict([42 => 'alice', 7 => 'bob']);
+
+        // under SORT_STRING the int keys 42 and 7 sort as the
+        // strings "42" and "7", so "42" < "7" lexicographically -
+        // 42 comes first in the canonical form.
+        $expected = [42 => 'alice', 7 => 'bob'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $unit->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+        $this->assertSame([42, 7], array_keys($actual));
+    }
+
+    #[TestDox('->getNormalisedForComparison() distinguishes dicts with the same values but different keys')]
+    public function test_canonical_form_distinguishes_different_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the headline guarantee: two int-keyed dicts that share
+        // their values but differ on their keys must canonicalise
+        // to different forms. Previously, the generic reflection
+        // walk would drop the keys and collapse them to the same
+        // canonical body - exactly the bug NormalisesForComparison
+        // was added to fix.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsDict<int,string> $a */
+        $a = new CollectionAsDict([42 => 'alice', 7 => 'bob']);
+        /** @var CollectionAsDict<int,string> $b */
+        $b = new CollectionAsDict([99 => 'alice', 3 => 'bob']);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $canonicalA = $a->getNormalisedForComparison(new NormalisationContext());
+        $canonicalB = $b->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertNotSame($canonicalA, $canonicalB);
+    }
+
+    #[TestDox('->getNormalisedForComparison() is order-independent across insertion order')]
+    public function test_canonical_form_is_order_independent(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a dict's semantic is its key→value mapping, not the
+        // insertion order PHP happens to preserve. Two dicts built
+        // with the same pairs in different orders describe the same
+        // dict and must canonicalise to the same form. The ksort
+        // inside getNormalisedForComparison() is what delivers this.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsDict<string,string> $a */
+        $a = new CollectionAsDict(['first' => 'alpha', 'second' => 'bravo']);
+        /** @var CollectionAsDict<string,string> $b */
+        $b = new CollectionAsDict(['second' => 'bravo', 'first' => 'alpha']);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $canonicalA = $a->getNormalisedForComparison(new NormalisationContext());
+        $canonicalB = $b->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($canonicalA, $canonicalB);
+    }
+
+    #[TestDox('->getNormalisedForComparison() recursively canonicalises nested NormalisesForComparison values')]
+    public function test_canonical_form_recurses_into_nested_implementors(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the caller (GetNormalisedForComparison) takes our return value
+        // verbatim - it does NOT recurse. So a nested implementor
+        // has to be canonicalised by us before we return, otherwise
+        // its canonical form would never get called. Pin that a
+        // CollectionAsDict holding a CollectionAsList in its values
+        // emits the list's canonical body, not the raw object.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsList<string> $nested */
+        $nested = new CollectionAsList(['alpha', 'bravo']);
+        /** @var CollectionAsDict<string,CollectionAsList<string>> $unit */
+        $unit = new CollectionAsDict(['items' => $nested]);
+
+        $expected = [
+            'items' => [
+                'class' => CollectionAsList::class,
+                'canonical' => ['alpha', 'bravo'],
+            ],
+        ];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $unit->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
     }
 }

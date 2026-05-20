@@ -50,8 +50,11 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use RuntimeException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
+use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
 use StusDevKit\CollectionsKit\Lists\CollectionAsList;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 
 #[TestDox(CollectionAsList::class)]
 class CollectionAsListTest extends TestCase
@@ -154,13 +157,17 @@ class CollectionAsListTest extends TestCase
     //
     // ----------------------------------------------------------------
     //
-    // CollectionAsList declares exactly one own public method: add().
+    // CollectionAsList declares two own public methods:
+    //   - add(): the list-specific accumulator
+    //   - getNormalisedForComparison(): the canonical form, from
+    //     the NormalisesForComparison contract
+    //
     // All other behaviour is inherited and pinned by the parent-class
     // tests (AccessibleCollectionTest, CollectionOfAnythingTest).
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('declares only the add() method of its own')]
+    #[TestDox('declares only add/getNormalisedForComparison as its own public methods')]
     public function test_declares_only_add_method(): void
     {
         // ----------------------------------------------------------------
@@ -173,7 +180,7 @@ class CollectionAsListTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = ['add'];
+        $expected = ['add', 'getNormalisedForComparison'];
         $reflection = new ReflectionClass(CollectionAsList::class);
 
         // ----------------------------------------------------------------
@@ -1795,5 +1802,140 @@ class CollectionAsListTest extends TestCase
             ['alpha', 'bravo', 'charlie', 'delta'],
             $unit->toArray(),
         );
+    }
+
+    // ================================================================
+    //
+    // NormalisesForComparison contract
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('implements NormalisesForComparison')]
+    public function test_implements_normalises_for_comparison(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // every CollectionAsList opts into the canonical-comparison
+        // contract so structural equality on lists works correctly
+        // through AssertionsKit's GetNormalisedForComparison helper.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(CollectionAsList::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $reflection->implementsInterface(NormalisesForComparison::class);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($actual);
+    }
+
+    #[TestDox('->getNormalisedForComparison() drops int keys and re-indexes from zero')]
+    public function test_canonical_form_drops_keys(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the list semantic is that the int keys are positions, not
+        // identities. The canonical form must therefore re-index
+        // from zero so two lists with the same value sequence
+        // produced via different key paths compare equal.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsList<string> $unit */
+        $unit = new CollectionAsList(['alpha', 'bravo', 'charlie']);
+
+        $expected = ['alpha', 'bravo', 'charlie'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $unit->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('->getNormalisedForComparison() preserves value order')]
+    public function test_canonical_form_preserves_value_order(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // list order usually carries meaning - event sequences,
+        // sorted result sets, fixed display orders. The canonical
+        // form must NOT sort the values; doing so would erase
+        // information the caller put there on purpose.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsList<string> $unit */
+        $unit = new CollectionAsList(['charlie', 'alpha', 'bravo']);
+
+        $expected = ['charlie', 'alpha', 'bravo'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $unit->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('->getNormalisedForComparison() recursively canonicalises nested NormalisesForComparison values')]
+    public function test_canonical_form_recurses_into_nested_implementors(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the caller (GetNormalisedForComparison) takes our return value
+        // verbatim - it does NOT recurse. So any nested implementor
+        // of the contract has to be canonicalised by us before we
+        // return, otherwise its careful canonical form would never
+        // get called. Pin that behaviour: a CollectionAsList holding
+        // a CollectionAsDict must show the dict's canonical body, not
+        // the dict's raw object identity.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        /** @var CollectionAsDict<string,string> $nested */
+        $nested = new CollectionAsDict(['key1' => 'value1']);
+        /** @var CollectionAsList<CollectionAsDict<string,string>> $unit */
+        $unit = new CollectionAsList([$nested]);
+
+        // the canonical form must wrap the nested dict with its
+        // class identity so two different dict types containing
+        // the same data stay distinguishable.
+        $expected = [
+            [
+                'class' => CollectionAsDict::class,
+                'canonical' => ['key1' => 'value1'],
+            ],
+        ];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $unit->getNormalisedForComparison(new NormalisationContext());
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
     }
 }

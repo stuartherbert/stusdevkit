@@ -45,6 +45,9 @@ use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Validators\RejectNullValue;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 
 /**
  * CollectionAsDict holds a collection of data that has identity (ie, it has
@@ -82,7 +85,7 @@ use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
  * @template TValue of array|bool|callable|float|int|object|string
  * @extends AccessibleCollection<TKey,TValue>
  */
-class CollectionAsDict extends AccessibleCollection
+class CollectionAsDict extends AccessibleCollection implements NormalisesForComparison
 {
     // ================================================================
     //
@@ -128,7 +131,7 @@ class CollectionAsDict extends AccessibleCollection
      * @param TKey $key
      * @return TValue|null
      */
-    public function maybeGet($key): mixed
+    public function maybeGet(mixed $key): mixed
     {
         if ($this->has($key)) {
             return $this->data[$key];
@@ -147,7 +150,7 @@ class CollectionAsDict extends AccessibleCollection
      * @return TValue
      * @throws NoValueForKeyInCollectionException
      */
-    public function get($key): mixed
+    public function get(mixed $key): mixed
     {
         if ($this->has($key)) {
             return $this->data[$key];
@@ -174,8 +177,58 @@ class CollectionAsDict extends AccessibleCollection
      * - `true` if we have a value for `$key`
      * - `false` otherwise
      */
-    public function has($key): bool
+    public function has(mixed $key): bool
     {
         return isset($this->data[$key]);
+    }
+
+    // ================================================================
+    //
+    // NormalisesForComparison contract
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * Return the dict's canonical form for structural comparison.
+     *
+     * Dict semantics: the keys ARE the identity of each entry, so
+     * they must survive. The caller takes our return value verbatim
+     * (per the `NormalisesForComparison` contract), so the keyed
+     * map goes straight in - there is no downstream heuristic to
+     * defend against, and no need to split the keys and values into
+     * parallel structures.
+     *
+     * The data is `ksort`-ed (SORT_STRING) before being returned,
+     * so the canonical form is order-independent: two dicts built
+     * with the same key/value pairs in different insertion orders
+     * canonicalise identically. SORT_STRING matches the choice
+     * already in `GetNormalisedForComparison::fromArrayMapInternal`.
+     *
+     * Each value is recursively normalised through
+     * {@see GetNormalisedForComparison::fromNested()}, threading the
+     * parent walk's `$context`, so nested collections, value
+     * objects, enums, and nested arrays all canonicalise correctly
+     * AND cycles that loop back through this dict are detected
+     * once across the whole walk.
+     *
+     * @return array<array-key, mixed>
+     */
+    public function getNormalisedForComparison(
+        NormalisationContext $context,
+    ): mixed {
+        // ksort the data so two dicts with the same key/value
+        // pairs in different insertion orders canonicalise the
+        // same way. ksort() is in-place on a local copy - the
+        // collection's own ordering is untouched.
+        $data = $this->data;
+        ksort($data, SORT_STRING);
+
+        // array_map preserves array keys when given a single
+        // array, so the int/string keys ride through unchanged.
+        return array_map(
+            static fn(mixed $value): mixed
+                => GetNormalisedForComparison::fromNested($value, $context),
+            $data,
+        );
     }
 }

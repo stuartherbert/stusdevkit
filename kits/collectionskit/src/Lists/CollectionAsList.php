@@ -44,6 +44,9 @@ namespace StusDevKit\CollectionsKit\Lists;
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Validators\RejectNullValue;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
+use StusDevKit\MissingBitsKit\Contracts\NormalisesForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
+use StusDevKit\MissingBitsKit\DataInspectors\NormalisationContext;
 
 /**
  * CollectionAsList holds a collection of data as an array with sequential
@@ -80,7 +83,7 @@ use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
  * @template TValue of array|bool|callable|float|int|object|string
  * @extends AccessibleCollection<int, TValue>
  */
-class CollectionAsList extends AccessibleCollection
+class CollectionAsList extends AccessibleCollection implements NormalisesForComparison
 {
     // ================================================================
     //
@@ -108,6 +111,42 @@ class CollectionAsList extends AccessibleCollection
         $this->data[] = $value;
 
         return $this;
+    }
+
+    // ================================================================
+    //
+    // NormalisesForComparison contract
+    //
+    // ----------------------------------------------------------------
+
+    /**
+     * Return the list's canonical form for structural comparison.
+     *
+     * List semantics: the int keys are positions, not identities,
+     * so they are dropped. Two CollectionAsList instances with the
+     * same value sequence canonicalise identically regardless of
+     * any gaps the original keys might have carried.
+     *
+     * Value order is preserved - list order usually carries meaning
+     * (event sequences, sorted result sets, fixed display orders).
+     *
+     * Each value is recursively normalised through
+     * {@see GetNormalisedForComparison::fromNested()}, threading the
+     * parent walk's `$context`, so nested collections, value
+     * objects, enums, and nested arrays all canonicalise correctly
+     * AND cycles that loop back through this list are detected
+     * once across the whole walk.
+     *
+     * @return list<mixed>
+     */
+    public function getNormalisedForComparison(
+        NormalisationContext $context,
+    ): mixed {
+        return array_map(
+            static fn(mixed $value): mixed
+                => GetNormalisedForComparison::fromNested($value, $context),
+            array_values($this->data),
+        );
     }
 
     // ================================================================
