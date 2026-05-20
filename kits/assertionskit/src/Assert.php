@@ -1353,17 +1353,461 @@ class Assert implements AssertApi
     //
     // ----------------------------------------------------------------
 
+    public static function assertFileEquals(
+        string $expected,
+        string $actual,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
+
+        if ($expectedContents === $actualContents) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two files are equal',
+            extra: [
+                'expected' => self::exportValue($expected),
+                'actual' => self::exportValue($actual),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileEqualsIgnoringCase(
+        string $expected,
+        string $actual,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
+
+        if (mb_strtolower($expectedContents) === mb_strtolower($actualContents)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two files are equal (ignoring case)',
+            extra: [
+                'expected' => self::exportValue($expected),
+                'actual' => self::exportValue($actual),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileNotEquals(
+        string $expected,
+        string $actual,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
+
+        if ($expectedContents !== $actualContents) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two files are not equal',
+            extra: [
+                'expected' => self::exportValue($expected),
+                'actual' => self::exportValue($actual),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileNotEqualsIgnoringCase(
+        string $expected,
+        string $actual,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expected);
+        $actualContents = self::readFileContents($actual);
+
+        if (mb_strtolower($expectedContents) !== mb_strtolower($actualContents)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two files are not equal (ignoring case)',
+            extra: [
+                'expected' => self::exportValue($expected),
+                'actual' => self::exportValue($actual),
+            ],
+            detail: $message,
+        );
+    }
+
     // ================================================================
     //
     // String/File Content Equality Assertions
     //
     // ----------------------------------------------------------------
 
+    public static function assertStringEqualsFile(
+        string $expectedFile,
+        string $actualString,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+
+        if ($expectedContents === $actualString) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a string equals file contents',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualString' => self::exportValue($actualString),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertStringEqualsFileIgnoringCase(
+        string $expectedFile,
+        string $actualString,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+
+        if (mb_strtolower($expectedContents) === mb_strtolower($actualString)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a string equals file contents (ignoring case)',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualString' => self::exportValue($actualString),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertStringNotEqualsFile(
+        string $expectedFile,
+        string $actualString,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+
+        if ($expectedContents !== $actualString) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a string does not equal file contents',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualString' => self::exportValue($actualString),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertStringNotEqualsFileIgnoringCase(
+        string $expectedFile,
+        string $actualString,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+
+        if (mb_strtolower($expectedContents) !== mb_strtolower($actualString)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a string does not equal file contents (ignoring case)',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualString' => self::exportValue($actualString),
+            ],
+            detail: $message,
+        );
+    }
+
     // ================================================================
     //
     // Filesystem Assertions
     //
     // ----------------------------------------------------------------
+
+    public static function assertFileExists(
+        string $filename,
+        string $message = '',
+    ): void {
+        if (file_exists($filename) && is_file($filename)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file exists',
+            extra: [
+                'filename' => self::exportValue($filename),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileDoesNotExist(
+        string $filename,
+        string $message = '',
+    ): void {
+        if (!file_exists($filename)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file does not exist',
+            extra: [
+                'filename' => self::exportValue($filename),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileIsReadable(
+        string $file,
+        string $message = '',
+    ): void {
+        if (is_file($file) && is_readable($file)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file is readable',
+            extra: [
+                'file' => self::exportValue($file),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileIsNotReadable(
+        string $file,
+        string $message = '',
+    ): void {
+        if (is_file($file) && !is_readable($file)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file is not readable',
+            extra: [
+                'file' => self::exportValue($file),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileIsWritable(
+        string $file,
+        string $message = '',
+    ): void {
+        if (is_file($file) && is_writable($file)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file is writable',
+            extra: [
+                'file' => self::exportValue($file),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileIsNotWritable(
+        string $file,
+        string $message = '',
+    ): void {
+        if (is_file($file) && !is_writable($file)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file is not writable',
+            extra: [
+                'file' => self::exportValue($file),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDirectoryExists(
+        string $directory,
+        string $message = '',
+    ): void {
+        if (is_dir($directory)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a directory exists',
+            extra: [
+                'directory' => self::exportValue($directory),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDirectoryDoesNotExist(
+        string $directory,
+        string $message = '',
+    ): void {
+        if (!file_exists($directory) || !is_dir($directory)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a directory does not exist',
+            extra: [
+                'directory' => self::exportValue($directory),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDirectoryIsReadable(
+        string $directory,
+        string $message = '',
+    ): void {
+        if (is_dir($directory) && is_readable($directory)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a directory is readable',
+            extra: [
+                'directory' => self::exportValue($directory),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDirectoryIsNotReadable(
+        string $directory,
+        string $message = '',
+    ): void {
+        if (is_dir($directory) && !is_readable($directory)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a directory is not readable',
+            extra: [
+                'directory' => self::exportValue($directory),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDirectoryIsWritable(
+        string $directory,
+        string $message = '',
+    ): void {
+        if (is_dir($directory) && is_writable($directory)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a directory is writable',
+            extra: [
+                'directory' => self::exportValue($directory),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDirectoryIsNotWritable(
+        string $directory,
+        string $message = '',
+    ): void {
+        if (is_dir($directory) && !is_writable($directory)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a directory is not writable',
+            extra: [
+                'directory' => self::exportValue($directory),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertIsReadable(
+        string $filename,
+        string $message = '',
+    ): void {
+        if (is_readable($filename)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a path is readable',
+            extra: [
+                'filename' => self::exportValue($filename),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertIsNotReadable(
+        string $filename,
+        string $message = '',
+    ): void {
+        if (file_exists($filename) && !is_readable($filename)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a path is not readable',
+            extra: [
+                'filename' => self::exportValue($filename),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertIsWritable(
+        string $filename,
+        string $message = '',
+    ): void {
+        if (is_writable($filename)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a path is writable',
+            extra: [
+                'filename' => self::exportValue($filename),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertIsNotWritable(
+        string $filename,
+        string $message = '',
+    ): void {
+        if (file_exists($filename) && !is_writable($filename)) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a path is not writable',
+            extra: [
+                'filename' => self::exportValue($filename),
+            ],
+            detail: $message,
+        );
+    }
 
     // ================================================================
     //
@@ -2127,6 +2571,44 @@ class Assert implements AssertApi
     //
     // ----------------------------------------------------------------
 
+    public static function assertMatchesRegularExpression(
+        string $pattern,
+        string $string,
+        string $message = '',
+    ): void {
+        if (preg_match($pattern, $string) === 1) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a string matches a regular expression',
+            extra: [
+                'pattern' => self::exportValue($pattern),
+                'string' => self::exportValue($string),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertDoesNotMatchRegularExpression(
+        string $pattern,
+        string $string,
+        string $message = '',
+    ): void {
+        if (preg_match($pattern, $string) === 0) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a string does not match a regular expression',
+            extra: [
+                'pattern' => self::exportValue($pattern),
+                'string' => self::exportValue($string),
+            ],
+            detail: $message,
+        );
+    }
+
     // ================================================================
     //
     // Size Assertions
@@ -2172,190 +2654,6 @@ class Assert implements AssertApi
             extra: [
                 'expected' => 'not ' . $expectedCount,
                 'actual' => $actualCount,
-            ],
-            detail: $message,
-        );
-    }
-
-    // ================================================================
-    //
-    // File Content Equality Assertions
-    //
-    // ----------------------------------------------------------------
-
-    public static function assertFileEquals(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expected);
-        $actualContents = self::readFileContents($actual);
-
-        if ($expectedContents === $actualContents) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two files are equal',
-            extra: [
-                'expected' => self::exportValue($expected),
-                'actual' => self::exportValue($actual),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileEqualsIgnoringCase(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expected);
-        $actualContents = self::readFileContents($actual);
-
-        if (mb_strtolower($expectedContents) === mb_strtolower($actualContents)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two files are equal (ignoring case)',
-            extra: [
-                'expected' => self::exportValue($expected),
-                'actual' => self::exportValue($actual),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileNotEquals(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expected);
-        $actualContents = self::readFileContents($actual);
-
-        if ($expectedContents !== $actualContents) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two files are not equal',
-            extra: [
-                'expected' => self::exportValue($expected),
-                'actual' => self::exportValue($actual),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileNotEqualsIgnoringCase(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expected);
-        $actualContents = self::readFileContents($actual);
-
-        if (mb_strtolower($expectedContents) !== mb_strtolower($actualContents)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two files are not equal (ignoring case)',
-            extra: [
-                'expected' => self::exportValue($expected),
-                'actual' => self::exportValue($actual),
-            ],
-            detail: $message,
-        );
-    }
-
-    // ================================================================
-    //
-    // String/File Content Equality Assertions
-    //
-    // ----------------------------------------------------------------
-
-    public static function assertStringEqualsFile(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-
-        if ($expectedContents === $actualString) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string equals file contents',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualString' => self::exportValue($actualString),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertStringEqualsFileIgnoringCase(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-
-        if (mb_strtolower($expectedContents) === mb_strtolower($actualString)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string equals file contents (ignoring case)',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualString' => self::exportValue($actualString),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertStringNotEqualsFile(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-
-        if ($expectedContents !== $actualString) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string does not equal file contents',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualString' => self::exportValue($actualString),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertStringNotEqualsFileIgnoringCase(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-
-        if (mb_strtolower($expectedContents) !== mb_strtolower($actualString)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string does not equal file contents (ignoring case)',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualString' => self::exportValue($actualString),
             ],
             detail: $message,
         );
@@ -2623,328 +2921,6 @@ class Assert implements AssertApi
 
     // ================================================================
     //
-    // Regex Assertions
-    //
-    // ----------------------------------------------------------------
-
-    public static function assertMatchesRegularExpression(
-        string $pattern,
-        string $string,
-        string $message = '',
-    ): void {
-        if (preg_match($pattern, $string) === 1) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string matches a regular expression',
-            extra: [
-                'pattern' => self::exportValue($pattern),
-                'string' => self::exportValue($string),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDoesNotMatchRegularExpression(
-        string $pattern,
-        string $string,
-        string $message = '',
-    ): void {
-        if (preg_match($pattern, $string) === 0) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string does not match a regular expression',
-            extra: [
-                'pattern' => self::exportValue($pattern),
-                'string' => self::exportValue($string),
-            ],
-            detail: $message,
-        );
-    }
-
-    // ================================================================
-    //
-    // Filesystem Assertions
-    //
-    // ----------------------------------------------------------------
-
-    public static function assertFileExists(
-        string $filename,
-        string $message = '',
-    ): void {
-        if (file_exists($filename) && is_file($filename)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a file exists',
-            extra: [
-                'filename' => self::exportValue($filename),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileDoesNotExist(
-        string $filename,
-        string $message = '',
-    ): void {
-        if (!file_exists($filename)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a file does not exist',
-            extra: [
-                'filename' => self::exportValue($filename),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileIsReadable(
-        string $file,
-        string $message = '',
-    ): void {
-        if (is_file($file) && is_readable($file)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a file is readable',
-            extra: [
-                'file' => self::exportValue($file),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileIsNotReadable(
-        string $file,
-        string $message = '',
-    ): void {
-        if (is_file($file) && !is_readable($file)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a file is not readable',
-            extra: [
-                'file' => self::exportValue($file),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileIsWritable(
-        string $file,
-        string $message = '',
-    ): void {
-        if (is_file($file) && is_writable($file)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a file is writable',
-            extra: [
-                'file' => self::exportValue($file),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileIsNotWritable(
-        string $file,
-        string $message = '',
-    ): void {
-        if (is_file($file) && !is_writable($file)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a file is not writable',
-            extra: [
-                'file' => self::exportValue($file),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDirectoryExists(
-        string $directory,
-        string $message = '',
-    ): void {
-        if (is_dir($directory)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a directory exists',
-            extra: [
-                'directory' => self::exportValue($directory),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDirectoryDoesNotExist(
-        string $directory,
-        string $message = '',
-    ): void {
-        if (!file_exists($directory) || !is_dir($directory)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a directory does not exist',
-            extra: [
-                'directory' => self::exportValue($directory),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDirectoryIsReadable(
-        string $directory,
-        string $message = '',
-    ): void {
-        if (is_dir($directory) && is_readable($directory)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a directory is readable',
-            extra: [
-                'directory' => self::exportValue($directory),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDirectoryIsNotReadable(
-        string $directory,
-        string $message = '',
-    ): void {
-        if (is_dir($directory) && !is_readable($directory)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a directory is not readable',
-            extra: [
-                'directory' => self::exportValue($directory),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDirectoryIsWritable(
-        string $directory,
-        string $message = '',
-    ): void {
-        if (is_dir($directory) && is_writable($directory)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a directory is writable',
-            extra: [
-                'directory' => self::exportValue($directory),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertDirectoryIsNotWritable(
-        string $directory,
-        string $message = '',
-    ): void {
-        if (is_dir($directory) && !is_writable($directory)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a directory is not writable',
-            extra: [
-                'directory' => self::exportValue($directory),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertIsReadable(
-        string $filename,
-        string $message = '',
-    ): void {
-        if (is_readable($filename)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a path is readable',
-            extra: [
-                'filename' => self::exportValue($filename),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertIsNotReadable(
-        string $filename,
-        string $message = '',
-    ): void {
-        if (file_exists($filename) && !is_readable($filename)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a path is not readable',
-            extra: [
-                'filename' => self::exportValue($filename),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertIsWritable(
-        string $filename,
-        string $message = '',
-    ): void {
-        if (is_writable($filename)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a path is writable',
-            extra: [
-                'filename' => self::exportValue($filename),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertIsNotWritable(
-        string $filename,
-        string $message = '',
-    ): void {
-        if (file_exists($filename) && !is_writable($filename)) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a path is not writable',
-            extra: [
-                'filename' => self::exportValue($filename),
-            ],
-            detail: $message,
-        );
-    }
-
-    // ================================================================
-    //
     // File Format Assertions
     //
     // ----------------------------------------------------------------
@@ -2990,6 +2966,150 @@ class Assert implements AssertApi
             title: 'Failed asserting that a file matches a format file',
             extra: [
                 'formatFile' => self::exportValue($formatFile),
+                'actualFile' => self::exportValue($actualFile),
+            ],
+            detail: $message,
+        );
+    }
+
+    // ================================================================
+    //
+    // XML Assertions
+    //
+    // ----------------------------------------------------------------
+
+    public static function assertXmlStringEqualsXmlString(
+        string $expectedXml,
+        string $actualXml,
+        string $message = '',
+    ): void {
+        $expectedDoc = self::loadXmlString($expectedXml);
+        $actualDoc = self::loadXmlString($actualXml);
+
+        if ($expectedDoc->C14N() === $actualDoc->C14N()) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two XML strings are equal',
+            extra: [
+                'expectedXml' => self::exportValue($expectedXml),
+                'actualXml' => self::exportValue($actualXml),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertXmlStringNotEqualsXmlString(
+        string $expectedXml,
+        string $actualXml,
+        string $message = '',
+    ): void {
+        $expectedDoc = self::loadXmlString($expectedXml);
+        $actualDoc = self::loadXmlString($actualXml);
+
+        if ($expectedDoc->C14N() !== $actualDoc->C14N()) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two XML strings are not equal',
+            extra: [
+                'expectedXml' => self::exportValue($expectedXml),
+                'actualXml' => self::exportValue($actualXml),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertXmlStringEqualsXmlFile(
+        string $expectedFile,
+        string $actualXml,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+        $expectedDoc = self::loadXmlString($expectedContents);
+        $actualDoc = self::loadXmlString($actualXml);
+
+        if ($expectedDoc->C14N() === $actualDoc->C14N()) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that an XML string equals an XML file',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualXml' => self::exportValue($actualXml),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertXmlStringNotEqualsXmlFile(
+        string $expectedFile,
+        string $actualXml,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+        $expectedDoc = self::loadXmlString($expectedContents);
+        $actualDoc = self::loadXmlString($actualXml);
+
+        if ($expectedDoc->C14N() !== $actualDoc->C14N()) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that an XML string does not equal an XML file',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualXml' => self::exportValue($actualXml),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertXmlFileEqualsXmlFile(
+        string $expectedFile,
+        string $actualFile,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+        $actualContents = self::readFileContents($actualFile);
+        $expectedDoc = self::loadXmlString($expectedContents);
+        $actualDoc = self::loadXmlString($actualContents);
+
+        if ($expectedDoc->C14N() === $actualDoc->C14N()) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two XML files are equal',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
+                'actualFile' => self::exportValue($actualFile),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertXmlFileNotEqualsXmlFile(
+        string $expectedFile,
+        string $actualFile,
+        string $message = '',
+    ): void {
+        $expectedContents = self::readFileContents($expectedFile);
+        $actualContents = self::readFileContents($actualFile);
+        $expectedDoc = self::loadXmlString($expectedContents);
+        $actualDoc = self::loadXmlString($actualContents);
+
+        if ($expectedDoc->C14N() !== $actualDoc->C14N()) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that two XML files are not equal',
+            extra: [
+                'expectedFile' => self::exportValue($expectedFile),
                 'actualFile' => self::exportValue($actualFile),
             ],
             detail: $message,
@@ -3152,150 +3272,6 @@ class Assert implements AssertApi
 
         throw new AssertionFailedException(
             title: 'Failed asserting that two JSON files are not equal',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualFile' => self::exportValue($actualFile),
-            ],
-            detail: $message,
-        );
-    }
-
-    // ================================================================
-    //
-    // XML Assertions
-    //
-    // ----------------------------------------------------------------
-
-    public static function assertXmlStringEqualsXmlString(
-        string $expectedXml,
-        string $actualXml,
-        string $message = '',
-    ): void {
-        $expectedDoc = self::loadXmlString($expectedXml);
-        $actualDoc = self::loadXmlString($actualXml);
-
-        if ($expectedDoc->C14N() === $actualDoc->C14N()) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two XML strings are equal',
-            extra: [
-                'expectedXml' => self::exportValue($expectedXml),
-                'actualXml' => self::exportValue($actualXml),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertXmlStringNotEqualsXmlString(
-        string $expectedXml,
-        string $actualXml,
-        string $message = '',
-    ): void {
-        $expectedDoc = self::loadXmlString($expectedXml);
-        $actualDoc = self::loadXmlString($actualXml);
-
-        if ($expectedDoc->C14N() !== $actualDoc->C14N()) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two XML strings are not equal',
-            extra: [
-                'expectedXml' => self::exportValue($expectedXml),
-                'actualXml' => self::exportValue($actualXml),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertXmlStringEqualsXmlFile(
-        string $expectedFile,
-        string $actualXml,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-        $expectedDoc = self::loadXmlString($expectedContents);
-        $actualDoc = self::loadXmlString($actualXml);
-
-        if ($expectedDoc->C14N() === $actualDoc->C14N()) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that an XML string equals an XML file',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualXml' => self::exportValue($actualXml),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertXmlStringNotEqualsXmlFile(
-        string $expectedFile,
-        string $actualXml,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-        $expectedDoc = self::loadXmlString($expectedContents);
-        $actualDoc = self::loadXmlString($actualXml);
-
-        if ($expectedDoc->C14N() !== $actualDoc->C14N()) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that an XML string does not equal an XML file',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualXml' => self::exportValue($actualXml),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertXmlFileEqualsXmlFile(
-        string $expectedFile,
-        string $actualFile,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-        $actualContents = self::readFileContents($actualFile);
-        $expectedDoc = self::loadXmlString($expectedContents);
-        $actualDoc = self::loadXmlString($actualContents);
-
-        if ($expectedDoc->C14N() === $actualDoc->C14N()) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two XML files are equal',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualFile' => self::exportValue($actualFile),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertXmlFileNotEqualsXmlFile(
-        string $expectedFile,
-        string $actualFile,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-        $actualContents = self::readFileContents($actualFile);
-        $expectedDoc = self::loadXmlString($expectedContents);
-        $actualDoc = self::loadXmlString($actualContents);
-
-        if ($expectedDoc->C14N() !== $actualDoc->C14N()) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two XML files are not equal',
             extra: [
                 'expectedFile' => self::exportValue($expectedFile),
                 'actualFile' => self::exportValue($actualFile),
