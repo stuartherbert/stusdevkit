@@ -913,27 +913,29 @@ class AssertTest extends TestCase
         Assert::assertFinite(INF);
     }
 
-    #[TestDox('::assertFinite() throws AssertionFailedException when given an integer')]
-    public function test_assertFinite_throws_on_integer(): void
+    #[TestDox('::assertFinite() passes when given an integer')]
+    public function test_assertFinite_passes_on_integer(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // edge case: assertFinite gates on `is_float`, not
-        // `is_numeric`. An integer is mathematically finite but
-        // fails the type guard, so the assertion must raise.
-        // Callers feeding a mixed numeric through this check need
-        // to cast to float first.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
+        // assertFinite() declares a float parameter. Under
+        // declare(strict_types=1) the one coercion PHP still
+        // permits is int-to-float widening, so an integer
+        // argument arrives as a float - 42 becomes 42.0 - and
+        // 42.0 is finite, so the assertion passes. Pins the
+        // widening behaviour so a future signature change would
+        // fail here.
 
         // ----------------------------------------------------------------
         // perform the change
 
         Assert::assertFinite(42);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
     }
 
     // ================================================================

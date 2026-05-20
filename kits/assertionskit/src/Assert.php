@@ -1936,10 +1936,10 @@ class Assert implements AssertApi
     // ----------------------------------------------------------------
 
     public static function assertFinite(
-        mixed $actual,
+        float $actual,
         string $message = '',
     ): void {
-        if (is_float($actual) && is_finite($actual)) {
+        if (is_finite($actual)) {
             return;
         }
 
@@ -1954,10 +1954,10 @@ class Assert implements AssertApi
     }
 
     public static function assertInfinite(
-        mixed $actual,
+        float $actual,
         string $message = '',
     ): void {
-        if (is_float($actual) && is_infinite($actual)) {
+        if (is_infinite($actual)) {
             return;
         }
 
@@ -1972,10 +1972,10 @@ class Assert implements AssertApi
     }
 
     public static function assertNan(
-        mixed $actual,
+        float $actual,
         string $message = '',
     ): void {
-        if (is_float($actual) && is_nan($actual)) {
+        if (is_nan($actual)) {
             return;
         }
 

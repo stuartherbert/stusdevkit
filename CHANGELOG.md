@@ -109,7 +109,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- tidy up section headers in Assert ([d65afe7](https://github.com/stuartherbert/stusdevkit/commit/d65afe7)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertFinite / assertInifinite / assertNan now match AssertApi contract ([75b1189](https://github.com/stuartherbert/stusdevkit/commit/75b1189)) — Stuart Herbert <stuart@stuartherbert.com>
+- tidy up section headers in Assert ([d50c569](https://github.com/stuartherbert/stusdevkit/commit/d50c569)) — Stuart Herbert <stuart@stuartherbert.com>
 - delta-based assertions now accept all numerics ([2532851](https://github.com/stuartherbert/stusdevkit/commit/2532851)) — Stuart Herbert <stuart@stuartherbert.com>
 - add other thrown exceptions to AssertApi ([7b4c500](https://github.com/stuartherbert/stusdevkit/commit/7b4c500)) — Stuart Herbert <stuart@stuartherbert.com>
 - Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
