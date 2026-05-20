@@ -1558,7 +1558,7 @@ class Assert implements AssertApi
         string $filename,
         string $message = '',
     ): void {
-        if (!file_exists($filename)) {
+        if (!is_file($filename)) {
             return;
         }
 

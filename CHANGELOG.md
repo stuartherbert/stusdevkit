@@ -109,7 +109,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- assertStringMatchesFormatFile() now throws detailed exceptions where there is a problem reading the file ([2f39dc5](https://github.com/stuartherbert/stusdevkit/commit/2f39dc5)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertFileDoesNotExist() no longer throws when passed a directory ([07f4aef](https://github.com/stuartherbert/stusdevkit/commit/07f4aef)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertStringMatchesFormatFile() now throws detailed exceptions where there is a problem reading the file ([ae541e2](https://github.com/stuartherbert/stusdevkit/commit/ae541e2)) — Stuart Herbert <stuart@stuartherbert.com>
 - method parameter names now match parameter names used in AssertApi interface ([2b02036](https://github.com/stuartherbert/stusdevkit/commit/2b02036)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertFinite / assertInifinite / assertNan now match AssertApi contract ([a0047c9](https://github.com/stuartherbert/stusdevkit/commit/a0047c9)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up section headers in Assert ([d50c569](https://github.com/stuartherbert/stusdevkit/commit/d50c569)) — Stuart Herbert <stuart@stuartherbert.com>

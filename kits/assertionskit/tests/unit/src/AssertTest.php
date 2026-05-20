@@ -7311,23 +7311,17 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertFileDoesNotExist() throws AssertionFailedException when the path names a directory')]
-    public function test_assertFileDoesNotExist_throws_on_directory(): void
+    #[TestDox('::assertFileDoesNotExist() passes when the path names a directory')]
+    public function test_assertFileDoesNotExist_passes_on_directory(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // correctness! the method's guard is !file_exists(), which
-        // returns false for ANY existing path - including a
-        // directory. Callers who expect "no file of that name" to
-        // accept a same-named directory will get a surprise; this
-        // test pins the actual behaviour so the contract is not lost
-        // in translation.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
+        // a directory is not a file, so when a directory occupies
+        // the path there is genuinely no file there and the
+        // assertion must pass. This makes assertFileDoesNotExist()
+        // the true inverse of assertFileExists(), which gates on
+        // is_file() - exactly one of the pair holds for any path.
 
         // ----------------------------------------------------------------
         // perform the change
@@ -7335,6 +7329,11 @@ class AssertTest extends TestCase
         Assert::assertFileDoesNotExist(
             filename: __DIR__,
         );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
     }
 
     // ================================================================
