@@ -1975,24 +1975,6 @@ class Assert implements AssertApi
         );
     }
 
-    public static function assertNotTrue(
-        mixed $condition,
-        string $message = '',
-    ): void {
-        if ($condition !== true) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a condition is not true',
-            extra: [
-                'expected' => 'not true',
-                'actual' => self::exportValue($condition),
-            ],
-            detail: $message,
-        );
-    }
-
     public static function assertFalse(
         bool $condition,
         string $message = '',

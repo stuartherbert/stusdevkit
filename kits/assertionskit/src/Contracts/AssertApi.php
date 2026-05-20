@@ -2129,23 +2129,6 @@ interface AssertApi
     ): void;
 
     /**
-     * Asserts that a condition is not true.
-     *
-     * @phpstan-assert !true $condition
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     *     when the assertion fails
-     */
-    public static function assertNotTrue(
-        mixed $condition,
-        string $message = '',
-    ): void;
-
-    /**
      * Asserts that a condition is false.
      *
      * @phpstan-assert false $condition

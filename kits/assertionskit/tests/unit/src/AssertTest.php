@@ -149,7 +149,7 @@ class AssertTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('publishes exactly the 161-method assertion surface declared by AssertApi')]
+    #[TestDox('publishes exactly the 160-method assertion surface declared by AssertApi')]
     public function test_publishes_the_expected_public_static_method_set(): void
     {
         // ----------------------------------------------------------------
@@ -158,7 +158,7 @@ class AssertTest extends TestCase
         // Assert's published surface IS the AssertApi method set - no
         // more, no less. Pin the full list by enumeration so drift on
         // a single method name shows up as a named diff rather than
-        // "expected 161, got 162".
+        // "expected 160, got 161".
         //
         // the enumerated list is kept alphabetically sorted so a new
         // method lands in its natural place, not at the end.
@@ -295,7 +295,6 @@ class AssertTest extends TestCase
             'assertNotNull',
             'assertNotSame',
             'assertNotSameSize',
-            'assertNotTrue',
             'assertNull',
             'assertObjectEquals',
             'assertObjectHasProperty',
@@ -399,75 +398,6 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertTrue(false);
-    }
-
-    // ================================================================
-    //
-    // ::assertNotTrue() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertNotTrue() passes when given boolean false')]
-    public function test_assertNotTrue_passes_on_false(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: false is the obvious not-true value, so the
-        // assertion must succeed silently.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotTrue(false);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertNotTrue() passes when given a truthy non-boolean')]
-    public function test_assertNotTrue_passes_on_truthy_non_boolean(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // edge case: assertNotTrue rejects only the literal boolean
-        // true. A truthy integer is NOT identical to true, so the
-        // assertion must succeed - mirroring the strict-identity
-        // rule of its assertTrue sibling.
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotTrue(1);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertNotTrue() throws AssertionFailedException when given boolean true')]
-    public function test_assertNotTrue_throws_on_true(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: the literal boolean true is the one and
-        // only value this assertion rejects, so passing it must
-        // raise.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertNotTrue(true);
     }
 
     // ================================================================

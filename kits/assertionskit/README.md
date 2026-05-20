@@ -161,7 +161,6 @@ None of these are criticisms of PHPUnit or Sebastian's work. We're just building
 | Method | Description |
 |--------|-------------|
 | `assertTrue()` | Assert that a condition is true |
-| `assertNotTrue()` | Assert that a condition is not true |
 | `assertFalse()` | Assert that a condition is false |
 | `assertNotFalse()` | Assert that a condition is not false |
 
