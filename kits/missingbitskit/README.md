@@ -38,10 +38,12 @@ $errors = $json->validate($encoded);
 
 TypeInspectors is a family of classes that answer the question *"what types can this value satisfy?"*. They return PHP parameter-type-hint spellings (`int`, `float`, `bool`, `null`) rather than `gettype()`'s long form, so results can be fed straight into error messages, validators, or type-hint generators.
 
-Every inspector follows the same shape:
+Every inspector that returns a type map follows the same shape:
 
 - `public function __invoke(mixed $input): array<string,string>` — call-as-function style; returns `[]` if the input is not of the inspector's expected type.
 - `public static function from(...)` — direct call, strictly type-hinted to the concrete input, returns a `type-name => type-name` lookup map.
+
+(`IsComparablePair`, documented below, is a predicate rather than a type-map inspector and does not follow this shape.)
 
 The returned map is ordered from most-specific to most-general, and always ends with `mixed` (plus `object` for any object input). Keys are unique, so callers can test for a type with `isset()`.
 
@@ -111,6 +113,30 @@ $options = GetPrintableType::FLAG_CLASSNAME
     | GetPrintableType::FLAG_SCALAR_VALUE;
 GetPrintableType::from(new stdClass(), $options);                   // 'object<stdClass>'
 ```
+
+#### IsComparablePair
+
+`IsComparablePair` is a predicate, not a type-map inspector. It lives in this directory because it answers a type-shaped question, but it returns a `bool` rather than a `type-name => type-name` map.
+
+It reports whether two values can be meaningfully ordered against each other using PHP's relational operators (`<`, `>`, `<=`, `>=`). Two values are a comparable pair when both are scalar, or both are `DateTimeInterface` instances:
+
+```php
+use StusDevKit\MissingBitsKit\TypeInspectors\IsComparablePair;
+
+IsComparablePair::check(first: 1, second: 2);          // true  - two scalars
+IsComparablePair::check(first: 1, second: 'abc');      // true  - two scalars
+IsComparablePair::check(
+    first: new DateTimeImmutable(),
+    second: new DateTimeImmutable(),
+);                                                     // true  - two DateTimes
+
+IsComparablePair::check(
+    first: 5,
+    second: new DateTimeImmutable(),
+);                                                     // false - scalar vs DateTime
+```
+
+Originally added for AssertApi's comparison assertions (`assertGreaterThan()` and friends): PHP reports any object as greater than any scalar, so `$dateTime > 5` is `true` regardless of the date. `IsComparablePair` lets a caller reject that mismatched pairing before the comparison runs. It also offers the invokable form — `(new IsComparablePair())($a, $b)` — for callers that need a `callable`.
 
 ### Reflection
 
