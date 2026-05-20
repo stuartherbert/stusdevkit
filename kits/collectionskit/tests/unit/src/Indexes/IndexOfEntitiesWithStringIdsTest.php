@@ -48,7 +48,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\Contracts\EntityWithStringId;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfObjects;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
@@ -826,8 +826,9 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the given key does not exist in the index
+        // this test proves that get() throws a
+        // NoValueForKeyInCollectionException when the given key does not exist
+        // in the index
 
         // ----------------------------------------------------------------
         // setup your test
@@ -855,8 +856,8 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the index is empty
+        // this test proves that get() throws a
+        // NoValueForKeyInCollectionException when the index is empty
 
         // ----------------------------------------------------------------
         // setup your test
@@ -880,8 +881,8 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that the RuntimeException thrown by
-        // get() includes the missing key in its message
+        // this test proves that the NoValueForKeyInCollectionException thrown
+        // by get() includes the missing key in its message
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1598,13 +1599,13 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         $this->assertSame($entity1, $actualResult);
     }
 
-    #[TestDox('->first() throws RuntimeException for empty index')]
+    #[TestDox('->first() throws EmptyCollectionException for empty index')]
     public function test_first_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that first() throws a RuntimeException
+        // this test proves that first() throws an EmptyCollectionException
         // when the index is empty
 
         // ----------------------------------------------------------------
@@ -1613,12 +1614,15 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         $unit = new IndexOfEntitiesWithStringIds();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithStringIds is empty',
         );
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->first();
     }
@@ -1730,13 +1734,13 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         $this->assertSame($entity2, $actualResult);
     }
 
-    #[TestDox('->last() throws RuntimeException for empty index')]
+    #[TestDox('->last() throws EmptyCollectionException for empty index')]
     public function test_last_throws_for_empty_index(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that last() throws a RuntimeException
+        // this test proves that last() throws an EmptyCollectionException
         // when the index is empty
 
         // ----------------------------------------------------------------
@@ -1745,12 +1749,15 @@ class IndexOfEntitiesWithStringIdsTest extends TestCase
         $unit = new IndexOfEntitiesWithStringIds();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage(
             'IndexOfEntitiesWithStringIds is empty',
         );
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->last();
     }

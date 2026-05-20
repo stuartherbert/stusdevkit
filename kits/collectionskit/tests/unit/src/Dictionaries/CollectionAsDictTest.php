@@ -48,7 +48,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
@@ -2022,13 +2022,13 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('->first() throws RuntimeException for empty dict')]
+    #[TestDox('->first() throws EmptyCollectionException for empty dict')]
     public function test_first_throws_for_empty_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that first() throws a RuntimeException
+        // this test proves that first() throws an EmptyCollectionException
         // when the dict is empty
 
         // ----------------------------------------------------------------
@@ -2037,10 +2037,13 @@ class CollectionAsDictTest extends TestCase
         $unit = new CollectionAsDict();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('CollectionAsDict is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->first();
     }
@@ -2167,13 +2170,13 @@ class CollectionAsDictTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('->last() throws RuntimeException for empty dict')]
+    #[TestDox('->last() throws EmptyCollectionException for empty dict')]
     public function test_last_throws_for_empty_set(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that last() throws a RuntimeException
+        // this test proves that last() throws an EmptyCollectionException
         // when the dict is empty
 
         // ----------------------------------------------------------------
@@ -2182,10 +2185,13 @@ class CollectionAsDictTest extends TestCase
         $unit = new CollectionAsDict();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('CollectionAsDict is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->last();
     }

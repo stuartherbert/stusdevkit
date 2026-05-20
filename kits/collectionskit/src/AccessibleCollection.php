@@ -42,7 +42,7 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit;
 
 use InvalidArgumentException;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\Validators\RejectNullArrayValues;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
 
@@ -249,9 +249,9 @@ class AccessibleCollection extends CollectionOfAnything
      *
      * @return TValue
      *
-     * @throws RuntimeException when this collection is empty.
-     *         The message names the offending collection type
-     *         via {@see ::getCollectionTypeAsString} so the
+     * @throws EmptyCollectionException when this collection is
+     *         empty. The message names the offending collection
+     *         type via {@see ::getCollectionTypeAsString} so the
      *         failure point is easy to diagnose.
      */
     public function first(): mixed
@@ -262,9 +262,8 @@ class AccessibleCollection extends CollectionOfAnything
         }
 
         // uh oh - we're an empty collection
-        throw new RuntimeException(
-            $this->getCollectionTypeAsString()
-                . " is empty",
+        throw new EmptyCollectionException(
+            $this->getCollectionTypeAsString(),
         );
     }
 
@@ -300,9 +299,9 @@ class AccessibleCollection extends CollectionOfAnything
      *
      * @return TValue
      *
-     * @throws RuntimeException when the collection is empty.
-     *         The message names the offending collection type
-     *         via {@see ::getCollectionTypeAsString} so the
+     * @throws EmptyCollectionException when the collection is
+     *         empty. The message names the offending collection
+     *         type via {@see ::getCollectionTypeAsString} so the
      *         failure point is easy to diagnose.
      */
     public function last(): mixed
@@ -313,9 +312,8 @@ class AccessibleCollection extends CollectionOfAnything
         }
 
         // uh oh - we're an empty collection
-        throw new RuntimeException(
-            $this->getCollectionTypeAsString()
-                . " is empty",
+        throw new EmptyCollectionException(
+            $this->getCollectionTypeAsString(),
         );
     }
 }

@@ -48,7 +48,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\CollectionOfAnything;
 use StusDevKit\ExceptionsKit\Exceptions\NullValueNotAllowedException;
@@ -1175,31 +1175,30 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('alpha', $actualResult);
     }
 
-    #[TestDox('->first() throws RuntimeException for empty collection')]
+    #[TestDox('->first() throws EmptyCollectionException for empty collection')]
     public function test_first_throws_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that first() throws a RuntimeException
+        // this test proves that first() throws an EmptyCollectionException
         // when the collection is empty
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new AccessibleCollection();
-        $this->expectException(RuntimeException::class);
+
+        // ----------------------------------------------------------------
+        // set test expectations
+
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('AccessibleCollection is empty');
 
         // ----------------------------------------------------------------
         // perform the change
 
         $unit->first();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        // assertion handled by expectException() above
     }
 
     // ================================================================
@@ -1318,31 +1317,30 @@ class AccessibleCollectionTest extends TestCase
         $this->assertSame('charlie', $actualResult);
     }
 
-    #[TestDox('->last() throws RuntimeException for empty collection')]
+    #[TestDox('->last() throws EmptyCollectionException for empty collection')]
     public function test_last_throws_for_empty_collection(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that last() throws a RuntimeException
+        // this test proves that last() throws an EmptyCollectionException
         // when the collection is empty
 
         // ----------------------------------------------------------------
         // setup your test
 
         $unit = new AccessibleCollection();
-        $this->expectException(RuntimeException::class);
+
+        // ----------------------------------------------------------------
+        // set test expectations
+
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('AccessibleCollection is empty');
 
         // ----------------------------------------------------------------
         // perform the change
 
         $unit->last();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        // assertion handled by expectException() above
     }
 
     // ================================================================

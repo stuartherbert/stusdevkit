@@ -147,7 +147,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- initial docs for EmptyCollectionException ([7e9d1d7](https://github.com/stuartherbert/stusdevkit/commit/7e9d1d7)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial docs for EmptyCollectionException ([8c1b5c8](https://github.com/stuartherbert/stusdevkit/commit/8c1b5c8)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial documentation ([0a7a1f3](https://github.com/stuartherbert/stusdevkit/commit/0a7a1f3)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
@@ -192,6 +192,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
+- first()/last() now throw EmptyCollectionException ([f190382](https://github.com/stuartherbert/stusdevkit/commit/f190382)) — Stuart Herbert <stuart@stuartherbert.com>
 - CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
 - dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
 - CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -48,7 +48,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\Dictionaries\CollectionAsDict;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfBooleans;
@@ -893,8 +893,9 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the given key does not exist in the dict
+        // this test proves that get() throws a
+        // NoValueForKeyInCollectionException when the given key does not exist
+        // in the dict
 
         // ----------------------------------------------------------------
         // setup your test
@@ -918,8 +919,8 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the dict is empty
+        // this test proves that get() throws a
+        // NoValueForKeyInCollectionException when the dict is empty
 
         // ----------------------------------------------------------------
         // setup your test
@@ -969,8 +970,8 @@ class DictOfBooleansTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that the RuntimeException thrown by
-        // get() includes the missing key in its message
+        // this test proves that the NoValueForKeyInCollectionException thrown
+        // by get() includes the missing key in its message
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1876,13 +1877,13 @@ class DictOfBooleansTest extends TestCase
         $this->assertTrue($actualResult);
     }
 
-    #[TestDox('->first() throws RuntimeException for empty dict')]
+    #[TestDox('->first() throws EmptyCollectionException for empty dict')]
     public function test_first_throws_for_empty_dict(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that first() throws a RuntimeException
+        // this test proves that first() throws an EmptyCollectionException
         // when the dict is empty
 
         // ----------------------------------------------------------------
@@ -1891,10 +1892,13 @@ class DictOfBooleansTest extends TestCase
         $unit = new DictOfBooleans();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('DictOfBooleans is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->first();
     }
@@ -2019,13 +2023,13 @@ class DictOfBooleansTest extends TestCase
         $this->assertFalse($actualResult);
     }
 
-    #[TestDox('->last() throws RuntimeException for empty dict')]
+    #[TestDox('->last() throws EmptyCollectionException for empty dict')]
     public function test_last_throws_for_empty_dict(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that last() throws a RuntimeException
+        // this test proves that last() throws an EmptyCollectionException
         // when the dict is empty
 
         // ----------------------------------------------------------------
@@ -2034,10 +2038,13 @@ class DictOfBooleansTest extends TestCase
         $unit = new DictOfBooleans();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('DictOfBooleans is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->last();
     }

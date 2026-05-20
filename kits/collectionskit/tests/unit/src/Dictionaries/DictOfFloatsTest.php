@@ -47,7 +47,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfFloats;
 use StusDevKit\CollectionsKit\Exceptions\NoValueForKeyInCollectionException;
 use StusDevKit\CollectionsKit\Dictionaries\DictOfNumbers;
@@ -870,8 +870,9 @@ class DictOfFloatsTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the given key does not exist in the dict
+        // this test proves that get() throws a
+        // NoValueForKeyInCollectionException when the given key does not exist
+        // in the dict
 
         // ----------------------------------------------------------------
         // setup your test
@@ -895,8 +896,8 @@ class DictOfFloatsTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that get() throws a RuntimeException
-        // when the dict is empty
+        // this test proves that get() throws a
+        // NoValueForKeyInCollectionException when the dict is empty
 
         // ----------------------------------------------------------------
         // setup your test
@@ -971,8 +972,8 @@ class DictOfFloatsTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that the RuntimeException thrown by
-        // get() includes the missing key in its message
+        // this test proves that the NoValueForKeyInCollectionException thrown
+        // by get() includes the missing key in its message
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1861,13 +1862,13 @@ class DictOfFloatsTest extends TestCase
         $this->assertSame(1.99, $actualResult);
     }
 
-    #[TestDox('->first() throws RuntimeException for empty dict')]
+    #[TestDox('->first() throws EmptyCollectionException for empty dict')]
     public function test_first_throws_for_empty_dict(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that first() throws a RuntimeException
+        // this test proves that first() throws an EmptyCollectionException
         // when the dict is empty
 
         // ----------------------------------------------------------------
@@ -1876,10 +1877,13 @@ class DictOfFloatsTest extends TestCase
         $unit = new DictOfFloats();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('DictOfFloats is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->first();
     }
@@ -2004,13 +2008,13 @@ class DictOfFloatsTest extends TestCase
         $this->assertSame(0.15, $actualResult);
     }
 
-    #[TestDox('->last() throws RuntimeException for empty dict')]
+    #[TestDox('->last() throws EmptyCollectionException for empty dict')]
     public function test_last_throws_for_empty_dict(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that last() throws a RuntimeException
+        // this test proves that last() throws an EmptyCollectionException
         // when the dict is empty
 
         // ----------------------------------------------------------------
@@ -2019,10 +2023,13 @@ class DictOfFloatsTest extends TestCase
         $unit = new DictOfFloats();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('DictOfFloats is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->last();
     }

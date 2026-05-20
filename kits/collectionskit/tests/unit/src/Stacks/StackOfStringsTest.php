@@ -355,7 +355,7 @@ class StackOfStringsTest extends TestCase
         $this->assertSame('first', $unit->peek());
     }
 
-    #[TestDox('->pop() on empty stack throws RuntimeException')]
+    #[TestDox('->pop() on empty stack throws EmptyStackException')]
     public function test_pop_empty_throws(): void
     {
         // ----------------------------------------------------------------
@@ -468,7 +468,7 @@ class StackOfStringsTest extends TestCase
         $this->assertCount(1, $unit);
     }
 
-    #[TestDox('->peek() on empty stack throws RuntimeException')]
+    #[TestDox('->peek() on empty stack throws EmptyStackException')]
     public function test_peek_empty_throws(): void
     {
         // ----------------------------------------------------------------

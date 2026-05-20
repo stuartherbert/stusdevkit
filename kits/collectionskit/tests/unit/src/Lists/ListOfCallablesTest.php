@@ -48,7 +48,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 use StusDevKit\CollectionsKit\Lists\CollectionAsList;
 use StusDevKit\CollectionsKit\Lists\ListOfCallables;
 
@@ -1426,13 +1426,13 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($fn1, $actualResult);
     }
 
-    #[TestDox('->first() throws RuntimeException for empty list')]
+    #[TestDox('->first() throws EmptyCollectionException for empty list')]
     public function test_first_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that first() throws a RuntimeException
+        // this test proves that first() throws an EmptyCollectionException
         // when the list is empty
 
         // ----------------------------------------------------------------
@@ -1441,10 +1441,13 @@ class ListOfCallablesTest extends TestCase
         $unit = new ListOfCallables();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('ListOfCallables is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->first();
     }
@@ -1569,13 +1572,13 @@ class ListOfCallablesTest extends TestCase
         $this->assertSame($fn2, $actualResult);
     }
 
-    #[TestDox('->last() throws RuntimeException for empty list')]
+    #[TestDox('->last() throws EmptyCollectionException for empty list')]
     public function test_last_throws_for_empty_list(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // this test proves that last() throws a RuntimeException
+        // this test proves that last() throws an EmptyCollectionException
         // when the list is empty
 
         // ----------------------------------------------------------------
@@ -1584,10 +1587,13 @@ class ListOfCallablesTest extends TestCase
         $unit = new ListOfCallables();
 
         // ----------------------------------------------------------------
-        // perform the change
+        // set test expectations
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(EmptyCollectionException::class);
         $this->expectExceptionMessage('ListOfCallables is empty');
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         $unit->last();
     }
