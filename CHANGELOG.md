@@ -109,7 +109,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- add other thrown exceptions to AssertApi ([14af6c8](https://github.com/stuartherbert/stusdevkit/commit/14af6c8)) — Stuart Herbert <stuart@stuartherbert.com>
+- add other thrown exceptions to AssertApi ([7b4c500](https://github.com/stuartherbert/stusdevkit/commit/7b4c500)) — Stuart Herbert <stuart@stuartherbert.com>
 - Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
@@ -145,6 +145,10 @@ This CHANGELOG is automatically compiled.
 - move CHANGELOG preamble into separate files, to improve readability ([53fdfb6](https://github.com/stuartherbert/stusdevkit/commit/53fdfb6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### AssertionsKit
+
+- clarify why exceptions are thrown ([c6b6d10](https://github.com/stuartherbert/stusdevkit/commit/c6b6d10)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### CollectionsKit
 

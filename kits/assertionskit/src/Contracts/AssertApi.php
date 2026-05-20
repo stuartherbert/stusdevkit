@@ -97,6 +97,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
         array $expected,
@@ -121,6 +122,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArrayIsEqualToArrayIgnoringListOfKeys(
         array $expected,
@@ -141,6 +143,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(
         array $expected,
@@ -161,6 +164,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArrayIsIdenticalToArrayIgnoringListOfKeys(
         array $expected,
@@ -179,6 +183,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArrayHasKey(
         mixed $key,
@@ -196,6 +201,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArrayNotHasKey(
         mixed $key,
@@ -213,6 +219,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsList(
         mixed $actual,
@@ -233,6 +240,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysAreIdentical(
         array $expected,
@@ -255,6 +263,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysAreIdenticalIgnoringOrder(
         array $expected,
@@ -276,6 +285,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysHaveIdenticalValues(
         array $expected,
@@ -298,6 +308,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysHaveIdenticalValuesIgnoringOrder(
         array $expected,
@@ -319,6 +330,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysAreEqual(
         array $expected,
@@ -341,6 +353,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysAreEqualIgnoringOrder(
         array $expected,
@@ -362,6 +375,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysHaveEqualValues(
         array $expected,
@@ -384,6 +398,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertArraysHaveEqualValuesIgnoringOrder(
         array $expected,
@@ -409,6 +424,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContains(
         mixed $needle,
@@ -429,6 +445,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsEquals(
         mixed $needle,
@@ -448,6 +465,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotContains(
         mixed $needle,
@@ -468,6 +486,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotContainsEquals(
         mixed $needle,
@@ -493,6 +512,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyArray(
         iterable $haystack,
@@ -511,6 +531,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyBool(
         iterable $haystack,
@@ -529,6 +550,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyCallable(
         iterable $haystack,
@@ -547,6 +569,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyFloat(
         iterable $haystack,
@@ -565,6 +588,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyInt(
         iterable $haystack,
@@ -583,6 +607,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyIterable(
         iterable $haystack,
@@ -601,6 +626,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyNull(
         iterable $haystack,
@@ -619,6 +645,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyNumeric(
         iterable $haystack,
@@ -637,6 +664,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyObject(
         iterable $haystack,
@@ -655,6 +683,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyResource(
         iterable $haystack,
@@ -673,6 +702,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyClosedResource(
         iterable $haystack,
@@ -691,6 +721,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyScalar(
         iterable $haystack,
@@ -709,6 +740,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyString(
         iterable $haystack,
@@ -730,6 +762,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsOnlyInstancesOf(
         string $className,
@@ -753,6 +786,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyArray(
         iterable $haystack,
@@ -769,6 +803,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyBool(
         iterable $haystack,
@@ -785,6 +820,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyCallable(
         iterable $haystack,
@@ -801,6 +837,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyFloat(
         iterable $haystack,
@@ -817,6 +854,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyInt(
         iterable $haystack,
@@ -833,6 +871,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyIterable(
         iterable $haystack,
@@ -849,6 +888,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyNull(
         iterable $haystack,
@@ -865,6 +905,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyNumeric(
         iterable $haystack,
@@ -881,6 +922,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyObject(
         iterable $haystack,
@@ -897,6 +939,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyResource(
         iterable $haystack,
@@ -913,6 +956,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyClosedResource(
         iterable $haystack,
@@ -929,6 +973,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyScalar(
         iterable $haystack,
@@ -945,6 +990,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyString(
         iterable $haystack,
@@ -962,6 +1008,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertContainsNotOnlyInstancesOf(
         string $className,
@@ -985,6 +1032,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertCount(
         int $expectedCount,
@@ -1002,6 +1050,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotCount(
         int $expectedCount,
@@ -1027,6 +1076,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertEquals(
         mixed $expected,
@@ -1049,6 +1099,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertEqualsCanonicalizing(
         mixed $expected,
@@ -1068,6 +1119,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertEqualsIgnoringCase(
         mixed $expected,
@@ -1089,6 +1141,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertEqualsWithDelta(
         mixed $expected,
@@ -1109,6 +1162,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotEquals(
         mixed $expected,
@@ -1131,6 +1185,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotEqualsCanonicalizing(
         mixed $expected,
@@ -1151,6 +1206,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotEqualsIgnoringCase(
         mixed $expected,
@@ -1172,6 +1228,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotEqualsWithDelta(
         mixed $expected,
@@ -1195,6 +1252,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws InvalidArgumentException
      *     when `$actual` does not have the named comparator method
      */
@@ -1214,6 +1272,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws InvalidArgumentException
      *     when `$actual` does not have the named comparator method
      */
@@ -1240,6 +1299,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertEmpty(
         mixed $actual,
@@ -1256,6 +1316,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotEmpty(
         mixed $actual,
@@ -1280,6 +1341,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      *
      */
     public static function assertGreaterThan(
@@ -1301,6 +1363,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertGreaterThanOrEqual(
         int|float|string|DateTimeInterface $minimum,
@@ -1320,6 +1383,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertLessThan(
         int|float|string|DateTimeInterface $maximum,
@@ -1340,6 +1404,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertLessThanOrEqual(
         int|float|string|DateTimeInterface $maximum,
@@ -1362,6 +1427,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1382,6 +1448,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1402,6 +1469,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1422,6 +1490,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1448,6 +1517,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1468,6 +1538,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1488,6 +1559,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1508,6 +1580,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -1533,6 +1606,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsReadable(
         string $filename,
@@ -1547,6 +1621,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotReadable(
         string $filename,
@@ -1561,6 +1636,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsWritable(
         string $filename,
@@ -1575,6 +1651,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotWritable(
         string $filename,
@@ -1589,6 +1666,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDirectoryExists(
         string $directory,
@@ -1603,6 +1681,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDirectoryDoesNotExist(
         string $directory,
@@ -1617,6 +1696,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDirectoryIsReadable(
         string $directory,
@@ -1631,6 +1711,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDirectoryIsNotReadable(
         string $directory,
@@ -1645,6 +1726,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDirectoryIsWritable(
         string $directory,
@@ -1659,6 +1741,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDirectoryIsNotWritable(
         string $directory,
@@ -1673,6 +1756,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFileExists(
         string $filename,
@@ -1687,6 +1771,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFileDoesNotExist(
         string $filename,
@@ -1701,6 +1786,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFileIsReadable(
         string $file,
@@ -1715,6 +1801,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFileIsNotReadable(
         string $file,
@@ -1729,6 +1816,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFileIsWritable(
         string $file,
@@ -1743,6 +1831,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFileIsNotWritable(
         string $file,
@@ -1767,6 +1856,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertTrue(
         bool $condition,
@@ -1783,6 +1873,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotTrue(
         mixed $condition,
@@ -1801,6 +1892,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFalse(
         bool $condition,
@@ -1817,6 +1909,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotFalse(
         mixed $condition,
@@ -1841,6 +1934,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNull(
         mixed $actual,
@@ -1859,6 +1953,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotNull(
         mixed $actual,
@@ -1881,6 +1976,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertFinite(
         float $actual,
@@ -1897,6 +1993,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertInfinite(
         float $actual,
@@ -1913,6 +2010,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNan(
         float $actual,
@@ -1933,6 +2031,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertObjectHasProperty(
         string $propertyName,
@@ -1949,6 +2048,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertObjectNotHasProperty(
         string $propertyName,
@@ -1978,6 +2078,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      *
      * @phpstan-assert =ExpectedType $actual
      */
@@ -2001,6 +2102,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotSame(
         mixed $expected,
@@ -2028,6 +2130,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      *
      * @phpstan-assert =ExpectedType $actual
      */
@@ -2051,6 +2154,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      *
      * @phpstan-assert !ExpectedType $actual
      */
@@ -2078,6 +2182,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsArray(
         mixed $actual,
@@ -2096,6 +2201,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsBool(
         mixed $actual,
@@ -2114,6 +2220,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsFloat(
         mixed $actual,
@@ -2132,6 +2239,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsInt(
         mixed $actual,
@@ -2150,6 +2258,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNumeric(
         mixed $actual,
@@ -2168,6 +2277,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsObject(
         mixed $actual,
@@ -2186,6 +2296,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsResource(
         mixed $actual,
@@ -2205,6 +2316,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsClosedResource(
         mixed $actual,
@@ -2223,6 +2335,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsString(
         mixed $actual,
@@ -2241,6 +2354,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsScalar(
         mixed $actual,
@@ -2259,6 +2373,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsCallable(
         mixed $actual,
@@ -2277,6 +2392,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsIterable(
         mixed $actual,
@@ -2301,6 +2417,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotArray(
         mixed $actual,
@@ -2319,6 +2436,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotBool(
         mixed $actual,
@@ -2337,6 +2455,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotFloat(
         mixed $actual,
@@ -2355,6 +2474,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotInt(
         mixed $actual,
@@ -2373,6 +2493,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotNumeric(
         mixed $actual,
@@ -2391,6 +2512,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotObject(
         mixed $actual,
@@ -2409,6 +2531,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotResource(
         mixed $actual,
@@ -2427,6 +2550,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotClosedResource(
         mixed $actual,
@@ -2445,6 +2569,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotString(
         mixed $actual,
@@ -2463,6 +2588,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotScalar(
         mixed $actual,
@@ -2481,6 +2607,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotCallable(
         mixed $actual,
@@ -2499,6 +2626,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertIsNotIterable(
         mixed $actual,
@@ -2524,6 +2652,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertMatchesRegularExpression(
         string $pattern,
@@ -2544,6 +2673,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertDoesNotMatchRegularExpression(
         string $pattern,
@@ -2569,6 +2699,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertSameSize(
         Countable|iterable $expected,
@@ -2588,6 +2719,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertNotSameSize(
         Countable|iterable $expected,
@@ -2610,6 +2742,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringContainsStringIgnoringLineEndings(
         string $needle,
@@ -2626,6 +2759,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringEqualsStringIgnoringLineEndings(
         string $expected,
@@ -2641,6 +2775,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringMatchesFormat(
         string $format,
@@ -2656,6 +2791,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws InvalidArgumentException
      *     when `$formatFile` does not exist or cannot be read
      */
@@ -2675,6 +2811,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringStartsWith(
         string $prefix,
@@ -2692,6 +2829,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringStartsNotWith(
         string $prefix,
@@ -2707,6 +2845,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringContainsString(
         string $needle,
@@ -2723,6 +2862,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringContainsStringIgnoringCase(
         string $needle,
@@ -2738,6 +2878,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringNotContainsString(
         string $needle,
@@ -2754,6 +2895,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringNotContainsStringIgnoringCase(
         string $needle,
@@ -2771,6 +2913,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringEndsWith(
         string $suffix,
@@ -2788,6 +2931,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertStringEndsNotWith(
         string $suffix,
@@ -2810,6 +2954,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -2830,6 +2975,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -2855,6 +3001,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -2876,6 +3023,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -2897,6 +3045,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -2918,6 +3067,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -2939,6 +3089,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws InvalidArgumentException
      *     when either argument is not valid XML
      */
@@ -2956,6 +3107,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws InvalidArgumentException
      *     when either argument is not valid XML
      */
@@ -2979,6 +3131,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertJson(
         string $actual,
@@ -2994,6 +3147,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertJsonStringEqualsJsonString(
         string $expectedJson,
@@ -3010,6 +3164,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      */
     public static function assertJsonStringNotEqualsJsonString(
         string $expectedJson,
@@ -3026,6 +3181,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -3046,6 +3202,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -3065,6 +3222,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
@@ -3086,6 +3244,7 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     *     when the assertion fails
      * @throws FileNotFoundException
      *     when a file referenced by this assertion does not exist
      * @throws UnableToReadFileException
