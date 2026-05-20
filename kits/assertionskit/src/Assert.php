@@ -51,6 +51,7 @@ use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
 use StusDevKit\MissingBitsKit\Arrays\RequireArrayKey;
 use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
+use StusDevKit\MissingBitsKit\TypeInspectors\IsComparablePair;
 
 /**
  * Concrete implementation of the AssertApi contract.
@@ -1376,6 +1377,16 @@ class Assert implements AssertApi
         int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
+        // robustness! ordering only makes sense between two values
+        // of the same kind. PHP's `>` does not order a scalar
+        // against a DateTime by value, so a mismatched pair is a
+        // caller bug - reject it before it reaches the comparison.
+        if (!IsComparablePair::check(first: $minimum, second: $actual)) {
+            throw new InvalidArgumentException(
+                detail: '$minimum and $actual must both be scalar, or both be DateTimeInterface',
+            );
+        }
+
         if ($actual > $minimum) {
             return;
         }
@@ -1395,6 +1406,16 @@ class Assert implements AssertApi
         int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
+        // robustness! ordering only makes sense between two values
+        // of the same kind. PHP's `>=` does not order a scalar
+        // against a DateTime by value, so a mismatched pair is a
+        // caller bug - reject it before it reaches the comparison.
+        if (!IsComparablePair::check(first: $minimum, second: $actual)) {
+            throw new InvalidArgumentException(
+                detail: '$minimum and $actual must both be scalar, or both be DateTimeInterface',
+            );
+        }
+
         if ($actual >= $minimum) {
             return;
         }
@@ -1414,6 +1435,16 @@ class Assert implements AssertApi
         int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
+        // robustness! ordering only makes sense between two values
+        // of the same kind. PHP's `<` does not order a scalar
+        // against a DateTime by value, so a mismatched pair is a
+        // caller bug - reject it before it reaches the comparison.
+        if (!IsComparablePair::check(first: $maximum, second: $actual)) {
+            throw new InvalidArgumentException(
+                detail: '$maximum and $actual must both be scalar, or both be DateTimeInterface',
+            );
+        }
+
         if ($actual < $maximum) {
             return;
         }
@@ -1433,6 +1464,16 @@ class Assert implements AssertApi
         int|float|string|DateTimeInterface $actual,
         string $message = '',
     ): void {
+        // robustness! ordering only makes sense between two values
+        // of the same kind. PHP's `<=` does not order a scalar
+        // against a DateTime by value, so a mismatched pair is a
+        // caller bug - reject it before it reaches the comparison.
+        if (!IsComparablePair::check(first: $maximum, second: $actual)) {
+            throw new InvalidArgumentException(
+                detail: '$maximum and $actual must both be scalar, or both be DateTimeInterface',
+            );
+        }
+
         if ($actual <= $maximum) {
             return;
         }

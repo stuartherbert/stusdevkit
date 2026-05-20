@@ -1578,6 +1578,9 @@ interface AssertApi
     /**
      * Asserts that a value is greater than another value.
      *
+     * `$minimum` and `$actual` must be a comparable pair: both
+     * scalar, or both `DateTimeInterface`.
+     *
      * @param int|float|string|DateTimeInterface $minimum
      *     what value must `$actual` be greater than?
      * @param int|float|string|DateTimeInterface $actual
@@ -1588,7 +1591,8 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
-     *
+     * @throws InvalidArgumentException
+     *     when `$minimum` and `$actual` are not a comparable pair
      */
     public static function assertGreaterThan(
         int|float|string|DateTimeInterface $minimum,
@@ -1600,6 +1604,9 @@ interface AssertApi
      * Asserts that a value is greater than or equal to
      * another value.
      *
+     * `$minimum` and `$actual` must be a comparable pair: both
+     * scalar, or both `DateTimeInterface`.
+     *
      * @param int|float|string|DateTimeInterface $minimum
      *     what value must `$actual` be greater than or equal to?
      * @param int|float|string|DateTimeInterface $actual
@@ -1610,6 +1617,8 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
+     * @throws InvalidArgumentException
+     *     when `$minimum` and `$actual` are not a comparable pair
      */
     public static function assertGreaterThanOrEqual(
         int|float|string|DateTimeInterface $minimum,
@@ -1619,6 +1628,9 @@ interface AssertApi
 
     /**
      * Asserts that a value is smaller than another value.
+     *
+     * `$maximum` and `$actual` must be a comparable pair: both
+     * scalar, or both `DateTimeInterface`.
      *
      * @param int|float|string|DateTimeInterface $maximum
      *     what value must `$actual` be smaller than?
@@ -1630,6 +1642,8 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
+     * @throws InvalidArgumentException
+     *     when `$maximum` and `$actual` are not a comparable pair
      */
     public static function assertLessThan(
         int|float|string|DateTimeInterface $maximum,
@@ -1641,6 +1655,9 @@ interface AssertApi
      * Asserts that a value is smaller than or equal to
      * another value.
      *
+     * `$maximum` and `$actual` must be a comparable pair: both
+     * scalar, or both `DateTimeInterface`.
+     *
      * @param int|float|string|DateTimeInterface $maximum
      *     what value must `$actual` be smaller than or equal to?
      * @param int|float|string|DateTimeInterface $actual
@@ -1651,6 +1668,8 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
+     * @throws InvalidArgumentException
+     *     when `$maximum` and `$actual` are not a comparable pair
      */
     public static function assertLessThanOrEqual(
         int|float|string|DateTimeInterface $maximum,

@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\AssertionsKit\Tests\Unit;
 
+use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -1112,6 +1113,36 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertGreaterThan() throws InvalidArgumentException when $minimum and $actual are not a comparable pair')]
+    public function test_assertGreaterThan_throws_InvalidArgumentException_on_mismatched_types(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! PHP reports any object as greater than any
+        // scalar, so pairing a DateTime with a number would order
+        // the two by type, not by value. A mismatched pair is a
+        // caller bug, and must raise InvalidArgumentException
+        // rather than produce a meaningless greater-than result.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$minimum and $actual must both be scalar, or both be DateTimeInterface',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertGreaterThan(
+            minimum: 5,
+            actual: new DateTimeImmutable(),
+        );
+    }
+
     // ================================================================
     //
     // ::assertGreaterThanOrEqual() behaviour
@@ -1185,6 +1216,37 @@ class AssertTest extends TestCase
         Assert::assertGreaterThanOrEqual(
             minimum: 5,
             actual: 3,
+        );
+    }
+
+    #[TestDox('::assertGreaterThanOrEqual() throws InvalidArgumentException when $minimum and $actual are not a comparable pair')]
+    public function test_assertGreaterThanOrEqual_throws_InvalidArgumentException_on_mismatched_types(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! PHP reports any object as greater than any
+        // scalar, so pairing a DateTime with a number would order
+        // the two by type, not by value. A mismatched pair is a
+        // caller bug, and must raise InvalidArgumentException
+        // rather than produce a meaningless greater-or-equal
+        // result.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$minimum and $actual must both be scalar, or both be DateTimeInterface',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertGreaterThanOrEqual(
+            minimum: 5,
+            actual: new DateTimeImmutable(),
         );
     }
 
@@ -1265,6 +1327,36 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertLessThan() throws InvalidArgumentException when $maximum and $actual are not a comparable pair')]
+    public function test_assertLessThan_throws_InvalidArgumentException_on_mismatched_types(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! PHP reports any object as greater than any
+        // scalar, so pairing a DateTime with a number would order
+        // the two by type, not by value. A mismatched pair is a
+        // caller bug, and must raise InvalidArgumentException
+        // rather than produce a meaningless less-than result.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$maximum and $actual must both be scalar, or both be DateTimeInterface',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertLessThan(
+            maximum: 5,
+            actual: new DateTimeImmutable(),
+        );
+    }
+
     // ================================================================
     //
     // ::assertLessThanOrEqual() behaviour
@@ -1338,6 +1430,36 @@ class AssertTest extends TestCase
         Assert::assertLessThanOrEqual(
             maximum: 5,
             actual: 10,
+        );
+    }
+
+    #[TestDox('::assertLessThanOrEqual() throws InvalidArgumentException when $maximum and $actual are not a comparable pair')]
+    public function test_assertLessThanOrEqual_throws_InvalidArgumentException_on_mismatched_types(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! PHP reports any object as greater than any
+        // scalar, so pairing a DateTime with a number would order
+        // the two by type, not by value. A mismatched pair is a
+        // caller bug, and must raise InvalidArgumentException
+        // rather than produce a meaningless less-or-equal result.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$maximum and $actual must both be scalar, or both be DateTimeInterface',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertLessThanOrEqual(
+            maximum: 5,
+            actual: new DateTimeImmutable(),
         );
     }
 
