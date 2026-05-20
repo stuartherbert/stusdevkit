@@ -127,17 +127,17 @@ class Assert implements AssertApi
     }
 
     public static function assertIsList(
-        mixed $array,
+        mixed $actual,
         string $message = '',
     ): void {
-        if (is_array($array) && array_is_list($array)) {
+        if (is_array($actual) && array_is_list($actual)) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a value is a list',
             extra: [
-                'actual' => get_debug_type($array),
+                'actual' => get_debug_type($actual),
             ],
             detail: $message,
         );
@@ -2573,10 +2573,10 @@ class Assert implements AssertApi
 
     public static function assertMatchesRegularExpression(
         string $pattern,
-        string $string,
+        string $actual,
         string $message = '',
     ): void {
-        if (preg_match($pattern, $string) === 1) {
+        if (preg_match($pattern, $actual) === 1) {
             return;
         }
 
@@ -2584,7 +2584,7 @@ class Assert implements AssertApi
             title: 'Failed asserting that a string matches a regular expression',
             extra: [
                 'pattern' => self::exportValue($pattern),
-                'string' => self::exportValue($string),
+                'actual' => self::exportValue($actual),
             ],
             detail: $message,
         );
@@ -2592,10 +2592,10 @@ class Assert implements AssertApi
 
     public static function assertDoesNotMatchRegularExpression(
         string $pattern,
-        string $string,
+        string $actual,
         string $message = '',
     ): void {
-        if (preg_match($pattern, $string) === 0) {
+        if (preg_match($pattern, $actual) === 0) {
             return;
         }
 
@@ -2603,7 +2603,7 @@ class Assert implements AssertApi
             title: 'Failed asserting that a string does not match a regular expression',
             extra: [
                 'pattern' => self::exportValue($pattern),
-                'string' => self::exportValue($string),
+                'actual' => self::exportValue($actual),
             ],
             detail: $message,
         );

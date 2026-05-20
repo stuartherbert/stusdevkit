@@ -109,7 +109,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- assertFinite / assertInifinite / assertNan now match AssertApi contract ([75b1189](https://github.com/stuartherbert/stusdevkit/commit/75b1189)) — Stuart Herbert <stuart@stuartherbert.com>
+- method parameter names now match parameter names used in AssertApi interface ([93d4b4c](https://github.com/stuartherbert/stusdevkit/commit/93d4b4c)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertFinite / assertInifinite / assertNan now match AssertApi contract ([a0047c9](https://github.com/stuartherbert/stusdevkit/commit/a0047c9)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up section headers in Assert ([d50c569](https://github.com/stuartherbert/stusdevkit/commit/d50c569)) — Stuart Herbert <stuart@stuartherbert.com>
 - delta-based assertions now accept all numerics ([2532851](https://github.com/stuartherbert/stusdevkit/commit/2532851)) — Stuart Herbert <stuart@stuartherbert.com>
 - add other thrown exceptions to AssertApi ([7b4c500](https://github.com/stuartherbert/stusdevkit/commit/7b4c500)) — Stuart Herbert <stuart@stuartherbert.com>

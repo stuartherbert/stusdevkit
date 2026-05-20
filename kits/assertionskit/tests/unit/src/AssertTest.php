@@ -4382,7 +4382,7 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertIsList(
-            array: [1, 2, 3],
+            actual: [1, 2, 3],
         );
 
         // ----------------------------------------------------------------
@@ -4406,7 +4406,7 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertIsList(
-            array: [],
+            actual: [],
         );
 
         // ----------------------------------------------------------------
@@ -4433,7 +4433,7 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertIsList(
-            array: ['a' => 1, 'b' => 2],
+            actual: ['a' => 1, 'b' => 2],
         );
     }
 
@@ -4457,7 +4457,7 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertIsList(
-            array: 'not an array',
+            actual: 'not an array',
         );
     }
 
@@ -7139,7 +7139,7 @@ class AssertTest extends TestCase
 
         Assert::assertMatchesRegularExpression(
             pattern: '/^hello/',
-            string: 'hello world',
+            actual: 'hello world',
         );
         $this->addToAssertionCount(1);
     }
@@ -7150,7 +7150,7 @@ class AssertTest extends TestCase
         $this->expectException(AssertionFailedException::class);
         Assert::assertMatchesRegularExpression(
             pattern: '/^world/',
-            string: 'hello world',
+            actual: 'hello world',
         );
     }
 
@@ -7165,7 +7165,7 @@ class AssertTest extends TestCase
     {
         Assert::assertDoesNotMatchRegularExpression(
             pattern: '/^world/',
-            string: 'hello world',
+            actual: 'hello world',
         );
         $this->addToAssertionCount(1);
     }
@@ -7176,7 +7176,7 @@ class AssertTest extends TestCase
         $this->expectException(AssertionFailedException::class);
         Assert::assertDoesNotMatchRegularExpression(
             pattern: '/^hello/',
-            string: 'hello world',
+            actual: 'hello world',
         );
     }
 
