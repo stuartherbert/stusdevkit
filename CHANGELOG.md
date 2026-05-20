@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added IsClosedResource ([1465df7](https://github.com/stuartherbert/stusdevkit/commit/1465df7)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsComparablePair ([8c59cdd](https://github.com/stuartherbert/stusdevkit/commit/8c59cdd)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnseenObjectException ([1e0bc88](https://github.com/stuartherbert/stusdevkit/commit/1e0bc88)) — Stuart Herbert <stuart@stuartherbert.com>
 - added GetNormalisedForComparison ([484c76f](https://github.com/stuartherbert/stusdevkit/commit/484c76f)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -110,7 +111,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- comparisons assertions now throw when asked to compare incompatible types ([ce9a707](https://github.com/stuartherbert/stusdevkit/commit/ce9a707)) — Stuart Herbert <stuart@stuartherbert.com>
+- comparisons assertions now throw when asked to compare incompatible types ([170f75e](https://github.com/stuartherbert/stusdevkit/commit/170f75e)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertContainsOnly*() now fill out extra section of thrown exceptions ([869ba0d](https://github.com/stuartherbert/stusdevkit/commit/869ba0d)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertFileDoesNotExist() no longer throws when passed a directory ([011e2c6](https://github.com/stuartherbert/stusdevkit/commit/011e2c6)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertStringMatchesFormatFile() now throws detailed exceptions where there is a problem reading the file ([ae541e2](https://github.com/stuartherbert/stusdevkit/commit/ae541e2)) — Stuart Herbert <stuart@stuartherbert.com>

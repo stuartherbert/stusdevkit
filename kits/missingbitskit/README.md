@@ -43,7 +43,7 @@ Every inspector that returns a type map follows the same shape:
 - `public function __invoke(mixed $input): array<string,string>` — call-as-function style; returns `[]` if the input is not of the inspector's expected type.
 - `public static function from(...)` — direct call, strictly type-hinted to the concrete input, returns a `type-name => type-name` lookup map.
 
-(`IsComparablePair`, documented below, is a predicate rather than a type-map inspector and does not follow this shape.)
+(`IsComparablePair` and `IsClosedResource`, documented below, are predicates rather than type-map inspectors and do not follow this shape.)
 
 The returned map is ordered from most-specific to most-general, and always ends with `mixed` (plus `object` for any object input). Keys are unique, so callers can test for a type with `isset()`.
 
@@ -137,6 +137,26 @@ IsComparablePair::check(
 ```
 
 Originally added for AssertApi's comparison assertions (`assertGreaterThan()` and friends): PHP reports any object as greater than any scalar, so `$dateTime > 5` is `true` regardless of the date. `IsComparablePair` lets a caller reject that mismatched pairing before the comparison runs. It also offers the invokable form — `(new IsComparablePair())($a, $b)` — for callers that need a `callable`.
+
+#### IsClosedResource
+
+`IsClosedResource` is a predicate, not a type-map inspector. Like `IsComparablePair`, it lives in this directory because it answers a type-shaped question, but it returns a `bool` rather than a `type-name => type-name` map.
+
+It reports whether a value is a resource that has been closed — the gap PHP leaves next to `is_resource()`, which is `false` for both a closed resource and a non-resource and so cannot tell them apart:
+
+```php
+use StusDevKit\MissingBitsKit\TypeInspectors\IsClosedResource;
+
+$handle = fopen('php://memory', 'r');
+IsClosedResource::check(value: $handle);   // false - still open
+
+fclose($handle);
+IsClosedResource::check(value: $handle);   // true  - now closed
+
+IsClosedResource::check(value: 42);        // false - not a resource at all
+```
+
+Originally added so AssertApi's closed-resource assertions (`assertIsClosedResource()` and friends) have a single, robust check instead of each comparing a debug-only function's output against a hard-coded string. The check keys on the stable `resource` type prefix, not the exact `resource (closed)` wording. It also offers the invokable form — `(new IsClosedResource())($value)` — for callers that need a `callable`.
 
 ### Reflection
 

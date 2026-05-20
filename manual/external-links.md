@@ -57,6 +57,8 @@ pre-flight report flags it and asks the author to add an entry.
 | `is_string()` | https://www.php.net/manual/en/function.is-string.php |
 | `is_array()` | https://www.php.net/manual/en/function.is-array.php |
 | `is_object()` | https://www.php.net/manual/en/function.is-object.php |
+| `is_resource()` | https://www.php.net/manual/en/function.is-resource.php |
+| `fclose()` | https://www.php.net/manual/en/function.fclose.php |
 | `strrpos()` | https://www.php.net/manual/en/function.strrpos.php |
 | `substr()` | https://www.php.net/manual/en/function.substr.php |
 | `trait_exists()` | https://www.php.net/manual/en/function.trait-exists.php |
