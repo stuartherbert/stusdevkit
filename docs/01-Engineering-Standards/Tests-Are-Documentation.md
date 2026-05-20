@@ -443,3 +443,81 @@ The fixture `StringBackedSampleEnum` declares its cases in
 non-alphabetical order on purpose, so the "preserves declaration
 order" behaviour test cannot coincidentally pass under a hidden
 alphabetic sort.
+
+## Every instantiable class has a "can initialise" test
+
+Every class that can be constructed with `new` must have an
+explicit test that proves a plain `new` produces a usable
+instance. This is the smoke test for the constructor: every other
+test in the file assumes construction works, but only this one
+*proves* it.
+
+The test belongs in the **identity** or **shape** section —
+construction is part of what the class IS, before what it DOES.
+
+### Two exemptions
+
+A class does **not** need a "can initialise" test when:
+
+- **It is a static helper** — a class consumed only through its
+  static methods and never instantiated (the `Get*` / `get` pure
+  value producers, and similar utility classes). There is no
+  instance to initialise.
+- **Its constructor is non-public** — a `private` or `protected`
+  constructor cannot be reached with `new` from outside the
+  class. Such a class is built through a named factory method
+  instead, and the factory's own test is the construction
+  coverage. Test the factory, not `new`.
+
+### Asserting it without tripping PHPStan
+
+`assertInstanceOf(Foo::class, $foo)` on a value the analyser
+already knows is a `Foo` is reported by phpstan-phpunit as an
+always-true assertion. Assert an **observable post-construction
+fact** instead — a value the constructor populated that an
+unconstructed object would not carry. The proof is that the
+constructor ran to completion and left the object usable.
+
+## Exception classes: four required tests
+
+Every exception class has four required tests, on top of the
+identity / shape / behaviour coverage every class gets.
+
+The reflection-based contract tests
+(`implementsInterface(Throwable::class)`, `getParentClass()`)
+pin the exception's *static* shape. They do not prove the
+exception actually works when thrown. These four tests prove the
+*runtime* behaviour the class exists for:
+
+1. **Can initialise.** A plain `new` produces a usable instance.
+   This is the general "can initialise" rule above, in its
+   exception-specific form.
+2. **Can be thrown and caught as its own type.** `throw` an
+   instance, `catch` it at the concrete class, and assert the
+   caught object is the one that was thrown. Proves the
+   throw/catch round trip works at the type callers catch most
+   specifically.
+3. **Can be thrown and caught as its parent class.** `throw` an
+   instance, `catch` it at a parent type, and assert the caught
+   object is the one that was thrown. Proves polymorphic catch
+   works — a caller catching the base type (e.g.
+   `Rfc9457ProblemDetailsException`, or `Throwable`) still
+   receives the exception.
+4. **JSON serialisation.** When the exception is
+   `JsonSerializable` — every `Rfc9457ProblemDetailsException`
+   descendant is, so in this project that is every exception —
+   pin the full serialised payload with literal expected values.
+   The serialised form is the shape that crosses the HTTP
+   boundary, so it is part of the contract.
+
+For tests 2 and 3, assert with `assertSame($thrown, $caught)`:
+comparing the two object handles proves the exact instance made
+the round trip, and — being an identity comparison of two
+same-typed handles — it does not trip phpstan-phpunit's
+always-true reporting.
+
+### Canonical example
+
+[kits/missingbitskit/tests/unit/src/DataInspectors/UnseenObjectExceptionTest.php](../../kits/missingbitskit/tests/unit/src/DataInspectors/UnseenObjectExceptionTest.php)
+— covers all four tests alongside the identity, hierarchy,
+constructor-shape, and RFC 9457 payload coverage.

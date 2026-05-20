@@ -22,7 +22,8 @@ affect.
 | [Enums.md](./Enums.md) | Enum conventions: UPPER_SNAKE_CASE cases, no static factories that inspect external state, backed enums must implement `StaticallyArrayable` |
 | [Git-Commit-Messages.md](./Git-Commit-Messages.md) | Conventional Commits format for commit messages — Features, Bug Fixes, Refactoring, Documentation |
 | [Inline-Comments.md](./Inline-Comments.md) | How to write inline comments inside method bodies — the WHY of implementation, narrative shape, marker vocabulary |
-| [Tests-Are-Documentation.md](./Tests-Are-Documentation.md) | Test writing conventions — TestDox output is the specification, factual sentences, four-block test structure, pin sets not counts |
+| [Match-Over-If-Else.md](./Match-Over-If-Else.md) | When to use `match()` instead of `if / elseif / else` — forwards-robust dispatch over enums and closed enumerations |
+| [Tests-Are-Documentation.md](./Tests-Are-Documentation.md) | Test writing conventions — TestDox output is the specification, factual sentences, four-block test structure, pin sets not counts, the "can initialise" test, the four required exception-class tests |
 | [Versioning.md](./Versioning.md) | Semantic versioning rules for releases — MAJOR for BC breaks, MINOR for features, PATCH for bug fixes |
 
 ## How to Use This Folder
@@ -57,6 +58,7 @@ in this project:
   | Writing or reviewing `Assert::*` calls | [Asserts.md](./Asserts.md) |
   | Writing docblocks (especially for utility classes) | [Docblocks.md](./Docblocks.md) |
   | Writing inline comments inside methods | [Inline-Comments.md](./Inline-Comments.md) |
+  | Dispatching on enum values or other closed enumerations | [Match-Over-If-Else.md](./Match-Over-If-Else.md) |
   | Writing or reviewing tests | [Tests-Are-Documentation.md](./Tests-Are-Documentation.md) |
   | Creating or modifying enums | [Enums.md](./Enums.md) |
   | Making a commit message | [Git-Commit-Messages.md](./Git-Commit-Messages.md) |
