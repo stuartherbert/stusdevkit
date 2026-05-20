@@ -45,6 +45,9 @@ use ArrayAccess;
 use Countable;
 use DateTimeInterface;
 use StusDevKit\AssertionsKit\Exceptions\AssertionFailedException;
+use StusDevKit\ExceptionsKit\Exceptions\FileNotFoundException;
+use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
+use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
 
 /**
  * A comprehensive set of general assertion methods.
@@ -1192,6 +1195,8 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws InvalidArgumentException
+     *     when `$actual` does not have the named comparator method
      */
     public static function assertObjectEquals(
         object $expected,
@@ -1209,6 +1214,8 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws InvalidArgumentException
+     *     when `$actual` does not have the named comparator method
      */
     public static function assertObjectNotEquals(
         object $expected,
@@ -1355,6 +1362,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertFileEquals(
         string $expected,
@@ -1371,6 +1382,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertFileEqualsIgnoringCase(
         string $expected,
@@ -1387,6 +1402,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertFileNotEquals(
         string $expected,
@@ -1403,6 +1422,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertFileNotEqualsIgnoringCase(
         string $expected,
@@ -1425,6 +1448,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertStringEqualsFile(
         string $expectedFile,
@@ -1441,6 +1468,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertStringEqualsFileIgnoringCase(
         string $expectedFile,
@@ -1457,6 +1488,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertStringNotEqualsFile(
         string $expectedFile,
@@ -1473,6 +1508,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertStringNotEqualsFileIgnoringCase(
         string $expectedFile,
@@ -2617,6 +2656,8 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws InvalidArgumentException
+     *     when `$formatFile` does not exist or cannot be read
      */
     public static function assertStringMatchesFormatFile(
         string $formatFile,
@@ -2769,6 +2810,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertFileMatchesFormat(
         string $format,
@@ -2785,6 +2830,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertFileMatchesFormatFile(
         string $formatFile,
@@ -2806,6 +2855,12 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
+     * @throws InvalidArgumentException
+     *     when a document being compared is not valid XML
      */
     public static function assertXmlFileEqualsXmlFile(
         string $expectedFile,
@@ -2821,6 +2876,12 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
+     * @throws InvalidArgumentException
+     *     when a document being compared is not valid XML
      */
     public static function assertXmlFileNotEqualsXmlFile(
         string $expectedFile,
@@ -2836,6 +2897,12 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
+     * @throws InvalidArgumentException
+     *     when a document being compared is not valid XML
      */
     public static function assertXmlStringEqualsXmlFile(
         string $expectedFile,
@@ -2851,6 +2918,12 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
+     * @throws InvalidArgumentException
+     *     when a document being compared is not valid XML
      */
     public static function assertXmlStringNotEqualsXmlFile(
         string $expectedFile,
@@ -2866,6 +2939,8 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws InvalidArgumentException
+     *     when either argument is not valid XML
      */
     public static function assertXmlStringEqualsXmlString(
         string $expectedXml,
@@ -2881,6 +2956,8 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws InvalidArgumentException
+     *     when either argument is not valid XML
      */
     public static function assertXmlStringNotEqualsXmlString(
         string $expectedXml,
@@ -2949,6 +3026,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertJsonStringEqualsJsonFile(
         string $expectedFile,
@@ -2965,6 +3046,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertJsonStringNotEqualsJsonFile(
         string $expectedFile,
@@ -2980,6 +3065,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertJsonFileEqualsJsonFile(
         string $expectedFile,
@@ -2997,6 +3086,10 @@ interface AssertApi
      *     will be included in any thrown exception
      *
      * @throws AssertionFailedException
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertJsonFileNotEqualsJsonFile(
         string $expectedFile,

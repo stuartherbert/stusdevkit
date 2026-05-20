@@ -107,6 +107,11 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
+#### AssertionsKit
+
+- add other thrown exceptions to AssertApi ([14af6c8](https://github.com/stuartherbert/stusdevkit/commit/14af6c8)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - Json::encode() no longer depends on AssertionsKit ([6e24cf1](https://github.com/stuartherbert/stusdevkit/commit/6e24cf1)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -133,10 +138,6 @@ This CHANGELOG is automatically compiled.
 #### Tools
 
 - fix `make claudecodekit` ([e80e5c3](https://github.com/stuartherbert/stusdevkit/commit/e80e5c3)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### AssertionsKit
-
-- Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 ### Documentation
 
@@ -194,7 +195,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([cb7d6e4](https://github.com/stuartherbert/stusdevkit/commit/cb7d6e4)) — Stuart Herbert <stuart@stuartherbert.com>
+- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
 - file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
