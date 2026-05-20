@@ -160,6 +160,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- warn that assertSameSize() et al consumes one-shot iterables ([200ee74](https://github.com/stuartherbert/stusdevkit/commit/200ee74)) — Stuart Herbert <stuart@stuartherbert.com>
 - clarify why exceptions are thrown ([e7c6dfe](https://github.com/stuartherbert/stusdevkit/commit/e7c6dfe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### CollectionsKit
@@ -211,7 +212,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- drop format-string assertions (undocumented DSL) ([52244d8](https://github.com/stuartherbert/stusdevkit/commit/52244d8)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
 - canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
 - file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>

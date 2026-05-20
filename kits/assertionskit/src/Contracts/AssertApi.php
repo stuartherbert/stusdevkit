@@ -3006,6 +3006,25 @@ interface AssertApi
      * Assert that the size of two arrays (or `Countable` or
      * `Traversable` objects) is the same.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * Counting a `Generator` or any one-shot `Iterator` consumes
+     * it. This assertion walks such an iterable to its end to size
+     * it, so the input is exhausted once the assertion returns — an
+     * assertion that mutates its own input is a footgun.
+     *
+     * Worse, an iterator that has already been partially walked
+     * reports only its *remaining* items, so the assertion can fail
+     * because of consumption state rather than because the sizes
+     * truly differ. Hand the same one-shot iterator in as both
+     * arguments and the first count drains it while the second sees
+     * an empty husk — a guaranteed spurious failure.
+     *
+     * Arrays and `Countable` objects are sized without iterating
+     * and are immune. To size-check a one-shot iterable safely,
+     * draw it into an array yourself first and pass that.
+     *
      * @param Countable|iterable<mixed> $expected
      * @param Countable|iterable<mixed> $actual
      *
@@ -3025,6 +3044,26 @@ interface AssertApi
     /**
      * Assert that the size of two arrays (or `Countable` or
      * `Traversable` objects) is not the same.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * Counting a `Generator` or any one-shot `Iterator` consumes
+     * it. This assertion walks such an iterable to its end to size
+     * it, so the input is exhausted once the assertion returns — an
+     * assertion that mutates its own input is a footgun.
+     *
+     * Worse, an iterator that has already been partially walked
+     * reports only its *remaining* items, so the assertion can pass
+     * because of consumption state rather than because the sizes
+     * truly differ. Hand the same one-shot iterator in as both
+     * arguments and the first count drains it while the second sees
+     * an empty husk — so two iterables that really are the same
+     * size slip through as "not the same size".
+     *
+     * Arrays and `Countable` objects are sized without iterating
+     * and are immune. To size-check a one-shot iterable safely,
+     * draw it into an array yourself first and pass that.
      *
      * @param Countable|iterable<mixed> $expected
      * @param Countable|iterable<mixed> $actual
