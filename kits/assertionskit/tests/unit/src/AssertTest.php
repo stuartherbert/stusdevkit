@@ -1881,9 +1881,9 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // happy path: open a resource, close it, then assert. The
-        // closed handle reports get_debug_type() === 'resource (closed)'
-        // - the exact shape the assertion checks for.
+        // happy path: open a resource, close it, then assert. A
+        // closed handle is exactly what assertIsClosedResource()
+        // is meant to accept.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1909,10 +1909,10 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // failure mode: an open resource has debug type `resource`, not
-        // `resource (closed)` - the assertion must reject it so callers
-        // who need "definitely closed" get a clear signal when they
-        // still hold a live handle.
+        // failure mode: an open resource is not a closed resource -
+        // the assertion must reject it so callers who need
+        // "definitely closed" get a clear signal when they still
+        // hold a live handle.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -6004,10 +6004,9 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // closed resources are detected via `get_debug_type()`
-        // returning the string `'resource (closed)'`. This is
-        // the only reliable way - `is_resource()` returns false
-        // on closed resources, and there is no `is_closed_resource()`.
+        // happy path: every item in the haystack is a closed
+        // resource, so the "contains only closed resources"
+        // assertion must pass silently.
 
         // ----------------------------------------------------------------
         // setup your test

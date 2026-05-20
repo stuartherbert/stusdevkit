@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added IsClosedResource ([1465df7](https://github.com/stuartherbert/stusdevkit/commit/1465df7)) — Stuart Herbert <stuart@stuartherbert.com>
+- added IsClosedResource ([6ce47be](https://github.com/stuartherbert/stusdevkit/commit/6ce47be)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsComparablePair ([8c59cdd](https://github.com/stuartherbert/stusdevkit/commit/8c59cdd)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnseenObjectException ([1e0bc88](https://github.com/stuartherbert/stusdevkit/commit/1e0bc88)) — Stuart Herbert <stuart@stuartherbert.com>
 - added GetNormalisedForComparison ([484c76f](https://github.com/stuartherbert/stusdevkit/commit/484c76f)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -111,6 +111,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- closed-resource assertions now use IsClosedResource for forwards-compatibility ([62c281e](https://github.com/stuartherbert/stusdevkit/commit/62c281e)) — Stuart Herbert <stuart@stuartherbert.com>
 - comparisons assertions now throw when asked to compare incompatible types ([170f75e](https://github.com/stuartherbert/stusdevkit/commit/170f75e)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertContainsOnly*() now fill out extra section of thrown exceptions ([869ba0d](https://github.com/stuartherbert/stusdevkit/commit/869ba0d)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertFileDoesNotExist() no longer throws when passed a directory ([011e2c6](https://github.com/stuartherbert/stusdevkit/commit/011e2c6)) — Stuart Herbert <stuart@stuartherbert.com>

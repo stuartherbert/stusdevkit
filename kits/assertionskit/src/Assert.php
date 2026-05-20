@@ -51,6 +51,7 @@ use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
 use StusDevKit\MissingBitsKit\Arrays\RequireArrayKey;
 use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
+use StusDevKit\MissingBitsKit\TypeInspectors\IsClosedResource;
 use StusDevKit\MissingBitsKit\TypeInspectors\IsComparablePair;
 
 /**
@@ -706,7 +707,7 @@ class Assert implements AssertApi
     ): void {
         $offender = self::firstNonMatch(
             $haystack,
-            static fn (mixed $v): bool => get_debug_type($v) === 'resource (closed)',
+            IsClosedResource::check(...),
         );
 
         if ($offender === null) {
@@ -939,7 +940,7 @@ class Assert implements AssertApi
     ): void {
         $offender = self::firstNonMatch(
             $haystack,
-            static fn (mixed $v): bool => get_debug_type($v) === 'resource (closed)',
+            IsClosedResource::check(...),
         );
 
         if ($offender !== null) {
@@ -2398,7 +2399,7 @@ class Assert implements AssertApi
         mixed $actual,
         string $message = '',
     ): void {
-        if (get_debug_type($actual) === 'resource (closed)') {
+        if (IsClosedResource::check($actual)) {
             return;
         }
 
@@ -2620,7 +2621,7 @@ class Assert implements AssertApi
         mixed $actual,
         string $message = '',
     ): void {
-        if (get_debug_type($actual) !== 'resource (closed)') {
+        if (!IsClosedResource::check($actual)) {
             return;
         }
 
