@@ -147,7 +147,8 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- initial docs for EmptyStackException ([f282743](https://github.com/stuartherbert/stusdevkit/commit/f282743)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial docs for NoValueForKeyInCollectionException ([d4c9be7](https://github.com/stuartherbert/stusdevkit/commit/d4c9be7)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial docs for EmptyStackException ([d741c01](https://github.com/stuartherbert/stusdevkit/commit/d741c01)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial docs for EmptyCollectionException ([8c1b5c8](https://github.com/stuartherbert/stusdevkit/commit/8c1b5c8)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial documentation ([0a7a1f3](https://github.com/stuartherbert/stusdevkit/commit/0a7a1f3)) — Stuart Herbert <stuart@stuartherbert.com>
 

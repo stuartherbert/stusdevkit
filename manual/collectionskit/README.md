@@ -59,6 +59,7 @@ API reference for the `collectionskit` package.
 
 - [`EmptyCollectionException`](Exceptions/EmptyCollectionException/README.md) — thrown when accessing an empty collection
 - [`EmptyStackException`](Exceptions/EmptyStackException/README.md) — thrown when accessing an empty stack
+- [`NoValueForKeyInCollectionException`](Exceptions/NoValueForKeyInCollectionException/README.md) — thrown when asking for a key that is not in a dictionary or index
 
 ### Contracts (Interfaces)
 
