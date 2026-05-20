@@ -226,7 +226,6 @@ class AssertTest extends TestCase
             'assertFalse',
             'assertFileDoesNotExist',
             'assertFileEquals',
-            'assertFileEqualsCanonicalizing',
             'assertFileEqualsIgnoringCase',
             'assertFileExists',
             'assertFileIsNotReadable',
@@ -236,7 +235,6 @@ class AssertTest extends TestCase
             'assertFileMatchesFormat',
             'assertFileMatchesFormatFile',
             'assertFileNotEquals',
-            'assertFileNotEqualsCanonicalizing',
             'assertFileNotEqualsIgnoringCase',
             'assertFinite',
             'assertGreaterThan',
@@ -310,7 +308,6 @@ class AssertTest extends TestCase
             'assertStringEndsNotWith',
             'assertStringEndsWith',
             'assertStringEqualsFile',
-            'assertStringEqualsFileCanonicalizing',
             'assertStringEqualsFileIgnoringCase',
             'assertStringEqualsStringIgnoringLineEndings',
             'assertStringMatchesFormat',
@@ -318,7 +315,6 @@ class AssertTest extends TestCase
             'assertStringNotContainsString',
             'assertStringNotContainsStringIgnoringCase',
             'assertStringNotEqualsFile',
-            'assertStringNotEqualsFileCanonicalizing',
             'assertStringNotEqualsFileIgnoringCase',
             'assertStringStartsNotWith',
             'assertStringStartsWith',
@@ -8473,107 +8469,6 @@ class AssertTest extends TestCase
 
     // ================================================================
     //
-    // ::assertFileEqualsCanonicalizing() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertFileEqualsCanonicalizing() passes when two files hold the same lines in a different order')]
-    public function test_assertFileEqualsCanonicalizing_passes_on_reordered_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this pins the whole point of the Canonicalizing variant:
-        // raw assertFileEquals would FAIL on these two files
-        // because "alpha\nbeta" and "beta\nalpha" differ byte-for-
-        // byte, but canonicalizing sorts lines before comparing
-        // so the two files are considered equal.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // shorthand - paired temp files wrapped in try/finally so
-        // both get cleaned up even when the assertion raises.
-        $expectedFile = tempnam(sys_get_temp_dir(), 'assert_canon_exp_');
-        self::assertIsString($expectedFile);
-        $actualFile = tempnam(sys_get_temp_dir(), 'assert_canon_act_');
-        self::assertIsString($actualFile);
-
-        try {
-            file_put_contents($expectedFile, "alpha\nbeta\ngamma");
-            file_put_contents($actualFile, "gamma\nalpha\nbeta");
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertFileEqualsCanonicalizing(
-                expected: $expectedFile,
-                actual: $actualFile,
-            );
-
-            // ----------------------------------------------------------------
-            // test the results
-
-            $this->addToAssertionCount(1);
-        } finally {
-            // cleanup - release both scratch files even on throw.
-            unlink($expectedFile);
-            unlink($actualFile);
-        }
-    }
-
-    #[TestDox('::assertFileEqualsCanonicalizing() throws AssertionFailedException when files hold genuinely different lines')]
-    public function test_assertFileEqualsCanonicalizing_throws_on_different_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: sorting cannot rescue files whose line SETS
-        // disagree. "Hello World" vs "Goodbye World" produce
-        // different sorted lists, so the assertion must raise.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        $fixtureDir = __DIR__ . '/../../fixtures/text/';
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileEqualsCanonicalizing(
-            expected: $fixtureDir . 'hello.txt',
-            actual: $fixtureDir . 'different.txt',
-        );
-    }
-
-    #[TestDox('::assertFileEqualsCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
-    public function test_assertFileEqualsCanonicalizing_throws_when_expected_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! missing expected file is a caller error.
-        // Same contract as assertFileEquals - the Canonicalizing
-        // variant must surface it the same way.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileEqualsCanonicalizing(
-            expected: '/nonexistent/path/file.txt',
-            actual: __FILE__,
-        );
-    }
-
-    // ================================================================
-    //
     // ::assertFileEqualsIgnoringCase() behaviour
     //
     // ----------------------------------------------------------------
@@ -8739,102 +8634,6 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertFileNotEquals(
-            expected: '/nonexistent/path/file.txt',
-            actual: __FILE__,
-        );
-    }
-
-    // ================================================================
-    //
-    // ::assertFileNotEqualsCanonicalizing() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertFileNotEqualsCanonicalizing() passes when files hold genuinely different lines')]
-    public function test_assertFileNotEqualsCanonicalizing_passes_on_different_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: "Hello World" vs "Goodbye World". Sorting
-        // both sides still leaves different sorted lists, so the
-        // negated form must accept.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $fixtureDir = __DIR__ . '/../../fixtures/text/';
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileNotEqualsCanonicalizing(
-            expected: $fixtureDir . 'hello.txt',
-            actual: $fixtureDir . 'different.txt',
-        );
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertFileNotEqualsCanonicalizing() throws AssertionFailedException when files hold the same lines in a different order')]
-    public function test_assertFileNotEqualsCanonicalizing_throws_on_reordered_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: two files whose lines sort to the same
-        // list canonicalize to equal. The negated form must raise
-        // - this is exactly the case the Canonicalizing variant
-        // is meant to catch.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        $expectedFile = tempnam(sys_get_temp_dir(), 'assert_canon_exp_');
-        self::assertIsString($expectedFile);
-        $actualFile = tempnam(sys_get_temp_dir(), 'assert_canon_act_');
-        self::assertIsString($actualFile);
-
-        try {
-            file_put_contents($expectedFile, "alpha\nbeta\ngamma");
-            file_put_contents($actualFile, "gamma\nalpha\nbeta");
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertFileNotEqualsCanonicalizing(
-                expected: $expectedFile,
-                actual: $actualFile,
-            );
-        } finally {
-            // cleanup - release both scratch files even on throw.
-            unlink($expectedFile);
-            unlink($actualFile);
-        }
-    }
-
-    #[TestDox('::assertFileNotEqualsCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
-    public function test_assertFileNotEqualsCanonicalizing_throws_when_expected_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! missing expected file is a caller error.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertFileNotEqualsCanonicalizing(
             expected: '/nonexistent/path/file.txt',
             actual: __FILE__,
         );
@@ -9008,97 +8807,6 @@ class AssertTest extends TestCase
 
     // ================================================================
     //
-    // ::assertStringEqualsFileCanonicalizing() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertStringEqualsFileCanonicalizing() passes when the string holds the file lines in a different order')]
-    public function test_assertStringEqualsFileCanonicalizing_passes_on_reordered_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // this pins the Canonicalizing variant: raw
-        // assertStringEqualsFile would fail because the string
-        // ordering differs from the file, but canonicalizing
-        // sorts both sides' lines before comparing.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $expectedFile = tempnam(sys_get_temp_dir(), 'assert_canon_str_');
-        self::assertIsString($expectedFile);
-
-        try {
-            file_put_contents($expectedFile, "alpha\nbeta\ngamma");
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertStringEqualsFileCanonicalizing(
-                expectedFile: $expectedFile,
-                actualString: "gamma\nalpha\nbeta",
-            );
-
-            // ----------------------------------------------------------------
-            // test the results
-
-            $this->addToAssertionCount(1);
-        } finally {
-            // cleanup - release the scratch file even on throw.
-            unlink($expectedFile);
-        }
-    }
-
-    #[TestDox('::assertStringEqualsFileCanonicalizing() throws AssertionFailedException when the string holds different lines')]
-    public function test_assertStringEqualsFileCanonicalizing_throws_on_different_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: the line sets disagree, so sorting cannot
-        // make them match. The assertion must raise.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        $fixtureDir = __DIR__ . '/../../fixtures/text/';
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertStringEqualsFileCanonicalizing(
-            expectedFile: $fixtureDir . 'hello.txt',
-            actualString: 'Goodbye World',
-        );
-    }
-
-    #[TestDox('::assertStringEqualsFileCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
-    public function test_assertStringEqualsFileCanonicalizing_throws_when_expected_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! missing expected file is a caller error.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertStringEqualsFileCanonicalizing(
-            expectedFile: '/nonexistent/path/file.txt',
-            actualString: 'hello',
-        );
-    }
-
-    // ================================================================
-    //
     // ::assertStringEqualsFileIgnoringCase() behaviour
     //
     // ----------------------------------------------------------------
@@ -9262,98 +8970,6 @@ class AssertTest extends TestCase
         // perform the change
 
         Assert::assertStringNotEqualsFile(
-            expectedFile: '/nonexistent/path/file.txt',
-            actualString: 'hello',
-        );
-    }
-
-    // ================================================================
-    //
-    // ::assertStringNotEqualsFileCanonicalizing() behaviour
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('::assertStringNotEqualsFileCanonicalizing() passes when the string holds different lines to the file')]
-    public function test_assertStringNotEqualsFileCanonicalizing_passes_on_different_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // happy path: sorted line sets disagree, so canonicalizing
-        // still treats them as unequal. The negated form accepts.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $fixtureDir = __DIR__ . '/../../fixtures/text/';
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertStringNotEqualsFileCanonicalizing(
-            expectedFile: $fixtureDir . 'hello.txt',
-            actualString: 'Goodbye World',
-        );
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->addToAssertionCount(1);
-    }
-
-    #[TestDox('::assertStringNotEqualsFileCanonicalizing() throws AssertionFailedException when the string holds the file lines in a different order')]
-    public function test_assertStringNotEqualsFileCanonicalizing_throws_on_reordered_lines(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // failure mode: the string and file contain the same
-        // lines in different order. Canonicalizing sorts both
-        // sides and finds them equal, so the negated form must
-        // raise - this is the exact hazard the Canonicalizing
-        // variant is meant to catch.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(AssertionFailedException::class);
-
-        $expectedFile = tempnam(sys_get_temp_dir(), 'assert_canon_str_');
-        self::assertIsString($expectedFile);
-
-        try {
-            file_put_contents($expectedFile, "alpha\nbeta\ngamma");
-
-            // ----------------------------------------------------------------
-            // perform the change
-
-            Assert::assertStringNotEqualsFileCanonicalizing(
-                expectedFile: $expectedFile,
-                actualString: "gamma\nalpha\nbeta",
-            );
-        } finally {
-            // cleanup - release the scratch file even on throw.
-            unlink($expectedFile);
-        }
-    }
-
-    #[TestDox('::assertStringNotEqualsFileCanonicalizing() throws FileNotFoundException when the expected file does not exist')]
-    public function test_assertStringNotEqualsFileCanonicalizing_throws_when_expected_file_not_readable(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // robustness! missing expected file is a caller error.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $this->expectException(FileNotFoundException::class);
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        Assert::assertStringNotEqualsFileCanonicalizing(
             expectedFile: '/nonexistent/path/file.txt',
             actualString: 'hello',
         );

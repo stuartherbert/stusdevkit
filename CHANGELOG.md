@@ -192,6 +192,15 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### AssertionsKit
+
+- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([cb7d6e4](https://github.com/stuartherbert/stusdevkit/commit/cb7d6e4)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
+- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
+- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### CollectionsKit
 
 - first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -201,14 +210,6 @@ This CHANGELOG is automatically compiled.
 - move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
 - moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### AssertionsKit
-
-- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
-- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
-- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
-- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
-- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
 

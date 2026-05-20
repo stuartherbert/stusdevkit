@@ -50,6 +50,7 @@ use StusDevKit\ExceptionsKit\Exceptions\FileNotFoundException;
 use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
 use StusDevKit\MissingBitsKit\Arrays\RequireArrayKey;
+use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
 
 /**
  * Concrete implementation of the AssertApi contract.
@@ -976,8 +977,8 @@ class Assert implements AssertApi
         mixed $actual,
         string $message = '',
     ): void {
-        $canonicalExpected = self::canonicalize($expected);
-        $canonicalActual = self::canonicalize($actual);
+        $canonicalExpected = GetNormalisedForComparison::from($expected);
+        $canonicalActual = GetNormalisedForComparison::from($actual);
 
         if ($canonicalExpected == $canonicalActual) {
             return;
@@ -1066,8 +1067,8 @@ class Assert implements AssertApi
         mixed $actual,
         string $message = '',
     ): void {
-        $canonicalExpected = self::canonicalize($expected);
-        $canonicalActual = self::canonicalize($actual);
+        $canonicalExpected = GetNormalisedForComparison::from($expected);
+        $canonicalActual = GetNormalisedForComparison::from($actual);
 
         if ($canonicalExpected != $canonicalActual) {
             return;
@@ -2178,33 +2179,6 @@ class Assert implements AssertApi
         );
     }
 
-    public static function assertFileEqualsCanonicalizing(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expected);
-        $actualContents = self::readFileContents($actual);
-
-        $expectedLines = explode("\n", $expectedContents);
-        $actualLines = explode("\n", $actualContents);
-        sort($expectedLines);
-        sort($actualLines);
-
-        if ($expectedLines === $actualLines) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two files are equal (canonicalizing)',
-            extra: [
-                'expected' => self::exportValue($expected),
-                'actual' => self::exportValue($actual),
-            ],
-            detail: $message,
-        );
-    }
-
     public static function assertFileEqualsIgnoringCase(
         string $expected,
         string $actual,
@@ -2241,33 +2215,6 @@ class Assert implements AssertApi
 
         throw new AssertionFailedException(
             title: 'Failed asserting that two files are not equal',
-            extra: [
-                'expected' => self::exportValue($expected),
-                'actual' => self::exportValue($actual),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertFileNotEqualsCanonicalizing(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expected);
-        $actualContents = self::readFileContents($actual);
-
-        $expectedLines = explode("\n", $expectedContents);
-        $actualLines = explode("\n", $actualContents);
-        sort($expectedLines);
-        sort($actualLines);
-
-        if ($expectedLines !== $actualLines) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that two files are not equal (canonicalizing)',
             extra: [
                 'expected' => self::exportValue($expected),
                 'actual' => self::exportValue($actual),
@@ -2325,32 +2272,6 @@ class Assert implements AssertApi
         );
     }
 
-    public static function assertStringEqualsFileCanonicalizing(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-
-        $expectedLines = explode("\n", $expectedContents);
-        $actualLines = explode("\n", $actualString);
-        sort($expectedLines);
-        sort($actualLines);
-
-        if ($expectedLines === $actualLines) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string equals file contents (canonicalizing)',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualString' => self::exportValue($actualString),
-            ],
-            detail: $message,
-        );
-    }
-
     public static function assertStringEqualsFileIgnoringCase(
         string $expectedFile,
         string $actualString,
@@ -2385,32 +2306,6 @@ class Assert implements AssertApi
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a string does not equal file contents',
-            extra: [
-                'expectedFile' => self::exportValue($expectedFile),
-                'actualString' => self::exportValue($actualString),
-            ],
-            detail: $message,
-        );
-    }
-
-    public static function assertStringNotEqualsFileCanonicalizing(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void {
-        $expectedContents = self::readFileContents($expectedFile);
-
-        $expectedLines = explode("\n", $expectedContents);
-        $actualLines = explode("\n", $actualString);
-        sort($expectedLines);
-        sort($actualLines);
-
-        if ($expectedLines !== $actualLines) {
-            return;
-        }
-
-        throw new AssertionFailedException(
-            title: 'Failed asserting that a string does not equal file contents (canonicalizing)',
             extra: [
                 'expectedFile' => self::exportValue($expectedFile),
                 'actualString' => self::exportValue($actualString),
@@ -3565,27 +3460,6 @@ class Assert implements AssertApi
         }
 
         return $doc;
-    }
-
-    /**
-     * Sorts arrays recursively by key for canonical
-     * comparison.
-     *
-     * @param mixed $value
-     * - the value to canonicalize
-     * @return mixed
-     * - the canonicalized value (arrays sorted by key)
-     */
-    private static function canonicalize(mixed $value): mixed
-    {
-        if (is_array($value)) {
-            ksort($value);
-            foreach ($value as &$item) {
-                $item = self::canonicalize($item);
-            }
-        }
-
-        return $value;
     }
 
     /**

@@ -1032,7 +1032,10 @@ interface AssertApi
     ): void;
 
     /**
-     * Asserts that two variables are equal (canonicalizing).
+     * Asserts that two variables are structurally equal.
+     *
+     * Both variables are normalised (canonicalised in PHPUnit-speak)
+     * before comparison.
      *
      * @param mixed $expected
      *     the value that you need
@@ -1111,8 +1114,10 @@ interface AssertApi
     ): void;
 
     /**
-     * Asserts that two variables are not equal
-     * (canonicalizing).
+     * Asserts that two variables are not structurally equal
+     *
+     * Both variables are normalised (canonicalised in PHPUnit-speak)
+     * before comparison.
      *
      * @param mixed $expected
      *     the value that you want to avoid
@@ -1359,22 +1364,6 @@ interface AssertApi
 
     /**
      * Asserts that the contents of one file is equal to the
-     * contents of another file (canonicalizing).
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     */
-    public static function assertFileEqualsCanonicalizing(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void;
-
-    /**
-     * Asserts that the contents of one file is equal to the
      * contents of another file (ignoring case).
      *
      * @param string                    $message
@@ -1400,22 +1389,6 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertFileNotEquals(
-        string $expected,
-        string $actual,
-        string $message = '',
-    ): void;
-
-    /**
-     * Asserts that the contents of one file is not equal to
-     * the contents of another file (canonicalizing).
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     */
-    public static function assertFileNotEqualsCanonicalizing(
         string $expected,
         string $actual,
         string $message = '',
@@ -1461,22 +1434,6 @@ interface AssertApi
 
     /**
      * Asserts that the contents of a string is equal
-     * to the contents of a file (canonicalizing).
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     */
-    public static function assertStringEqualsFileCanonicalizing(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void;
-
-    /**
-     * Asserts that the contents of a string is equal
      * to the contents of a file (ignoring case).
      *
      * @param string                    $message
@@ -1502,22 +1459,6 @@ interface AssertApi
      * @throws AssertionFailedException
      */
     public static function assertStringNotEqualsFile(
-        string $expectedFile,
-        string $actualString,
-        string $message = '',
-    ): void;
-
-    /**
-     * Asserts that the contents of a string is not equal
-     * to the contents of a file (canonicalizing).
-     *
-     * @param string                    $message
-     *     optional error message
-     *     will be included in any thrown exception
-     *
-     * @throws AssertionFailedException
-     */
-    public static function assertStringNotEqualsFileCanonicalizing(
         string $expectedFile,
         string $actualString,
         string $message = '',
