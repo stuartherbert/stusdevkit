@@ -18,6 +18,10 @@ pre-flight report flags it and asks the author to add an entry.
 | `ArrayIterator` | https://www.php.net/manual/en/class.arrayiterator.php |
 | `Closure` | https://www.php.net/manual/en/class.closure.php |
 | `Countable` | https://www.php.net/manual/en/class.countable.php |
+| `DateInterval` | https://www.php.net/manual/en/class.dateinterval.php |
+| `DateTime` | https://www.php.net/manual/en/class.datetime.php |
+| `DateTimeImmutable` | https://www.php.net/manual/en/class.datetimeimmutable.php |
+| `DateTimeInterface` | https://www.php.net/manual/en/class.datetimeinterface.php |
 | `get_class()` | https://www.php.net/manual/en/function.get-class.php |
 | `gettype()` | https://www.php.net/manual/en/function.gettype.php |
 | `IteratorAggregate` | https://www.php.net/manual/en/class.iteratoraggregate.php |
@@ -74,6 +78,8 @@ pre-flight report flags it and asks the author to add an entry.
 | `Exception::__toString()` | https://www.php.net/manual/en/exception.toString |
 | `InvalidArgumentException` | https://www.php.net/manual/en/class.invalidargumentexception.php |
 | `RuntimeException` | https://www.php.net/manual/en/class.runtimeexception.php |
+| `SplObjectStorage` | https://www.php.net/manual/en/class.splobjectstorage.php |
+| `UnexpectedValueException` | https://www.php.net/manual/en/class.unexpectedvalueexception.php |
 | `UnitEnum` | https://www.php.net/manual/en/class.unitenum.php |
 
 ## PSR standards

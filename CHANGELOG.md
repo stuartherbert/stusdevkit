@@ -22,7 +22,8 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added GetNormalisedForComparison ([0f4e777](https://github.com/stuartherbert/stusdevkit/commit/0f4e777)) — Stuart Herbert <stuart@stuartherbert.com>
+- added UnseenObjectException ([5ea584c](https://github.com/stuartherbert/stusdevkit/commit/5ea584c)) — Stuart Herbert <stuart@stuartherbert.com>
+- added GetNormalisedForComparison ([484c76f](https://github.com/stuartherbert/stusdevkit/commit/484c76f)) — Stuart Herbert <stuart@stuartherbert.com>
 - added NormalisesForComparison interface ([de0b747](https://github.com/stuartherbert/stusdevkit/commit/de0b747)) — Stuart Herbert <stuart@stuartherbert.com>
 - added GetArrayShape ([a10c8ff](https://github.com/stuartherbert/stusdevkit/commit/a10c8ff)) — Stuart Herbert <stuart@stuartherbert.com>
 - added ArrayShape enum ([7b470b0](https://github.com/stuartherbert/stusdevkit/commit/7b470b0)) — Stuart Herbert <stuart@stuartherbert.com>
