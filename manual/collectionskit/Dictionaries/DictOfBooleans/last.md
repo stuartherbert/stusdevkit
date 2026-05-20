@@ -16,14 +16,14 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class DictOfBooleans extends CollectionAsDict
 {
     /**
      * @return bool
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function last(): bool
 }
@@ -54,7 +54,7 @@ The last stored flag (`true` or `false`). The PHP return type is `mixed`; the cl
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the dict is empty. The message is `DictOfBooleans is empty`.
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the dict is empty. The message is `DictOfBooleans is empty`.
 
 ## Here Be Dragons
 
@@ -69,7 +69,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Dictionaries\DictOfBooleans
  ✔ ->last() returns the last flag
- ✔ ->last() throws RuntimeException for empty dict
+ ✔ ->last() throws EmptyCollectionException for empty dict
  ✔ Dict with one flag: ->first() and ->last() return the same value
 ```
 

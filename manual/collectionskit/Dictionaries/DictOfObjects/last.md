@@ -16,14 +16,14 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class DictOfObjects extends CollectionAsDict
 {
     /**
      * @return object
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function last(): object
 }
@@ -56,7 +56,7 @@ The last stored object. The PHP return type is `mixed`; the class's template bin
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the dict is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the runtime class name (e.g. `DictOfObjects`, `DictOfUuids`).
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the dict is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the runtime class name (e.g. `DictOfObjects`, `DictOfUuids`).
 
 ## Here Be Dragons
 
@@ -71,7 +71,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Dictionaries\DictOfObjects
  ✔ ->last() returns the last object
- ✔ ->last() throws RuntimeException for empty dict
+ ✔ ->last() throws EmptyCollectionException for empty dict
  ✔ Dict with one object: ->first() and ->last() return the same object
 ```
 

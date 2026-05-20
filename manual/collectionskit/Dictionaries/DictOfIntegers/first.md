@@ -16,14 +16,14 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class DictOfIntegers extends DictOfNumbers
 {
     /**
      * @return int
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function first(): int
 }
@@ -54,7 +54,7 @@ The first stored integer. The PHP return type is `mixed`; the class's template b
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the dict is empty. The message is `DictOfIntegers is empty`.
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the dict is empty. The message is `DictOfIntegers is empty`.
 
 ## Here Be Dragons
 
@@ -69,7 +69,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Dictionaries\DictOfIntegers
  ✔ ->first() returns the first integer
- ✔ ->first() throws RuntimeException for empty dict
+ ✔ ->first() throws EmptyCollectionException for empty dict
  ✔ Dict with one integer: ->first() and ->last() return the same value
 ```
 

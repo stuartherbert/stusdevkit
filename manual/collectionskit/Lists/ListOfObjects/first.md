@@ -16,13 +16,13 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Lists;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class ListOfObjects extends CollectionAsList
 {
     /**
      * @return object
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function first(): object
 }
@@ -51,7 +51,7 @@ The first object stored in the list. The PHP signature returns `mixed`, but the 
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the list is empty. The message is `ListOfObjects is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the list is empty. The message is `ListOfObjects is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
 
 ## Here Be Dragons
 
@@ -66,7 +66,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Lists\ListOfObjects
  ✔ ->first() returns the first object
- ✔ ->first() throws RuntimeException for empty list
+ ✔ ->first() throws EmptyCollectionException for empty list
  ✔ List with one object: ->first() and ->last() return the same value
  ✔ Stored objects preserve their identity
  ✔ Mutating a stored object is reflected when retrieved

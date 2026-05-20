@@ -16,14 +16,14 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class DictOfFloats extends DictOfNumbers
 {
     /**
      * @return float
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function first(): float
 }
@@ -54,7 +54,7 @@ The first stored float. The PHP return type is `mixed`; the class's template bin
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the dict is empty. The message is `DictOfFloats is empty`.
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the dict is empty. The message is `DictOfFloats is empty`.
 
 ## Here Be Dragons
 
@@ -69,7 +69,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Dictionaries\DictOfFloats
  ✔ ->first() returns the first float
- ✔ ->first() throws RuntimeException for empty dict
+ ✔ ->first() throws EmptyCollectionException for empty dict
  ✔ Dict with one float: ->first() and ->last() return the same value
 ```
 

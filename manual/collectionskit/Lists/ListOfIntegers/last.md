@@ -16,13 +16,13 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Lists;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class ListOfIntegers extends ListOfNumbers
 {
     /**
      * @return int
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function last(): int
 }
@@ -51,7 +51,7 @@ The last integer stored in the list. The PHP signature returns `mixed`, but the 
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the list is empty. The message is `ListOfIntegers is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the list is empty. The message is `ListOfIntegers is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
 
 ## Here Be Dragons
 
@@ -66,7 +66,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Lists\ListOfIntegers
  ✔ ->last() returns the last integer
- ✔ ->last() throws RuntimeException for empty list
+ ✔ ->last() throws EmptyCollectionException for empty list
  ✔ List with one integer: ->first() and ->last() return the same value
 ```
 

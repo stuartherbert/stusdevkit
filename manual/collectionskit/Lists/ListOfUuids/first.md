@@ -17,13 +17,13 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Lists;
 
 use Ramsey\Uuid\UuidInterface;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class ListOfUuids extends CollectionAsList
 {
     /**
      * @return UuidInterface
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function first(): UuidInterface
 }
@@ -52,7 +52,7 @@ The first UUID stored in the list. The PHP signature returns `mixed`, but the cl
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the list is empty. The message is `ListOfUuids is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the list is empty. The message is `ListOfUuids is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
 
 ## Here Be Dragons
 
@@ -67,7 +67,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Lists\ListOfUuids
  ✔ ->first() returns the first UUID
- ✔ ->first() throws RuntimeException for empty list
+ ✔ ->first() throws EmptyCollectionException for empty list
  ✔ List with one UUID: ->first() and ->last() return the same value
 ```
 

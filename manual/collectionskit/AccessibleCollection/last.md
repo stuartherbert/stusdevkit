@@ -16,14 +16,14 @@ Returns the last value of this collection.
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class AccessibleCollection extends CollectionOfAnything
 {
     /**
      * @return TValue
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function last(): mixed
 }
@@ -47,7 +47,7 @@ The last stored value, typed as `TValue`.
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the collection is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the unqualified class name reported by [`->getCollectionTypeAsString()`](../CollectionOfAnything/getCollectionTypeAsString.md).
+- **[`EmptyCollectionException`](../Exceptions/EmptyCollectionException/README.md)** — when the collection is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the unqualified class name reported by [`->getCollectionTypeAsString()`](../CollectionOfAnything/getCollectionTypeAsString.md).
 
 ## Here Be Dragons
 
@@ -63,7 +63,7 @@ _None yet._
 StusDevKit\CollectionsKit\AccessibleCollection
  ✔ ::last() signature: last(): mixed
  ✔ ->last() returns the last item
- ✔ ->last() throws RuntimeException for empty collection
+ ✔ ->last() throws EmptyCollectionException for empty collection
 ```
 
 ## Source

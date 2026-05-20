@@ -16,13 +16,13 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Lists;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class ListOfCallables extends CollectionAsList
 {
     /**
      * @return callable
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function first(): callable
 }
@@ -51,7 +51,7 @@ The first callable stored in the list. The PHP signature returns `mixed`, but th
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the list is empty. The message is `ListOfCallables is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the list is empty. The message is `ListOfCallables is empty`, derived from [`->getCollectionTypeAsString()`](../../CollectionOfAnything/getCollectionTypeAsString.md).
 
 ## Here Be Dragons
 
@@ -66,7 +66,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Lists\ListOfCallables
  ✔ ->first() returns the first callable
- ✔ ->first() throws RuntimeException for empty list
+ ✔ ->first() throws EmptyCollectionException for empty list
  ✔ List with one callable: ->first() and ->last() return the same value
 ```
 

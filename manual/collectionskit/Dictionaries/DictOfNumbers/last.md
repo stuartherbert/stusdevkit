@@ -16,14 +16,14 @@ Defined on [`StusDevKit\CollectionsKit\AccessibleCollection`](../../AccessibleCo
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class DictOfNumbers extends CollectionAsDict
 {
     /**
      * @return int|float
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function last(): int|float
 }
@@ -57,7 +57,7 @@ The last stored number, `int` or `float`. The PHP return type is `mixed`; the cl
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the dict is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the runtime class name (e.g. `DictOfNumbers`, `DictOfIntegers`, `DictOfFloats`).
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the dict is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the runtime class name (e.g. `DictOfNumbers`, `DictOfIntegers`, `DictOfFloats`).
 
 ## Here Be Dragons
 
@@ -72,7 +72,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Dictionaries\DictOfNumbers
  ✔ ->last() returns the last number
- ✔ ->last() throws RuntimeException for empty dict
+ ✔ ->last() throws EmptyCollectionException for empty dict
  ✔ Dict with one number: ->first() and ->last() return the same value
 ```
 

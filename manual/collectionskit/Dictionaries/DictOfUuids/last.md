@@ -17,14 +17,14 @@ declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Dictionaries;
 
 use Ramsey\Uuid\UuidInterface;
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class DictOfUuids extends DictOfObjects
 {
     /**
      * @return UuidInterface
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function last(): UuidInterface
 }
@@ -55,7 +55,7 @@ The last stored `UuidInterface`. The PHP return type is `mixed`; the class's tem
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when the dict is empty. The message is `DictOfUuids is empty`.
+- **[`EmptyCollectionException`](../../Exceptions/EmptyCollectionException/README.md)** — when the dict is empty. The message is `DictOfUuids is empty`.
 
 ## Here Be Dragons
 
@@ -70,7 +70,7 @@ _None yet._
 ```
 StusDevKit\CollectionsKit\Dictionaries\DictOfUuids
  ✔ ->last() returns the last UUID
- ✔ ->last() throws RuntimeException for empty dict
+ ✔ ->last() throws EmptyCollectionException for empty dict
  ✔ Dict with one UUID: ->first() and ->last() return the same UUID
 ```
 

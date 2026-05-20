@@ -16,14 +16,14 @@ Returns the first value stored in this collection.
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit;
 
-use RuntimeException;
+use StusDevKit\CollectionsKit\Exceptions\EmptyCollectionException;
 
 class AccessibleCollection extends CollectionOfAnything
 {
     /**
      * @return TValue
      *
-     * @throws RuntimeException
+     * @throws EmptyCollectionException
      */
     public function first(): mixed
 }
@@ -47,7 +47,7 @@ The first stored value, typed as `TValue`.
 
 ## Errors/Exceptions
 
-- **[`RuntimeException`](https://www.php.net/manual/en/class.runtimeexception.php)** — when this collection is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the unqualified class name reported by [`->getCollectionTypeAsString()`](../CollectionOfAnything/getCollectionTypeAsString.md).
+- **[`EmptyCollectionException`](../Exceptions/EmptyCollectionException/README.md)** — when this collection is empty. The message is `<CollectionType> is empty`, where `<CollectionType>` is the unqualified class name reported by [`->getCollectionTypeAsString()`](../CollectionOfAnything/getCollectionTypeAsString.md).
 
 ## Here Be Dragons
 
@@ -63,7 +63,7 @@ _None yet._
 StusDevKit\CollectionsKit\AccessibleCollection
  ✔ ::first() signature: first(): mixed
  ✔ ->first() returns the first item
- ✔ ->first() throws RuntimeException for empty collection
+ ✔ ->first() throws EmptyCollectionException for empty collection
 ```
 
 ## Source
