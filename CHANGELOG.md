@@ -145,6 +145,11 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### CollectionsKit
+
+- initial docs for EmptyCollectionException ([7e9d1d7](https://github.com/stuartherbert/stusdevkit/commit/7e9d1d7)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial documentation ([0a7a1f3](https://github.com/stuartherbert/stusdevkit/commit/0a7a1f3)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -156,10 +161,6 @@ This CHANGELOG is automatically compiled.
 
 - generate initial docs ([18ddcb3](https://github.com/stuartherbert/stusdevkit/commit/18ddcb3)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial docs for ExceptionsKit ([711aef1](https://github.com/stuartherbert/stusdevkit/commit/711aef1)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- initial documentation ([0a7a1f3](https://github.com/stuartherbert/stusdevkit/commit/0a7a1f3)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### DependencyKit
 
