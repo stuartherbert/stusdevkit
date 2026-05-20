@@ -2887,21 +2887,7 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (!is_file($formatFile) || !is_readable($formatFile)) {
-            throw new InvalidArgumentException(
-                detail: '$formatFile does not exist or is not'
-                    . ' readable: ' . $formatFile,
-            );
-        }
-
-        $format = file_get_contents($formatFile);
-
-        if ($format === false) {
-            throw new InvalidArgumentException(
-                detail: '$formatFile could not be read: '
-                    . $formatFile,
-            );
-        }
+        $format = self::readFileContents($formatFile);
 
         $regex = self::formatToRegex($format);
 

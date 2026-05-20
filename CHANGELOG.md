@@ -109,7 +109,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- method parameter names now match parameter names used in AssertApi interface ([93d4b4c](https://github.com/stuartherbert/stusdevkit/commit/93d4b4c)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertStringMatchesFormatFile() now throws detailed exceptions where there is a problem reading the file ([2f39dc5](https://github.com/stuartherbert/stusdevkit/commit/2f39dc5)) — Stuart Herbert <stuart@stuartherbert.com>
+- method parameter names now match parameter names used in AssertApi interface ([2b02036](https://github.com/stuartherbert/stusdevkit/commit/2b02036)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertFinite / assertInifinite / assertNan now match AssertApi contract ([a0047c9](https://github.com/stuartherbert/stusdevkit/commit/a0047c9)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up section headers in Assert ([d50c569](https://github.com/stuartherbert/stusdevkit/commit/d50c569)) — Stuart Herbert <stuart@stuartherbert.com>
 - delta-based assertions now accept all numerics ([2532851](https://github.com/stuartherbert/stusdevkit/commit/2532851)) — Stuart Herbert <stuart@stuartherbert.com>

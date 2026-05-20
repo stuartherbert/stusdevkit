@@ -2800,8 +2800,10 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
-     * @throws InvalidArgumentException
-     *     when `$formatFile` does not exist or cannot be read
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
      */
     public static function assertStringMatchesFormatFile(
         string $formatFile,

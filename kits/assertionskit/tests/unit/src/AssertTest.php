@@ -7114,10 +7114,16 @@ class AssertTest extends TestCase
         );
     }
 
-    #[TestDox('::assertStringMatchesFormatFile() throws InvalidArgumentException when the format file does not exist')]
-    public function test_assertStringMatchesFormatFile_throws_InvalidArgumentException_on_missing_file(): void
+    #[TestDox('::assertStringMatchesFormatFile() throws FileNotFoundException when the format file does not exist')]
+    public function test_assertStringMatchesFormatFile_throws_FileNotFoundException_on_missing_file(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        // the format file is loaded through readFileContents(),
+        // the shared helper behind every file-reading assertion,
+        // so a missing file surfaces as FileNotFoundException -
+        // consistent with assertFileMatchesFormatFile() and the
+        // rest of the kit.
+
+        $this->expectException(FileNotFoundException::class);
         Assert::assertStringMatchesFormatFile(
             formatFile: '/nonexistent/path/format.txt',
             string: 'hello',
