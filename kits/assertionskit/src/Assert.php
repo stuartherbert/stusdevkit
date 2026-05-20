@@ -503,12 +503,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_array(...))) {
+        $offender = self::firstNonMatch($haystack, is_array(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only arrays',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -517,12 +523,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_bool(...))) {
+        $offender = self::firstNonMatch($haystack, is_bool(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only booleans',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -531,12 +543,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_callable(...))) {
+        $offender = self::firstNonMatch($haystack, is_callable(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only callables',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -545,12 +563,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_float(...))) {
+        $offender = self::firstNonMatch($haystack, is_float(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only floats',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -559,12 +583,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_int(...))) {
+        $offender = self::firstNonMatch($haystack, is_int(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only integers',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -573,12 +603,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_iterable(...))) {
+        $offender = self::firstNonMatch($haystack, is_iterable(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only iterables',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -587,12 +623,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_null(...))) {
+        $offender = self::firstNonMatch($haystack, is_null(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only null values',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -601,12 +643,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_numeric(...))) {
+        $offender = self::firstNonMatch($haystack, is_numeric(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only numeric values',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -615,12 +663,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_object(...))) {
+        $offender = self::firstNonMatch($haystack, is_object(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only objects',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -629,12 +683,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_resource(...))) {
+        $offender = self::firstNonMatch($haystack, is_resource(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only resources',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -643,12 +703,21 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, static fn (mixed $v): bool => get_debug_type($v) === 'resource (closed)')) {
+        $offender = self::firstNonMatch(
+            $haystack,
+            static fn (mixed $v): bool => get_debug_type($v) === 'resource (closed)',
+        );
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only closed resources',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -657,12 +726,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_scalar(...))) {
+        $offender = self::firstNonMatch($haystack, is_scalar(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only scalars',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -671,12 +746,18 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, is_string(...))) {
+        $offender = self::firstNonMatch($haystack, is_string(...));
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only strings',
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -686,12 +767,21 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (self::allMatch($haystack, static fn (mixed $v): bool => $v instanceof $className)) {
+        $offender = self::firstNonMatch(
+            $haystack,
+            static fn (mixed $v): bool => $v instanceof $className,
+        );
+
+        if ($offender === null) {
             return;
         }
 
         throw new AssertionFailedException(
             title: 'Failed asserting that a haystack contains only instances of ' . $className,
+            extra: [
+                'key' => self::exportValue($offender['key']),
+                'value' => self::exportValue($offender['value']),
+            ],
             detail: $message,
         );
     }
@@ -706,7 +796,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_array(...))) {
+        if (self::firstNonMatch($haystack, is_array(...)) !== null) {
             return;
         }
 
@@ -720,7 +810,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_bool(...))) {
+        if (self::firstNonMatch($haystack, is_bool(...)) !== null) {
             return;
         }
 
@@ -734,7 +824,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_callable(...))) {
+        if (self::firstNonMatch($haystack, is_callable(...)) !== null) {
             return;
         }
 
@@ -748,7 +838,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_float(...))) {
+        if (self::firstNonMatch($haystack, is_float(...)) !== null) {
             return;
         }
 
@@ -762,7 +852,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_int(...))) {
+        if (self::firstNonMatch($haystack, is_int(...)) !== null) {
             return;
         }
 
@@ -776,7 +866,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_iterable(...))) {
+        if (self::firstNonMatch($haystack, is_iterable(...)) !== null) {
             return;
         }
 
@@ -790,7 +880,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_null(...))) {
+        if (self::firstNonMatch($haystack, is_null(...)) !== null) {
             return;
         }
 
@@ -804,7 +894,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_numeric(...))) {
+        if (self::firstNonMatch($haystack, is_numeric(...)) !== null) {
             return;
         }
 
@@ -818,7 +908,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_object(...))) {
+        if (self::firstNonMatch($haystack, is_object(...)) !== null) {
             return;
         }
 
@@ -832,7 +922,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_resource(...))) {
+        if (self::firstNonMatch($haystack, is_resource(...)) !== null) {
             return;
         }
 
@@ -846,7 +936,12 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, static fn (mixed $v): bool => get_debug_type($v) === 'resource (closed)')) {
+        $offender = self::firstNonMatch(
+            $haystack,
+            static fn (mixed $v): bool => get_debug_type($v) === 'resource (closed)',
+        );
+
+        if ($offender !== null) {
             return;
         }
 
@@ -860,7 +955,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_scalar(...))) {
+        if (self::firstNonMatch($haystack, is_scalar(...)) !== null) {
             return;
         }
 
@@ -874,7 +969,7 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, is_string(...))) {
+        if (self::firstNonMatch($haystack, is_string(...)) !== null) {
             return;
         }
 
@@ -889,7 +984,12 @@ class Assert implements AssertApi
         iterable $haystack,
         string $message = '',
     ): void {
-        if (!self::allMatch($haystack, static fn (mixed $v): bool => $v instanceof $className)) {
+        $offender = self::firstNonMatch(
+            $haystack,
+            static fn (mixed $v): bool => $v instanceof $className,
+        );
+
+        if ($offender !== null) {
             return;
         }
 
@@ -3273,28 +3373,33 @@ class Assert implements AssertApi
     // ----------------------------------------------------------------
 
     /**
-     * Checks whether all items in the iterable match the
-     * given type check callable.
+     * Returns the first item in the haystack that fails the
+     * given type check.
      *
      * @param iterable<mixed> $haystack
-     * - the collection to check
+     * - the collection to scan
      * @param callable(mixed): bool $typeCheck
-     * - the type checking function
-     * @return bool
-     * - true if all items match
-     * - false if any item does not match
+     * - the per-item type predicate
+     * @return array{key: mixed, value: mixed}|null
+     * - the key and value of the first item that fails the
+     *   check
+     * - null if every item passes (an empty haystack also
+     *   yields null, since it has no failing item)
      */
-    private static function allMatch(
+    private static function firstNonMatch(
         iterable $haystack,
         callable $typeCheck,
-    ): bool {
-        foreach ($haystack as $item) {
+    ): ?array {
+        foreach ($haystack as $key => $item) {
+            // the first failing item is enough - callers report
+            // one offending element, so stop scanning here
             if (!$typeCheck($item)) {
-                return false;
+                return ['key' => $key, 'value' => $item];
             }
         }
 
-        return true;
+        // all done - every item passed (or the haystack was empty)
+        return null;
     }
 
     /**

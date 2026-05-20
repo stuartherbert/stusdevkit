@@ -109,7 +109,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- assertFileDoesNotExist() no longer throws when passed a directory ([07f4aef](https://github.com/stuartherbert/stusdevkit/commit/07f4aef)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertContainsOnly*() now fill out extra section of thrown exceptions ([94b803a](https://github.com/stuartherbert/stusdevkit/commit/94b803a)) — Stuart Herbert <stuart@stuartherbert.com>
+- assertFileDoesNotExist() no longer throws when passed a directory ([011e2c6](https://github.com/stuartherbert/stusdevkit/commit/011e2c6)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertStringMatchesFormatFile() now throws detailed exceptions where there is a problem reading the file ([ae541e2](https://github.com/stuartherbert/stusdevkit/commit/ae541e2)) — Stuart Herbert <stuart@stuartherbert.com>
 - method parameter names now match parameter names used in AssertApi interface ([2b02036](https://github.com/stuartherbert/stusdevkit/commit/2b02036)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertFinite / assertInifinite / assertNan now match AssertApi contract ([a0047c9](https://github.com/stuartherbert/stusdevkit/commit/a0047c9)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -5472,8 +5472,8 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // a single non-array poisons the whole haystack. The
-        // first non-array short-circuits allMatch.
+        // a single non-array poisons the whole haystack.
+        // firstNonMatch() stops at that first offender.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -5485,6 +5485,44 @@ class AssertTest extends TestCase
 
         Assert::assertContainsOnlyArray(
             haystack: [[], 'string'],
+        );
+    }
+
+    #[TestDox('::assertContainsOnlyArray() failure reports the offending element in the exception extra')]
+    public function test_assertContainsOnlyArray_failure_reports_offending_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the failure must pinpoint which element broke the
+        // "only arrays" rule - its key and its value - so a
+        // caller staring at a large haystack is not left
+        // guessing. 'oops' sits at key 1, between two valid
+        // arrays.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $caught = null;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        try {
+            Assert::assertContainsOnlyArray(
+                haystack: [[], 'oops', []],
+            );
+        } catch (AssertionFailedException $e) {
+            $caught = $e;
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(AssertionFailedException::class, $caught);
+        $this->assertSame(
+            ['key' => '1', 'value' => "'oops'"],
+            $caught->getExtra(),
         );
     }
 

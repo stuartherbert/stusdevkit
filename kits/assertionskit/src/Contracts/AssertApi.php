@@ -504,6 +504,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * array.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<array<mixed>> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -522,6 +531,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only values of type
      * bool.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @phpstan-assert iterable<bool> $haystack
      *
@@ -542,6 +560,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * callable.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<callable> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -560,6 +587,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only values of type
      * float.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @phpstan-assert iterable<float> $haystack
      *
@@ -580,6 +616,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * int.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<int> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -598,6 +643,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only values of type
      * iterable.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @phpstan-assert iterable<iterable<mixed>> $haystack
      *
@@ -618,6 +672,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * null.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<null> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -636,6 +699,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only values of type
      * numeric.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @phpstan-assert iterable<numeric> $haystack
      *
@@ -656,6 +728,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * object.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<object> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -674,6 +755,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only values of type
      * resource.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @phpstan-assert iterable<resource> $haystack
      *
@@ -694,6 +784,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * closed resource.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<resource> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -712,6 +811,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only values of type
      * scalar.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @phpstan-assert iterable<scalar> $haystack
      *
@@ -732,6 +840,15 @@ interface AssertApi
      * Asserts that a haystack contains only values of type
      * string.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
+     *
      * @phpstan-assert iterable<string> $haystack
      *
      * @param iterable<mixed> $haystack
@@ -750,6 +867,15 @@ interface AssertApi
     /**
      * Asserts that a haystack contains only instances of a
      * specified interface or class name.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack passes. With no items there is no
+     * counterexample, so the "contains only" rule is vacuously
+     * satisfied and an empty haystack silently slips through.
+     * Guard for emptiness yourself if that is wrong for your
+     * caller.
      *
      * @template T
      *
@@ -780,6 +906,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type array.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -796,6 +930,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only values
      * of type bool.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param iterable<mixed> $haystack
      * @param string                    $message
@@ -814,6 +956,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type callable.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -830,6 +980,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only values
      * of type float.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param iterable<mixed> $haystack
      * @param string                    $message
@@ -848,6 +1006,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type int.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -864,6 +1030,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only values
      * of type iterable.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param iterable<mixed> $haystack
      * @param string                    $message
@@ -882,6 +1056,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type null.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -898,6 +1080,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only values
      * of type numeric.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param iterable<mixed> $haystack
      * @param string                    $message
@@ -916,6 +1106,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type object.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -932,6 +1130,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only values
      * of type resource.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param iterable<mixed> $haystack
      * @param string                    $message
@@ -950,6 +1156,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type closed resource.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -966,6 +1180,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only values
      * of type scalar.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param iterable<mixed> $haystack
      * @param string                    $message
@@ -984,6 +1206,14 @@ interface AssertApi
      * Asserts that a haystack does not contain only values
      * of type string.
      *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
+     *
      * @param iterable<mixed> $haystack
      * @param string                    $message
      *     optional error message
@@ -1000,6 +1230,14 @@ interface AssertApi
     /**
      * Asserts that a haystack does not contain only instances
      * of a specified interface or class name.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * An empty haystack throws. With no items the "contains
+     * only" rule holds vacuously, so its negation is false -
+     * a possibly-empty haystack is a footgun here. Guard for
+     * emptiness yourself if that is wrong for your caller.
      *
      * @param class-string    $className
      * @param iterable<mixed> $haystack
