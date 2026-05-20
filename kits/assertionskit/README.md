@@ -224,6 +224,8 @@ None of these are criticisms of PHPUnit or Sebastian's work. We're just building
 |--------|-------------|
 | `assertMatchesRegularExpression()` | Assert that a string matches a regular expression |
 | `assertDoesNotMatchRegularExpression()` | Assert that a string does not match a regular expression |
+| `assertFileMatchesRegularExpression()` | Assert that a file's contents match a regular expression |
+| `assertFileDoesNotMatchRegularExpression()` | Assert that a file's contents do not match a regular expression |
 
 ### Strings
 

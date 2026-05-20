@@ -2946,6 +2946,56 @@ interface AssertApi
         string $message = '',
     ): void;
 
+    /**
+     * Asserts that a file's contents match a given regular
+     * expression.
+     *
+     * @param string $pattern
+     *     the regex that `$actualFile`'s contents must match
+     * @param string $actualFile
+     *     the path to the file whose contents to check
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
+     *     when the assertion fails
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
+     */
+    public static function assertFileMatchesRegularExpression(
+        string $pattern,
+        string $actualFile,
+        string $message = '',
+    ): void;
+
+    /**
+     * Asserts that a file's contents do not match a given
+     * regular expression.
+     *
+     * @param string $pattern
+     *     the regex that `$actualFile`'s contents must not match
+     * @param string $actualFile
+     *     the path to the file whose contents to check
+     * @param string                    $message
+     *     optional error message
+     *     will be included in any thrown exception
+     *
+     * @throws AssertionFailedException
+     *     when the assertion fails
+     * @throws FileNotFoundException
+     *     when a file referenced by this assertion does not exist
+     * @throws UnableToReadFileException
+     *     when a referenced file exists but cannot be read
+     */
+    public static function assertFileDoesNotMatchRegularExpression(
+        string $pattern,
+        string $actualFile,
+        string $message = '',
+    ): void;
+
     // ================================================================
     //
     // Size Assertions

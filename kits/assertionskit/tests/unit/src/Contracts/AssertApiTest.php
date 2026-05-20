@@ -58,7 +58,7 @@ use StusDevKit\AssertionsKit\Contracts\AssertApi;
  * can also implement this interface to plug their own assertion
  * providers into code that only depends on the contract.
  *
- * The interface carries 163 static methods. The tests below pin the
+ * The interface carries 165 static methods. The tests below pin the
  * published shape (namespace, kind, method set, per-method
  * declaration / visibility / static / return type) so any drift
  * becomes a named diff rather than a silent breakage in downstream
@@ -66,7 +66,7 @@ use StusDevKit\AssertionsKit\Contracts\AssertApi;
  *
  * Identity is pinned by enumerating the full method set. Per-method
  * Shape is pinned via data-provider tests that walk every method
- * name, because writing 163 hand-rolled Shape test methods would be
+ * name, because writing 165 hand-rolled Shape test methods would be
  * unreadable without adding any extra coverage over the data-provider
  * form.
  */
@@ -163,7 +163,7 @@ class AssertApiTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('exposes exactly the published 163-method assertion surface')]
+    #[TestDox('exposes exactly the published 165-method assertion surface')]
     public function test_exposes_the_published_method_set(): void
     {
         // ----------------------------------------------------------------
@@ -171,7 +171,7 @@ class AssertApiTest extends TestCase
 
         // the method set IS the contract. Pin it by enumeration, not
         // by count - when it drifts, the failure names the offender
-        // rather than just saying "expected 163, got 164".
+        // rather than just saying "expected 165, got 166".
         //
         // this same list serves as the lockdown for Assert.php's
         // published surface because Assert implements AssertApi and
@@ -246,6 +246,7 @@ class AssertApiTest extends TestCase
             'assertEqualsWithDelta',
             'assertFalse',
             'assertFileDoesNotExist',
+            'assertFileDoesNotMatchRegularExpression',
             'assertFileEquals',
             'assertFileEqualsIgnoringCase',
             'assertFileExists',
@@ -255,6 +256,7 @@ class AssertApiTest extends TestCase
             'assertFileIsWritable',
             'assertFileMatchesFormat',
             'assertFileMatchesFormatFile',
+            'assertFileMatchesRegularExpression',
             'assertFileNotEquals',
             'assertFileNotEqualsIgnoringCase',
             'assertFinite',
@@ -561,7 +563,7 @@ class AssertApiTest extends TestCase
      * feeds that same set into the per-method Shape tests so
      * reflection can walk each method's declaration, visibility,
      * staticness, return type, and trailing-parameter shape
-     * without 163 hand-rolled test methods.
+     * without 165 hand-rolled test methods.
      *
      * @return iterable<string, array{string}>
      */

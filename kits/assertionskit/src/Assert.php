@@ -2751,6 +2751,48 @@ class Assert implements AssertApi
         );
     }
 
+    public static function assertFileMatchesRegularExpression(
+        string $pattern,
+        string $actualFile,
+        string $message = '',
+    ): void {
+        $actual = self::readFileContents($actualFile);
+
+        if (preg_match($pattern, $actual) === 1) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file matches a regular expression',
+            extra: [
+                'pattern' => self::exportValue($pattern),
+                'actualFile' => self::exportValue($actualFile),
+            ],
+            detail: $message,
+        );
+    }
+
+    public static function assertFileDoesNotMatchRegularExpression(
+        string $pattern,
+        string $actualFile,
+        string $message = '',
+    ): void {
+        $actual = self::readFileContents($actualFile);
+
+        if (preg_match($pattern, $actual) === 0) {
+            return;
+        }
+
+        throw new AssertionFailedException(
+            title: 'Failed asserting that a file does not match a regular expression',
+            extra: [
+                'pattern' => self::exportValue($pattern),
+                'actualFile' => self::exportValue($actualFile),
+            ],
+            detail: $message,
+        );
+    }
+
     // ================================================================
     //
     // Size Assertions

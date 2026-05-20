@@ -20,6 +20,11 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### AssertionsKit
+
+- added assertFileMatchesRegularExpression() / assertFileDoesNotMatchRegularExpression() ([09ae536](https://github.com/stuartherbert/stusdevkit/commit/09ae536)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial build of PHPUnit assertions API ([b9e9711](https://github.com/stuartherbert/stusdevkit/commit/b9e9711)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - added IsClosedResource ([6ce47be](https://github.com/stuartherbert/stusdevkit/commit/6ce47be)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -98,10 +103,6 @@ This CHANGELOG is automatically compiled.
 - initial code commit ([319c6f6](https://github.com/stuartherbert/stusdevkit/commit/319c6f6)) — Stuart Herbert <stuart@stuartherbert.com>
 - added placeholder ([0dc3ba3](https://github.com/stuartherbert/stusdevkit/commit/0dc3ba3)) — Stuart Herbert <stuart@stuartherbert.com>
 
-#### AssertionsKit
-
-- initial build of PHPUnit assertions API ([b9e9711](https://github.com/stuartherbert/stusdevkit/commit/b9e9711)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### changelog-tool
 
 - added initial changelog-tool ([9ec9113](https://github.com/stuartherbert/stusdevkit/commit/9ec9113)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -111,7 +112,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- closed-resource assertions now use IsClosedResource for forwards-compatibility ([62c281e](https://github.com/stuartherbert/stusdevkit/commit/62c281e)) — Stuart Herbert <stuart@stuartherbert.com>
+- closed-resource assertions now use IsClosedResource for forwards-compatibility ([df4546b](https://github.com/stuartherbert/stusdevkit/commit/df4546b)) — Stuart Herbert <stuart@stuartherbert.com>
 - comparisons assertions now throw when asked to compare incompatible types ([170f75e](https://github.com/stuartherbert/stusdevkit/commit/170f75e)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertContainsOnly*() now fill out extra section of thrown exceptions ([869ba0d](https://github.com/stuartherbert/stusdevkit/commit/869ba0d)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertFileDoesNotExist() no longer throws when passed a directory ([011e2c6](https://github.com/stuartherbert/stusdevkit/commit/011e2c6)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -149,7 +149,7 @@ class AssertTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    #[TestDox('publishes exactly the 163-method assertion surface declared by AssertApi')]
+    #[TestDox('publishes exactly the 165-method assertion surface declared by AssertApi')]
     public function test_publishes_the_expected_public_static_method_set(): void
     {
         // ----------------------------------------------------------------
@@ -158,7 +158,7 @@ class AssertTest extends TestCase
         // Assert's published surface IS the AssertApi method set - no
         // more, no less. Pin the full list by enumeration so drift on
         // a single method name shows up as a named diff rather than
-        // "expected 163, got 164".
+        // "expected 165, got 166".
         //
         // the enumerated list is kept alphabetically sorted so a new
         // method lands in its natural place, not at the end.
@@ -226,6 +226,7 @@ class AssertTest extends TestCase
             'assertEqualsWithDelta',
             'assertFalse',
             'assertFileDoesNotExist',
+            'assertFileDoesNotMatchRegularExpression',
             'assertFileEquals',
             'assertFileEqualsIgnoringCase',
             'assertFileExists',
@@ -235,6 +236,7 @@ class AssertTest extends TestCase
             'assertFileIsWritable',
             'assertFileMatchesFormat',
             'assertFileMatchesFormatFile',
+            'assertFileMatchesRegularExpression',
             'assertFileNotEquals',
             'assertFileNotEqualsIgnoringCase',
             'assertFinite',
@@ -7342,6 +7344,210 @@ class AssertTest extends TestCase
         Assert::assertDoesNotMatchRegularExpression(
             pattern: '/^hello/',
             actual: 'hello world',
+        );
+    }
+
+    // ================================================================
+    //
+    // ::assertFileMatchesRegularExpression() behaviour
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::assertFileMatchesRegularExpression() passes when the file contents match the pattern')]
+    public function test_assertFileMatchesRegularExpression_passes_on_match(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // happy path: the file holds text the delimited pattern
+        // matches, so the assertion must succeed silently. Scratch
+        // file wrapped in try/finally so it is cleaned up even on
+        // throw.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
+        self::assertIsString($tmpFile);
+
+        try {
+            file_put_contents($tmpFile, 'hello world');
+
+            // ------------------------------------------------------------
+            // perform the change
+
+            Assert::assertFileMatchesRegularExpression(
+                pattern: '/^hello/',
+                actualFile: $tmpFile,
+            );
+
+            // ------------------------------------------------------------
+            // test the results
+
+            $this->addToAssertionCount(1);
+        } finally {
+            // cleanup - scratch file removed even on throw.
+            unlink($tmpFile);
+        }
+    }
+
+    #[TestDox('::assertFileMatchesRegularExpression() throws AssertionFailedException when the file contents do not match the pattern')]
+    public function test_assertFileMatchesRegularExpression_throws_on_mismatch(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // failure mode: the file contents do not match the pattern,
+        // so the assertion must raise.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(AssertionFailedException::class);
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
+        self::assertIsString($tmpFile);
+
+        try {
+            file_put_contents($tmpFile, 'goodbye world');
+
+            // ------------------------------------------------------------
+            // perform the change
+
+            Assert::assertFileMatchesRegularExpression(
+                pattern: '/^hello/',
+                actualFile: $tmpFile,
+            );
+        } finally {
+            // cleanup - scratch file removed even though the
+            // assertion was expected to throw.
+            unlink($tmpFile);
+        }
+    }
+
+    #[TestDox('::assertFileMatchesRegularExpression() throws FileNotFoundException when the file does not exist')]
+    public function test_assertFileMatchesRegularExpression_throws_FileNotFoundException_on_missing_file(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! a missing file path is a caller error, not an
+        // assertion failure. The method surfaces FileNotFoundException
+        // before it can attempt any pattern match.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(FileNotFoundException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileMatchesRegularExpression(
+            pattern: '/^hello/',
+            actualFile: '/nonexistent/path/file.txt',
+        );
+    }
+
+    // ================================================================
+    //
+    // ::assertFileDoesNotMatchRegularExpression() behaviour
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::assertFileDoesNotMatchRegularExpression() passes when the file contents do not match the pattern')]
+    public function test_assertFileDoesNotMatchRegularExpression_passes_on_non_match(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // happy path: the file holds text the delimited pattern does
+        // not match, so the assertion must succeed silently. Scratch
+        // file wrapped in try/finally so it is cleaned up even on
+        // throw.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
+        self::assertIsString($tmpFile);
+
+        try {
+            file_put_contents($tmpFile, 'goodbye world');
+
+            // ------------------------------------------------------------
+            // perform the change
+
+            Assert::assertFileDoesNotMatchRegularExpression(
+                pattern: '/^hello/',
+                actualFile: $tmpFile,
+            );
+
+            // ------------------------------------------------------------
+            // test the results
+
+            $this->addToAssertionCount(1);
+        } finally {
+            // cleanup - scratch file removed even on throw.
+            unlink($tmpFile);
+        }
+    }
+
+    #[TestDox('::assertFileDoesNotMatchRegularExpression() throws AssertionFailedException when the file contents match the pattern')]
+    public function test_assertFileDoesNotMatchRegularExpression_throws_on_match(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // failure mode: the file contents match the pattern, so the
+        // "does not match" assertion must raise.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(AssertionFailedException::class);
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'assert_test_');
+        self::assertIsString($tmpFile);
+
+        try {
+            file_put_contents($tmpFile, 'hello world');
+
+            // ------------------------------------------------------------
+            // perform the change
+
+            Assert::assertFileDoesNotMatchRegularExpression(
+                pattern: '/^hello/',
+                actualFile: $tmpFile,
+            );
+        } finally {
+            // cleanup - scratch file removed even though the
+            // assertion was expected to throw.
+            unlink($tmpFile);
+        }
+    }
+
+    #[TestDox('::assertFileDoesNotMatchRegularExpression() throws FileNotFoundException when the file does not exist')]
+    public function test_assertFileDoesNotMatchRegularExpression_throws_FileNotFoundException_on_missing_file(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! a missing file path is a caller error, not an
+        // assertion failure. The method surfaces FileNotFoundException
+        // before it can attempt any pattern match.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(FileNotFoundException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileDoesNotMatchRegularExpression(
+            pattern: '/^hello/',
+            actualFile: '/nonexistent/path/file.txt',
         );
     }
 
