@@ -3064,6 +3064,97 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertEqualsWithDelta() accepts numeric strings')]
+    public function test_assertEqualsWithDelta_accepts_numeric_strings(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the numeric guard uses is_numeric(), not is_float(), so
+        // numeric strings count as valid input - PHP coerces them
+        // in the delta arithmetic. |'1.0' - '1.05'| = 0.05, within
+        // a delta of 0.1. Pins the is_numeric() choice so a future
+        // tightening to is_float() would fail loudly here.
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertEqualsWithDelta(
+            expected: '1.0',
+            actual: '1.05',
+            delta: 0.1,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
+    }
+
+    #[TestDox('::assertEqualsWithDelta() throws InvalidArgumentException when $expected is not numeric')]
+    public function test_assertEqualsWithDelta_throws_InvalidArgumentException_when_expected_not_numeric(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! delta comparison is arithmetic, so a
+        // non-numeric argument is a caller bug, not an equality
+        // failure. The guard must reject it with
+        // InvalidArgumentException before the subtraction, where a
+        // non-numeric value would otherwise blow up with a raw
+        // TypeError that escapes the AssertionFailedException
+        // contract.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$expected and $actual must both be numeric',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertEqualsWithDelta(
+            expected: 'not a number',
+            actual: 1.0,
+            delta: 0.1,
+        );
+    }
+
+    #[TestDox('::assertEqualsWithDelta() throws InvalidArgumentException when $actual is not numeric')]
+    public function test_assertEqualsWithDelta_throws_InvalidArgumentException_when_actual_not_numeric(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! the numeric guard covers both operands - a
+        // non-numeric $actual is just as much a caller bug as a
+        // non-numeric $expected, and must raise
+        // InvalidArgumentException rather than reaching the
+        // arithmetic.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$expected and $actual must both be numeric',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertEqualsWithDelta(
+            expected: 1.0,
+            actual: 'not a number',
+            delta: 0.1,
+        );
+    }
+
     // ================================================================
     //
     // ::assertNotEquals() behaviour
@@ -3336,6 +3427,98 @@ class AssertTest extends TestCase
             expected: 1.0,
             actual: 1.5,
             delta: 0.5,
+        );
+    }
+
+    #[TestDox('::assertNotEqualsWithDelta() accepts numeric strings')]
+    public function test_assertNotEqualsWithDelta_accepts_numeric_strings(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the numeric guard uses is_numeric(), not is_float(), so
+        // numeric strings count as valid input - PHP coerces them
+        // in the delta arithmetic. |'1.0' - '5.0'| = 4.0, well
+        // outside a delta of 0.1, so the values are not equal and
+        // the assertion passes. Pins the is_numeric() choice so a
+        // future tightening to is_float() would fail loudly here.
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertNotEqualsWithDelta(
+            expected: '1.0',
+            actual: '5.0',
+            delta: 0.1,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
+    }
+
+    #[TestDox('::assertNotEqualsWithDelta() throws InvalidArgumentException when $expected is not numeric')]
+    public function test_assertNotEqualsWithDelta_throws_InvalidArgumentException_when_expected_not_numeric(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! delta comparison is arithmetic, so a
+        // non-numeric argument is a caller bug, not an inequality
+        // failure. The guard must reject it with
+        // InvalidArgumentException before the subtraction, where a
+        // non-numeric value would otherwise blow up with a raw
+        // TypeError that escapes the AssertionFailedException
+        // contract.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$expected and $actual must both be numeric',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertNotEqualsWithDelta(
+            expected: 'not a number',
+            actual: 1.0,
+            delta: 0.1,
+        );
+    }
+
+    #[TestDox('::assertNotEqualsWithDelta() throws InvalidArgumentException when $actual is not numeric')]
+    public function test_assertNotEqualsWithDelta_throws_InvalidArgumentException_when_actual_not_numeric(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // robustness! the numeric guard covers both operands - a
+        // non-numeric $actual is just as much a caller bug as a
+        // non-numeric $expected, and must raise
+        // InvalidArgumentException rather than reaching the
+        // arithmetic.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$expected and $actual must both be numeric',
+        );
+        $this->expectExceptionCode(0);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertNotEqualsWithDelta(
+            expected: 1.0,
+            actual: 'not a number',
+            delta: 0.1,
         );
     }
 

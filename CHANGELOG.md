@@ -109,6 +109,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- delta-based assertions now accept all numerics ([e8e1ce3](https://github.com/stuartherbert/stusdevkit/commit/e8e1ce3)) — Stuart Herbert <stuart@stuartherbert.com>
 - add other thrown exceptions to AssertApi ([7b4c500](https://github.com/stuartherbert/stusdevkit/commit/7b4c500)) — Stuart Herbert <stuart@stuartherbert.com>
 - Assert implementation now uses docblocks from parent interface ([b6d7ba1](https://github.com/stuartherbert/stusdevkit/commit/b6d7ba1)) — Stuart Herbert <stuart@stuartherbert.com>
 
@@ -148,7 +149,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- clarify why exceptions are thrown ([c6b6d10](https://github.com/stuartherbert/stusdevkit/commit/c6b6d10)) — Stuart Herbert <stuart@stuartherbert.com>
+- clarify why exceptions are thrown ([e7c6dfe](https://github.com/stuartherbert/stusdevkit/commit/e7c6dfe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### CollectionsKit
 

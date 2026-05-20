@@ -1130,10 +1130,12 @@ interface AssertApi
     /**
      * Asserts that two variables are equal (with delta).
      *
+     * Both `$expected` and `$actual` must be numeric.
+     *
      * @param mixed $expected
-     *     the value that you need
+     *     the value that you need; must be numeric
      * @param mixed $actual
-     *     the value to compare to `$expected`
+     *     the value to compare to `$expected`; must be numeric
      * @param float $delta
      *     how much drift is allowed between the two values
      * @param string                    $message
@@ -1142,6 +1144,8 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
+     * @throws InvalidArgumentException
+     *     when `$expected` or `$actual` is not numeric
      */
     public static function assertEqualsWithDelta(
         mixed $expected,
@@ -1217,10 +1221,12 @@ interface AssertApi
     /**
      * Asserts that two variables are not equal (with delta).
      *
+     * Both `$expected` and `$actual` must be numeric.
+     *
      * @param mixed $expected
-     *     the value that you want to avoid
+     *     the value that you want to avoid; must be numeric
      * @param mixed $actual
-     *     the value to compare to `$expected`
+     *     the value to compare to `$expected`; must be numeric
      * @param float $delta
      *     how close the two values can be
      * @param string                    $message
@@ -1229,6 +1235,8 @@ interface AssertApi
      *
      * @throws AssertionFailedException
      *     when the assertion fails
+     * @throws InvalidArgumentException
+     *     when `$expected` or `$actual` is not numeric
      */
     public static function assertNotEqualsWithDelta(
         mixed $expected,

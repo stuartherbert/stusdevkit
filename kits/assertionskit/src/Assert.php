@@ -1023,10 +1023,24 @@ class Assert implements AssertApi
         float $delta,
         string $message = '',
     ): void {
-        /** @var float $floatExpected */
-        $floatExpected = $expected;
-        /** @var float $floatActual */
-        $floatActual = $actual;
+        // robustness! delta comparison is arithmetic, so both
+        // values must be numeric. is_numeric() is deliberate: it
+        // accepts numeric strings - which PHP coerces in the
+        // subtraction below - and stays forward-compatible with
+        // any future widening of PHP's numeric coercion rules.
+        // Without this guard a non-numeric value reaches the
+        // arithmetic and blows up with a raw TypeError, escaping
+        // the AssertionFailedException contract callers rely on.
+        if (!is_numeric($expected) || !is_numeric($actual)) {
+            throw new InvalidArgumentException(
+                detail: '$expected and $actual must both be numeric',
+            );
+        }
+
+        // if we get here, both values are numeric, so casting to
+        // float for the delta arithmetic cannot fail.
+        $floatExpected = (float) $expected;
+        $floatActual = (float) $actual;
 
         if (abs($floatExpected - $floatActual) <= $delta) {
             return;
@@ -1113,10 +1127,22 @@ class Assert implements AssertApi
         float $delta,
         string $message = '',
     ): void {
-        /** @var float $floatExpected */
-        $floatExpected = $expected;
-        /** @var float $floatActual */
-        $floatActual = $actual;
+        // robustness! delta comparison is arithmetic, so both
+        // values must be numeric, or the subtraction below blows
+        // up with a raw TypeError that escapes the documented
+        // AssertionFailedException contract. is_numeric() also
+        // keeps numeric strings - which PHP coerces in arithmetic
+        // - working as valid input.
+        if (!is_numeric($expected) || !is_numeric($actual)) {
+            throw new InvalidArgumentException(
+                detail: '$expected and $actual must both be numeric',
+            );
+        }
+
+        // if we get here, both values are numeric, so casting to
+        // float for the delta arithmetic cannot fail.
+        $floatExpected = (float) $expected;
+        $floatActual = (float) $actual;
 
         if (abs($floatExpected - $floatActual) > $delta) {
             return;
