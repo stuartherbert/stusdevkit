@@ -442,4 +442,125 @@ class EmptyCollectionExceptionTest extends TestCase
 
         $this->assertSame('StackOfStrings is empty', $actual);
     }
+
+    // ================================================================
+    //
+    // Throwing
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('can be thrown and caught as an EmptyCollectionException')]
+    public function test_can_be_thrown_and_caught(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the class exists to be thrown - AccessibleCollection::first()
+        // and last() throw it on an empty collection, and application
+        // code catches the concrete type. Pin that a thrown instance
+        // is caught by `catch (EmptyCollectionException)` and arrives
+        // intact - the very object that was thrown.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $thrown = new EmptyCollectionException(
+            collectionType: 'StackOfStrings',
+        );
+        $caught = null;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        try {
+            throw $thrown;
+        } catch (EmptyCollectionException $e) {
+            $caught = $e;
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($thrown, $caught);
+    }
+
+    #[TestDox('can be caught as a Rfc9457ProblemDetailsException')]
+    public function test_can_be_caught_as_its_parent_class(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // EmptyCollectionException is the base for the empty-collection
+        // exception family, so callers may catch it at the RFC 9457
+        // base type alongside every other problem-details exception.
+        // Pin that a thrown instance is caught by
+        // `catch (Rfc9457ProblemDetailsException)` and arrives intact.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $thrown = new EmptyCollectionException(
+            collectionType: 'StackOfStrings',
+        );
+        $caught = null;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        try {
+            throw $thrown;
+        } catch (Rfc9457ProblemDetailsException $e) {
+            $caught = $e;
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($thrown, $caught);
+    }
+
+    // ================================================================
+    //
+    // JSON serialisation
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('->jsonSerialize() returns the RFC 9457 problem-details payload')]
+    public function test_json_serialises_to_the_rfc9457_payload(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // EmptyCollectionException inherits JsonSerializable from the
+        // RFC 9457 base, so json_encode() of an instance must yield a
+        // valid problem-details document. Pin the whole payload: the
+        // fixed type URI, the composed title, the 500 status, and the
+        // null instance and detail slots and the empty extra map this
+        // exception leaves unset.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expected = [
+            'type'     => 'https://stusdevkit.dev/errors/collections/empty',
+            'title'    => 'StackOfStrings is empty',
+            'status'   => 500,
+            'instance' => null,
+            'detail'   => null,
+            'extra'    => [],
+        ];
+        $unit = new EmptyCollectionException(
+            collectionType: 'StackOfStrings',
+        );
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = $unit->jsonSerialize();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
 }

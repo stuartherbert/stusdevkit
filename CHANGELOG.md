@@ -191,7 +191,7 @@ This CHANGELOG is automatically compiled.
 
 #### CollectionsKit
 
-- CollectionAsDict / CollectionAsList now support normalisation for comparison ([0ad5ddb](https://github.com/stuartherbert/stusdevkit/commit/0ad5ddb)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
 - dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
 - CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
 - move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
