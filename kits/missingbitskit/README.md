@@ -12,344 +12,81 @@ Standalone functions are autoloaded via Composer's `files` directive. Classes fo
 
 ## Contents
 
-### Classes
-
-#### Json
-
-Provides safe wrappers around PHP's `json_encode()`, `json_decode()`, and `json_validate()`. All encode/decode calls force `JSON_THROW_ON_ERROR` so that failures always throw `\JsonException` instead of returning `false`.
-
-```php
-use StusDevKit\MissingBitsKit\Json\Json;
-
-$json = new Json();
-
-// encode a PHP value to a JSON string
-$encoded = $json->encode(value: ['name' => 'Alice', 'age' => 30]);
-
-// decode a JSON string back to a PHP value
-$decoded = $json->decode(input: $encoded, associative: true);
-
-// validate a JSON string without decoding it
-// returns [] on success, or a list<JsonValidationError> on failure
-$errors = $json->validate($encoded);
-```
-
-### TypeInspectors
-
-TypeInspectors is a family of classes that answer the question *"what types can this value satisfy?"*. They return PHP parameter-type-hint spellings (`int`, `float`, `bool`, `null`) rather than `gettype()`'s long form, so results can be fed straight into error messages, validators, or type-hint generators.
-
-Every inspector that returns a type map follows the same shape:
-
-- `public function __invoke(mixed $input): array<string,string>` — call-as-function style; returns `[]` if the input is not of the inspector's expected type.
-- `public static function from(...)` — direct call, strictly type-hinted to the concrete input, returns a `type-name => type-name` lookup map.
-
-(`IsComparablePair` and `IsClosedResource`, documented below, are predicates rather than type-map inspectors and do not follow this shape.)
-
-The returned map is ordered from most-specific to most-general, and always ends with `mixed` (plus `object` for any object input). Keys are unique, so callers can test for a type with `isset()`.
-
-#### The inspectors
-
-| Class | Purpose |
-|-------|---------|
-| `GetDuckTypes` | Entry point — accepts any PHP value and dispatches to the right inspector below |
-| `GetArrayTypes` | Types an array satisfies (adds `callable` when the array is a `[Class, method]` callable) |
-| `GetBooleanTypes` | `true` / `false` / `bool` / `mixed` |
-| `GetFloatTypes` | `numeric`, `float`, `mixed` |
-| `GetIntegerTypes` | `numeric`, `int`, `mixed` |
-| `GetNumericTypes` | Shared helper used by other inspectors for `is_numeric()` values |
-| `GetStringTypes` | Adds `callable` / `numeric` where the string also satisfies those shapes |
-| `GetObjectTypes` | Types an object satisfies — thin wrapper around `GetClassTypes` |
-| `GetClassTypes` | Full type surface for a class-string — parents, interfaces, traits, `callable` (if `__invoke` is defined), `object`, `mixed` |
-| `GetClassHierarchy` | The class itself and its parent classes |
-| `GetClassInterfaces` | Interfaces implemented (direct and inherited, walking interface hierarchies) |
-| `GetClassTraits` | All traits used by the class and its parents, including trait-of-trait usage |
-| `GetNamespace` | The namespace part of a class-string or an object's class |
-| `GetPrintableType` | A human-readable descriptor **string** (e.g. `int<42>`, `object<MyClass>`, `callable<Closure>`) — handy for error messages |
-
-#### Example — duck-typing dispatch
-
-```php
-use StusDevKit\MissingBitsKit\TypeInspectors\GetDuckTypes;
-
-GetDuckTypes::from(42);
-// => ['numeric' => 'numeric', 'int' => 'int', 'mixed' => 'mixed']
-
-GetDuckTypes::from('strlen');
-// => ['callable' => 'callable', 'string' => 'string', 'mixed' => 'mixed']
-
-GetDuckTypes::from(new stdClass());
-// => ['stdClass' => 'stdClass', 'object' => 'object', 'mixed' => 'mixed']
-
-$types = GetDuckTypes::from($value);
-if (isset($types['callable'])) {
-    // ...
-}
-```
-
-#### Example — printable type descriptor
-
-`GetPrintableType::from()` returns a string, and takes an optional bitmask of `FLAG_*` class constants controlling how much detail the string includes.
-
-| Flag | Effect |
-|------|--------|
-| `FLAG_NONE` | Minimum output — just the type token |
-| `FLAG_CLASSNAME` | Include the class name for non-Closure objects |
-| `FLAG_CALLABLE_DETAILS` | Include the callable shape — `<function>`, `<Class::method>`, `<Closure>` |
-| `FLAG_SCALAR_VALUE` | Include the scalar value — `int<42>`, `bool<true>`, `string<hello>` |
-| `FLAG_DEFAULTS` | All three detail flags set (the default if `$options` is omitted) |
-
-```php
-use StusDevKit\MissingBitsKit\TypeInspectors\GetPrintableType;
-
-GetPrintableType::from(42);                                         // 'int<42>'
-GetPrintableType::from(fn() => 1);                                  // 'callable<Closure>'
-GetPrintableType::from(['a' => 1]);                                 // 'array'
-GetPrintableType::from(null);                                       // 'null'
-
-GetPrintableType::from(42, GetPrintableType::FLAG_NONE);            // 'int'
-GetPrintableType::from(42, GetPrintableType::FLAG_SCALAR_VALUE);    // 'int<42>'
-
-$options = GetPrintableType::FLAG_CLASSNAME
-    | GetPrintableType::FLAG_SCALAR_VALUE;
-GetPrintableType::from(new stdClass(), $options);                   // 'object<stdClass>'
-```
-
-#### IsComparablePair
-
-`IsComparablePair` is a predicate, not a type-map inspector. It lives in this directory because it answers a type-shaped question, but it returns a `bool` rather than a `type-name => type-name` map.
-
-It reports whether two values can be meaningfully ordered against each other using PHP's relational operators (`<`, `>`, `<=`, `>=`). Two values are a comparable pair when both are scalar, or both are `DateTimeInterface` instances:
-
-```php
-use StusDevKit\MissingBitsKit\TypeInspectors\IsComparablePair;
-
-IsComparablePair::check(first: 1, second: 2);          // true  - two scalars
-IsComparablePair::check(first: 1, second: 'abc');      // true  - two scalars
-IsComparablePair::check(
-    first: new DateTimeImmutable(),
-    second: new DateTimeImmutable(),
-);                                                     // true  - two DateTimes
-
-IsComparablePair::check(
-    first: 5,
-    second: new DateTimeImmutable(),
-);                                                     // false - scalar vs DateTime
-```
-
-Originally added for AssertApi's comparison assertions (`assertGreaterThan()` and friends): PHP reports any object as greater than any scalar, so `$dateTime > 5` is `true` regardless of the date. `IsComparablePair` lets a caller reject that mismatched pairing before the comparison runs. It also offers the invokable form — `(new IsComparablePair())($a, $b)` — for callers that need a `callable`.
-
-#### IsClosedResource
-
-`IsClosedResource` is a predicate, not a type-map inspector. Like `IsComparablePair`, it lives in this directory because it answers a type-shaped question, but it returns a `bool` rather than a `type-name => type-name` map.
-
-It reports whether a value is a resource that has been closed — the gap PHP leaves next to `is_resource()`, which is `false` for both a closed resource and a non-resource and so cannot tell them apart:
-
-```php
-use StusDevKit\MissingBitsKit\TypeInspectors\IsClosedResource;
-
-$handle = fopen('php://memory', 'r');
-IsClosedResource::check(value: $handle);   // false - still open
-
-fclose($handle);
-IsClosedResource::check(value: $handle);   // true  - now closed
-
-IsClosedResource::check(value: 42);        // false - not a resource at all
-```
-
-Originally added so AssertApi's closed-resource assertions (`assertIsClosedResource()` and friends) have a single, robust check instead of each comparing a debug-only function's output against a hard-coded string. The check keys on the stable `resource` type prefix, not the exact `resource (closed)` wording. It also offers the invokable form — `(new IsClosedResource())($value)` — for callers that need a `callable`.
-
-### Reflection
-
-Helpers for working with PHP's `ReflectionType` hierarchy.
-
-#### GetReflectionTypes
-
-`ReflectionType` is abstract: the real payload lives on three unrelated child classes (`ReflectionNamedType`, `ReflectionUnionType`, `ReflectionIntersectionType`), each with its own shape. `GetReflectionTypes::from()` papers over that by returning a flat `ReflectionType[]` regardless of which child class you were handed.
-
-```php
-use StusDevKit\MissingBitsKit\Reflection\GetReflectionTypes;
-
-// given a named type (e.g. `int`), you get it back wrapped in an array
-$types = GetReflectionTypes::from($namedType);
-// => [ReflectionNamedType]
-
-// given a union (e.g. `int|string`), you get the member types
-$types = GetReflectionTypes::from($unionType);
-// => [ReflectionNamedType, ReflectionNamedType]
-
-// given an intersection (e.g. `Countable&Traversable`), same
-$types = GetReflectionTypes::from($intersectionType);
-// => [ReflectionNamedType, ReflectionNamedType]
-```
-
-`from()` performs a **one-level unwrap only**. For a DNF type such as `(Countable&Traversable)|int`, the returned array contains the intersection as a `ReflectionIntersectionType` — callers that need a fully-flattened leaf list should use `FlattenReflectionType::from()` instead.
-
-Throws `UnsupportedReflectionTypeException` if given a `ReflectionType` subclass it does not recognise (future-proofing against new PHP additions).
-
-#### FlattenReflectionType
-
-`FlattenReflectionType::from()` goes one step further than `GetReflectionTypes`: it recurses all the way to the leaves and returns the **unique set of PHP type-name strings** the position can satisfy. It's aimed at callers that want to ask *"which named types does this parameter accept?"* without caring about the `ReflectionType` hierarchy — a reflection-based DI container is the motivating use case.
-
-```php
-use StusDevKit\MissingBitsKit\Reflection\FlattenReflectionType;
-
-// a named type
-FlattenReflectionType::from($namedIntType);
-// => ['int']
-
-// a nullable named type - split into base type plus 'null', so it
-// looks the same as an explicit `int|null` union
-FlattenReflectionType::from($nullableIntType);
-// => ['int', 'null']
-
-// a union
-FlattenReflectionType::from($intOrStringType);
-// => ['int', 'string']
-
-// an intersection
-FlattenReflectionType::from($countableAndTraversableType);
-// => ['Countable', 'Traversable']
-
-// a DNF type - fully flattened to leaves, with duplicates collapsed
-FlattenReflectionType::from($aAndBOrAAndCType);
-// => ['A', 'B', 'C']     (not ['A', 'B', 'A', 'C'])
-```
-
-Three pieces of processing happen together:
-
-- **recursion** — union and intersection members are walked to the leaf level, including DNF types like `(A&B)|C`.
-- **nullable split** — a `?Foo` named type is emitted as two leaves, `'Foo'` and `'null'`, so the caller sees the same shape as an explicit `Foo|null` union. (`mixed` and an explicit `null` return type are already whole leaves and are not split further.)
-- **deduplication** — each distinct leaf appears once. The reachable case is a DNF like `(A&B)|(A&C)`, where `A` would otherwise appear twice.
-
-The returned list is **unordered**. PHP normalises union and intersection members at parse time, so source/declaration order is not preserved — reflection never sees it. Callers that need a predictable order should sort the result themselves.
-
-Throws `UnsupportedReflectionTypeException` if given a `ReflectionType` subclass it does not recognise (surfaced from the `GetReflectionTypes` delegation).
-
-#### GetClassInstantiability
-
-`GetClassInstantiability::from()` reports whether a given class-string names something PHP will let you `new` — and, if not, the single reason that disqualifies it. It's aimed at callers that want to guard a `new $classname(...)` call, such as a reflection-based DI container.
-
-The inspector returns a `ClassInstantiability` enum. Each case carries a short string value suitable for dropping straight into an error message.
-
-```php
-use StusDevKit\MissingBitsKit\Reflection\ClassInstantiability;
-use StusDevKit\MissingBitsKit\Reflection\GetClassInstantiability;
-
-// happy path - a plain class with a public constructor
-GetClassInstantiability::from(MyService::class);
-// => ClassInstantiability::INSTANTIABLE
-
-// interfaces cannot be `new`'d
-GetClassInstantiability::from(MyInterface::class);
-// => ClassInstantiability::IS_INTERFACE
-
-// enums are classes at runtime, but PHP forbids `new` on them
-GetClassInstantiability::from(MyEnum::class);
-// => ClassInstantiability::IS_ENUM
-
-// a singleton / factory-only class
-GetClassInstantiability::from(SingletonClass::class);
-// => ClassInstantiability::CONSTRUCTOR_NOT_PUBLIC
-
-// unknown name - not a class, interface, trait, or enum
-GetClassInstantiability::from('DoesNotExist');
-// => ClassInstantiability::CLASS_DOES_NOT_EXIST
-```
-
-Callers that only care about a yes/no answer use the `isInstantiable()` helper on the result:
-
-```php
-if (! GetClassInstantiability::from($classname)->isInstantiable()) {
-    throw new \RuntimeException("cannot build {$classname}");
-}
-```
-
-Callers that want a reason in their error message use the backing string:
-
-```php
-$result = GetClassInstantiability::from($classname);
-if (! $result->isInstantiable()) {
-    throw new \RuntimeException("cannot build {$classname}: {$result->value}");
-    // e.g. "cannot build MyThing: is an abstract class"
-}
-```
-
-The inspector reports the **first** disqualifying reason it finds, in this order: existence → interface → trait → enum → abstract → non-public constructor. A class that fails more than one check (e.g. abstract class with a private constructor) reports only the first one seen.
+Each entry below links to its manual page, which carries the full contract, examples, and caveats. Entries are grouped by source namespace, alphabetical within each group.
 
 ### Arrays
 
-#### StaticallyArrayable
+Contracts and helpers for working with values that can be projected into PHP arrays, and for the keys those arrays use.
 
-`StaticallyArrayable` is a type-level counterpart to the
-instance-level `Arrayable`. It declares a single static method that
-returns the implementing type's data as a PHP array:
+- [`Arrayable`](../../manual/missingbitskit/Arrays/Arrayable/README.md) — instance-level contract: any class that returns its internal state as a PHP array
+- [`ArrayShape`](../../manual/missingbitskit/Arrays/ArrayShape/README.md) — value object describing whether an array is being used as an ordered list or as a key/value map
+- [`GetArrayShape`](../../manual/missingbitskit/Arrays/GetArrayShape/README.md) — classifies a PHP array as list-shaped or map-shaped
+- [`IsArrayKey`](../../manual/missingbitskit/Arrays/IsArrayKey/README.md) — type guard: reports whether a value can be used as a PHP array key
+- [`RequireArrayKey`](../../manual/missingbitskit/Arrays/RequireArrayKey/README.md) — type guarantee: proves a value can be used as a PHP array key, throwing otherwise
+- [`StaticallyArrayable`](../../manual/missingbitskit/Arrays/StaticallyArrayable/README.md) — type-level counterpart to `Arrayable`: any type that returns its data as a PHP array via a static method
 
-```php
-namespace StusDevKit\MissingBitsKit\Arrays;
+### Contracts
 
-/**
- * @template TKey of array-key
- * @template TValue of mixed
- */
-interface StaticallyArrayable
-{
-    /** @return array<TKey, TValue> */
-    public static function toArray(): array;
-}
-```
+Interfaces that describe behaviour expected of values handed to MissingBitsKit's inspectors.
 
-Originally added for **backed enums**: the set of cases is a
-property of the type, not of any individual case. Implementers
-(e.g. `ClassInstantiability`) advertise that their case set can be
-rendered as an array for data-provider tests, config rendering, JSON
-output, and similar consumers.
+- [`NormalisesForComparison`](../../manual/missingbitskit/Contracts/NormalisesForComparison/README.md) — contract for objects that produce their own canonical form for structural comparison
 
-See [`docs/01-Engineering-Standards/Enums.md`](../../docs/01-Engineering-Standards/Enums.md) — every backed
-enum in the project is required to implement this interface.
+### DataInspectors
+
+Inspectors that derive a normalised projection from a runtime value, suitable for downstream comparison or hashing.
+
+- [`GetNormalisedForComparison`](../../manual/missingbitskit/DataInspectors/GetNormalisedForComparison/README.md) — produce a normalised version of a value, designed for use in structural comparisons
 
 ### Enums
 
-#### EnumToArray
+Helpers for the enum side of the type system.
 
-`EnumToArray` is the canonical implementation of
-`StaticallyArrayable::toArray()` for backed enums. It walks
-`self::cases()` and returns a `name => value` map:
+- [`EnumToArray`](../../manual/missingbitskit/Enums/EnumToArray/README.md) — canonical `StaticallyArrayable::toArray()` implementation for backed enums; returns a `name => value` map
 
-```php
-use StusDevKit\MissingBitsKit\Arrays\StaticallyArrayable;
-use StusDevKit\MissingBitsKit\Enums\EnumToArray;
+### Json
 
-/**
- * @implements StaticallyArrayable<string, string>
- */
-enum MyEnum: string implements StaticallyArrayable
-{
-    /** @use EnumToArray<string> */
-    use EnumToArray;
+Error-safe wrappers around PHP's JSON builtins.
 
-    case FIRST = 'first';
-    case SECOND = 'second';
-}
+- [`Json`](../../manual/missingbitskit/Json/Json/README.md) — wrappers for `json_encode()`, `json_decode()`, and `json_validate()`; encode and decode always throw `\JsonException` on failure
+- [`JsonValidationError`](../../manual/missingbitskit/Json/JsonValidationError/README.md) — value object returned by `Json::validate()` on failure
 
-MyEnum::toArray();
-// => ['FIRST' => 'first', 'SECOND' => 'second']
-```
+### Reflection
 
-The trait is **generic** over the backing type. Bind the type
-parameter at the use site with `@use EnumToArray<string>` for
-string-backed enums, or `@use EnumToArray<int>` for int-backed
-enums. Without the binding the return type widens to
-`array<string, string|int>`, leaking a union the using enum
-promised to avoid.
+Helpers for working with PHP's `ReflectionType` hierarchy and for guarding `new $classname(...)` calls.
 
-PHPStan enforces that the trait is only used inside a backed enum
-via `@phpstan-require-implements \BackedEnum`. Using it in a pure
-enum, a regular class, or an interface is a static-analysis error.
+- [`ClassInstantiability`](../../manual/missingbitskit/Reflection/ClassInstantiability/README.md) — enum of reasons a class-string can or cannot be `new`'d
+- [`FlattenReflectionType`](src/Reflection/FlattenReflectionType.php) — recursive leaf-flatten of a `ReflectionType` into the unique set of PHP type-name strings it can satisfy (no manual page yet)
+- [`GetClassInstantiability`](../../manual/missingbitskit/Reflection/GetClassInstantiability/README.md) — reports whether a class-string can be `new`'d, and the first disqualifying reason if not
+- [`GetReflectionTypes`](../../manual/missingbitskit/Reflection/GetReflectionTypes/README.md) — one-level unwrap of a `ReflectionType` into a flat `ReflectionType[]`
+- [`IntersectionTypesNotSupportedException`](../../manual/missingbitskit/Reflection/IntersectionTypesNotSupportedException/README.md) — thrown when an intersection type is passed where only named or union types are supported
+- [`UnsupportedReflectionTypeException`](../../manual/missingbitskit/Reflection/UnsupportedReflectionTypeException/README.md) — thrown when a `ReflectionType` subclass is not recognised
 
-### Functions
+### TypeInspectors
 
-| Function | Purpose |
-|----------|---------|
-| `get_class_basename()` | Return the short class name without the namespace |
-| `object_merge()` | Copy all properties from source object(s) onto a target object |
-| `uri_resolve_reference()` | Resolve a URI reference against a base URI per RFC 3986 Section 5 |
+A family of classes that answer the question *"what types can this value satisfy?"*. Type-map inspectors return a `type-name => type-name` map ordered most-specific to most-general; `Is*` predicates return a `bool`.
+
+- [`FlattenClassTypes`](src/TypeInspectors/FlattenClassTypes.php) — expand a list of class/interface names into a deduplicated leaf-list of every type each can satisfy (no manual page yet)
+- [`GetArrayTypes`](../../manual/missingbitskit/TypeInspectors/GetArrayTypes/README.md) — types an array satisfies (adds `callable` for `[Class, method]` callables)
+- [`GetBooleanTypes`](../../manual/missingbitskit/TypeInspectors/GetBooleanTypes/README.md) — `true` / `false` / `bool` / `mixed`
+- [`GetClassHierarchy`](../../manual/missingbitskit/TypeInspectors/GetClassHierarchy/README.md) — the class itself and its parent classes
+- [`GetClassInterfaces`](../../manual/missingbitskit/TypeInspectors/GetClassInterfaces/README.md) — interfaces implemented, walking interface hierarchies
+- [`GetClassTraits`](../../manual/missingbitskit/TypeInspectors/GetClassTraits/README.md) — all traits used by a class and its parents, including trait-of-trait usage
+- [`GetClassTypes`](../../manual/missingbitskit/TypeInspectors/GetClassTypes/README.md) — full type surface for a class-string: parents, interfaces, traits, `callable` (if `__invoke` is defined), `object`, `mixed`
+- [`GetDuckTypes`](../../manual/missingbitskit/TypeInspectors/GetDuckTypes/README.md) — entry point that accepts any PHP value and dispatches to the right inspector below
+- [`GetFloatTypes`](../../manual/missingbitskit/TypeInspectors/GetFloatTypes/README.md) — `numeric`, `float`, `mixed`
+- [`GetIntegerTypes`](../../manual/missingbitskit/TypeInspectors/GetIntegerTypes/README.md) — `numeric`, `int`, `mixed`
+- [`GetNamespace`](../../manual/missingbitskit/TypeInspectors/GetNamespace/README.md) — the namespace part of a class-string or an object's class
+- [`GetNumericTypes`](../../manual/missingbitskit/TypeInspectors/GetNumericTypes/README.md) — shared helper used by other inspectors for `is_numeric()` values
+- [`GetObjectTypes`](../../manual/missingbitskit/TypeInspectors/GetObjectTypes/README.md) — types an object satisfies; thin wrapper around `GetClassTypes`
+- [`GetPrintableType`](../../manual/missingbitskit/TypeInspectors/GetPrintableType/README.md) — human-readable type descriptor string for error messages (e.g. `int<42>`, `object<MyClass>`, `callable<Closure>`)
+- [`GetStringTypes`](../../manual/missingbitskit/TypeInspectors/GetStringTypes/README.md) — adds `callable` / `numeric` where the string also satisfies those shapes
+- [`IsClosedResource`](../../manual/missingbitskit/TypeInspectors/IsClosedResource/README.md) — predicate: reports whether a value is a resource that has been closed
+- [`IsComparablePair`](../../manual/missingbitskit/TypeInspectors/IsComparablePair/README.md) — predicate: reports whether two values can be meaningfully ordered against each other with `<`, `>`, `<=`, `>=`
+
+### Standalone functions
+
+Functions autoloaded via Composer's `files` directive; import with `use function StusDevKit\MissingBitsKit\<name>`.
+
+- [`get_class_basename()`](src/get_class_basename.php) — return the short class name without the namespace
+- [`object_merge()`](src/object_merge.php) — copy all public properties from one or more source objects onto a target object (the object equivalent of `array_merge()`)
+- [`uri_resolve_reference()`](src/uri_resolve_reference.php) — resolve a URI reference against a base URI per RFC 3986 Section 5

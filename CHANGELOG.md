@@ -158,6 +158,14 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### MissingBitsKit
+
+- update README now that we have manual pages ([43c76f7](https://github.com/stuartherbert/stusdevkit/commit/43c76f7)) — Stuart Herbert <stuart@stuartherbert.com>
+- tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
+- bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>
+- document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
+- add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
 - warn that assertSameSize() et al consumes one-shot iterables ([1053ffd](https://github.com/stuartherbert/stusdevkit/commit/1053ffd)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -169,13 +177,6 @@ This CHANGELOG is automatically compiled.
 - initial docs for EmptyStackException ([d741c01](https://github.com/stuartherbert/stusdevkit/commit/d741c01)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial docs for EmptyCollectionException ([8c1b5c8](https://github.com/stuartherbert/stusdevkit/commit/8c1b5c8)) — Stuart Herbert <stuart@stuartherbert.com>
 - initial documentation ([0a7a1f3](https://github.com/stuartherbert/stusdevkit/commit/0a7a1f3)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
-- bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>
-- document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
-- add manual pages for many classes ([986eeea](https://github.com/stuartherbert/stusdevkit/commit/986eeea)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 
@@ -212,7 +213,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- remove assertNotFalse() ([bae9567](https://github.com/stuartherbert/stusdevkit/commit/bae9567)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
 - drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
 - canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
