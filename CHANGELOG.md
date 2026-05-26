@@ -160,7 +160,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- update README now that we have manual pages ([43c76f7](https://github.com/stuartherbert/stusdevkit/commit/43c76f7)) — Stuart Herbert <stuart@stuartherbert.com>
+- update README now that we have manual pages ([7bbe0d7](https://github.com/stuartherbert/stusdevkit/commit/7bbe0d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>
 - document more of MissingBitsKit ([c3606f7](https://github.com/stuartherbert/stusdevkit/commit/c3606f7)) — Stuart Herbert <stuart@stuartherbert.com>
