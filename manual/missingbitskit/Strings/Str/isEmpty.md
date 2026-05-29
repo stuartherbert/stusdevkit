@@ -158,7 +158,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:153`](../../../../kits/missingbitskit/src/Strings/Str.php#L153)
+[`kits/missingbitskit/src/Strings/Str.php:258`](../../../../kits/missingbitskit/src/Strings/Str.php#L258)
 
 ## Changelog
 

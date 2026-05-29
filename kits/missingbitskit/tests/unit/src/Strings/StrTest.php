@@ -180,6 +180,39 @@ class StrTest extends TestCase
         $this->assertContains('isEmpty', $methodNames);
     }
 
+    #[TestDox('publishes ::contains() as a public method')]
+    public function test_publishes_contains(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // contains() is part of Str's published API; this test catches
+        // accidental renames or scope changes (e.g. dropping `public`)
+        // that would silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('contains', $methodNames);
+    }
+
     #[TestDox('publishes ::TRIM_DEFAULT_CHARS as a public constant')]
     public function test_publishes_TRIM_DEFAULT_CHARS(): void
     {
@@ -1389,6 +1422,619 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::isEmpty($input, $trimChars);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — contains()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::contains() is declared public static')]
+    public function test_contains_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // contains() is consumed as a static utility — callers write
+        // `Str::contains(...)`, never `(new Str)->contains(...)`.
+        // Dropping `static` or narrowing visibility would break every
+        // call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'contains');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::contains() takes parameters [haystack, needle, trimChars, trimLocation]')]
+    public function test_contains_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // parameter names and order are part of the contract because
+        // callers can use PHP's named-argument syntax. Renaming or
+        // reordering breaks those call sites.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'contains');
+        $expected = ['haystack', 'needle', 'trimChars', 'trimLocation'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::contains() returns bool')]
+    public function test_contains_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the declared return type is part of the contract — callers
+        // rely on it for type inference and for PHPStan to validate
+        // their own code.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'contains');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('bool', $returnType->getName());
+    }
+
+    #[TestDox('::contains() $trimChars defaults to Str::TRIM_DEFAULT_CHARS')]
+    public function test_contains_trimChars_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default value of $trimChars is load-bearing for every
+        // caller that omits it. Changing the default silently shifts
+        // behaviour, so we pin it here.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'contains');
+        $parameters = $method->getParameters();
+        $trimCharsParam = $parameters[2];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $trimCharsParam->isDefaultValueAvailable();
+        $defaultValue = $trimCharsParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertSame(Str::TRIM_DEFAULT_CHARS, $defaultValue);
+    }
+
+    #[TestDox('::contains() $trimLocation defaults to StrTrimLocation::TRIM_NONE')]
+    public function test_contains_trimLocation_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // contains() defaults to NOT trimming the needle — unlike
+        // trim() and isEmpty(), whose default is TRIM_START_AND_END.
+        // Pin this so a future refactor cannot silently start trimming
+        // every needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'contains');
+        $parameters = $method->getParameters();
+        $trimLocationParam = $parameters[3];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $trimLocationParam->isDefaultValueAvailable();
+        $defaultValue = $trimLocationParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertSame(StrTrimLocation::TRIM_NONE, $defaultValue);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() with a string haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when the string haystack contains the needle')]
+    public function test_contains_string_haystack_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the simplest call shape: a single string haystack that
+        // contains the needle as a substring.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = 'o w';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the string haystack does not contain the needle')]
+    public function test_contains_string_haystack_not_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when the needle is not a substring of the haystack, contains()
+        // must report false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = 'xyz';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('is case-sensitive')]
+    public function test_contains_is_case_sensitive(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // contains() delegates to str_contains(), which is
+        // case-sensitive. A needle that differs only in case must not
+        // match.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'Hello World';
+        $needle = 'hello';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() with an array haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when only a later element of the array haystack contains the needle')]
+    public function test_contains_array_haystack_found_in_later_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an array haystack is searched element by element. Putting the
+        // match in a later element proves contains() does not stop at
+        // the first element.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = ['alpha', 'beta'];
+        $needle = 'eta';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when no element of the array haystack contains the needle')]
+    public function test_contains_array_haystack_not_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when none of the array elements contain the needle, contains()
+        // must report false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = ['alpha', 'beta', 'gamma'];
+        $needle = 'delta';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() with an empty haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when the haystack is an empty string')]
+    public function test_contains_empty_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty string haystack contains nothing, so contains() must
+        // report false for any needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '';
+        $needle = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the haystack is an empty array')]
+    public function test_contains_empty_array_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty array haystack has no strings to search, so
+        // contains() must report false for any needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = [];
+        $needle = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() with the falsy "0" haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when searching the string "0" for the needle "0"')]
+    public function test_contains_zero_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // "0" is a valid, non-empty haystack, but PHP's empty() treats
+        // it as falsy. This test is the regression guard against an
+        // empty()-based emptiness check silently discarding it.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '0';
+        $needle = '0';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() with UTF-8 data
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('finds a multibyte needle inside the haystack')]
+    public function test_contains_finds_multibyte_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a multibyte character (here é, U+00E9, two bytes in UTF-8)
+        // must be found as a whole codepoint inside a UTF-8 haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = "caf\u{00E9}";
+        $needle = "\u{00E9}";
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not match an ASCII needle against the bytes of a multibyte character')]
+    public function test_contains_ascii_needle_does_not_match_multibyte_bytes(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // UTF-8 is self-synchronising: the bytes of a multibyte
+        // character (here ï, U+00EF) never overlap the ASCII range, so
+        // an ASCII needle ("i") cannot false-match inside it. This is
+        // the property that makes byte-level str_contains() correct on
+        // UTF-8.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = "na\u{00EF}ve";
+        $needle = 'i';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() needle trimming
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when the needle is an empty string')]
+    public function test_contains_empty_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty needle can never be "contained" in any meaningful
+        // sense; contains() rejects it up front and reports false,
+        // regardless of the haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello';
+        $needle = '';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not trim the needle when trimLocation defaults to TRIM_NONE')]
+    public function test_contains_does_not_trim_needle_by_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // contains() defaults to TRIM_NONE, so surrounding whitespace is
+        // part of the search term. A padded needle is searched verbatim
+        // and is not found inside the unpadded haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello';
+        $needle = ' hello ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('trims the needle before searching when trimLocation is TRIM_START_AND_END')]
+    public function test_contains_trims_needle_when_asked(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when the caller opts in with TRIM_START_AND_END, the needle's
+        // surrounding whitespace is stripped before the search, so the
+        // padded needle now matches the unpadded haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello';
+        $needle = '  hello  ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains(
+            $haystack,
+            $needle,
+            trimLocation: StrTrimLocation::TRIM_START_AND_END,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when a whitespace-only needle is trimmed away')]
+    public function test_contains_whitespace_needle_trimmed_away(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a whitespace-only needle trims down to nothing when trimming
+        // is enabled; an empty needle can never be "contained", so
+        // contains() reports false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'a b c';
+        $needle = '   ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains(
+            $haystack,
+            $needle,
+            trimLocation: StrTrimLocation::TRIM_START_AND_END,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('searches for a whitespace-only needle when trimming is off')]
+    public function test_contains_whitespace_needle_searched_when_not_trimmed(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // with the default TRIM_NONE, a whitespace-only needle is not
+        // trimmed away — it is a legitimate search term, and is found
+        // when the haystack contains that run of whitespace.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'a   b';
+        $needle = '   ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
 
         // ----------------------------------------------------------------
         // test the results

@@ -27,6 +27,7 @@ pre-flight report flags it and asks the author to add an entry.
 | `IteratorAggregate` | https://www.php.net/manual/en/class.iteratoraggregate.php |
 | `JSON_*` constants | https://www.php.net/manual/en/json.constants.php |
 | `JsonException` | https://www.php.net/manual/en/class.jsonexception.php |
+| `Normalizer` | https://www.php.net/manual/en/class.normalizer.php |
 | `ReflectionClass` | https://www.php.net/manual/en/class.reflectionclass.php |
 | `ReflectionFunction` | https://www.php.net/manual/en/class.reflectionfunction.php |
 | `ReflectionFunctionAbstract` | https://www.php.net/manual/en/class.reflectionfunctionabstract.php |
@@ -59,6 +60,7 @@ pre-flight report flags it and asks the author to add an entry.
 | `is_object()` | https://www.php.net/manual/en/function.is-object.php |
 | `is_resource()` | https://www.php.net/manual/en/function.is-resource.php |
 | `fclose()` | https://www.php.net/manual/en/function.fclose.php |
+| `str_contains()` | https://www.php.net/manual/en/function.str-contains.php |
 | `strrpos()` | https://www.php.net/manual/en/function.strrpos.php |
 | `substr()` | https://www.php.net/manual/en/function.substr.php |
 | `trim()` | https://www.php.net/manual/en/function.trim.php |

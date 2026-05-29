@@ -56,6 +56,23 @@ namespace StusDevKit\MissingBitsKit\Strings;
  *
  * Originally added to provide a centralised set of string
  * operations across StusDevKit.
+ *
+ * Here Be Dragons:
+ *
+ * - **"UTF-8 safe" means codepoint-aware, not normalisation-aware.**
+ *   These operations compare Unicode codepoints, not *canonically
+ *   equivalent* text. Two strings that look identical but use
+ *   different codepoint sequences - for example "é" as the single
+ *   codepoint U+00E9 versus the pair U+0065 U+0301 - will NOT
+ *   match. Normalising text to a single form is firmly the
+ *   caller's responsibility, not Str's.
+ * - **Normalise once, at your system boundary.** As text enters
+ *   your system (HTTP input, database reads, file reads), convert
+ *   it to a single normalisation form - NFC is the usual choice -
+ *   using PHP's `Normalizer` class from `ext-intl`. Once every
+ *   string in play is in the same form, every Str operation just
+ *   works. `ext-intl` is a hard requirement of this package for
+ *   exactly this reason.
  */
 class Str
 {
@@ -110,6 +127,94 @@ class Str
         . "\u{205F}" // MEDIUM MATHEMATICAL SPACE
         . "\u{3000}" // IDEOGRAPHIC SPACE
     ;
+
+    /**
+     * Search the given haystack of string(s), to see if it contains
+     * the given `$needle`.
+     *
+     * Can optionally `Str::trim()` `$needle` for you, so that you
+     * don't have to do this first.
+     *
+     * Here Be Dragons:
+     *
+     * - **Inherits every `Str::trim()` hazard.** Whenever trimming
+     *   happens, the dragons listed on `Str::trim()` apply here
+     *   too - most notably, **invalid UTF-8 is undefined
+     *   behaviour**. Validate at your system boundary before
+     *   calling.
+     *
+     * @param string|string[] $haystack
+     *      the string(s) that we want to search
+     * @param string $needle
+     *      the string we want to look for inside `$haystack`
+     * @param string $trimChars
+     *      set of characters to `Str::trim()` from `$needle` before
+     *      we search inside `$haystack`
+     * @param StrTrimLocation $trimLocation
+     *      where (if anywhere) do you want `Str::trim()` to be applied to
+     *      your `$needle` string?
+     * @return bool
+     * - `true` if $haystack contains `$needle`
+     * - `false` if `$needle` is an empty string (after trimming)
+     * - `false` otherwise
+     */
+    public static function contains(
+        string|array $haystack,
+        string $needle,
+        string $trimChars = self::TRIM_DEFAULT_CHARS,
+        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_NONE,
+    ): bool
+    {
+        // optimisation - is the haystack empty?
+        // no need to do any extra work if it is
+        //
+        // these are not load-bearing checks; the main loop
+        // will also return `false` if the haystack is empty
+        //
+        // however, these checks are cheaper than an empty
+        // haystack reaching the main loop
+        if (is_array($haystack) && count($haystack) === 0) {
+            return false;
+        }
+        if (is_string($haystack) && strlen($haystack) === 0) {
+            return false;
+        }
+
+        // (optionally) normalise the string we are searching for
+        $needle = self::trim(
+            input: $needle,
+            trimChars: $trimChars,
+            trimLocation: $trimLocation,
+        );
+
+        // special case - have we been passed an empty `$needle`
+        // after all?
+        if (self::isEmpty(
+            input: $needle,
+            trimLocation: StrTrimLocation::TRIM_NONE,
+        )) {
+            return false;
+        }
+
+        // normalise our input
+        if (is_string($haystack)) {
+            $haystack = [ $haystack ];
+        }
+
+        // let's go look for our needle
+        foreach ($haystack as $strToSearch) {
+            // str_contains() is safe to use on UTF-8 data:
+            //
+            // UTF-8 is self-synchronising; a byte match only
+            // lands on a character boundary
+            if (str_contains($strToSearch, $needle)) {
+                return true;
+            }
+        }
+
+        // not found
+        return false;
+    }
 
     /**
      * `isEmpty()` checks to see if the given `input` string is really
