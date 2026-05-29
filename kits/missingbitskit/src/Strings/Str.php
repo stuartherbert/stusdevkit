@@ -132,37 +132,50 @@ class Str
      * Search the given haystack of string(s), to see if it contains
      * the given `$needle`.
      *
-     * Can optionally `Str::trim()` `$needle` for you, so that you
-     * don't have to do this first.
+     * By default it searches for `$needle` exactly as given. Pass a
+     * `$transformer` to transform `$needle` before the search - for
+     * example, a trimming transformer (`fn($v) => Str::trim($v)`)
+     * strips surrounding whitespace so a padded `$needle` can still
+     * match. The transformer is applied to the `$needle` only; the
+     * `$haystack` is always searched exactly as given.
      *
      * Here Be Dragons:
      *
-     * - **Inherits every `Str::trim()` hazard.** Whenever trimming
-     *   happens, the dragons listed on `Str::trim()` apply here
-     *   too - most notably, **invalid UTF-8 is undefined
-     *   behaviour**. Validate at your system boundary before
-     *   calling.
+     * - **The transformer applies to the `$needle` only.** The
+     *   `$haystack` is never transformed. If you need the haystack
+     *   normalised, do it at your system boundary - see this
+     *   class's docblock.
+     * - **Your `$transformer` is skipped when the haystack is
+     *   empty.** contains() answers the empty-haystack case before
+     *   it transforms, so a transformer with side effects will not
+     *   fire for an empty `$haystack`.
+     * - **Keep transformers pure.** Your transformer may not get
+     *   called. Any transformer that has side effects will cause
+     *   subtle bugs.
+     * - **Your transformer's result is temporary.** If you want
+     *   access to the result of `$transformer($needle)`, call it
+     *   yourself first, and don't pass `$transformer` into
+     *   `contains()` at all.
      *
      * @param string|string[] $haystack
      *      the string(s) that we want to search
      * @param string $needle
      *      the string we want to look for inside `$haystack`
-     * @param string $trimChars
-     *      set of characters to `Str::trim()` from `$needle` before
-     *      we search inside `$haystack`
-     * @param StrTrimLocation $trimLocation
-     *      where (if anywhere) do you want `Str::trim()` to be applied to
-     *      your `$needle` string?
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$needle` before the
+     *      search (e.g. a trimming transformer). `$needle` is the
+     *      only value passed to it; the `$haystack` is never
+     *      transformed.
      * @return bool
-     * - `true` if $haystack contains `$needle`
-     * - `false` if `$needle` is an empty string (after trimming)
+     * - `false` if `$haystack` is empty
+     * - `false` if `$needle` is empty (after transforming)
+     * - `true` if any string in `$haystack` contains `$needle`
      * - `false` otherwise
      */
     public static function contains(
         string|array $haystack,
         string $needle,
-        string $trimChars = self::TRIM_DEFAULT_CHARS,
-        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_NONE,
+        ?callable $transformer = null,
     ): bool
     {
         // optimisation - is the haystack empty?
@@ -180,20 +193,22 @@ class Str
             return false;
         }
 
-        // (optionally) normalise the string we are searching for
-        $needle = self::trim(
-            input: $needle,
-            trimChars: $trimChars,
-            trimLocation: $trimLocation,
-        );
+        // (optionally) transform the string we are searching for.
+        // e.g. a trimming transformer strips surrounding whitespace
+        // from the needle.
+        if ($transformer !== null) {
+            $needle = $transformer($needle);
+        }
 
-        // special case - have we been passed an empty `$needle`
-        // after all?
+        // special case - have we been left with an empty `$needle`?
+        // an empty needle can never be meaningfully "contained".
         if (self::isEmpty($needle)) {
             return false;
         }
 
-        // normalise our input
+        // from here on we treat the haystack as a list of strings, so
+        // a single-string haystack gets wrapped into a one-element
+        // array to give the search loop below a single code path.
         if (is_string($haystack)) {
             $haystack = [ $haystack ];
         }

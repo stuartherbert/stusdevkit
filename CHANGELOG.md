@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::identity() ([a28cdb3](https://github.com/stuartherbert/stusdevkit/commit/a28cdb3)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::identity() ([5b95ef0](https://github.com/stuartherbert/stusdevkit/commit/5b95ef0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::contains() ([00ad1e5](https://github.com/stuartherbert/stusdevkit/commit/00ad1e5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::isEmpty() ([c0bcd15](https://github.com/stuartherbert/stusdevkit/commit/c0bcd15)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::trim() ([873e2a2](https://github.com/stuartherbert/stusdevkit/commit/873e2a2)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -217,6 +217,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- Str::contains() now uses the transformer approach ([011944c](https://github.com/stuartherbert/stusdevkit/commit/011944c)) — Stuart Herbert <stuart@stuartherbert.com>
 - Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([c8db9c5](https://github.com/stuartherbert/stusdevkit/commit/c8db9c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -1623,7 +1623,7 @@ class StrTest extends TestCase
         $this->assertTrue($isStatic);
     }
 
-    #[TestDox('::contains() takes parameters [haystack, needle, trimChars, trimLocation]')]
+    #[TestDox('::contains() takes parameters [haystack, needle, transformer]')]
     public function test_contains_parameter_names(): void
     {
         // ----------------------------------------------------------------
@@ -1637,7 +1637,7 @@ class StrTest extends TestCase
         // setup your test
 
         $method = new ReflectionMethod(Str::class, 'contains');
-        $expected = ['haystack', 'needle', 'trimChars', 'trimLocation'];
+        $expected = ['haystack', 'needle', 'transformer'];
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1680,65 +1680,35 @@ class StrTest extends TestCase
         $this->assertSame('bool', $returnType->getName());
     }
 
-    #[TestDox('::contains() $trimChars defaults to Str::TRIM_DEFAULT_CHARS')]
-    public function test_contains_trimChars_default(): void
+    #[TestDox('::contains() $transformer defaults to null')]
+    public function test_contains_transformer_default(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // the default value of $trimChars is load-bearing for every
-        // caller that omits it. Changing the default silently shifts
-        // behaviour, so we pin it here.
+        // the default of `null` is the contract: with no transformer,
+        // contains() searches for the needle exactly as given. Pin it
+        // so a future refactor cannot silently start transforming every
+        // needle.
 
         // ----------------------------------------------------------------
         // setup your test
 
         $method = new ReflectionMethod(Str::class, 'contains');
         $parameters = $method->getParameters();
-        $trimCharsParam = $parameters[2];
+        $transformerParam = $parameters[2];
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $hasDefault = $trimCharsParam->isDefaultValueAvailable();
-        $defaultValue = $trimCharsParam->getDefaultValue();
+        $hasDefault = $transformerParam->isDefaultValueAvailable();
+        $defaultValue = $transformerParam->getDefaultValue();
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($hasDefault);
-        $this->assertSame(Str::TRIM_DEFAULT_CHARS, $defaultValue);
-    }
-
-    #[TestDox('::contains() $trimLocation defaults to StrTrimLocation::TRIM_NONE')]
-    public function test_contains_trimLocation_default(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // contains() defaults to NOT trimming the needle — unlike
-        // trim() and isEmpty(), whose default is TRIM_START_AND_END.
-        // Pin this so a future refactor cannot silently start trimming
-        // every needle.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(Str::class, 'contains');
-        $parameters = $method->getParameters();
-        $trimLocationParam = $parameters[3];
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $hasDefault = $trimLocationParam->isDefaultValueAvailable();
-        $defaultValue = $trimLocationParam->getDefaultValue();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($hasDefault);
-        $this->assertSame(StrTrimLocation::TRIM_NONE, $defaultValue);
+        $this->assertNull($defaultValue);
     }
 
     // ================================================================
@@ -2049,7 +2019,7 @@ class StrTest extends TestCase
 
     // ================================================================
     //
-    // Behaviour — contains() needle trimming
+    // Behaviour — contains() empty / whitespace needle (no transformer)
     //
     // ----------------------------------------------------------------
 
@@ -2081,15 +2051,15 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('does not trim the needle when trimLocation defaults to TRIM_NONE')]
-    public function test_contains_does_not_trim_needle_by_default(): void
+    #[TestDox('searches the needle verbatim when no transformer is given')]
+    public function test_contains_searches_needle_verbatim_by_default(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // contains() defaults to TRIM_NONE, so surrounding whitespace is
-        // part of the search term. A padded needle is searched verbatim
-        // and is not found inside the unpadded haystack.
+        // with no transformer, surrounding whitespace is part of the
+        // search term. A padded needle is searched verbatim and is not
+        // found inside the unpadded haystack.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -2109,15 +2079,49 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('trims the needle before searching when trimLocation is TRIM_START_AND_END')]
-    public function test_contains_trims_needle_when_asked(): void
+    #[TestDox('searches for a whitespace-only needle when no transformer is given')]
+    public function test_contains_whitespace_needle_searched_by_default(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // when the caller opts in with TRIM_START_AND_END, the needle's
-        // surrounding whitespace is stripped before the search, so the
-        // padded needle now matches the unpadded haystack.
+        // with no transformer, a whitespace-only needle is a legitimate
+        // search term, and is found when the haystack contains that run
+        // of whitespace.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'a   b';
+        $needle = '   ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — contains() with a transformer
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('transforms the needle before searching when a transformer is given')]
+    public function test_contains_transforms_needle_when_asked(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a caller who passes a trimming transformer strips the needle's
+        // surrounding whitespace before the search, so the padded needle
+        // now matches the unpadded haystack.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -2132,7 +2136,7 @@ class StrTest extends TestCase
         $actual = Str::contains(
             $haystack,
             $needle,
-            trimLocation: StrTrimLocation::TRIM_START_AND_END,
+            fn(string $v) => Str::trim($v),
         );
 
         // ----------------------------------------------------------------
@@ -2141,14 +2145,14 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('returns false when a whitespace-only needle is trimmed away')]
-    public function test_contains_whitespace_needle_trimmed_away(): void
+    #[TestDox('returns false when a trimming transformer reduces the needle to empty')]
+    public function test_contains_transformer_empties_needle(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // a whitespace-only needle trims down to nothing when trimming
-        // is enabled; an empty needle can never be "contained", so
+        // a whitespace-only needle reduces to nothing under a trimming
+        // transformer; an empty needle can never be "contained", so
         // contains() reports false.
 
         // ----------------------------------------------------------------
@@ -2164,7 +2168,7 @@ class StrTest extends TestCase
         $actual = Str::contains(
             $haystack,
             $needle,
-            trimLocation: StrTrimLocation::TRIM_START_AND_END,
+            fn(string $v) => Str::trim($v),
         );
 
         // ----------------------------------------------------------------
@@ -2173,27 +2177,90 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('searches for a whitespace-only needle when trimming is off')]
-    public function test_contains_whitespace_needle_searched_when_not_trimmed(): void
+    #[TestDox('applies the transformer to the needle only, never the haystack')]
+    public function test_contains_transformer_does_not_touch_haystack(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // with the default TRIM_NONE, a whitespace-only needle is not
-        // trimmed away — it is a legitimate search term, and is found
-        // when the haystack contains that run of whitespace.
+        // the transformer is applied to the needle alone. Here a trimming
+        // transformer strips the needle's padding, but the haystack's own
+        // surrounding whitespace is left intact — so the trimmed needle
+        // is found inside the still-padded haystack.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $haystack = 'a   b';
-        $needle = '   ';
+        $haystack = '   hello   ';
+        $needle = '  hello  ';
         $expected = true;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = Str::contains($haystack, $needle);
+        $actual = Str::contains(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when the string haystack is empty')]
+    public function test_contains_skips_transformer_for_empty_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty haystack short-circuits to false before transforming.
+        // We prove the transformer never runs by making it throw: if it
+        // fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains('', 'x', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when the array haystack is empty')]
+    public function test_contains_skips_transformer_for_empty_array_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty array haystack short-circuits to false before
+        // transforming. We prove the transformer never runs by making it
+        // throw: if it fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::contains([], 'x', $exploding);
 
         // ----------------------------------------------------------------
         // test the results
