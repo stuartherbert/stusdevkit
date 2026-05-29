@@ -164,6 +164,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- Str::isEmpty() docblock now explains transformer result is temporary ([79b7509](https://github.com/stuartherbert/stusdevkit/commit/79b7509)) — Stuart Herbert <stuart@stuartherbert.com>
 - update README now that we have manual pages ([7bbe0d7](https://github.com/stuartherbert/stusdevkit/commit/7bbe0d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -217,7 +218,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- Str::contains() now uses the transformer approach ([011944c](https://github.com/stuartherbert/stusdevkit/commit/011944c)) — Stuart Herbert <stuart@stuartherbert.com>
+- Str::contains() now uses the transformer approach ([e4491d4](https://github.com/stuartherbert/stusdevkit/commit/e4491d4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([c8db9c5](https://github.com/stuartherbert/stusdevkit/commit/c8db9c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -272,6 +272,10 @@ class Str
      * - **Keep transformers pure.** Your transformer may not get
      *   called. Any transformer that has side effects will cause
      *   subtle bugs.
+     * - **Your transformer's result is temporary.** If you want
+     *   access to the result of `$transformer($input)`, call it
+     *   yourself first, and don't pass `$transformer` into
+     *   `isEmpty()` at all.
      *
      * @param string|null $input
      *      the string to check for emptiness
