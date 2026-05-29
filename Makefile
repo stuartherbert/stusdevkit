@@ -51,12 +51,18 @@ composer-update: ## Run composer update
 	@docker compose run --rm -q test-container-85 composer update
 	@docker compose run --rm -q test-container-85 composer outdated
 
+composer-update-lock: ## Run composer update --lock
+	@docker compose run --rm -q test-container-85 composer update --lock
+
 composer-bump-deps: ## Update deps and check outdated
 	@docker compose run --rm -q test-container-85 composer update --bump-after-update
 	@docker compose run --rm -q test-container-85 composer outdated
 
 composer-dumpautoload: ## Composer Dumpautoload
 	@docker compose run --rm -q test-container-85 composer dumpautoload
+
+composer-audit: ## Run composer audit
+	@docker compose run --rm -q test-container-85 composer audit
 
 clean: ## Remove all Docker containers, volumes, etc
 	docker compose down -v --rmi all --remove-orphans
