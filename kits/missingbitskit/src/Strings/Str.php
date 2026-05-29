@@ -189,10 +189,7 @@ class Str
 
         // special case - have we been passed an empty `$needle`
         // after all?
-        if (self::isEmpty(
-            input: $needle,
-            trimLocation: StrTrimLocation::TRIM_NONE,
-        )) {
+        if (self::isEmpty($needle)) {
             return false;
         }
 
@@ -217,48 +214,41 @@ class Str
     }
 
     /**
-     * `isEmpty()` checks to see if the given `input` string is really
-     * empty or not.
+     * `isEmpty()` checks whether the given `$input` string is empty.
      *
-     * By default, `isEmpty()` will run `Str::trim()` on the given
-     * input string when checking too. You can change this behaviour
-     * using the `$trimLocation` parameter.
+     * By default it tests `$input` exactly as given: only `null` or a
+     * zero-length string counts as empty. Pass a `$transformer` to
+     * transform `$input` first - for example, a trimming transformer
+     * makes a whitespace-only string count as empty.
      *
      * `isEmpty()` supports `null` `$input` values too, for added
      * convenience.
      *
      * Here Be Dragons:
      *
-     * - **Empty `$trimChars` is a silent no-op.** Hand `isEmpty()`
-     *   an empty `$trimChars` and `Str::trim()` has nothing to
-     *   strip, so a whitespace-only `$input` survives intact and
-     *   `isEmpty()` cheerfully reports `false`. If you want
-     *   whitespace to count as empty, leave `$trimChars` at its
-     *   default - don't blank it out.
-     * - **Inherits every `Str::trim()` hazard.** Whenever trimming
-     *   happens, the dragons listed on `Str::trim()` apply here
-     *   too - most notably, **invalid UTF-8 is undefined
-     *   behaviour**. Validate at your system boundary before
-     *   calling.
+     * - **Your `$transformer` is skipped for `null` and zero-length
+     *   input.** `isEmpty()` answers the cheap cases (`null`,
+     *   zero-length) before it transforms, so a transformer with side
+     *   effects will not fire for those inputs.
+     * - **Keep transformers pure.** Your transformer may not get
+     *   called. Any transformer that has side effects will cause
+     *   subtle bugs.
      *
      * @param string|null $input
-     *      the string to check
-     * @param string $trimChars
-     *      set of characters to `Str::trim()` from the string before
-     *      checking for emptiness
-     * @param StrTrimLocation $trimLocation
-     *      where (if anywhere) do you want `Str::trim()` to be applied to
-     *      your `input` string?
+     *      the string to check for emptiness
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$input` before the
+     *      post-transform emptiness check (e.g. a trimming
+     *      transformer). `$input` is the only value passed to it.
      * @return bool
      * - `true` if `$input` is null
-     * - `true` if `$input`'s length is zero before trimming
-     * - `true` if `$input`'s length is zero after optional trimming
+     * - `true` if `$input`'s length is zero before transforming
+     * - `true` if `$input`'s length is zero after transforming
      * - `false` otherwise
      */
     public static function isEmpty(
         string|null $input,
-        string $trimChars = self::TRIM_DEFAULT_CHARS,
-        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_START_AND_END,
+        ?callable $transformer = null,
     ): bool
     {
         // special case - we received a `null`
@@ -267,15 +257,18 @@ class Str
         }
 
         // special case - obviously-empty string
+        //
+        // we answer this before transforming, so a cheap result never
+        // pays for an (optionally expensive) transformer call.
         if (strlen($input) === 0) {
             return true;
         }
 
-        // general case - we need to remove any trimChars from the
-        // front and end first
-        if ($trimLocation !== StrTrimLocation::TRIM_NONE) {
-            $trimmedInput = self::trim($input, $trimChars, $trimLocation);
-            if (strlen($trimmedInput) === 0) {
+        // general case - apply the caller's transformer (if any), then
+        // re-check. e.g. a trimming transformer turns "  " into "".
+        if ($transformer !== null) {
+            $transformedInput = $transformer($input);
+            if (strlen($transformedInput) === 0) {
                 return true;
             }
         }

@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::contains() ([5236c26](https://github.com/stuartherbert/stusdevkit/commit/5236c26)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::contains() ([00ad1e5](https://github.com/stuartherbert/stusdevkit/commit/00ad1e5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::isEmpty() ([c0bcd15](https://github.com/stuartherbert/stusdevkit/commit/c0bcd15)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::trim() ([873e2a2](https://github.com/stuartherbert/stusdevkit/commit/873e2a2)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsClosedResource ([6ce47be](https://github.com/stuartherbert/stusdevkit/commit/6ce47be)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -214,6 +214,12 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### MissingBitsKit
+
+- Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([793825c](https://github.com/stuartherbert/stusdevkit/commit/793825c)) — Stuart Herbert <stuart@stuartherbert.com>
+- Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
+- move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
 - remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -235,11 +241,6 @@ This CHANGELOG is automatically compiled.
 - move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
 - moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
 - introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### MissingBitsKit
-
-- Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
-- move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 

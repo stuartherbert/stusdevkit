@@ -1,8 +1,8 @@
 # Str::isEmpty()
 
-> `public static isEmpty(string|null $input, string $trimChars = self::TRIM_DEFAULT_CHARS, StrTrimLocation $trimLocation = StrTrimLocation::TRIM_START_AND_END): bool`
+> `public static isEmpty(string|null $input, ?callable $transformer = null): bool`
 
-Checks whether the given input string is really empty or not.
+Checks whether the given input string is empty.
 
 **Since:** _Upcoming Release_
 
@@ -18,68 +18,40 @@ namespace StusDevKit\MissingBitsKit\Strings;
 
 class Str
 {
-    public const TRIM_DEFAULT_CHARS =
-        "\u{0000}"   // NUL
-        . "\u{0009}" // HORIZONTAL TAB
-        . "\u{000A}" // LINE FEED
-        . "\u{000B}" // VERTICAL TAB
-        . "\u{000C}" // FORM FEED
-        . "\u{000D}" // CARRIAGE RETURN
-        . "\u{0020}" // SPACE
-        . "\u{0085}" // NEXT LINE (NEL)
-        . "\u{00A0}" // NO-BREAK SPACE
-        . "\u{1680}" // OGHAM SPACE MARK
-        . "\u{2000}" // EN QUAD
-        . "\u{2001}" // EM QUAD
-        . "\u{2002}" // EN SPACE
-        . "\u{2003}" // EM SPACE
-        . "\u{2004}" // THREE-PER-EM SPACE
-        . "\u{2005}" // FOUR-PER-EM SPACE
-        . "\u{2006}" // SIX-PER-EM SPACE
-        . "\u{2007}" // FIGURE SPACE
-        . "\u{2008}" // PUNCTUATION SPACE
-        . "\u{2009}" // THIN SPACE
-        . "\u{200A}" // HAIR SPACE
-        . "\u{2028}" // LINE SEPARATOR
-        . "\u{2029}" // PARAGRAPH SEPARATOR
-        . "\u{202F}" // NARROW NO-BREAK SPACE
-        . "\u{205F}" // MEDIUM MATHEMATICAL SPACE
-        . "\u{3000}" // IDEOGRAPHIC SPACE
-    ;
-
     /**
      * @param string|null $input
-     *      the string to check
-     * @param string $trimChars
-     *      set of characters to `Str::trim()` from the string before
-     *      checking for emptiness
-     * @param StrTrimLocation $trimLocation
-     *      where (if anywhere) do you want `Str::trim()` to be applied to
-     *      your `input` string?
+     *      the string to check for emptiness
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$input` before the
+     *      post-transform emptiness check (e.g. a trimming
+     *      transformer). `$input` is the only value passed to it.
      * @return bool
      * - `true` if `$input` is null
-     * - `true` if `$input`'s length is zero before trimming
-     * - `true` if `$input`'s length is zero after optional trimming
+     * - `true` if `$input`'s length is zero before transforming
+     * - `true` if `$input`'s length is zero after transforming
      * - `false` otherwise
      */
     public static function isEmpty(
         string|null $input,
-        string $trimChars = self::TRIM_DEFAULT_CHARS,
-        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_START_AND_END,
+        ?callable $transformer = null,
     ): bool
 }
 ```
 
 ## Description
 
-`isEmpty()` checks whether the given input string is really empty or
-not.
+`isEmpty()` checks whether the given input string is empty.
 
-By default it runs [`Str::trim()`](trim.md) on the input before
-checking, so a string that contains only whitespace counts as empty.
-You can change this behaviour with the `$trimLocation` parameter — pass
-[`StrTrimLocation::TRIM_NONE`](../StrTrimLocation/README.md) for a
-byte-exact check that does no trimming at all.
+By default it tests `$input` exactly as given: only `null` or a
+zero-length string counts as empty. Whitespace-only input is **not**
+empty by default.
+
+Pass a `$transformer` to transform `$input` before the check — for
+example, a trimming transformer (`fn($v) => Str::trim($v)`, see
+[`Str::trim()`](trim.md)) makes a whitespace-only string count as
+empty. If you'd rather spell out "no transformation" explicitly than
+rely on the `null` default, pass [`Str::identity()`](identity.md) — it
+is behaviourally identical to passing nothing.
 
 For added convenience, `isEmpty()` also accepts a `null` `$input`,
 which is always reported as empty — so callers do not have to guard
@@ -89,29 +61,25 @@ their own null checks before calling.
 
 **`$input`** (`string|null`)
 
-The string to check. A `null` value is always treated as empty.
+The string to check for emptiness. A `null` value is always treated as
+empty.
 
-**`$trimChars`** (`string`, optional, default: `self::TRIM_DEFAULT_CHARS`)
+**`$transformer`** (`callable(string): string`, optional, default: `null`)
 
-The set of characters to [`Str::trim()`](trim.md) from the string
-before checking for emptiness. Defaults to
-[`Str::TRIM_DEFAULT_CHARS`](README.md) — the Unicode `White_Space`
-property plus NUL.
-
-**`$trimLocation`** ([`StrTrimLocation`](../StrTrimLocation/README.md), optional, default: `StrTrimLocation::TRIM_START_AND_END`)
-
-Where (if anywhere) you want [`Str::trim()`](trim.md) to be applied to
-the input string before the emptiness check. Pass
-[`StrTrimLocation::TRIM_NONE`](../StrTrimLocation/README.md) to skip
-trimming entirely.
+An optional transform applied to `$input` before the (post-transform)
+emptiness check. `$input` is the only value passed to it. Pass a
+trimming transformer to treat whitespace-only input as empty, or
+[`Str::identity()`](identity.md) for an explicit no-op. With the
+default `null`, no transform is applied and `$input` is tested exactly
+as given.
 
 ## Return Values
 
 Returns a `bool`:
 
 - `true` if `$input` is null.
-- `true` if `$input`'s length is zero before trimming.
-- `true` if `$input`'s length is zero after optional trimming.
+- `true` if `$input`'s length is zero before transforming.
+- `true` if `$input`'s length is zero after transforming.
 - `false` otherwise.
 
 ## Errors/Exceptions
@@ -120,15 +88,12 @@ _None._
 
 ## Here Be Dragons
 
-- **Empty `$trimChars` is a silent no-op.** Hand `isEmpty()` an empty
-  `$trimChars` and [`Str::trim()`](trim.md) has nothing to strip, so a
-  whitespace-only `$input` survives intact and `isEmpty()` cheerfully
-  reports `false`. If you want whitespace to count as empty, leave
-  `$trimChars` at its default - don't blank it out.
-- **Inherits every [`Str::trim()`](trim.md) hazard.** Whenever
-  trimming happens, the dragons listed on [`Str::trim()`](trim.md)
-  apply here too - most notably, **invalid UTF-8 is undefined
-  behaviour**. Validate at your system boundary before calling.
+- **Your `$transformer` is skipped for `null` and already-empty
+  input.** `isEmpty()` answers the cheap cases (`null`, zero-length)
+  before it transforms, so a transformer with side effects will not
+  fire for those inputs.
+- **Keep transformers pure.** Your transformer may not get called.
+  Any transformer that has side effects will cause subtle bugs.
 
 ## Examples
 
@@ -140,25 +105,23 @@ _None yet._
 StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::isEmpty() as a public method
  ✔ ::isEmpty() is declared public static
- ✔ ::isEmpty() takes parameters [input, trimChars, trimLocation]
+ ✔ ::isEmpty() takes parameters [input, transformer]
  ✔ ::isEmpty() returns bool
- ✔ ::isEmpty() $trimChars defaults to Str::TRIM_DEFAULT_CHARS
- ✔ ::isEmpty() $trimLocation defaults to StrTrimLocation::TRIM_START_AND_END
+ ✔ ::isEmpty() $transformer defaults to null
  ✔ returns true when input is null
  ✔ returns true when input is a zero-length string
- ✔ returns true when input is only ASCII whitespace
- ✔ returns true when input is only a Unicode whitespace character
+ ✔ returns false when input is only whitespace and no transformer is given
  ✔ returns false when input contains visible content
- ✔ TRIM_NONE returns false when input is only whitespace
- ✔ TRIM_NONE returns true when input is a zero-length string
- ✔ returns true when input is only caller-supplied trim chars
- ✔ returns false when input contains a character outside caller-supplied trim chars
- ✔ returns false when $trimChars is empty and input is only whitespace
+ ✔ returns true when a trimming transformer reduces the input to empty
+ ✔ returns true when a trimming transformer reduces a Unicode-whitespace input to empty
+ ✔ returns false when the transformer leaves visible content
+ ✔ does not invoke the transformer when input is null
+ ✔ does not invoke the transformer when input is already zero-length
 ```
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:258`](../../../../kits/missingbitskit/src/Strings/Str.php#L258)
+[`kits/missingbitskit/src/Strings/Str.php:250`](../../../../kits/missingbitskit/src/Strings/Str.php#L250)
 
 ## Changelog
 
@@ -166,9 +129,9 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`Str::trim()`](trim.md) — the trimming primitive `isEmpty()` runs before checking
+- [`Str::trim()`](trim.md) — the transform you typically pass to treat whitespace as empty
+- [`Str::identity()`](identity.md) — the no-op transformer, for an explicit "no transformation"
 - [`Str::contains()`](contains.md) — uses `isEmpty()` to reject empty needles before searching
-- [`StrTrimLocation`](../StrTrimLocation/README.md) — selects which end(s) get trimmed before the check
 
 ## Issues
 

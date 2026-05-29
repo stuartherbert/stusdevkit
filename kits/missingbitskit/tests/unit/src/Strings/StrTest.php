@@ -48,6 +48,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
+use RuntimeException;
 use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\MissingBitsKit\Strings\StrTrimLocation;
 
@@ -1002,7 +1003,7 @@ class StrTest extends TestCase
         $this->assertTrue($isStatic);
     }
 
-    #[TestDox('::isEmpty() takes parameters [input, trimChars, trimLocation]')]
+    #[TestDox('::isEmpty() takes parameters [input, transformer]')]
     public function test_isEmpty_parameter_names(): void
     {
         // ----------------------------------------------------------------
@@ -1016,7 +1017,7 @@ class StrTest extends TestCase
         // setup your test
 
         $method = new ReflectionMethod(Str::class, 'isEmpty');
-        $expected = ['input', 'trimChars', 'trimLocation'];
+        $expected = ['input', 'transformer'];
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1059,73 +1060,40 @@ class StrTest extends TestCase
         $this->assertSame('bool', $returnType->getName());
     }
 
-    #[TestDox('::isEmpty() $trimChars defaults to Str::TRIM_DEFAULT_CHARS')]
-    public function test_isEmpty_trimChars_default(): void
+    #[TestDox('::isEmpty() $transformer defaults to null')]
+    public function test_isEmpty_transformer_default(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // the default value of $trimChars is load-bearing for every
-        // caller that omits it. Changing the default silently shifts
-        // behaviour, so we pin it here.
+        // the default of `null` is the contract: with no transformer,
+        // isEmpty() tests the input exactly as given. Pin it so a
+        // future refactor cannot silently start transforming every
+        // input.
 
         // ----------------------------------------------------------------
         // setup your test
 
         $method = new ReflectionMethod(Str::class, 'isEmpty');
         $parameters = $method->getParameters();
-        $trimCharsParam = $parameters[1];
+        $transformerParam = $parameters[1];
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $hasDefault = $trimCharsParam->isDefaultValueAvailable();
-        $defaultValue = $trimCharsParam->getDefaultValue();
+        $hasDefault = $transformerParam->isDefaultValueAvailable();
+        $defaultValue = $transformerParam->getDefaultValue();
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertTrue($hasDefault);
-        $this->assertSame(Str::TRIM_DEFAULT_CHARS, $defaultValue);
-    }
-
-    #[TestDox('::isEmpty() $trimLocation defaults to StrTrimLocation::TRIM_START_AND_END')]
-    public function test_isEmpty_trimLocation_default(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // the default trimLocation determines what happens when a
-        // caller writes `Str::isEmpty($input)` with no third argument.
-        // Pin the default so a future refactor cannot silently change
-        // it from "trim both ends" to anything else.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $method = new ReflectionMethod(Str::class, 'isEmpty');
-        $parameters = $method->getParameters();
-        $trimLocationParam = $parameters[2];
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $hasDefault = $trimLocationParam->isDefaultValueAvailable();
-        $defaultValue = $trimLocationParam->getDefaultValue();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue($hasDefault);
-        $this->assertSame(
-            StrTrimLocation::TRIM_START_AND_END,
-            $defaultValue,
-        );
+        $this->assertNull($defaultValue);
     }
 
     // ================================================================
     //
-    // Behaviour — isEmpty() (default trimLocation and trimChars)
+    // Behaviour — isEmpty() (no transformer)
     //
     // ----------------------------------------------------------------
 
@@ -1162,9 +1130,9 @@ class StrTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // a zero-length string is empty before any trimming happens —
-        // this is the fast-path that short-circuits before trim() is
-        // ever called.
+        // a zero-length string is empty regardless of any transformer —
+        // this is the fast-path that short-circuits before the
+        // transformer is ever called.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1183,51 +1151,21 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('returns true when input is only ASCII whitespace')]
-    public function test_isEmpty_ascii_whitespace_returns_true(): void
+    #[TestDox('returns false when input is only whitespace and no transformer is given')]
+    public function test_isEmpty_whitespace_without_transformer_returns_false(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // by default isEmpty() trims the input first, so a string of
-        // only ASCII whitespace trims down to nothing and counts as
-        // empty.
+        // with no transformer, isEmpty() tests the input exactly as
+        // given. A whitespace-only string has non-zero length, so it
+        // is NOT empty. This is the literal-emptiness default.
 
         // ----------------------------------------------------------------
         // setup your test
 
         $input = " \t\n\r ";
-        $expected = true;
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actual = Str::isEmpty($input);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($expected, $actual);
-    }
-
-    #[TestDox('returns true when input is only a Unicode whitespace character')]
-    public function test_isEmpty_unicode_whitespace_returns_true(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // TRIM_DEFAULT_CHARS covers the full Unicode whitespace set,
-        // so a string of only NBSP (U+00A0) trims to nothing and
-        // counts as empty — proving isEmpty() is not limited to ASCII
-        // whitespace.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // shorthand
-        $nbsp = "\u{00A0}";
-        $input = $nbsp . $nbsp;
-        $expected = true;
+        $expected = false;
 
         // ----------------------------------------------------------------
         // perform the change
@@ -1246,9 +1184,8 @@ class StrTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // when the input has non-whitespace content left after
-        // trimming, it is not empty — even when surrounded by
-        // whitespace padding.
+        // a string with non-whitespace content is never empty, with or
+        // without a transformer.
 
         // ----------------------------------------------------------------
         // setup your test
@@ -1269,63 +1206,30 @@ class StrTest extends TestCase
 
     // ================================================================
     //
-    // Behaviour — isEmpty() with StrTrimLocation::TRIM_NONE
+    // Behaviour — isEmpty() with a transformer
     //
     // ----------------------------------------------------------------
 
-    #[TestDox('TRIM_NONE returns false when input is only whitespace')]
-    public function test_isEmpty_TRIM_NONE_whitespace_returns_false(): void
+    #[TestDox('returns true when a trimming transformer reduces the input to empty')]
+    public function test_isEmpty_trimming_transformer_empties_input(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // TRIM_NONE turns off trimming, so a whitespace-only string is
-        // measured as-is — it has a non-zero length, so it is not
-        // empty. This is a byte-exact emptiness check.
+        // a caller who wants whitespace-only input to count as empty
+        // passes a trimming transformer; isEmpty() applies it, sees a
+        // zero-length result, and reports empty.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $input = '   ';
-        $expected = false;
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actual = Str::isEmpty(
-            $input,
-            trimLocation: StrTrimLocation::TRIM_NONE,
-        );
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertSame($expected, $actual);
-    }
-
-    #[TestDox('TRIM_NONE returns true when input is a zero-length string')]
-    public function test_isEmpty_TRIM_NONE_zero_length_returns_true(): void
-    {
-        // ----------------------------------------------------------------
-        // explain your test
-
-        // even with trimming turned off, a genuinely zero-length
-        // string is still empty — the zero-length fast-path runs
-        // before the trimLocation branch.
-
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $input = '';
+        $input = " \t\n\r ";
         $expected = true;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = Str::isEmpty(
-            $input,
-            trimLocation: StrTrimLocation::TRIM_NONE,
-        );
+        $actual = Str::isEmpty($input, fn(string $v) => Str::trim($v));
 
         // ----------------------------------------------------------------
         // test the results
@@ -1333,33 +1237,29 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    // ================================================================
-    //
-    // Behaviour — isEmpty() with custom $trimChars
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('returns true when input is only caller-supplied trim chars')]
-    public function test_isEmpty_custom_trimChars_returns_true(): void
+    #[TestDox('returns true when a trimming transformer reduces a Unicode-whitespace input to empty')]
+    public function test_isEmpty_trimming_transformer_empties_unicode_whitespace(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // a caller can supply their own trim set; a string made up
-        // entirely of those characters trims down to nothing and
-        // counts as empty.
+        // Str::trim()'s default char set covers the full Unicode
+        // whitespace set, so a trimming transformer empties a string of
+        // only NBSP (U+00A0) — proving the transformer is not limited
+        // to ASCII whitespace.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $input = 'xxx';
-        $trimChars = 'x';
+        // shorthand
+        $nbsp = "\u{00A0}";
+        $input = $nbsp . $nbsp;
         $expected = true;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = Str::isEmpty($input, $trimChars);
+        $actual = Str::isEmpty($input, fn(string $v) => Str::trim($v));
 
         // ----------------------------------------------------------------
         // test the results
@@ -1367,26 +1267,26 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    #[TestDox('returns false when input contains a character outside caller-supplied trim chars')]
-    public function test_isEmpty_custom_trimChars_content_returns_false(): void
+    #[TestDox('returns false when the transformer leaves visible content')]
+    public function test_isEmpty_transformer_leaves_content_returns_false(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // only the caller-supplied characters are trimmed; any other
-        // character survives and leaves the string non-empty.
+        // when the transformer leaves any content behind, the input is
+        // not empty. Here a transformer that trims `x` from "xxoxx"
+        // leaves "o".
 
         // ----------------------------------------------------------------
         // setup your test
 
         $input = 'xxoxx';
-        $trimChars = 'x';
         $expected = false;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = Str::isEmpty($input, $trimChars);
+        $actual = Str::isEmpty($input, fn(string $v) => Str::trim($v, 'x'));
 
         // ----------------------------------------------------------------
         // test the results
@@ -1394,34 +1294,57 @@ class StrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    // ================================================================
-    //
-    // Behaviour — isEmpty() Here Be Dragons
-    //
-    // ----------------------------------------------------------------
-
-    #[TestDox('returns false when $trimChars is empty and input is only whitespace')]
-    public function test_isEmpty_empty_trimChars_with_whitespace_returns_false(): void
+    #[TestDox('does not invoke the transformer when input is null')]
+    public function test_isEmpty_skips_transformer_for_null(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // an empty $trimChars means trim() has nothing to strip, so a
-        // whitespace-only string survives intact and is reported as
-        // NOT empty. The docblock pins this as a footgun, so we lock
-        // it down here — any future change must update both.
+        // null short-circuits to empty before transforming. We prove
+        // the transformer never runs by making it throw: if it fired,
+        // the exception would fail the test.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $input = '   ';
-        $trimChars = '';
-        $expected = false;
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = true;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actual = Str::isEmpty($input, $trimChars);
+        $actual = Str::isEmpty(null, $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when input is already zero-length')]
+    public function test_isEmpty_skips_transformer_for_zero_length(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a zero-length string short-circuits to empty before
+        // transforming. We prove the transformer never runs by making it
+        // throw: if it fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty('', $exploding);
 
         // ----------------------------------------------------------------
         // test the results
