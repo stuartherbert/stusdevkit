@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added Str::isEmpty() ([90d22d9](https://github.com/stuartherbert/stusdevkit/commit/90d22d9)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::trim() ([873e2a2](https://github.com/stuartherbert/stusdevkit/commit/873e2a2)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsClosedResource ([6ce47be](https://github.com/stuartherbert/stusdevkit/commit/6ce47be)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsComparablePair ([8c59cdd](https://github.com/stuartherbert/stusdevkit/commit/8c59cdd)) — Stuart Herbert <stuart@stuartherbert.com>

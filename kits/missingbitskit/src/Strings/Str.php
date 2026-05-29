@@ -112,6 +112,75 @@ class Str
     ;
 
     /**
+     * `isEmpty()` checks to see if the given `input` string is really
+     * empty or not.
+     *
+     * By default, `isEmpty()` will run `Str::trim()` on the given
+     * input string when checking too. You can change this behaviour
+     * using the `$trimLocation` parameter.
+     *
+     * `isEmpty()` supports `null` `$input` values too, for added
+     * convenience.
+     *
+     * Here Be Dragons:
+     *
+     * - **Empty `$trimChars` is a silent no-op.** Hand `isEmpty()`
+     *   an empty `$trimChars` and `Str::trim()` has nothing to
+     *   strip, so a whitespace-only `$input` survives intact and
+     *   `isEmpty()` cheerfully reports `false`. If you want
+     *   whitespace to count as empty, leave `$trimChars` at its
+     *   default - don't blank it out.
+     * - **Inherits every `Str::trim()` hazard.** Whenever trimming
+     *   happens, the dragons listed on `Str::trim()` apply here
+     *   too - most notably, **invalid UTF-8 is undefined
+     *   behaviour**. Validate at your system boundary before
+     *   calling.
+     *
+     * @param string|null $input
+     *      the string to check
+     * @param string $trimChars
+     *      set of characters to `Str::trim()` from the string before
+     *      checking for emptiness
+     * @param StrTrimLocation $trimLocation
+     *      where (if anywhere) do you want `Str::trim()` to be applied to
+     *      your `input` string?
+     * @return bool
+     * - `true` if `$input` is null
+     * - `true` if `$input`'s length is zero before trimming
+     * - `true` if `$input`'s length is zero after optional trimming
+     * - `false` otherwise
+     */
+    public static function isEmpty(
+        string|null $input,
+        string $trimChars = self::TRIM_DEFAULT_CHARS,
+        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_START_AND_END,
+    ): bool
+    {
+        // special case - we received a `null`
+        if ($input === null) {
+            return true;
+        }
+
+        // special case - obviously-empty string
+        if (strlen($input) === 0) {
+            return true;
+        }
+
+        // general case - we need to remove any trimChars from the
+        // front and end first
+        if ($trimLocation !== StrTrimLocation::TRIM_NONE) {
+            $trimmedInput = self::trim($input, $trimChars, $trimLocation);
+            if (strlen($trimmedInput) === 0) {
+                return true;
+            }
+        }
+
+        // if we get here, we've run out of reasons for a string to be
+        // considered empty
+        return false;
+    }
+
+    /**
      * `trim()` strips any of the individual UTF-8 characters in
      * `$trimChars` from one or both ends of `$input`. It stops
      * walking each end as soon as it encounters a character that

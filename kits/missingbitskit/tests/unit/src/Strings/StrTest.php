@@ -147,6 +147,39 @@ class StrTest extends TestCase
         $this->assertContains('trim', $methodNames);
     }
 
+    #[TestDox('publishes ::isEmpty() as a public method')]
+    public function test_publishes_isEmpty(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // isEmpty() is part of Str's published API; this test catches
+        // accidental renames or scope changes (e.g. dropping `public`)
+        // that would silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('isEmpty', $methodNames);
+    }
+
     #[TestDox('publishes ::TRIM_DEFAULT_CHARS as a public constant')]
     public function test_publishes_TRIM_DEFAULT_CHARS(): void
     {
@@ -894,6 +927,468 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::trim($input, $trimChars);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — isEmpty()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::isEmpty() is declared public static')]
+    public function test_isEmpty_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // isEmpty() is consumed as a static utility — callers write
+        // `Str::isEmpty(...)`, never `(new Str)->isEmpty(...)`.
+        // Dropping `static` or narrowing visibility would break every
+        // call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'isEmpty');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::isEmpty() takes parameters [input, trimChars, trimLocation]')]
+    public function test_isEmpty_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // parameter names and order are part of the contract because
+        // callers can use PHP's named-argument syntax. Renaming or
+        // reordering breaks those call sites.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'isEmpty');
+        $expected = ['input', 'trimChars', 'trimLocation'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::isEmpty() returns bool')]
+    public function test_isEmpty_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the declared return type is part of the contract — callers
+        // rely on it for type inference and for PHPStan to validate
+        // their own code.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'isEmpty');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('bool', $returnType->getName());
+    }
+
+    #[TestDox('::isEmpty() $trimChars defaults to Str::TRIM_DEFAULT_CHARS')]
+    public function test_isEmpty_trimChars_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default value of $trimChars is load-bearing for every
+        // caller that omits it. Changing the default silently shifts
+        // behaviour, so we pin it here.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'isEmpty');
+        $parameters = $method->getParameters();
+        $trimCharsParam = $parameters[1];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $trimCharsParam->isDefaultValueAvailable();
+        $defaultValue = $trimCharsParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertSame(Str::TRIM_DEFAULT_CHARS, $defaultValue);
+    }
+
+    #[TestDox('::isEmpty() $trimLocation defaults to StrTrimLocation::TRIM_START_AND_END')]
+    public function test_isEmpty_trimLocation_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default trimLocation determines what happens when a
+        // caller writes `Str::isEmpty($input)` with no third argument.
+        // Pin the default so a future refactor cannot silently change
+        // it from "trim both ends" to anything else.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'isEmpty');
+        $parameters = $method->getParameters();
+        $trimLocationParam = $parameters[2];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $trimLocationParam->isDefaultValueAvailable();
+        $defaultValue = $trimLocationParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertSame(
+            StrTrimLocation::TRIM_START_AND_END,
+            $defaultValue,
+        );
+    }
+
+    // ================================================================
+    //
+    // Behaviour — isEmpty() (default trimLocation and trimChars)
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when input is null')]
+    public function test_isEmpty_null_returns_true(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // isEmpty() accepts null for convenience, so callers do not
+        // have to guard their own null checks before calling. A null
+        // input is, by definition, empty.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = null;
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns true when input is a zero-length string')]
+    public function test_isEmpty_zero_length_returns_true(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a zero-length string is empty before any trimming happens —
+        // this is the fast-path that short-circuits before trim() is
+        // ever called.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns true when input is only ASCII whitespace')]
+    public function test_isEmpty_ascii_whitespace_returns_true(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // by default isEmpty() trims the input first, so a string of
+        // only ASCII whitespace trims down to nothing and counts as
+        // empty.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = " \t\n\r ";
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns true when input is only a Unicode whitespace character')]
+    public function test_isEmpty_unicode_whitespace_returns_true(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // TRIM_DEFAULT_CHARS covers the full Unicode whitespace set,
+        // so a string of only NBSP (U+00A0) trims to nothing and
+        // counts as empty — proving isEmpty() is not limited to ASCII
+        // whitespace.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // shorthand
+        $nbsp = "\u{00A0}";
+        $input = $nbsp . $nbsp;
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when input contains visible content')]
+    public function test_isEmpty_visible_content_returns_false(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when the input has non-whitespace content left after
+        // trimming, it is not empty — even when surrounded by
+        // whitespace padding.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '  hello  ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — isEmpty() with StrTrimLocation::TRIM_NONE
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('TRIM_NONE returns false when input is only whitespace')]
+    public function test_isEmpty_TRIM_NONE_whitespace_returns_false(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // TRIM_NONE turns off trimming, so a whitespace-only string is
+        // measured as-is — it has a non-zero length, so it is not
+        // empty. This is a byte-exact emptiness check.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '   ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty(
+            $input,
+            trimLocation: StrTrimLocation::TRIM_NONE,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('TRIM_NONE returns true when input is a zero-length string')]
+    public function test_isEmpty_TRIM_NONE_zero_length_returns_true(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // even with trimming turned off, a genuinely zero-length
+        // string is still empty — the zero-length fast-path runs
+        // before the trimLocation branch.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty(
+            $input,
+            trimLocation: StrTrimLocation::TRIM_NONE,
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — isEmpty() with custom $trimChars
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when input is only caller-supplied trim chars')]
+    public function test_isEmpty_custom_trimChars_returns_true(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a caller can supply their own trim set; a string made up
+        // entirely of those characters trims down to nothing and
+        // counts as empty.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'xxx';
+        $trimChars = 'x';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input, $trimChars);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when input contains a character outside caller-supplied trim chars')]
+    public function test_isEmpty_custom_trimChars_content_returns_false(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // only the caller-supplied characters are trimmed; any other
+        // character survives and leaves the string non-empty.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'xxoxx';
+        $trimChars = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input, $trimChars);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — isEmpty() Here Be Dragons
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when $trimChars is empty and input is only whitespace')]
+    public function test_isEmpty_empty_trimChars_with_whitespace_returns_false(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty $trimChars means trim() has nothing to strip, so a
+        // whitespace-only string survives intact and is reported as
+        // NOT empty. The docblock pins this as a footgun, so we lock
+        // it down here — any future change must update both.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '   ';
+        $trimChars = '';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input, $trimChars);
 
         // ----------------------------------------------------------------
         // test the results
