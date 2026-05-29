@@ -214,6 +214,30 @@ class Str
     }
 
     /**
+     * `identity()` returns `$input` unchanged.
+     *
+     * It is the no-op transformer. Pass `Str::identity(...)` to any
+     * Str method's `$transformer` parameter when you want to spell out
+     * "leave the input unchanged" explicitly, instead of relying on
+     * the `null` default.
+     *
+     * Originally added so that "no transformation" can be an explicit,
+     * grep-able choice at the call site - useful for readers and for
+     * automated audits of how Str is being called.
+     *
+     * @param string $input
+     *      the string to return unchanged
+     * @return string
+     *      `$input`, exactly as given
+     */
+    public static function identity(string $input): string
+    {
+        // the no-op transformer - whatever came in goes straight back
+        // out, untouched
+        return $input;
+    }
+
+    /**
      * `isEmpty()` checks whether the given `$input` string is empty.
      *
      * By default it tests `$input` exactly as given: only `null` or a

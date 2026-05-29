@@ -214,6 +214,40 @@ class StrTest extends TestCase
         $this->assertContains('contains', $methodNames);
     }
 
+    #[TestDox('publishes ::identity() as a public method')]
+    public function test_publishes_identity(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // identity() is part of Str's published API — the canonical
+        // no-op transformer callers pass to the query methods. This
+        // test catches accidental renames or scope changes that would
+        // silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('identity', $methodNames);
+    }
+
     #[TestDox('publishes ::TRIM_DEFAULT_CHARS as a public constant')]
     public function test_publishes_TRIM_DEFAULT_CHARS(): void
     {
@@ -1345,6 +1379,208 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::isEmpty('', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — identity()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::identity() is declared public static')]
+    public function test_identity_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // identity() is the no-op transformer, consumed as a static
+        // utility (`Str::identity(...)`). Dropping `static` or
+        // narrowing visibility would break every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'identity');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::identity() takes parameters [input]')]
+    public function test_identity_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // identity() is a producer, not a query — it takes only the
+        // input it returns, and (unlike the query methods) does NOT
+        // take a transformer of its own.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'identity');
+        $expected = ['input'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::identity() returns string')]
+    public function test_identity_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // identity() is a `string -> string` transformer, so it must
+        // satisfy the `callable(string): string` contract the query
+        // methods expect.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'identity');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('string', $returnType->getName());
+    }
+
+    // ================================================================
+    //
+    // Behaviour — identity()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns its input unchanged')]
+    public function test_identity_returns_input_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the whole point of identity() is that what goes in comes
+        // straight back out, byte for byte.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '  hello world  ';
+        $expected = '  hello world  ';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::identity($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns an empty string unchanged')]
+    public function test_identity_returns_empty_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the empty string is a legitimate input; identity() returns
+        // it unchanged rather than treating it specially.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = '';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::identity($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns a multibyte string unchanged')]
+    public function test_identity_returns_multibyte_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // identity() does no encoding work, so a UTF-8 string comes
+        // back byte-identical.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = "caf\u{00E9}";
+        $expected = "caf\u{00E9}";
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::identity($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('used as an isEmpty transformer, leaves a whitespace string non-empty')]
+    public function test_identity_as_isEmpty_transformer_is_a_noop(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // passing Str::identity(...) as the transformer is behaviourally
+        // identical to passing no transformer: a whitespace-only string
+        // is left intact, so isEmpty() reports it as NOT empty.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '   ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::isEmpty($input, Str::identity(...));
 
         // ----------------------------------------------------------------
         // test the results
