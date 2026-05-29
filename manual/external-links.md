@@ -61,6 +61,10 @@ pre-flight report flags it and asks the author to add an entry.
 | `fclose()` | https://www.php.net/manual/en/function.fclose.php |
 | `strrpos()` | https://www.php.net/manual/en/function.strrpos.php |
 | `substr()` | https://www.php.net/manual/en/function.substr.php |
+| `trim()` | https://www.php.net/manual/en/function.trim.php |
+| `mb_trim()` | https://www.php.net/manual/en/function.mb-trim.php |
+| `mb_ltrim()` | https://www.php.net/manual/en/function.mb-ltrim.php |
+| `mb_rtrim()` | https://www.php.net/manual/en/function.mb-rtrim.php |
 | `trait_exists()` | https://www.php.net/manual/en/function.trait-exists.php |
 | `class_uses()` | https://www.php.net/manual/en/function.class-uses.php |
 | `class_implements()` | https://www.php.net/manual/en/function.class-implements.php |

@@ -55,6 +55,7 @@
     ],
     "require": {
         "ext-intl": "*",
+        "ext-mbstring": "*",
         "phpstan/phpstan": "^2.1.38",
         "ramsey/uuid": "^4.9",
         "psr/container": "^2.0"

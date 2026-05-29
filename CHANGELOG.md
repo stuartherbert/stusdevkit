@@ -20,13 +20,9 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
-#### AssertionsKit
-
-- added assertFileMatchesRegularExpression() / assertFileDoesNotMatchRegularExpression() ([bce31d1](https://github.com/stuartherbert/stusdevkit/commit/bce31d1)) — Stuart Herbert <stuart@stuartherbert.com>
-- initial build of PHPUnit assertions API ([b9e9711](https://github.com/stuartherbert/stusdevkit/commit/b9e9711)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### MissingBitsKit
 
+- added Str::trim() ([c908e05](https://github.com/stuartherbert/stusdevkit/commit/c908e05)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsClosedResource ([6ce47be](https://github.com/stuartherbert/stusdevkit/commit/6ce47be)) — Stuart Herbert <stuart@stuartherbert.com>
 - added IsComparablePair ([8c59cdd](https://github.com/stuartherbert/stusdevkit/commit/8c59cdd)) — Stuart Herbert <stuart@stuartherbert.com>
 - added UnseenObjectException ([1e0bc88](https://github.com/stuartherbert/stusdevkit/commit/1e0bc88)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -45,6 +41,11 @@ This CHANGELOG is automatically compiled.
 - added get_class_basename() ([2014612](https://github.com/stuartherbert/stusdevkit/commit/2014612)) — Stuart Herbert <stuart@stuartherbert.com>
 - added uri_resolve_reference ([fdbc892](https://github.com/stuartherbert/stusdevkit/commit/fdbc892)) — Stuart Herbert <stuart@stuartherbert.com>
 - added `object_merge` function ([4d69919](https://github.com/stuartherbert/stusdevkit/commit/4d69919)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### AssertionsKit
+
+- added assertFileMatchesRegularExpression() / assertFileDoesNotMatchRegularExpression() ([bce31d1](https://github.com/stuartherbert/stusdevkit/commit/bce31d1)) — Stuart Herbert <stuart@stuartherbert.com>
+- initial build of PHPUnit assertions API ([b9e9711](https://github.com/stuartherbert/stusdevkit/commit/b9e9711)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ExceptionsKit
 
