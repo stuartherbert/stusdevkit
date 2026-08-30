@@ -349,9 +349,60 @@ Heavy use of generics for type safety:
 - **ALWAYS set up complete, realistic test data** - Don't use minimal parameters or default values. Understand what fields are required for valid business states and set them properly in test setup. Incomplete test objects lead to unrealistic test scenarios.
 - **Define expected behavior FIRST** - Before examining the implementation,understand the business rules and define what the correct behavior should be. Then let the tests fail if the implementation is wrong, rather than tracing through buggy code to calculate test expectations.
 
+### Triaging Issues Found During a Ticket
+
+The guiding principle: a ticket can only be merged when it is
+**fit-for-purpose**. Treat the merged work as the smallest unit
+of delivery — work can only be merged if it is safe to deploy
+to production on its own.
+
+**Issues in code created or modified for the current ticket are
+always fixed in the current ticket.** There is no "later"
+bucket for this category: a finding is either real — fix it now
+— or it is not an issue at all — dismiss it explicitly, with a
+reason. Deferring a real issue in current-ticket code to a
+follow-up ticket is not an option, and schedule pressure (a
+deploy train, a completed rehearsal) is not a reason to
+downgrade one.
+
+This applies to ALL kinds of issue, not just defects:
+
+- **Defects** — wrong behaviour, an unmet contract, a data
+  inconsistency the change introduces.
+- **Convention violations** — anything the written conventions
+  (this file, and the `docs/` files it links to) require.
+- **Non-defect quality issues** — duplication, misplaced
+  logic, a missing abstraction, unclear naming. The code
+  works; these are quality and maintenance issues, and they
+  block anyway. The reason: **merged patterns get copied.**
+  This codebase's own working practice says "use similar
+  classes as templates", so every merged file becomes a
+  template — for team members and for AI sessions alike. A
+  merged quality issue is a corrupted template: the pattern
+  propagates, and over time the codebase drifts away from
+  being easy to reason about and easy to maintain. Paying the
+  quality cost now is deliberate: this code has to last for
+  years, and time spent now is cheaper than the future
+  bug-hunts and rework that drift causes.
+
+**Pre-existing bugs** (in code the current ticket did not
+touch) are a judgement call:
+
+- **Blocking the current ticket, found early** (before the
+  ticket has accumulated much code): recommend raising a new
+  ticket, fix that first, then return to the current ticket.
+- **Blocking the current ticket, found late**: fold the fix
+  into the current ticket.
+- **Not blocking the current ticket**: recommend a separate
+  ticket.
+
+**Never cap the list.** Reviews and audits surface every issue
+they find. Do not truncate findings to an arbitrary "top 3" or
+"top 10" — completeness beats brevity. Keep each finding terse
+instead of keeping the list short.
+
 ### Task Management
 - **Use TodoWrite tool** for tracking progress on multi-step tasks
-- Use 'bd' for task tracking
 - **Mark tasks as in_progress** when starting work
 - **Mark tasks as completed** immediately when finished
 - **Only one task in_progress** at a time
@@ -389,3 +440,4 @@ Xdebug.
 - **PHPStan** - static analysis at level 10 (strictest)
 - **Laminas Coding Standard** - code style enforcement
 - **Ramsey UUID** - for UUID v7 generation
+
