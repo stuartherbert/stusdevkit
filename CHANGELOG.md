@@ -164,7 +164,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- Str::isEmpty() docblock now explains transformer result is temporary ([79b7509](https://github.com/stuartherbert/stusdevkit/commit/79b7509)) — Stuart Herbert <stuart@stuartherbert.com>
+- Str::isEmpty() docblock now explains transformer result is temporary ([4c4c28c](https://github.com/stuartherbert/stusdevkit/commit/4c4c28c)) — Stuart Herbert <stuart@stuartherbert.com>
 - update README now that we have manual pages ([7bbe0d7](https://github.com/stuartherbert/stusdevkit/commit/7bbe0d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - tidy up Hierarchy section ([282ecd2](https://github.com/stuartherbert/stusdevkit/commit/282ecd2)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring Hierarchy section up to latest approach ([97332d6](https://github.com/stuartherbert/stusdevkit/commit/97332d6)) — Stuart Herbert <stuart@stuartherbert.com>

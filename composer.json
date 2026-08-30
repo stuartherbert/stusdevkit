@@ -54,6 +54,7 @@
         }
     ],
     "require": {
+        "php": "^8.5",
         "ext-intl": "*",
         "ext-mbstring": "*",
         "phpstan/phpstan": "^2.1.38",
