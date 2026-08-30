@@ -41,7 +41,6 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\JsonSchema;
 
-use Closure;
 use stdClass;
 use StusDevKit\ValidationKit\Contracts\ValidationSchema;
 use StusDevKit\ValidationKit\Exceptions\ExternalJsonSchemaRefNotFoundException;
@@ -2301,7 +2300,6 @@ class JsonSchemaDraft202012Importer
         // may be resolved early, but at validation time
         // it will always point to the real schema.
         $resolved = Validate::mixed();
-        /** @var Closure(): ValidationSchema<mixed> $factory */
         $factory = function () use (&$resolved): ValidationSchema {
             return $resolved;
         };

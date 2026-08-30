@@ -159,8 +159,10 @@ class GetPrintableType
 
         // at this point, $item is an array
         // but we need to keep phpstan happy
+        //
+        // PHPStan already knows the method name at index 1 is a
+        // non-empty string, so only the array check is needed.
         assert(is_array($item));
-        assert(is_string($item[1]));
 
         if (is_string($item[0])) {
             return "callable<" . $item[0] . "::" . $item[1] . ">";

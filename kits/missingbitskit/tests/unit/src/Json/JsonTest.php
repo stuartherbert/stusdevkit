@@ -1606,7 +1606,7 @@ class JsonTest extends TestCase
         // perform the change
 
         try {
-            Json::validate($json);
+            $actual = Json::validate($json);
         } catch (Throwable $e) {
             $caught = $e;
         }

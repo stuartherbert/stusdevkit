@@ -287,7 +287,6 @@ class ResolveParameters
 
         // special case - [$target, 'method'] array (instance or static)
         if (is_array($callable)) {
-            /** @var array{0: object|string, 1: string} $callable */
             [$target, $method] = $callable;
             return self::forMethod($target, $method, $container);
         }
