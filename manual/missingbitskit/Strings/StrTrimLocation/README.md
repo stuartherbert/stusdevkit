@@ -68,8 +68,7 @@ _No tagged releases yet._
 ## See Also
 
 - [`Str::trim()`](../Str/trim.md) — the method this enum configures
-- [`Str::isEmpty()`](../Str/isEmpty.md) — also accepts a `StrTrimLocation` to control trimming before measuring length
-- [`Str::contains()`](../Str/contains.md) — also accepts a `StrTrimLocation` when trimming the needle
+- [`Str`](../Str/README.md) — the string-utility class that `trim()` belongs to
 
 ## Issues
 

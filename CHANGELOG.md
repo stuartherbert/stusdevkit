@@ -218,6 +218,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- Str methods now take a transformer instead of explicit trimmer ([2a7955d](https://github.com/stuartherbert/stusdevkit/commit/2a7955d)) — Stuart Herbert <stuart@stuartherbert.com>
 - Str::contains() now uses the transformer approach ([e4491d4](https://github.com/stuartherbert/stusdevkit/commit/e4491d4)) — Stuart Herbert <stuart@stuartherbert.com>
 - Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([c8db9c5](https://github.com/stuartherbert/stusdevkit/commit/c8db9c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -1,6 +1,6 @@
 # Str::contains()
 
-> `public static contains(string|array $haystack, string $needle, string $trimChars = self::TRIM_DEFAULT_CHARS, StrTrimLocation $trimLocation = StrTrimLocation::TRIM_NONE): bool`
+> `public static contains(string|array $haystack, string $needle, ?callable $transformer = null): bool`
 
 Searches one or more strings to see whether any of them contains the given needle.
 
@@ -18,56 +18,26 @@ namespace StusDevKit\MissingBitsKit\Strings;
 
 class Str
 {
-    public const TRIM_DEFAULT_CHARS =
-        "\u{0000}"   // NUL
-        . "\u{0009}" // HORIZONTAL TAB
-        . "\u{000A}" // LINE FEED
-        . "\u{000B}" // VERTICAL TAB
-        . "\u{000C}" // FORM FEED
-        . "\u{000D}" // CARRIAGE RETURN
-        . "\u{0020}" // SPACE
-        . "\u{0085}" // NEXT LINE (NEL)
-        . "\u{00A0}" // NO-BREAK SPACE
-        . "\u{1680}" // OGHAM SPACE MARK
-        . "\u{2000}" // EN QUAD
-        . "\u{2001}" // EM QUAD
-        . "\u{2002}" // EN SPACE
-        . "\u{2003}" // EM SPACE
-        . "\u{2004}" // THREE-PER-EM SPACE
-        . "\u{2005}" // FOUR-PER-EM SPACE
-        . "\u{2006}" // SIX-PER-EM SPACE
-        . "\u{2007}" // FIGURE SPACE
-        . "\u{2008}" // PUNCTUATION SPACE
-        . "\u{2009}" // THIN SPACE
-        . "\u{200A}" // HAIR SPACE
-        . "\u{2028}" // LINE SEPARATOR
-        . "\u{2029}" // PARAGRAPH SEPARATOR
-        . "\u{202F}" // NARROW NO-BREAK SPACE
-        . "\u{205F}" // MEDIUM MATHEMATICAL SPACE
-        . "\u{3000}" // IDEOGRAPHIC SPACE
-    ;
-
     /**
      * @param string|string[] $haystack
      *      the string(s) that we want to search
      * @param string $needle
      *      the string we want to look for inside `$haystack`
-     * @param string $trimChars
-     *      set of characters to `Str::trim()` from `$needle` before
-     *      we search inside `$haystack`
-     * @param StrTrimLocation $trimLocation
-     *      where (if anywhere) do you want `Str::trim()` to be applied to
-     *      your `$needle` string?
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$needle` before the
+     *      search (e.g. a trimming transformer). `$needle` is the
+     *      only value passed to it; the `$haystack` is never
+     *      transformed.
      * @return bool
-     * - `true` if $haystack contains `$needle`
-     * - `false` if `$needle` is an empty string (after trimming)
+     * - `false` if `$haystack` is empty
+     * - `false` if `$needle` is empty (after transforming)
+     * - `true` if any string in `$haystack` contains `$needle`
      * - `false` otherwise
      */
     public static function contains(
         string|array $haystack,
         string $needle,
-        string $trimChars = self::TRIM_DEFAULT_CHARS,
-        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_NONE,
+        ?callable $transformer = null,
     ): bool
 }
 ```
@@ -79,14 +49,19 @@ needle appears. The haystack may be a single string or an array of
 strings; an array is searched element by element, and `contains()`
 returns `true` as soon as any element contains the needle.
 
-It can optionally [`Str::trim()`](trim.md) the needle for you before
-searching, so you don't have to do that first. This is controlled by
-`$trimLocation`, which defaults to
-[`StrTrimLocation::TRIM_NONE`](../StrTrimLocation/README.md) — so by
-default the needle is searched for verbatim, surrounding whitespace and
-all. A needle that is empty (or trims down to empty) can never be
-"contained", so `contains()` reports `false` for it via
-[`Str::isEmpty()`](isEmpty.md).
+By default the needle is searched for exactly as given. Pass an
+optional `$transformer` — any `callable(string): string` — to
+transform the needle before searching; for example, a trimming
+transformer (`fn($v) => Str::trim($v)`, see [`Str::trim()`](trim.md))
+strips the needle's surrounding whitespace so a padded needle can
+still match. The transformer is applied to the needle **only**; the
+haystack is always searched exactly as given. See the [`Str`](README.md)
+class's Transformers tutorial for the full pattern.
+
+An empty haystack contains nothing, so `contains()` returns `false`
+for an empty string or empty array. A needle that is empty — or that
+transforms down to empty — can never be "contained", so `contains()`
+reports `false` for it via [`Str::isEmpty()`](isEmpty.md).
 
 The search itself delegates to PHP's
 [`str_contains()`](https://www.php.net/manual/en/function.str-contains.php).
@@ -105,29 +80,24 @@ nothing, so `contains()` returns `false`.
 **`$needle`** (`string`)
 
 The string we want to look for inside `$haystack`. An empty needle
-(or one that trims down to empty) always yields `false`.
+(or one that transforms down to empty) always yields `false`.
 
-**`$trimChars`** (`string`, optional, default: `self::TRIM_DEFAULT_CHARS`)
+**`$transformer`** (`callable(string): string`, optional, default: `null`)
 
-The set of characters to [`Str::trim()`](trim.md) from `$needle`
-before we search inside `$haystack`. Only takes effect when
-`$trimLocation` requests trimming. Defaults to
-[`Str::TRIM_DEFAULT_CHARS`](README.md) — the Unicode `White_Space`
-property plus NUL.
-
-**`$trimLocation`** ([`StrTrimLocation`](../StrTrimLocation/README.md), optional, default: `StrTrimLocation::TRIM_NONE`)
-
-Where (if anywhere) you want [`Str::trim()`](trim.md) applied to
-`$needle` before searching. Defaults to
-[`StrTrimLocation::TRIM_NONE`](../StrTrimLocation/README.md), so the
-needle is searched for verbatim unless you opt in to trimming.
+An optional transform applied to `$needle` before the search (e.g. a
+trimming transformer). `$needle` is the only value passed to it; the
+`$haystack` is never transformed. With the default `null`, no
+transform is applied and the needle is searched for verbatim. Pass
+[`Str::identity()`](identity.md) if you'd rather spell out "no
+transformation" explicitly.
 
 ## Return Values
 
 Returns a `bool`:
 
-- `true` if `$haystack` contains `$needle`.
-- `false` if `$needle` is an empty string (after trimming).
+- `false` if `$haystack` is empty.
+- `false` if `$needle` is empty (after transforming).
+- `true` if any string in `$haystack` contains `$needle`.
 - `false` otherwise.
 
 ## Errors/Exceptions
@@ -136,10 +106,18 @@ _None._
 
 ## Here Be Dragons
 
-- **Inherits every [`Str::trim()`](trim.md) hazard.** Whenever
-  trimming happens, the dragons listed on [`Str::trim()`](trim.md)
-  apply here too - most notably, **invalid UTF-8 is undefined
-  behaviour**. Validate at your system boundary before calling.
+- **The transformer applies to the `$needle` only.** The `$haystack`
+  is never transformed. If you need the haystack normalised, do it at
+  your system boundary — see the [`Str`](README.md) class docblock.
+- **Your `$transformer` is skipped when the haystack is empty.**
+  `contains()` answers the empty-haystack case before it transforms,
+  so a transformer with side effects will not fire for an empty
+  `$haystack`.
+- **Keep transformers pure.** Your transformer may not get called.
+  Any transformer that has side effects will cause subtle bugs.
+- **Your transformer's result is temporary.** If you want access to
+  the result of `$transformer($needle)`, call it yourself first, and
+  don't pass `$transformer` into `contains()` at all.
 
 ## Examples
 
@@ -151,10 +129,9 @@ _None yet._
 StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::contains() as a public method
  ✔ ::contains() is declared public static
- ✔ ::contains() takes parameters [haystack, needle, trimChars, trimLocation]
+ ✔ ::contains() takes parameters [haystack, needle, transformer]
  ✔ ::contains() returns bool
- ✔ ::contains() $trimChars defaults to Str::TRIM_DEFAULT_CHARS
- ✔ ::contains() $trimLocation defaults to StrTrimLocation::TRIM_NONE
+ ✔ ::contains() $transformer defaults to null
  ✔ returns true when the string haystack contains the needle
  ✔ returns false when the string haystack does not contain the needle
  ✔ is case-sensitive
@@ -166,15 +143,18 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ finds a multibyte needle inside the haystack
  ✔ does not match an ASCII needle against the bytes of a multibyte character
  ✔ returns false when the needle is an empty string
- ✔ does not trim the needle when trimLocation defaults to TRIM_NONE
- ✔ trims the needle before searching when trimLocation is TRIM_START_AND_END
- ✔ returns false when a whitespace-only needle is trimmed away
- ✔ searches for a whitespace-only needle when trimming is off
+ ✔ searches the needle verbatim when no transformer is given
+ ✔ searches for a whitespace-only needle when no transformer is given
+ ✔ transforms the needle before searching when a transformer is given
+ ✔ returns false when a trimming transformer reduces the needle to empty
+ ✔ applies the transformer to the needle only, never the haystack
+ ✔ does not invoke the transformer when the string haystack is empty
+ ✔ does not invoke the transformer when the array haystack is empty
 ```
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:161`](../../../../kits/missingbitskit/src/Strings/Str.php#L161)
+[`kits/missingbitskit/src/Strings/Str.php:225`](../../../../kits/missingbitskit/src/Strings/Str.php#L225)
 
 ## Changelog
 
@@ -182,9 +162,10 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`Str::trim()`](trim.md) — the trimming applied to the needle when you opt in
-- [`Str::isEmpty()`](isEmpty.md) — rejects an empty (or trimmed-to-empty) needle before searching
-- [`StrTrimLocation`](../StrTrimLocation/README.md) — selects whether and where the needle is trimmed
+- [`Str::isEmpty()`](isEmpty.md) — rejects an empty (or transformed-to-empty) needle before searching
+- [`Str::trim()`](trim.md) — the transform you typically pass to strip a needle's padding
+- [`Str::identity()`](identity.md) — the no-op transformer, for an explicit "no transformation"
+- [`Str`](README.md) — the class-level Transformers tutorial explaining the `$transformer` parameter
 
 ## Issues
 

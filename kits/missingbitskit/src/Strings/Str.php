@@ -57,7 +57,56 @@ namespace StusDevKit\MissingBitsKit\Strings;
  * Originally added to provide a centralised set of string
  * operations across StusDevKit.
  *
- * Here Be Dragons:
+ * Transformers
+ * ============
+ *
+ * Several of Str's *query* methods - `isEmpty()`, `contains()`, and
+ * future siblings - take an optional `$transformer`. A transformer
+ * is any `callable(string): string`: it receives one of the
+ * method's input strings and returns a replacement the method then
+ * works with. (Str's *producer* methods - `trim()`, `identity()` -
+ * do not take one; they ARE the kind of thing you'd pass as a
+ * transformer.)
+ *
+ * The point is to normalise the input at the moment of the query,
+ * without juggling temporary variables or if/else trees at the call
+ * site. The classic example is trimming:
+ *
+ *     // "empty once we ignore surrounding whitespace?"
+ *     Str::isEmpty($input, fn($v) => Str::trim($v));
+ *
+ *     // "contains $needle, ignoring the needle's own padding?"
+ *     Str::contains($haystack, $needle, fn($v) => Str::trim($v));
+ *
+ * Re-use one transformer everywhere. Because it is just a callable,
+ * a project can define its own canonical normaliser once and pass
+ * it to every Str call:
+ *
+ *     $normalise = MyApp\Text::standardForm(...);
+ *     Str::isEmpty($input, $normalise);
+ *     Str::contains($haystack, $needle, $normalise);
+ *
+ * That keeps the meaning of "normalised" in one place, and makes it
+ * something a human reviewer - or a custom static-analysis rule -
+ * can audit across the whole codebase.
+ *
+ * `Str::identity()` is the no-op transformer: pass `Str::identity(...)`
+ * to say "no transformation" explicitly and greppably instead of
+ * relying on the `null` default.
+ *
+ * For Unicode *form* normalisation (NFC/NFD), prefer the system
+ * boundary - see the Here Be Dragons below - not a per-call
+ * transformer. Transformers are best for lighter, query-local
+ * normalisation such as trimming or case-folding.
+ *
+ * Each method documents which of its inputs the transformer
+ * receives, and the hazards that apply (a transformer may be
+ * skipped on a short-circuit, so it must be pure; its result is
+ * discarded). See the individual method docblocks for the
+ * specifics.
+ *
+ * Here Be Dragons
+ * ===============
  *
  * - **"UTF-8 safe" means codepoint-aware, not normalisation-aware.**
  *   These operations compare Unicode codepoints, not *canonically
@@ -139,7 +188,8 @@ class Str
      * match. The transformer is applied to the `$needle` only; the
      * `$haystack` is always searched exactly as given.
      *
-     * Here Be Dragons:
+     * Here Be Dragons
+     * ===============
      *
      * - **The transformer applies to the `$needle` only.** The
      *   `$haystack` is never transformed. If you need the haystack
@@ -263,7 +313,8 @@ class Str
      * `isEmpty()` supports `null` `$input` values too, for added
      * convenience.
      *
-     * Here Be Dragons:
+     * Here Be Dragons
+     * ===============
      *
      * - **Your `$transformer` is skipped for `null` and zero-length
      *   input.** `isEmpty()` answers the cheap cases (`null`,
@@ -332,7 +383,8 @@ class Str
      *
      * Originally added to support `Str::isEmpty()`.
      *
-     * Here Be Dragons:
+     * Here Be Dragons
+     * ===============
      *
      * - Reminder: this handles ASCII and UTF-8 strings, not
      *   raw bytes. See this class's docblock for details.

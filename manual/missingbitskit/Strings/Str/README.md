@@ -56,17 +56,20 @@ class Str
     public static function contains(
         string|array $haystack,
         string $needle,
-        string $trimChars = self::TRIM_DEFAULT_CHARS,
-        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_NONE,
+        ?callable $transformer = null,
     ): bool;
 
     /**
-     * Check whether the given input string is really empty or not.
+     * Returns its input unchanged; the no-op transformer.
+     */
+    public static function identity(string $input): string;
+
+    /**
+     * Check whether the given input string is empty.
      */
     public static function isEmpty(
         string|null $input,
-        string $trimChars = self::TRIM_DEFAULT_CHARS,
-        StrTrimLocation $trimLocation = StrTrimLocation::TRIM_START_AND_END,
+        ?callable $transformer = null,
     ): bool;
 
     /**
@@ -94,12 +97,63 @@ If you're working with strings that you *know* contain raw byte
 streams, fall back to calling PHP's built-in `str_xxx()` family of
 functions.
 
+## Transformers
+
+Several of Str's *query* methods — [`Str::isEmpty()`](isEmpty.md),
+[`Str::contains()`](contains.md), and future siblings — take an
+optional `$transformer`. A transformer is any `callable(string):
+string`: it receives one of the method's input strings and returns a
+replacement the method then works with. (Str's *producer* methods —
+[`Str::trim()`](trim.md), [`Str::identity()`](identity.md) — do not
+take one; they ARE the kind of thing you'd pass as a transformer.)
+
+The point is to normalise the input at the moment of the query,
+without juggling temporary variables or if/else trees at the call
+site. The classic example is trimming:
+
+```php
+// "empty once we ignore surrounding whitespace?"
+Str::isEmpty($input, fn($v) => Str::trim($v));
+
+// "contains $needle, ignoring the needle's own padding?"
+Str::contains($haystack, $needle, fn($v) => Str::trim($v));
+```
+
+Re-use one transformer everywhere. Because it is just a callable, a
+project can define its own canonical normaliser once and pass it to
+every Str call:
+
+```php
+$normalise = MyApp\Text::standardForm(...);
+Str::isEmpty($input, $normalise);
+Str::contains($haystack, $needle, $normalise);
+```
+
+That keeps the meaning of "normalised" in one place, and makes it
+something a human reviewer — or a custom static-analysis rule — can
+audit across the whole codebase.
+
+[`Str::identity()`](identity.md) is the no-op transformer: pass
+`Str::identity(...)` to say "no transformation" explicitly and
+greppably instead of relying on the `null` default.
+
+For Unicode *form* normalisation (NFC/NFD), prefer the system
+boundary — see the [Here Be Dragons](#here-be-dragons) below — not a
+per-call transformer. Transformers are best for lighter, query-local
+normalisation such as trimming or case-folding.
+
+Each method documents which of its inputs the transformer receives,
+and the hazards that apply (a transformer may be skipped on a
+short-circuit, so it must be pure; its result is discarded). See the
+individual method docblocks for the specifics.
+
 ## Methods
 
 **From Str**
 
 - [`::contains()`](contains.md) — searches one or more strings to see whether any of them contains the given needle
-- [`::isEmpty()`](isEmpty.md) — checks whether the given input string is really empty or not
+- [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
+- [`::isEmpty()`](isEmpty.md) — checks whether the given input string is empty
 - [`::trim()`](trim.md) — strips the characters in `$trimChars` from one or both ends of a string
 
 ## Here Be Dragons
@@ -128,13 +182,14 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::trim() as a public method
  ✔ publishes ::isEmpty() as a public method
  ✔ publishes ::contains() as a public method
+ ✔ publishes ::identity() as a public method
  ✔ publishes ::TRIM_DEFAULT_CHARS as a public constant
  ✔ ::TRIM_DEFAULT_CHARS is the Unicode `White_Space` set plus NUL
 ```
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:77`](../../../../kits/missingbitskit/src/Strings/Str.php#L77)
+[`kits/missingbitskit/src/Strings/Str.php:126`](../../../../kits/missingbitskit/src/Strings/Str.php#L126)
 
 ## Changelog
 
@@ -142,9 +197,10 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`StrTrimLocation`](../StrTrimLocation/README.md) — the enum every Str method takes to control trimming
+- [`StrTrimLocation`](../StrTrimLocation/README.md) — the enum [`Str::trim()`](trim.md) takes to control which end(s) are trimmed
 - [`Str::contains()`](contains.md) — searches one or more strings for a needle
-- [`Str::isEmpty()`](isEmpty.md) — checks whether a string is really empty
+- [`Str::identity()`](identity.md) — the no-op transformer
+- [`Str::isEmpty()`](isEmpty.md) — checks whether a string is empty
 - [`Str::trim()`](trim.md) — strips trim-characters from one or both ends of a string
 
 ## Issues

@@ -121,7 +121,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:250`](../../../../kits/missingbitskit/src/Strings/Str.php#L250)
+[`kits/missingbitskit/src/Strings/Str.php:343`](../../../../kits/missingbitskit/src/Strings/Str.php#L343)
 
 ## Changelog
 
