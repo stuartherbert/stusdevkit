@@ -2892,7 +2892,7 @@ class AssertTest extends TestCase
         // ----------------------------------------------------------------
         // explain your test
 
-        // the method lowercases both strings before comparing,
+        // the method case-folds both strings before comparing,
         // so mixed-case vs lowercase must be treated as equal.
         // This is the distinguishing feature of the IgnoringCase
         // variant.
@@ -2903,6 +2903,31 @@ class AssertTest extends TestCase
         Assert::assertEqualsIgnoringCase(
             expected: 'Hello World',
             actual: 'hello world',
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
+    }
+
+    #[TestDox('::assertEqualsIgnoringCase() folds the German eszett, so "STRASSE" equals "straße"')]
+    public function test_assertEqualsIgnoringCase_folds_eszett(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // "ignoring case", "STRASSE" and "straße" are the same word —
+        // proper Unicode case-folding expands ß to "ss". A simple
+        // lowercase (toLower) would leave them unequal and wrongly
+        // raise; case-folding (foldCase) treats them as equal.
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertEqualsIgnoringCase(
+            expected: 'STRASSE',
+            actual: "stra\u{00DF}e",
         );
 
         // ----------------------------------------------------------------
@@ -3321,6 +3346,31 @@ class AssertTest extends TestCase
         Assert::assertNotEqualsIgnoringCase(
             expected: 'Hello',
             actual: 'hello',
+        );
+    }
+
+    #[TestDox('::assertNotEqualsIgnoringCase() throws when the difference is only a case-folding expansion like ß/ss')]
+    public function test_assertNotEqualsIgnoringCase_throws_on_eszett_fold(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // "ignoring case", "STRASSE" and "straße" are the same word —
+        // proper Unicode case-folding expands ß to "ss". So the "not
+        // equal" assertion must raise. A simple lowercase (toLower)
+        // would leave them unequal and wrongly pass.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(AssertionFailedException::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertNotEqualsIgnoringCase(
+            expected: 'STRASSE',
+            actual: "stra\u{00DF}e",
         );
     }
 
@@ -8548,6 +8598,37 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    #[TestDox('::assertFileEqualsIgnoringCase() folds the German eszett across two files')]
+    public function test_assertFileEqualsIgnoringCase_folds_eszett(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // strasse-uppercase.txt holds "STRASSE" and strasse-eszett.txt
+        // holds "straße" — byte-different, but case-fold-equal (ß
+        // expands to "ss"). Proper Unicode case-folding treats them as
+        // equal; a simple lowercase (toLower) would leave them unequal
+        // and wrongly raise.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $fixtureDir = __DIR__ . '/../../fixtures/text/';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileEqualsIgnoringCase(
+            expected: $fixtureDir . 'strasse-uppercase.txt',
+            actual: $fixtureDir . 'strasse-eszett.txt',
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
+    }
+
     #[TestDox('::assertFileEqualsIgnoringCase() throws AssertionFailedException when files differ beyond case')]
     public function test_assertFileEqualsIgnoringCase_throws_on_content_difference(): void
     {
@@ -8745,6 +8826,33 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertFileNotEqualsIgnoringCase() throws when two files differ only by a case-folding expansion like ß/ss')]
+    public function test_assertFileNotEqualsIgnoringCase_throws_on_eszett_fold(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // strasse-uppercase.txt ("STRASSE") and strasse-eszett.txt
+        // ("straße") are byte-different but case-fold-equal (ß expands
+        // to "ss"), so the negated form must raise. A simple lowercase
+        // (toLower) would leave them unequal and wrongly pass.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(AssertionFailedException::class);
+
+        $fixtureDir = __DIR__ . '/../../fixtures/text/';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertFileNotEqualsIgnoringCase(
+            expected: $fixtureDir . 'strasse-uppercase.txt',
+            actual: $fixtureDir . 'strasse-eszett.txt',
+        );
+    }
+
     #[TestDox('::assertFileNotEqualsIgnoringCase() throws FileNotFoundException when the expected file does not exist')]
     public function test_assertFileNotEqualsIgnoringCase_throws_when_expected_file_not_readable(): void
     {
@@ -8878,6 +8986,37 @@ class AssertTest extends TestCase
         Assert::assertStringEqualsFileIgnoringCase(
             expectedFile: $fixtureDir . 'hello.txt',
             actualString: 'HELLO WORLD',
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->addToAssertionCount(1);
+    }
+
+    #[TestDox('::assertStringEqualsFileIgnoringCase() folds the German eszett between the string and the file')]
+    public function test_assertStringEqualsFileIgnoringCase_folds_eszett(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // strasse-eszett.txt holds "straße", and the caller passes
+        // "STRASSE" — byte-different, but case-fold-equal (ß expands to
+        // "ss"). Proper Unicode case-folding treats them as equal; a
+        // simple lowercase (toLower) would leave them unequal and
+        // wrongly raise.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $fixtureDir = __DIR__ . '/../../fixtures/text/';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringEqualsFileIgnoringCase(
+            expectedFile: $fixtureDir . 'strasse-eszett.txt',
+            actualString: 'STRASSE',
         );
 
         // ----------------------------------------------------------------
@@ -9077,6 +9216,33 @@ class AssertTest extends TestCase
         Assert::assertStringNotEqualsFileIgnoringCase(
             expectedFile: $fixtureDir . 'hello.txt',
             actualString: 'HELLO WORLD',
+        );
+    }
+
+    #[TestDox('::assertStringNotEqualsFileIgnoringCase() throws when the string and file differ only by a case-folding expansion like ß/ss')]
+    public function test_assertStringNotEqualsFileIgnoringCase_throws_on_eszett_fold(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // strasse-eszett.txt holds "straße" and the caller passes
+        // "STRASSE" — byte-different but case-fold-equal (ß expands to
+        // "ss"), so the negated form must raise. A simple lowercase
+        // (toLower) would leave them unequal and wrongly pass.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $this->expectException(AssertionFailedException::class);
+
+        $fixtureDir = __DIR__ . '/../../fixtures/text/';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        Assert::assertStringNotEqualsFileIgnoringCase(
+            expectedFile: $fixtureDir . 'strasse-eszett.txt',
+            actualString: 'STRASSE',
         );
     }
 

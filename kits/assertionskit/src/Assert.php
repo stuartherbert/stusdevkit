@@ -1103,7 +1103,12 @@ class Assert implements AssertApi
         string $message = '',
     ): void {
         if (is_string($expected) && is_string($actual)) {
-            if (Str::toLower($expected) === Str::toLower($actual)) {
+            // correctness! case-INSENSITIVE equality needs case-FOLDING,
+            // not simple lowercasing: foldCase() expands ß to "ss" and
+            // normalises the final sigma, so "STRASSE" and "straße"
+            // compare equal here. Str::toLower() would wrongly leave
+            // them unequal.
+            if (Str::foldCase($expected) === Str::foldCase($actual)) {
                 return;
             }
         } elseif ($expected == $actual) {
@@ -1207,7 +1212,10 @@ class Assert implements AssertApi
         string $message = '',
     ): void {
         if (is_string($expected) && is_string($actual)) {
-            if (Str::toLower($expected) !== Str::toLower($actual)) {
+            // correctness! caseless comparison needs case-FOLDING, not
+            // simple lowercasing - foldCase() folds ß to "ss", etc., so
+            // "STRASSE" and "straße" count as equal here.
+            if (Str::foldCase($expected) !== Str::foldCase($actual)) {
                 return;
             }
         } elseif ($expected != $actual) {
@@ -1526,7 +1534,10 @@ class Assert implements AssertApi
         $expectedContents = self::readFileContents($expected);
         $actualContents = self::readFileContents($actual);
 
-        if (Str::toLower($expectedContents) === Str::toLower($actualContents)) {
+        // correctness! caseless comparison needs case-FOLDING, not
+        // simple lowercasing - foldCase() folds ß to "ss", etc., so
+        // files differing only by such a fold count as equal here.
+        if (Str::foldCase($expectedContents) === Str::foldCase($actualContents)) {
             return;
         }
 
@@ -1570,7 +1581,10 @@ class Assert implements AssertApi
         $expectedContents = self::readFileContents($expected);
         $actualContents = self::readFileContents($actual);
 
-        if (Str::toLower($expectedContents) !== Str::toLower($actualContents)) {
+        // correctness! caseless comparison needs case-FOLDING, not
+        // simple lowercasing - foldCase() folds ß to "ss", etc., so
+        // files differing only by such a fold count as equal here.
+        if (Str::foldCase($expectedContents) !== Str::foldCase($actualContents)) {
             return;
         }
 
@@ -1618,7 +1632,10 @@ class Assert implements AssertApi
     ): void {
         $expectedContents = self::readFileContents($expectedFile);
 
-        if (Str::toLower($expectedContents) === Str::toLower($actualString)) {
+        // correctness! caseless comparison needs case-FOLDING, not
+        // simple lowercasing - foldCase() folds ß to "ss", etc., so a
+        // string and file differing only by such a fold count as equal.
+        if (Str::foldCase($expectedContents) === Str::foldCase($actualString)) {
             return;
         }
 
@@ -1660,7 +1677,10 @@ class Assert implements AssertApi
     ): void {
         $expectedContents = self::readFileContents($expectedFile);
 
-        if (Str::toLower($expectedContents) !== Str::toLower($actualString)) {
+        // correctness! caseless comparison needs case-FOLDING, not
+        // simple lowercasing - foldCase() folds ß to "ss", etc., so a
+        // string and file differing only by such a fold count as equal.
+        if (Str::foldCase($expectedContents) !== Str::foldCase($actualString)) {
             return;
         }
 

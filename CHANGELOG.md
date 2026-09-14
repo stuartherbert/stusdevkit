@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::foldCase() ([e05c1d1](https://github.com/stuartherbert/stusdevkit/commit/e05c1d1)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::foldCase() ([2326087](https://github.com/stuartherbert/stusdevkit/commit/2326087)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::endsWith() ([896addb](https://github.com/stuartherbert/stusdevkit/commit/896addb)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::startsWith() ([7ac7e6b](https://github.com/stuartherbert/stusdevkit/commit/7ac7e6b)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toUpper() ([72b8d33](https://github.com/stuartherbert/stusdevkit/commit/72b8d33)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -122,6 +122,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- use Str::foldCase() instead of Str::toLower() for comparisons ([d39575a](https://github.com/stuartherbert/stusdevkit/commit/d39575a)) — Stuart Herbert <stuart@stuartherbert.com>
 - closed-resource assertions now use IsClosedResource for forwards-compatibility ([df4546b](https://github.com/stuartherbert/stusdevkit/commit/df4546b)) — Stuart Herbert <stuart@stuartherbert.com>
 - comparisons assertions now throw when asked to compare incompatible types ([170f75e](https://github.com/stuartherbert/stusdevkit/commit/170f75e)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertContainsOnly*() now fill out extra section of thrown exceptions ([869ba0d](https://github.com/stuartherbert/stusdevkit/commit/869ba0d)) — Stuart Herbert <stuart@stuartherbert.com>
