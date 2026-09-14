@@ -64,9 +64,9 @@ namespace StusDevKit\MissingBitsKit\Strings;
  * future siblings - take an optional `$transformer`. A transformer
  * is any `callable(string): string`: it receives one of the
  * method's input strings and returns a replacement the method then
- * works with. (Str's *producer* methods - `trim()`, `identity()` -
- * do not take one; they ARE the kind of thing you'd pass as a
- * transformer.)
+ * works with. (Str's *producer* methods - `trim()`, `identity()`,
+ * `toLower()` - do not take one; they ARE the kind of thing you'd
+ * pass as a transformer.)
  *
  * The point is to normalise the input at the moment of the query,
  * without juggling temporary variables or if/else trees at the call
@@ -452,6 +452,46 @@ class Str
         // we hard-code 'UTF-8' so behaviour does not drift with
         // `mb_internal_encoding()` across deployments.
         return mb_strlen($input, 'UTF-8');
+    }
+
+    /**
+     * `toLower()` returns `$input` with every cased character folded
+     * to its lowercase form.
+     *
+     * It is a producer, and satisfies the `callable(string): string`
+     * shape - pass `Str::toLower(...)` as the `$transformer` to a Str
+     * query method to fold its input to lowercase before the query.
+     *
+     * Originally added so that ValidationKit's `LowerCaseTransformer`
+     * (and any other caller) share a single UTF-8-aware lowercaser,
+     * instead of bare `mb_strtolower()` calls that rely on the ambient
+     * `mb_internal_encoding()`.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * - **Lowercasing is not case-folding.** `toLower()` does a simple
+     *   Unicode lowercase (`mb_strtolower`) - fine for display and for
+     *   most case-insensitive comparisons, but NOT the full Unicode
+     *   case-folding a watertight caseless match needs for every
+     *   script (German "ß", Greek final sigma, and friends will trip
+     *   you up). Normalise at your system boundary - see this class's
+     *   docblock - if you need that.
+     * - Reminder: this handles ASCII and UTF-8 strings, not raw
+     *   bytes. See this class's docblock for details.
+     *
+     * @param string $input
+     *      the string to fold to lowercase
+     * @return string
+     *      `$input` with every cased character folded to lowercase
+     */
+    public static function toLower(string $input): string
+    {
+        // fold to lowercase, codepoint-aware
+        //
+        // we hard-code 'UTF-8' so behaviour does not drift with
+        // `mb_internal_encoding()` across deployments.
+        return mb_strtolower($input, 'UTF-8');
     }
 
     /**

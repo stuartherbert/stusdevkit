@@ -282,6 +282,40 @@ class StrTest extends TestCase
         $this->assertContains('length', $methodNames);
     }
 
+    #[TestDox('publishes ::toLower() as a public method')]
+    public function test_publishes_toLower(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toLower() is part of Str's published API — the UTF-8 aware
+        // way to lowercase a string, and a producer callers pass as a
+        // transformer. This test catches accidental renames or scope
+        // changes that would silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('toLower', $methodNames);
+    }
+
     #[TestDox('publishes ::TRIM_DEFAULT_CHARS as a public constant')]
     public function test_publishes_TRIM_DEFAULT_CHARS(): void
     {
@@ -1942,6 +1976,233 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::isEmpty($input, Str::identity(...));
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — toLower()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::toLower() is declared public static')]
+    public function test_toLower_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toLower() is consumed as a static utility — callers write
+        // `Str::toLower(...)`, never `(new Str)->toLower(...)`. Dropping
+        // `static` or narrowing visibility would break every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'toLower');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::toLower() takes parameters [input]')]
+    public function test_toLower_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toLower() is a producer, not a query — it takes only the
+        // input it transforms, and (unlike the query methods) does NOT
+        // take a transformer of its own.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'toLower');
+        $expected = ['input'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::toLower() returns string')]
+    public function test_toLower_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toLower() is a `string -> string` transformer, so it must
+        // satisfy the `callable(string): string` contract the query
+        // methods expect.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'toLower');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('string', $returnType->getName());
+    }
+
+    // ================================================================
+    //
+    // Behaviour — toLower()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('lowercases an ASCII string')]
+    public function test_toLower_lowercases_ascii(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the everyday case: uppercase ASCII letters become their
+        // lowercase equivalents.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'HELLO WORLD';
+        $expected = 'hello world';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toLower($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('lowercases a multibyte string')]
+    public function test_toLower_lowercases_multibyte(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toLower() is UTF-8 aware: "CAFÉ" lowercases to "café",
+        // folding the multibyte É (U+00C9) to é (U+00E9). A byte-level
+        // strtolower() would leave the É untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = "CAF\u{00C9}";
+        $expected = "caf\u{00E9}";
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toLower($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('leaves an already-lowercase string unchanged')]
+    public function test_toLower_leaves_lowercase_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a string that is already lowercase comes back unchanged.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'already lowercase';
+        $expected = 'already lowercase';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toLower($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns an empty string unchanged')]
+    public function test_toLower_returns_empty_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the empty string is a legitimate input; toLower() returns it
+        // unchanged rather than treating it specially.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = '';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toLower($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('leaves a caseless string unchanged')]
+    public function test_toLower_leaves_caseless_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // characters with no lowercase form — here three CJK ideographs
+        // — pass through untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '日本語';
+        $expected = '日本語';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toLower($input);
 
         // ----------------------------------------------------------------
         // test the results

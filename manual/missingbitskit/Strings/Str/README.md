@@ -81,6 +81,11 @@ class Str
     ): int;
 
     /**
+     * Returns `$input` folded to lowercase.
+     */
+    public static function toLower(string $input): string;
+
+    /**
      * Strip the characters in `$trimChars` from one or both ends
      * of `$input`.
      */
@@ -112,8 +117,9 @@ Several of Str's *query* methods — [`Str::isEmpty()`](isEmpty.md),
 optional `$transformer`. A transformer is any `callable(string):
 string`: it receives one of the method's input strings and returns a
 replacement the method then works with. (Str's *producer* methods —
-[`Str::trim()`](trim.md), [`Str::identity()`](identity.md) — do not
-take one; they ARE the kind of thing you'd pass as a transformer.)
+[`Str::trim()`](trim.md), [`Str::identity()`](identity.md),
+[`Str::toLower()`](toLower.md) — do not take one; they ARE the kind of
+thing you'd pass as a transformer.)
 
 The point is to normalise the input at the moment of the query,
 without juggling temporary variables or if/else trees at the call
@@ -163,6 +169,7 @@ individual method docblocks for the specifics.
 - [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
 - [`::isEmpty()`](isEmpty.md) — checks whether the given input string is empty
 - [`::length()`](length.md) — counts how many UTF-8 characters are in a string
+- [`::toLower()`](toLower.md) — folds every cased character in a string to lowercase
 - [`::trim()`](trim.md) — strips the characters in `$trimChars` from one or both ends of a string
 
 ## Here Be Dragons
@@ -193,6 +200,7 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::contains() as a public method
  ✔ publishes ::identity() as a public method
  ✔ publishes ::length() as a public method
+ ✔ publishes ::toLower() as a public method
  ✔ publishes ::TRIM_DEFAULT_CHARS as a public constant
  ✔ ::TRIM_DEFAULT_CHARS is the Unicode `White_Space` set plus NUL
 ```
@@ -212,6 +220,7 @@ _No tagged releases yet._
 - [`Str::identity()`](identity.md) — the no-op transformer
 - [`Str::isEmpty()`](isEmpty.md) — checks whether a string is empty
 - [`Str::length()`](length.md) — counts how many UTF-8 characters are in a string
+- [`Str::toLower()`](toLower.md) — folds every cased character to lowercase
 - [`Str::trim()`](trim.md) — strips trim-characters from one or both ends of a string
 
 ## Issues

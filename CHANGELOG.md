@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added Str::toLower() ([d698017](https://github.com/stuartherbert/stusdevkit/commit/d698017)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([65456d0](https://github.com/stuartherbert/stusdevkit/commit/65456d0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([5b95ef0](https://github.com/stuartherbert/stusdevkit/commit/5b95ef0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::contains() ([00ad1e5](https://github.com/stuartherbert/stusdevkit/commit/00ad1e5)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -219,7 +220,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- migrate to Str::length() ([1522806](https://github.com/stuartherbert/stusdevkit/commit/1522806)) — Stuart Herbert <stuart@stuartherbert.com>
+- migrate to Str::length() ([3b76dc8](https://github.com/stuartherbert/stusdevkit/commit/3b76dc8)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve usability of ErrorFormatter ([6b049d7](https://github.com/stuartherbert/stusdevkit/commit/6b049d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - more work to make custom validators easier to create ([3b43d4d](https://github.com/stuartherbert/stusdevkit/commit/3b43d4d)) — Stuart Herbert <stuart@stuartherbert.com>
 - existing transformers now use BaseTransformer to simplify implementation ([0ede17e](https://github.com/stuartherbert/stusdevkit/commit/0ede17e)) — Stuart Herbert <stuart@stuartherbert.com>
