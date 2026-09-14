@@ -29,6 +29,7 @@ namespace StusDevKit\CollectionsKit\Dictionaries;
 use ArrayIterator;
 use StusDevKit\CollectionsKit\AccessibleCollection;
 use StusDevKit\CollectionsKit\Traits\StringTransformations;
+use StusDevKit\MissingBitsKit\Strings\Str;
 
 /**
  * @extends CollectionAsDict<array-key, string>
@@ -138,24 +139,24 @@ class DictOfStrings extends CollectionAsDict
     // --- StringTransformations ---
 
     /**
-     * Trims all strings in the collection using PHP's trim() function.
+     * Trims all strings in the collection using Str::trim().
      */
     public function applyTrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static;
 
     /**
-     * Left-trims all strings in the collection using PHP's ltrim() function.
+     * Left-trims all strings in the collection using Str::trim().
      */
     public function applyLtrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static;
 
     /**
-     * Right-trims all strings in the collection using PHP's rtrim() function.
+     * Right-trims all strings in the collection using Str::trim().
      */
     public function applyRtrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static;
 }
 ```
@@ -201,9 +202,9 @@ Methods whose narrowed signatures differ from the parent — anything that refer
 
 **From StringTransformations**
 
-- [`->applyLtrim()`](../../Traits/StringTransformations/applyLtrim.md) — left-trims all strings in the collection using PHP's `ltrim()` function
-- [`->applyRtrim()`](../../Traits/StringTransformations/applyRtrim.md) — right-trims all strings in the collection using PHP's `rtrim()` function
-- [`->applyTrim()`](../../Traits/StringTransformations/applyTrim.md) — trims all strings in the collection using PHP's `trim()` function
+- [`->applyLtrim()`](../../Traits/StringTransformations/applyLtrim.md) — left-trims all strings in the collection using `Str::trim()`
+- [`->applyRtrim()`](../../Traits/StringTransformations/applyRtrim.md) — right-trims all strings in the collection using `Str::trim()`
+- [`->applyTrim()`](../../Traits/StringTransformations/applyTrim.md) — trims all strings in the collection using `Str::trim()`
 
 **From DictOfStrings**
 

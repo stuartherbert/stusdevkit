@@ -48,6 +48,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use StusDevKit\CollectionsKit\Lists\ListOfStrings;
 use StusDevKit\CollectionsKit\Traits\StringTransformations;
+use StusDevKit\MissingBitsKit\Strings\Str;
 
 /**
  * Contract + behaviour tests for the StringTransformations trait.
@@ -281,21 +282,22 @@ class StringTransformationsTest extends TestCase
         $this->assertSame('string', $actualType);
     }
 
-    #[TestDox('::applyTrim() defaults the character mask to PHP\'s default trim set')]
+    #[TestDox('::applyTrim() defaults the character mask to Str::TRIM_DEFAULT_CHARS')]
     public function test_applyTrim_default_character_mask(): void
     {
         // ----------------------------------------------------------------
         // explain your test
 
-        // the default value is the same whitespace mask PHP's trim()
-        // uses. Pinning it here means a silent change to the default
-        // (e.g. dropping the NUL byte) is caught by a failing test
-        // rather than by a surprised caller.
+        // the default value is Str's Unicode-aware whitespace mask
+        // (the Unicode White_Space set plus NUL), so applyTrim strips
+        // the same invisible whitespace Str::trim() does. Pinning it
+        // here means a silent change to the default is caught by a
+        // failing test rather than by a surprised caller.
 
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = " \n\r\t\v\0";
+        $expected = Str::TRIM_DEFAULT_CHARS;
         $parameter = (new ReflectionMethod(
             StringTransformations::class,
             'applyTrim',
@@ -469,7 +471,7 @@ class StringTransformationsTest extends TestCase
         $this->assertSame('string', $actualType);
     }
 
-    #[TestDox('::applyLtrim() defaults the character mask to PHP\'s default trim set')]
+    #[TestDox('::applyLtrim() defaults the character mask to Str::TRIM_DEFAULT_CHARS')]
     public function test_applyLtrim_default_character_mask(): void
     {
         // ----------------------------------------------------------------
@@ -481,7 +483,7 @@ class StringTransformationsTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = " \n\r\t\v\0";
+        $expected = Str::TRIM_DEFAULT_CHARS;
         $parameter = (new ReflectionMethod(
             StringTransformations::class,
             'applyLtrim',
@@ -653,7 +655,7 @@ class StringTransformationsTest extends TestCase
         $this->assertSame('string', $actualType);
     }
 
-    #[TestDox('::applyRtrim() defaults the character mask to PHP\'s default trim set')]
+    #[TestDox('::applyRtrim() defaults the character mask to Str::TRIM_DEFAULT_CHARS')]
     public function test_applyRtrim_default_character_mask(): void
     {
         // ----------------------------------------------------------------
@@ -665,7 +667,7 @@ class StringTransformationsTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $expected = " \n\r\t\v\0";
+        $expected = Str::TRIM_DEFAULT_CHARS;
         $parameter = (new ReflectionMethod(
             StringTransformations::class,
             'applyRtrim',
@@ -739,6 +741,39 @@ class StringTransformationsTest extends TestCase
             '  apple',
             "banana\n",
             "\t cherry \r\n",
+        ]);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->applyTrim();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $unit->toArray());
+    }
+
+    #[TestDox('->applyTrim() strips Unicode whitespace such as NBSP by default')]
+    public function test_applyTrim_strips_unicode_whitespace(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default mask is Str::TRIM_DEFAULT_CHARS, the full Unicode
+        // whitespace set, so a value padded with NO-BREAK SPACE (U+00A0)
+        // is trimmed away entirely. PHP's byte-level trim() default would
+        // have left those NBSP bytes in place.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // shorthand
+        $nbsp = "\u{00A0}";
+        $expected = ['apple', 'banana'];
+        $unit = new ListOfStrings([
+            $nbsp . 'apple' . $nbsp,
+            $nbsp . 'banana',
         ]);
 
         // ----------------------------------------------------------------
@@ -874,6 +909,38 @@ class StringTransformationsTest extends TestCase
         $this->assertSame($expected, $unit->toArray());
     }
 
+    #[TestDox('->applyLtrim() strips Unicode whitespace such as NBSP from the left by default')]
+    public function test_applyLtrim_strips_unicode_whitespace(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default mask is Str::TRIM_DEFAULT_CHARS, so a leading
+        // NO-BREAK SPACE (U+00A0) is stripped. A trailing NBSP is left
+        // in place, proving applyLtrim only touches the front. PHP's
+        // byte-level ltrim() default would have left the leading NBSP.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // shorthand
+        $nbsp = "\u{00A0}";
+        $expected = ['apple' . $nbsp];
+        $unit = new ListOfStrings([
+            $nbsp . 'apple' . $nbsp,
+        ]);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->applyLtrim();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $unit->toArray());
+    }
+
     #[TestDox('->applyLtrim() strips the caller-supplied character mask')]
     public function test_applyLtrim_strips_custom_characters(): void
     {
@@ -981,6 +1048,38 @@ class StringTransformationsTest extends TestCase
             '  apple  ',
             "\tbanana\t",
             " \ncherry \n",
+        ]);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $unit->applyRtrim();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $unit->toArray());
+    }
+
+    #[TestDox('->applyRtrim() strips Unicode whitespace such as NBSP from the right by default')]
+    public function test_applyRtrim_strips_unicode_whitespace(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default mask is Str::TRIM_DEFAULT_CHARS, so a trailing
+        // NO-BREAK SPACE (U+00A0) is stripped. A leading NBSP is left
+        // in place, proving applyRtrim only touches the end. PHP's
+        // byte-level rtrim() default would have left the trailing NBSP.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // shorthand
+        $nbsp = "\u{00A0}";
+        $expected = [$nbsp . 'apple'];
+        $unit = new ListOfStrings([
+            $nbsp . 'apple' . $nbsp,
         ]);
 
         // ----------------------------------------------------------------

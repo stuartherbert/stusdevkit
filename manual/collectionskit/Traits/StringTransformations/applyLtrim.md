@@ -1,8 +1,8 @@
 # StringTransformations::applyLtrim()
 
-> `public function applyLtrim(string $characters = " \n\r\t\v\0"): static`
+> `public function applyLtrim(string $characters = Str::TRIM_DEFAULT_CHARS): static`
 
-Left-trims all strings in the collection using PHP's `ltrim()` function.
+Left-trims all strings in the collection using `Str::trim()`.
 
 **Since:** _Upcoming Release_
 
@@ -16,35 +16,52 @@ Left-trims all strings in the collection using PHP's `ltrim()` function.
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Traits;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
+
 trait StringTransformations
 {
     /**
      * @param string $characters
-     *      list of characters to trim from the front of every string
-     *      in the collection
+     *      the set of characters to trim from the front of every
+     *      string in the collection. Defaults to
+     *      `Str::TRIM_DEFAULT_CHARS` (the Unicode White_Space set plus
+     *      NUL).
      * @return static
      */
     public function applyLtrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static
 }
 ```
 
 ## Description
 
-Left-trims every string stored in the collection in place using PHP's [`ltrim()`](https://www.php.net/manual/en/function.ltrim.php) function.
+Left-trims every string stored in the collection in place using
+[`Str::trim()`](../../../missingbitskit/Strings/Str/trim.md) (from the
+front only), so the full Unicode whitespace set (NBSP and friends) is
+stripped by default, not just ASCII whitespace.
 
-Trailing characters are left untouched. The collection's underlying array is rewritten via `array_map()`, so each stored string is replaced by its left-trimmed counterpart. Keys are preserved. The method returns `$this`, so calls can be chained fluently.
+The collection's underlying array is rewritten via `array_map()`, so
+each stored string is replaced by its left-trimmed counterpart. Keys
+are preserved. The method returns `$this`, so calls can be chained
+fluently.
 
 ## Parameters
 
-**`$characters`** (`string`, optional, default: `" \n\r\t\v\0"`)
+**`$characters`** (`string`, optional, default: `Str::TRIM_DEFAULT_CHARS`)
 
-List of characters to trim from the front of every string in the collection. Passed straight through to PHP's `ltrim()`. The default matches PHP's default trim character set (space, tab, newline, carriage return, vertical tab, NUL byte).
+The set of characters to trim from the front of every string in the
+collection. Passed straight through to
+[`Str::trim()`](../../../missingbitskit/Strings/Str/trim.md) as its
+trim mask. Defaults to
+[`Str::TRIM_DEFAULT_CHARS`](../../../missingbitskit/Strings/Str/README.md)
+— the Unicode `White_Space` property plus NUL.
 
 ## Return Values
 
-Returns `$this` — the same collection instance, with every stored string replaced by its left-trimmed value. The return type is `static`, so subclasses preserve their own type when chaining.
+Returns `$this` — the same collection instance, with every stored
+string replaced by its left-trimmed value. The return type is
+`static`, so subclasses preserve their own type when chaining.
 
 ## Errors/Exceptions
 
@@ -66,9 +83,10 @@ StusDevKit\CollectionsKit\Traits\StringTransformations
  ✔ ::applyLtrim() is public
  ✔ ::applyLtrim() is an instance method, not static
  ✔ ::applyLtrim() declares a single `characters` string parameter
- ✔ ::applyLtrim() defaults the character mask to PHP's default trim set
+ ✔ ::applyLtrim() defaults the character mask to Str::TRIM_DEFAULT_CHARS
  ✔ ::applyLtrim() declares a `static` return type
  ✔ ->applyLtrim() strips default whitespace from the left of every value
+ ✔ ->applyLtrim() strips Unicode whitespace such as NBSP from the left by default
  ✔ ->applyLtrim() strips the caller-supplied character mask
  ✔ ->applyLtrim() returns $this for fluent chaining
  ✔ ->applyLtrim() is a no-op on an empty collection
@@ -76,7 +94,7 @@ StusDevKit\CollectionsKit\Traits\StringTransformations
 
 ## Source
 
-[`kits/collectionskit/src/Traits/StringTransformations.php:87`](../../../../kits/collectionskit/src/Traits/StringTransformations.php#L87)
+[`kits/collectionskit/src/Traits/StringTransformations.php:101`](../../../../kits/collectionskit/src/Traits/StringTransformations.php#L101)
 
 ## Changelog
 
@@ -84,7 +102,8 @@ _No tagged releases yet._
 
 ## See Also
 
-- [`StringTransformations::applyTrim()`](applyTrim.md) — trims all strings in the collection (both ends)
+- [`Str::trim()`](../../../missingbitskit/Strings/Str/trim.md) — the UTF-8-safe trim this method delegates to
+- [`StringTransformations::applyTrim()`](applyTrim.md) — trims both ends of all strings in the collection
 - [`StringTransformations::applyRtrim()`](applyRtrim.md) — right-trims all strings in the collection
 
 ## Issues

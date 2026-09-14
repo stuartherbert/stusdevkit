@@ -213,12 +213,12 @@ Some collections provide methods that transform the stored data in-place. These 
 
 | Class | Method | Description |
 |-------|--------|-------------|
-| `DictOfStrings` | `applyTrim()` | Trims whitespace (or custom characters) from all strings using PHP's `trim()`. |
-| `DictOfStrings` | `applyLtrim()` | Left-trims whitespace (or custom characters) from all strings using PHP's `ltrim()`. |
-| `DictOfStrings` | `applyRtrim()` | Right-trims whitespace (or custom characters) from all strings using PHP's `rtrim()`. |
-| `ListOfStrings` | `applyTrim()` | Trims whitespace (or custom characters) from all strings using PHP's `trim()`. |
-| `ListOfStrings` | `applyLtrim()` | Left-trims whitespace (or custom characters) from all strings using PHP's `ltrim()`. |
-| `ListOfStrings` | `applyRtrim()` | Right-trims whitespace (or custom characters) from all strings using PHP's `rtrim()`. |
+| `DictOfStrings` | `applyTrim()` | Trims Unicode whitespace (or custom characters) from all strings using `Str::trim()`. |
+| `DictOfStrings` | `applyLtrim()` | Left-trims Unicode whitespace (or custom characters) from all strings using `Str::trim()`. |
+| `DictOfStrings` | `applyRtrim()` | Right-trims Unicode whitespace (or custom characters) from all strings using `Str::trim()`. |
+| `ListOfStrings` | `applyTrim()` | Trims Unicode whitespace (or custom characters) from all strings using `Str::trim()`. |
+| `ListOfStrings` | `applyLtrim()` | Left-trims Unicode whitespace (or custom characters) from all strings using `Str::trim()`. |
+| `ListOfStrings` | `applyRtrim()` | Right-trims Unicode whitespace (or custom characters) from all strings using `Str::trim()`. |
 
 All `apply*` methods return `$this` for fluent chaining:
 

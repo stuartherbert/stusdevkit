@@ -167,7 +167,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- update examples to use Str::length() ([01271a2](https://github.com/stuartherbert/stusdevkit/commit/01271a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- update examples to use Str::length() ([bb86801](https://github.com/stuartherbert/stusdevkit/commit/bb86801)) — Stuart Herbert <stuart@stuartherbert.com>
 - make README more useful as a reference ([6521431](https://github.com/stuartherbert/stusdevkit/commit/6521431)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain the individual steps of a validator ([8cb5ec5](https://github.com/stuartherbert/stusdevkit/commit/8cb5ec5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added initial README ([421b82b](https://github.com/stuartherbert/stusdevkit/commit/421b82b)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -219,6 +219,17 @@ This CHANGELOG is automatically compiled.
 ### Refactoring
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- switch to using Str::trim() ([c9b6703](https://github.com/stuartherbert/stusdevkit/commit/c9b6703)) — Stuart Herbert <stuart@stuartherbert.com>
+- first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
+- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
+- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
+- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationKit
 
@@ -281,16 +292,6 @@ This CHANGELOG is automatically compiled.
 - Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([c8db9c5](https://github.com/stuartherbert/stusdevkit/commit/c8db9c5)) — Stuart Herbert <stuart@stuartherbert.com>
 - Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
-- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
-- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
-- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
-- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
-- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
-- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidatorKit
 

@@ -41,6 +41,9 @@ declare(strict_types=1);
 
 namespace StusDevKit\CollectionsKit\Traits;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
+use StusDevKit\MissingBitsKit\Strings\StrTrimLocation;
+
 /**
  * StringTransformations provides in-place string transformation
  * methods for collections that hold string values.
@@ -57,18 +60,26 @@ trait StringTransformations
     // ----------------------------------------------------------------
 
     /**
-     * Trims all strings in the collection using PHP's trim()
-     * function.
+     * Trims all strings in the collection using `Str::trim()`, so
+     * the full Unicode whitespace set (NBSP and friends) is stripped
+     * by default, not just ASCII whitespace.
      *
      * @param string $characters
-     *      list of characters to trim from the front and end of every
-     *      string in the collection
+     *      the set of characters to trim from the front and end of
+     *      every string in the collection. Defaults to
+     *      `Str::TRIM_DEFAULT_CHARS` (the Unicode White_Space set plus
+     *      NUL).
      * @return static
      */
-    public function applyTrim(string $characters = " \n\r\t\v\0"): static
-    {
+    public function applyTrim(
+        string $characters = Str::TRIM_DEFAULT_CHARS,
+    ): static {
         $this->data = array_map(
-            fn(string $value) => trim($value, $characters),
+            fn(string $value) => Str::trim(
+                input: $value,
+                trimChars: $characters,
+                trimLocation: StrTrimLocation::TRIM_START_AND_END,
+            ),
             $this->data,
         );
 
@@ -76,18 +87,26 @@ trait StringTransformations
     }
 
     /**
-     * Left-trims all strings in the collection using PHP's ltrim()
-     * function.
+     * Left-trims all strings in the collection using `Str::trim()`,
+     * so the full Unicode whitespace set (NBSP and friends) is
+     * stripped from the front by default, not just ASCII whitespace.
      *
      * @param string $characters
-     *      list of characters to trim from the front of every string
-     *      in the collection
+     *      the set of characters to trim from the front of every
+     *      string in the collection. Defaults to
+     *      `Str::TRIM_DEFAULT_CHARS` (the Unicode White_Space set plus
+     *      NUL).
      * @return static
      */
-    public function applyLtrim(string $characters = " \n\r\t\v\0"): static
-    {
+    public function applyLtrim(
+        string $characters = Str::TRIM_DEFAULT_CHARS,
+    ): static {
         $this->data = array_map(
-            fn(string $value) => ltrim($value, $characters),
+            fn(string $value) => Str::trim(
+                input: $value,
+                trimChars: $characters,
+                trimLocation: StrTrimLocation::TRIM_START,
+            ),
             $this->data,
         );
 
@@ -95,18 +114,26 @@ trait StringTransformations
     }
 
     /**
-     * Right-trims all strings in the collection using PHP's rtrim()
-     * function.
+     * Right-trims all strings in the collection using `Str::trim()`,
+     * so the full Unicode whitespace set (NBSP and friends) is
+     * stripped from the end by default, not just ASCII whitespace.
      *
      * @param string $characters
-     *      list of characters to trim from the end of every string
-     *      in the collection
+     *      the set of characters to trim from the end of every
+     *      string in the collection. Defaults to
+     *      `Str::TRIM_DEFAULT_CHARS` (the Unicode White_Space set plus
+     *      NUL).
      * @return static
      */
-    public function applyRtrim(string $characters = " \n\r\t\v\0"): static
-    {
+    public function applyRtrim(
+        string $characters = Str::TRIM_DEFAULT_CHARS,
+    ): static {
         $this->data = array_map(
-            fn(string $value) => rtrim($value, $characters),
+            fn(string $value) => Str::trim(
+                input: $value,
+                trimChars: $characters,
+                trimLocation: StrTrimLocation::TRIM_END,
+            ),
             $this->data,
         );
 

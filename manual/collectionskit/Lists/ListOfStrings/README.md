@@ -32,6 +32,7 @@ namespace StusDevKit\CollectionsKit\Lists;
 
 use ArrayIterator;
 use StusDevKit\CollectionsKit\Traits\StringTransformations;
+use StusDevKit\MissingBitsKit\Strings\Str;
 
 /**
  * @extends CollectionAsList<string>
@@ -126,19 +127,19 @@ class ListOfStrings extends CollectionAsList
     // --- StringTransformations ---
 
     /**
-     * Trims all strings in the collection using PHP's trim() function.
+     * Trims all strings in the collection using Str::trim().
      */
-    public function applyTrim(string $characters = " \n\r\t\v\0"): static;
+    public function applyTrim(string $characters = Str::TRIM_DEFAULT_CHARS): static;
 
     /**
-     * Left-trims all strings in the collection using PHP's ltrim() function.
+     * Left-trims all strings in the collection using Str::trim().
      */
-    public function applyLtrim(string $characters = " \n\r\t\v\0"): static;
+    public function applyLtrim(string $characters = Str::TRIM_DEFAULT_CHARS): static;
 
     /**
-     * Right-trims all strings in the collection using PHP's rtrim() function.
+     * Right-trims all strings in the collection using Str::trim().
      */
-    public function applyRtrim(string $characters = " \n\r\t\v\0"): static;
+    public function applyRtrim(string $characters = Str::TRIM_DEFAULT_CHARS): static;
 }
 ```
 
@@ -180,9 +181,9 @@ Methods whose narrowed signatures differ from the parent — anything that refer
 
 **From StringTransformations**
 
-- [`->applyTrim()`](../../Traits/StringTransformations/applyTrim.md) — trims all strings in the list using PHP's `trim()`
-- [`->applyLtrim()`](../../Traits/StringTransformations/applyLtrim.md) — left-trims all strings in the list using PHP's `ltrim()`
-- [`->applyRtrim()`](../../Traits/StringTransformations/applyRtrim.md) — right-trims all strings in the list using PHP's `rtrim()`
+- [`->applyTrim()`](../../Traits/StringTransformations/applyTrim.md) — trims all strings in the list using `Str::trim()`
+- [`->applyLtrim()`](../../Traits/StringTransformations/applyLtrim.md) — left-trims all strings in the list using `Str::trim()`
+- [`->applyRtrim()`](../../Traits/StringTransformations/applyRtrim.md) — right-trims all strings in the list using `Str::trim()`
 
 ## Here Be Dragons
 

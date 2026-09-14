@@ -14,27 +14,29 @@
 declare(strict_types=1);
 namespace StusDevKit\CollectionsKit\Traits;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
+
 trait StringTransformations
 {
     /**
-     * Trims all strings in the collection using PHP's trim() function.
+     * Trims all strings in the collection using Str::trim().
      */
     public function applyTrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static;
 
     /**
-     * Left-trims all strings in the collection using PHP's ltrim() function.
+     * Left-trims all strings in the collection using Str::trim().
      */
     public function applyLtrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static;
 
     /**
-     * Right-trims all strings in the collection using PHP's rtrim() function.
+     * Right-trims all strings in the collection using Str::trim().
      */
     public function applyRtrim(
-        string $characters = " \n\r\t\v\0",
+        string $characters = Str::TRIM_DEFAULT_CHARS,
     ): static;
 }
 ```
@@ -45,15 +47,15 @@ trait StringTransformations
 
 Use this trait in any collection class that extends [`CollectionOfAnything`](../../CollectionOfAnything/README.md) and stores strings — for example [`DictOfStrings`](../../Dictionaries/DictOfStrings/README.md).
 
-Each method mutates the underlying `$data` array in place via `array_map()`, replacing every stored string with its trimmed counterpart. The methods return `$this` so calls can be chained fluently.
+Each method delegates to [`Str::trim()`](../../../missingbitskit/Strings/Str/trim.md), so trimming is UTF-8-aware and strips the full Unicode whitespace set (NBSP and friends) by default, not just ASCII whitespace. The underlying `$data` array is rewritten via `array_map()`, replacing every stored string with its trimmed counterpart while preserving keys. The methods return `$this` so calls can be chained fluently.
 
 ## Methods
 
 **From StringTransformations**
 
-- [`->applyTrim()`](applyTrim.md) — trims all strings in the collection using PHP's `trim()` function
-- [`->applyLtrim()`](applyLtrim.md) — left-trims all strings in the collection using PHP's `ltrim()` function
-- [`->applyRtrim()`](applyRtrim.md) — right-trims all strings in the collection using PHP's `rtrim()` function
+- [`->applyTrim()`](applyTrim.md) — trims all strings in the collection using `Str::trim()`
+- [`->applyLtrim()`](applyLtrim.md) — left-trims all strings in the collection using `Str::trim()`
+- [`->applyRtrim()`](applyRtrim.md) — right-trims all strings in the collection using `Str::trim()`
 
 ## Here Be Dragons
 
@@ -70,7 +72,7 @@ StusDevKit\CollectionsKit\Traits\StringTransformations
 
 ## Source
 
-[`kits/collectionskit/src/Traits/StringTransformations.php:51`](../../../../kits/collectionskit/src/Traits/StringTransformations.php#L51)
+[`kits/collectionskit/src/Traits/StringTransformations.php:54`](../../../../kits/collectionskit/src/Traits/StringTransformations.php#L54)
 
 ## Changelog
 
@@ -78,6 +80,7 @@ _No tagged releases yet._
 
 ## See Also
 
+- [`Str::trim()`](../../../missingbitskit/Strings/Str/trim.md) — the UTF-8-safe trim every method here delegates to
 - [`DictOfStrings`](../../Dictionaries/DictOfStrings/README.md) — uses this trait
 - [`CollectionOfAnything`](../../CollectionOfAnything/README.md) — root base class for every collection type
 
