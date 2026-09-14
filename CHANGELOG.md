@@ -120,9 +120,21 @@ This CHANGELOG is automatically compiled.
 ### Bug Fixes
 
 
+#### ValidationKit
+
+- use Str::foldCase() instead of Str::toLower() for comparisons ([f22ce9f](https://github.com/stuartherbert/stusdevkit/commit/f22ce9f)) — Stuart Herbert <stuart@stuartherbert.com>
+- improve round-trip JSON Schema import and export ([c14fa32](https://github.com/stuartherbert/stusdevkit/commit/c14fa32)) — Stuart Herbert <stuart@stuartherbert.com>
+- $ref handling now matches JSON Schema Draft 2020-12 behaviour ([d45f497](https://github.com/stuartherbert/stusdevkit/commit/d45f497)) — Stuart Herbert <stuart@stuartherbert.com>
+- PHP associative array schemas can now be exported as JSON schema ([7c0bd28](https://github.com/stuartherbert/stusdevkit/commit/7c0bd28)) — Stuart Herbert <stuart@stuartherbert.com>
+- add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([b599573](https://github.com/stuartherbert/stusdevkit/commit/b599573)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
+- Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
+- make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
+- Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
-- use Str::foldCase() instead of Str::toLower() for comparisons ([d39575a](https://github.com/stuartherbert/stusdevkit/commit/d39575a)) — Stuart Herbert <stuart@stuartherbert.com>
+- use Str::foldCase() instead of Str::toLower() for comparisons ([c97a633](https://github.com/stuartherbert/stusdevkit/commit/c97a633)) — Stuart Herbert <stuart@stuartherbert.com>
 - closed-resource assertions now use IsClosedResource for forwards-compatibility ([df4546b](https://github.com/stuartherbert/stusdevkit/commit/df4546b)) — Stuart Herbert <stuart@stuartherbert.com>
 - comparisons assertions now throw when asked to compare incompatible types ([170f75e](https://github.com/stuartherbert/stusdevkit/commit/170f75e)) — Stuart Herbert <stuart@stuartherbert.com>
 - assertContainsOnly*() now fill out extra section of thrown exceptions ([869ba0d](https://github.com/stuartherbert/stusdevkit/commit/869ba0d)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -146,17 +158,6 @@ This CHANGELOG is automatically compiled.
 - CollectionAsStack (and children) now throw if a null is pushed onto the stack ([9b656c1](https://github.com/stuartherbert/stusdevkit/commit/9b656c1)) — Stuart Herbert <stuart@stuartherbert.com>
 - make sure merge() and mergeSelf() only accept compatible types ([d417bfc](https://github.com/stuartherbert/stusdevkit/commit/d417bfc)) — Stuart Herbert <stuart@stuartherbert.com>
 - StackOfStrings::toArray() now returns the internal data in LIFO order ([dd13227](https://github.com/stuartherbert/stusdevkit/commit/dd13227)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### ValidationKit
-
-- improve round-trip JSON Schema import and export ([c14fa32](https://github.com/stuartherbert/stusdevkit/commit/c14fa32)) — Stuart Herbert <stuart@stuartherbert.com>
-- $ref handling now matches JSON Schema Draft 2020-12 behaviour ([d45f497](https://github.com/stuartherbert/stusdevkit/commit/d45f497)) — Stuart Herbert <stuart@stuartherbert.com>
-- PHP associative array schemas can now be exported as JSON schema ([7c0bd28](https://github.com/stuartherbert/stusdevkit/commit/7c0bd28)) — Stuart Herbert <stuart@stuartherbert.com>
-- add support for JsonSchema type being an array of types (needed for OpenAPI v3.1 support) ([b599573](https://github.com/stuartherbert/stusdevkit/commit/b599573)) — Stuart Herbert <stuart@stuartherbert.com>
-- remove all mention of PipelineStep from the public API ([00392f4](https://github.com/stuartherbert/stusdevkit/commit/00392f4)) — Stuart Herbert <stuart@stuartherbert.com>
-- Validate::uuid() now follows same principles as the other schemas ([fa8af3c](https://github.com/stuartherbert/stusdevkit/commit/fa8af3c)) — Stuart Herbert <stuart@stuartherbert.com>
-- make it easier for third-party validators to create validation issues ([5a7b06d](https://github.com/stuartherbert/stusdevkit/commit/5a7b06d)) — Stuart Herbert <stuart@stuartherbert.com>
-- Validate::discriminatedAnyof() performance improvement ([204b3af](https://github.com/stuartherbert/stusdevkit/commit/204b3af)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### Tools
 

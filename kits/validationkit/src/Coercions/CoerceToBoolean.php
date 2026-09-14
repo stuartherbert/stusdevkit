@@ -107,9 +107,13 @@ final class CoerceToBoolean implements ValueCoercion
     public function coerce(mixed $data): mixed
     {
         if (is_string($data)) {
-            $lower = Str::toLower($data);
+            // match the recognised tokens case-insensitively. we
+            // case-fold rather than lowercase so this stays consistent
+            // with the rest of the kit's caseless matching; the tokens
+            // are ASCII, so folding and lowercasing agree for them.
+            $folded = Str::foldCase($data);
 
-            return $this->lookup[$lower] ?? $data;
+            return $this->lookup[$folded] ?? $data;
         }
 
         if (is_int($data) || is_float($data)) {
