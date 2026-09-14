@@ -70,6 +70,12 @@ class Str
     ): bool;
 
     /**
+     * Returns `$input` reduced to its Unicode default case-folded
+     * form, for caseless matching.
+     */
+    public static function foldCase(string $input): string;
+
+    /**
      * Returns its input unchanged; the no-op transformer.
      */
     public static function identity(string $input): string;
@@ -143,8 +149,9 @@ optional `$transformer`. A transformer is any `callable(string):
 string`: it receives one of the method's input strings and returns a
 replacement the method then works with. (Str's *producer* methods —
 [`Str::trim()`](trim.md), [`Str::identity()`](identity.md),
-[`Str::toLower()`](toLower.md), [`Str::toUpper()`](toUpper.md) — do not
-take one; they ARE the kind of thing you'd pass as a transformer.)
+[`Str::toLower()`](toLower.md), [`Str::toUpper()`](toUpper.md),
+[`Str::foldCase()`](foldCase.md) — do not take one; they ARE the kind
+of thing you'd pass as a transformer.)
 
 The point is to normalise the input at the moment of the query,
 without juggling temporary variables or if/else trees at the call
@@ -192,6 +199,7 @@ individual method docblocks for the specifics.
 
 - [`::contains()`](contains.md) — searches one or more strings to see whether any of them contains the given needle
 - [`::endsWith()`](endsWith.md) — checks one or more strings to see whether any of them ends with the given needle
+- [`::foldCase()`](foldCase.md) — returns a string reduced to its Unicode default case-folded form, for caseless matching
 - [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
 - [`::isEmpty()`](isEmpty.md) — checks whether the given input string is empty
 - [`::length()`](length.md) — counts how many UTF-8 characters are in a string
@@ -230,6 +238,7 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::length() as a public method
  ✔ publishes ::startsWith() as a public method
  ✔ publishes ::endsWith() as a public method
+ ✔ publishes ::foldCase() as a public method
  ✔ publishes ::toLower() as a public method
  ✔ publishes ::toUpper() as a public method
  ✔ publishes ::TRIM_DEFAULT_CHARS as a public constant
@@ -249,6 +258,7 @@ _No tagged releases yet._
 - [`StrTrimLocation`](../StrTrimLocation/README.md) — the enum [`Str::trim()`](trim.md) takes to control which end(s) are trimmed
 - [`Str::contains()`](contains.md) — searches one or more strings for a needle
 - [`Str::endsWith()`](endsWith.md) — checks whether one or more strings end with a needle
+- [`Str::foldCase()`](foldCase.md) — reduces a string to its Unicode case-folded form, for caseless matching
 - [`Str::identity()`](identity.md) — the no-op transformer
 - [`Str::isEmpty()`](isEmpty.md) — checks whether a string is empty
 - [`Str::length()`](length.md) — counts how many UTF-8 characters are in a string

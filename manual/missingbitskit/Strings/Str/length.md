@@ -124,7 +124,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:424`](../../../../kits/missingbitskit/src/Strings/Str.php#L424)
+[`kits/missingbitskit/src/Strings/Str.php:594`](../../../../kits/missingbitskit/src/Strings/Str.php#L594)
 
 ## Changelog
 

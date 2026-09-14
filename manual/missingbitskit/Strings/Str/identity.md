@@ -82,7 +82,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:298`](../../../../kits/missingbitskit/src/Strings/Str.php#L298)
+[`kits/missingbitskit/src/Strings/Str.php:468`](../../../../kits/missingbitskit/src/Strings/Str.php#L468)
 
 ## Changelog
 

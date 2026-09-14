@@ -61,8 +61,10 @@ _None._
   Unicode uppercase (`mb_strtoupper`) — fine for display, but NOT the
   full Unicode case-folding a watertight caseless match needs for
   every script (German "ß" expands to "SS", and other surprises
-  await). Normalise at your system boundary — see the [`Str`](README.md)
-  class docblock — if you need that.
+  await). For caseless matching, reach for
+  [`Str::foldCase()`](foldCase.md) instead — it does proper Unicode
+  case-folding. For canonical equivalence, normalise at your system
+  boundary — see the [`Str`](README.md) class docblock.
 - Reminder: this handles ASCII and UTF-8 strings, not raw bytes. See
   the [`Str`](README.md) class docblock for details.
 
@@ -87,7 +89,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:527`](../../../../kits/missingbitskit/src/Strings/Str.php#L527)
+[`kits/missingbitskit/src/Strings/Str.php:812`](../../../../kits/missingbitskit/src/Strings/Str.php#L812)
 
 ## Changelog
 
@@ -96,6 +98,7 @@ _No tagged releases yet._
 ## See Also
 
 - [`Str::toLower()`](toLower.md) — the lowercase sibling
+- [`Str::foldCase()`](foldCase.md) — the matching-oriented sibling (Unicode case-folding); use it to compare, not to display
 - [`Str::isEmpty()`](isEmpty.md) — a query method that accepts a producer like `Str::toUpper()` as its transformer
 - [`Str::identity()`](identity.md) — the no-op producer/transformer sibling
 - [`Str`](README.md) — the class-level Transformers tutorial explaining producers and transformers

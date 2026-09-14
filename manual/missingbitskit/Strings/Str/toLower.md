@@ -61,9 +61,11 @@ _None._
   Unicode lowercase (`mb_strtolower`) — fine for display and for most
   case-insensitive comparisons, but NOT the full Unicode case-folding
   a watertight caseless match needs for every script (German "ß",
-  Greek final sigma, and friends will trip you up). Normalise at your
-  system boundary — see the [`Str`](README.md) class docblock — if you
-  need that.
+  Greek final sigma, and friends will trip you up). For caseless
+  matching, reach for [`Str::foldCase()`](foldCase.md) instead — it
+  does proper Unicode case-folding. For canonical equivalence,
+  normalise at your system boundary — see the [`Str`](README.md) class
+  docblock.
 - Reminder: this handles ASCII and UTF-8 strings, not raw bytes. See
   the [`Str`](README.md) class docblock for details.
 
@@ -88,7 +90,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:488`](../../../../kits/missingbitskit/src/Strings/Str.php#L488)
+[`kits/missingbitskit/src/Strings/Str.php:771`](../../../../kits/missingbitskit/src/Strings/Str.php#L771)
 
 ## Changelog
 
@@ -97,6 +99,7 @@ _No tagged releases yet._
 ## See Also
 
 - [`Str::toUpper()`](toUpper.md) — the uppercase sibling
+- [`Str::foldCase()`](foldCase.md) — the matching-oriented sibling (Unicode case-folding); use it to compare, not to display
 - [`Str::isEmpty()`](isEmpty.md) — a query method that accepts a producer like `Str::toLower()` as its transformer
 - [`Str::identity()`](identity.md) — the no-op producer/transformer sibling
 - [`Str`](README.md) — the class-level Transformers tutorial explaining producers and transformers

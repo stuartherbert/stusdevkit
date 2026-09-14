@@ -350,6 +350,40 @@ class StrTest extends TestCase
         $this->assertContains('endsWith', $methodNames);
     }
 
+    #[TestDox('publishes ::foldCase() as a public method')]
+    public function test_publishes_foldCase(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // foldCase() is part of Str's published API — the UTF-8 aware
+        // Unicode case-folding used for caseless matching. This test
+        // catches accidental renames or scope changes that would
+        // silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('foldCase', $methodNames);
+    }
+
     #[TestDox('publishes ::toLower() as a public method')]
     public function test_publishes_toLower(): void
     {
@@ -2532,6 +2566,270 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::toUpper($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — foldCase()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::foldCase() is declared public static')]
+    public function test_foldCase_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // foldCase() is consumed as a static utility — callers write
+        // `Str::foldCase(...)`, never `(new Str)->foldCase(...)`.
+        // Dropping `static` or narrowing visibility would break every
+        // call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'foldCase');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::foldCase() takes parameters [input]')]
+    public function test_foldCase_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // foldCase() is a producer, not a query — it takes only the
+        // input it transforms, and (unlike the query methods) does NOT
+        // take a transformer of its own.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'foldCase');
+        $expected = ['input'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::foldCase() returns string')]
+    public function test_foldCase_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // foldCase() is a `string -> string` transformer, so it must
+        // satisfy the `callable(string): string` contract the query
+        // methods expect.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'foldCase');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('string', $returnType->getName());
+    }
+
+    // ================================================================
+    //
+    // Behaviour — foldCase()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('folds an ASCII string to lowercase')]
+    public function test_foldCase_folds_ascii_to_lowercase(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // for ASCII, default case-folding lowercases: "Hello World"
+        // folds to "hello world", the common-case behaviour callers
+        // expect from a caseless-matching key.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'Hello World';
+        $expected = 'hello world';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::foldCase($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('folds a multibyte string')]
+    public function test_foldCase_folds_multibyte(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // foldCase() is UTF-8 aware: "CAFÉ" folds to "café", folding the
+        // multibyte É (U+00C9) to é (U+00E9). A byte-level fold would
+        // leave the É untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = "CAF\u{00C9}";
+        $expected = "caf\u{00E9}";
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::foldCase($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('folds the German eszett to a double s')]
+    public function test_foldCase_folds_eszett_to_double_s(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this is the property that separates foldCase() from toLower():
+        // default case-folding expands ß to "ss", so "Straße" folds to
+        // "strasse". A simple lowercase (toLower) would leave the ß in
+        // place, and "STRASSE" would never match "straße".
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = "Stra\u{00DF}e";
+        $expected = 'strasse';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::foldCase($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('folds to a result that can be longer than the input')]
+    public function test_foldCase_result_can_change_length(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // folding is not one-to-one: "Straße" (6 characters) folds to
+        // "strasse" (7 characters), because ß expands to "ss". This
+        // pins the contract that a foldCase() result may not line up
+        // with the input, so callers must never map offsets back onto
+        // the original string.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = "Stra\u{00DF}e";
+        $expectedInputLength = 6;
+        $expectedFoldedLength = 7;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $inputLength = mb_strlen($input, 'UTF-8');
+        $foldedLength = mb_strlen(Str::foldCase($input), 'UTF-8');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expectedInputLength, $inputLength);
+        $this->assertSame($expectedFoldedLength, $foldedLength);
+    }
+
+    #[TestDox('returns an empty string unchanged')]
+    public function test_foldCase_returns_empty_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the empty string is a legitimate input; foldCase() returns it
+        // unchanged rather than treating it specially.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = '';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::foldCase($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('leaves a caseless string unchanged')]
+    public function test_foldCase_leaves_caseless_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // characters with no case — here three CJK ideographs — have no
+        // folded form and pass through untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '日本語';
+        $expected = '日本語';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::foldCase($input);
 
         // ----------------------------------------------------------------
         // test the results

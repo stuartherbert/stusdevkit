@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added Str::foldCase() ([e05c1d1](https://github.com/stuartherbert/stusdevkit/commit/e05c1d1)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::endsWith() ([896addb](https://github.com/stuartherbert/stusdevkit/commit/896addb)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::startsWith() ([7ac7e6b](https://github.com/stuartherbert/stusdevkit/commit/7ac7e6b)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toUpper() ([72b8d33](https://github.com/stuartherbert/stusdevkit/commit/72b8d33)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -224,7 +225,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- switch to using Str::endsWith() ([44f0562](https://github.com/stuartherbert/stusdevkit/commit/44f0562)) — Stuart Herbert <stuart@stuartherbert.com>
+- switch to using Str::endsWith() ([c166c4a](https://github.com/stuartherbert/stusdevkit/commit/c166c4a)) — Stuart Herbert <stuart@stuartherbert.com>
 - now uses Str::startsWith() ([e3c83b4](https://github.com/stuartherbert/stusdevkit/commit/e3c83b4)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to using Str::trim() ([331b340](https://github.com/stuartherbert/stusdevkit/commit/331b340)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to Str::toUpper() ([5634475](https://github.com/stuartherbert/stusdevkit/commit/5634475)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -65,8 +65,8 @@ namespace StusDevKit\MissingBitsKit\Strings;
  * is any `callable(string): string`: it receives one of the
  * method's input strings and returns a replacement the method then
  * works with. (Str's *producer* methods - `trim()`, `identity()`,
- * `toLower()`, `toUpper()` - do not take one; they ARE the kind of
- * thing you'd pass as a transformer.)
+ * `toLower()`, `toUpper()`, `foldCase()` - do not take one; they ARE
+ * the kind of thing you'd pass as a transformer.)
  *
  * The point is to normalise the input at the moment of the query,
  * without juggling temporary variables or if/else trees at the call
@@ -390,6 +390,65 @@ class Str
     }
 
     /**
+     * `foldCase()` returns `$input` with every character reduced to
+     * its Unicode default case-folded form.
+     *
+     * It is a producer, and satisfies the `callable(string): string`
+     * shape - pass `Str::foldCase(...)` as the `$transformer` to a Str
+     * query method to case-fold its input before the query.
+     *
+     * Case-folding is the operation you want for *caseless matching* -
+     * "are these two strings the same if we ignore case?". It differs
+     * from `toLower()`: folding expands the German "ß" to "ss" and
+     * normalises the Greek final sigma, so `foldCase("STRASSE")` and
+     * `foldCase("straße")` both yield `"strasse"`, whereas
+     * `toLower()` would leave them unequal. Use `toLower()` when you
+     * want a lowercase string for *display*; use `foldCase()` when you
+     * want a key for *comparison*.
+     *
+     * Originally added so that `Str::containsIgnoreCase()` (and any
+     * other case-insensitive comparison) share a single UTF-8-aware
+     * case-folding primitive, instead of relying on simple lowercasing
+     * that mishandles "ß", the final sigma, and friends.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * - **The result can be a different length from `$input`.**
+     *   Folding is not one-to-one: "ß" folds to the two characters
+     *   "ss", so the returned string can have more codepoints - and
+     *   more bytes - than you handed in. Never use a `foldCase()`
+     *   result to index back into the original string; the offsets
+     *   will silently drift out of alignment. Fold for comparison,
+     *   never for slicing.
+     * - **Folding is not canonical normalisation.** `foldCase()` does
+     *   Unicode *default* case-folding (`mb_convert_case` with
+     *   `MB_CASE_FOLD`). It does NOT normalise combining sequences
+     *   (an "e" plus a combining acute accent stays two codepoints)
+     *   and it does NOT apply locale-specific rules (Turkish dotless
+     *   "ı"/"İ" fold the default way, which is the footgun waiting for
+     *   Turkish text). Normalise at your system boundary - see this
+     *   class's docblock - if you need those.
+     * - Reminder: this handles ASCII and UTF-8 strings, not raw
+     *   bytes. See this class's docblock for details.
+     *
+     * @param string $input
+     *      the string to case-fold
+     * @return string
+     *      `$input` reduced to its Unicode default case-folded form
+     */
+    public static function foldCase(string $input): string
+    {
+        // case-fold, codepoint-aware
+        //
+        // MB_CASE_FOLD is Unicode *default* case-folding - the correct
+        // operation for caseless matching, unlike the simple lowercase
+        // mb_strtolower() does. we hard-code 'UTF-8' so behaviour does
+        // not drift with `mb_internal_encoding()` across deployments.
+        return mb_convert_case($input, MB_CASE_FOLD, 'UTF-8');
+    }
+
+    /**
      * `identity()` returns `$input` unchanged.
      *
      * It is the no-op transformer. Pass `Str::identity(...)` to any
@@ -697,8 +756,10 @@ class Str
      *   most case-insensitive comparisons, but NOT the full Unicode
      *   case-folding a watertight caseless match needs for every
      *   script (German "ß", Greek final sigma, and friends will trip
-     *   you up). Normalise at your system boundary - see this class's
-     *   docblock - if you need that.
+     *   you up). For caseless matching, reach for `Str::foldCase()`
+     *   instead - it does proper Unicode case-folding. For canonical
+     *   equivalence, normalise at your system boundary - see this
+     *   class's docblock.
      * - Reminder: this handles ASCII and UTF-8 strings, not raw
      *   bytes. See this class's docblock for details.
      *
@@ -736,8 +797,10 @@ class Str
      *   Unicode uppercase (`mb_strtoupper`) - fine for display, but
      *   NOT the full Unicode case-folding a watertight caseless match
      *   needs for every script (German "ß" expands to "SS", and other
-     *   surprises await). Normalise at your system boundary - see this
-     *   class's docblock - if you need that.
+     *   surprises await). For caseless matching, reach for
+     *   `Str::foldCase()` instead - it does proper Unicode
+     *   case-folding. For canonical equivalence, normalise at your
+     *   system boundary - see this class's docblock.
      * - Reminder: this handles ASCII and UTF-8 strings, not raw
      *   bytes. See this class's docblock for details.
      *
