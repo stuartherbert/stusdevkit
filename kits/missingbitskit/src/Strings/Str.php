@@ -65,8 +65,8 @@ namespace StusDevKit\MissingBitsKit\Strings;
  * is any `callable(string): string`: it receives one of the
  * method's input strings and returns a replacement the method then
  * works with. (Str's *producer* methods - `trim()`, `identity()`,
- * `toLower()` - do not take one; they ARE the kind of thing you'd
- * pass as a transformer.)
+ * `toLower()`, `toUpper()` - do not take one; they ARE the kind of
+ * thing you'd pass as a transformer.)
  *
  * The point is to normalise the input at the moment of the query,
  * without juggling temporary variables or if/else trees at the call
@@ -492,6 +492,45 @@ class Str
         // we hard-code 'UTF-8' so behaviour does not drift with
         // `mb_internal_encoding()` across deployments.
         return mb_strtolower($input, 'UTF-8');
+    }
+
+    /**
+     * `toUpper()` returns `$input` with every cased character folded
+     * to its uppercase form.
+     *
+     * It is a producer, and satisfies the `callable(string): string`
+     * shape - pass `Str::toUpper(...)` as the `$transformer` to a Str
+     * query method to fold its input to uppercase before the query.
+     *
+     * Originally added so that ValidationKit's `UpperCaseTransformer`
+     * (and any other caller) share a single UTF-8-aware uppercaser,
+     * instead of bare `mb_strtoupper()` calls that rely on the ambient
+     * `mb_internal_encoding()`.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * - **Uppercasing is not case-folding.** `toUpper()` does a simple
+     *   Unicode uppercase (`mb_strtoupper`) - fine for display, but
+     *   NOT the full Unicode case-folding a watertight caseless match
+     *   needs for every script (German "ß" expands to "SS", and other
+     *   surprises await). Normalise at your system boundary - see this
+     *   class's docblock - if you need that.
+     * - Reminder: this handles ASCII and UTF-8 strings, not raw
+     *   bytes. See this class's docblock for details.
+     *
+     * @param string $input
+     *      the string to fold to uppercase
+     * @return string
+     *      `$input` with every cased character folded to uppercase
+     */
+    public static function toUpper(string $input): string
+    {
+        // fold to uppercase, codepoint-aware
+        //
+        // we hard-code 'UTF-8' so behaviour does not drift with
+        // `mb_internal_encoding()` across deployments.
+        return mb_strtoupper($input, 'UTF-8');
     }
 
     /**

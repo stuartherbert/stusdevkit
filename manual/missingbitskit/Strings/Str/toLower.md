@@ -96,6 +96,7 @@ _No tagged releases yet._
 
 ## See Also
 
+- [`Str::toUpper()`](toUpper.md) — the uppercase sibling
 - [`Str::isEmpty()`](isEmpty.md) — a query method that accepts a producer like `Str::toLower()` as its transformer
 - [`Str::identity()`](identity.md) — the no-op producer/transformer sibling
 - [`Str`](README.md) — the class-level Transformers tutorial explaining producers and transformers

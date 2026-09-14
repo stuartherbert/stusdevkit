@@ -316,6 +316,40 @@ class StrTest extends TestCase
         $this->assertContains('toLower', $methodNames);
     }
 
+    #[TestDox('publishes ::toUpper() as a public method')]
+    public function test_publishes_toUpper(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toUpper() is part of Str's published API — the UTF-8 aware
+        // way to uppercase a string, and a producer callers pass as a
+        // transformer. This test catches accidental renames or scope
+        // changes that would silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('toUpper', $methodNames);
+    }
+
     #[TestDox('publishes ::TRIM_DEFAULT_CHARS as a public constant')]
     public function test_publishes_TRIM_DEFAULT_CHARS(): void
     {
@@ -2203,6 +2237,233 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::toLower($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — toUpper()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::toUpper() is declared public static')]
+    public function test_toUpper_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toUpper() is consumed as a static utility — callers write
+        // `Str::toUpper(...)`, never `(new Str)->toUpper(...)`. Dropping
+        // `static` or narrowing visibility would break every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'toUpper');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::toUpper() takes parameters [input]')]
+    public function test_toUpper_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toUpper() is a producer, not a query — it takes only the
+        // input it transforms, and (unlike the query methods) does NOT
+        // take a transformer of its own.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'toUpper');
+        $expected = ['input'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::toUpper() returns string')]
+    public function test_toUpper_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toUpper() is a `string -> string` transformer, so it must
+        // satisfy the `callable(string): string` contract the query
+        // methods expect.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'toUpper');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('string', $returnType->getName());
+    }
+
+    // ================================================================
+    //
+    // Behaviour — toUpper()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('uppercases an ASCII string')]
+    public function test_toUpper_uppercases_ascii(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the everyday case: lowercase ASCII letters become their
+        // uppercase equivalents.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'hello world';
+        $expected = 'HELLO WORLD';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toUpper($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('uppercases a multibyte string')]
+    public function test_toUpper_uppercases_multibyte(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // toUpper() is UTF-8 aware: "café" uppercases to "CAFÉ",
+        // folding the multibyte é (U+00E9) to É (U+00C9). A byte-level
+        // strtoupper() would leave the é untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = "caf\u{00E9}";
+        $expected = "CAF\u{00C9}";
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toUpper($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('leaves an already-uppercase string unchanged')]
+    public function test_toUpper_leaves_uppercase_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a string that is already uppercase comes back unchanged.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'ALREADY UPPERCASE';
+        $expected = 'ALREADY UPPERCASE';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toUpper($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns an empty string unchanged')]
+    public function test_toUpper_returns_empty_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the empty string is a legitimate input; toUpper() returns it
+        // unchanged rather than treating it specially.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = '';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toUpper($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('leaves a caseless string unchanged')]
+    public function test_toUpper_leaves_caseless_string_unchanged(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // characters with no uppercase form — here three CJK ideographs
+        // — pass through untouched.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '日本語';
+        $expected = '日本語';
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::toUpper($input);
 
         // ----------------------------------------------------------------
         // test the results

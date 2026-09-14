@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added Str::toUpper() ([325926f](https://github.com/stuartherbert/stusdevkit/commit/325926f)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toLower() ([7d35e0f](https://github.com/stuartherbert/stusdevkit/commit/7d35e0f)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([65456d0](https://github.com/stuartherbert/stusdevkit/commit/65456d0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([5b95ef0](https://github.com/stuartherbert/stusdevkit/commit/5b95ef0)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -220,7 +221,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationsKit
 
-- switch over to Str::toLower() ([dd72c61](https://github.com/stuartherbert/stusdevkit/commit/dd72c61)) — Stuart Herbert <stuart@stuartherbert.com>
+- switch over to Str::toLower() ([92c1b91](https://github.com/stuartherbert/stusdevkit/commit/92c1b91)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### AssertionsKit
 
