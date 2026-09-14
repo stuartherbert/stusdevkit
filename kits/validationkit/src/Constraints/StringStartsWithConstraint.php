@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -151,7 +152,19 @@ final class StringStartsWithConstraint extends BaseConstraint
     ): mixed {
         assert(is_string($data));
 
-        if (! str_starts_with($data, $this->prefix)) {
+        // special case - an empty prefix is satisfied by every
+        // string, so there is nothing to check.
+        //
+        // correctness! Str::startsWith() deliberately reports false
+        // for an empty needle (it treats "starts with nothing" as
+        // meaningless), so we must short-circuit the empty prefix
+        // here to preserve this constraint's contract that an empty
+        // prefix accepts every input.
+        if ($this->prefix === '') {
+            return $data;
+        }
+
+        if (! Str::startsWith($data, $this->prefix)) {
             $issue = ($this->error)($data);
             $context->addExistingIssue(
                 $issue->withPath($context->path()),

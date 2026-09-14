@@ -281,8 +281,10 @@ class StringStartsWithConstraintTest extends TestCase
 
     /**
      * Edge — an empty prefix is satisfied by every string,
-     * including the empty string (str_starts_with returns
-     * true for an empty needle).
+     * including the empty string. Str::startsWith() reports
+     * false for an empty needle, so the constraint short-circuits
+     * an empty prefix to preserve this "accepts everything"
+     * contract.
      */
     #[TestDox('->process() accepts any input when the configured prefix is empty')]
     public function test_process_accepts_any_input_when_prefix_empty(): void
@@ -297,9 +299,9 @@ class StringStartsWithConstraintTest extends TestCase
     }
 
     /**
-     * Multibyte — str_starts_with is byte-based but works
-     * correctly for any valid UTF-8 prefix that is itself a
-     * byte prefix of the input.
+     * Multibyte — Str::startsWith() is UTF-8 safe, so any valid
+     * UTF-8 prefix that opens the input is matched as whole
+     * codepoints.
      */
     #[TestDox('->process() accepts multibyte prefixes when the input starts with them')]
     public function test_process_accepts_multibyte_prefix(): void

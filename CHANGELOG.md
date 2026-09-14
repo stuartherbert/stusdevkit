@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::startsWith() ([df9aba4](https://github.com/stuartherbert/stusdevkit/commit/df9aba4)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::startsWith() ([7ac7e6b](https://github.com/stuartherbert/stusdevkit/commit/7ac7e6b)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toUpper() ([72b8d33](https://github.com/stuartherbert/stusdevkit/commit/72b8d33)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toLower() ([7d35e0f](https://github.com/stuartherbert/stusdevkit/commit/7d35e0f)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([65456d0](https://github.com/stuartherbert/stusdevkit/commit/65456d0)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -223,6 +223,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
+- now uses Str::startsWith() ([e34d20a](https://github.com/stuartherbert/stusdevkit/commit/e34d20a)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to using Str::trim() ([331b340](https://github.com/stuartherbert/stusdevkit/commit/331b340)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to Str::toUpper() ([5634475](https://github.com/stuartherbert/stusdevkit/commit/5634475)) — Stuart Herbert <stuart@stuartherbert.com>
 - migrate to Str::length() ([3b76dc8](https://github.com/stuartherbert/stusdevkit/commit/3b76dc8)) — Stuart Herbert <stuart@stuartherbert.com>
