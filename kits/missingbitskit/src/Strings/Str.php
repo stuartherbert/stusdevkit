@@ -373,6 +373,88 @@ class Str
     }
 
     /**
+     * `length()` counts how many UTF-8 characters (codepoints) are in
+     * the given `$input` string.
+     *
+     * By default it counts `$input` exactly as given. Pass a
+     * `$transformer` to transform `$input` first - for example, a
+     * trimming transformer counts the length of the trimmed string
+     * rather than the padded one.
+     *
+     * `length()` supports `null` `$input` values too, for added
+     * convenience; a `null` has no characters, so it counts as zero.
+     *
+     * Originally added so that ValidationKit's string-length
+     * constraints (and any other caller) share a single UTF-8-aware
+     * character count, instead of bare `mb_strlen()` calls that rely
+     * on the ambient `mb_internal_encoding()`.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * - **Codepoints, not grapheme clusters.** `length()` counts
+     *   Unicode codepoints. An "e" followed by a combining acute
+     *   accent (U+0065 U+0301) looks like one character but counts as
+     *   2. Normalise at your system boundary - see this class's
+     *   docblock - if you need the count a human would expect.
+     * - **Your `$transformer` is skipped for `null` and zero-length
+     *   input.** length() answers the cheap cases (`null`,
+     *   zero-length) before it transforms, so a transformer with side
+     *   effects will not fire for those inputs.
+     * - **Keep transformers pure.** Your transformer may not get
+     *   called. Any transformer that has side effects will cause
+     *   subtle bugs.
+     * - **Your transformer's result is temporary.** If you want
+     *   access to the result of `$transformer($input)`, call it
+     *   yourself first, and don't pass `$transformer` into `length()`
+     *   at all.
+     *
+     * @param string|null $input
+     *      the string whose characters we want to count
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$input` before counting
+     *      (e.g. a trimming transformer). `$input` is the only value
+     *      passed to it.
+     * @return int
+     * - `0` if `$input` is null
+     * - `0` if `$input`'s length is zero before transforming
+     * - otherwise the number of UTF-8 codepoints in `$input` (after
+     *   transforming, if a `$transformer` was given)
+     */
+    public static function length(
+        string|null $input,
+        ?callable $transformer = null,
+    ): int
+    {
+        // special case - we received a `null`
+        // a null has no characters to count
+        if ($input === null) {
+            return 0;
+        }
+
+        // special case - obviously-empty string
+        //
+        // we answer this before transforming, so a cheap result never
+        // pays for an (optionally expensive) transformer call.
+        if (strlen($input) === 0) {
+            return 0;
+        }
+
+        // general case - apply the caller's transformer (if any)
+        // before we measure. e.g. a trimming transformer counts the
+        // trimmed length rather than the padded one.
+        if ($transformer !== null) {
+            $input = $transformer($input);
+        }
+
+        // count the codepoints, not the bytes
+        //
+        // we hard-code 'UTF-8' so behaviour does not drift with
+        // `mb_internal_encoding()` across deployments.
+        return mb_strlen($input, 'UTF-8');
+    }
+
+    /**
      * `trim()` strips any of the individual UTF-8 characters in
      * `$trimChars` from one or both ends of `$input`. It stops
      * walking each end as soon as it encounters a character that

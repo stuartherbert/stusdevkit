@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added Str::identity() ([6b50e1c](https://github.com/stuartherbert/stusdevkit/commit/6b50e1c)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([5b95ef0](https://github.com/stuartherbert/stusdevkit/commit/5b95ef0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::contains() ([00ad1e5](https://github.com/stuartherbert/stusdevkit/commit/00ad1e5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::isEmpty() ([c0bcd15](https://github.com/stuartherbert/stusdevkit/commit/c0bcd15)) — Stuart Herbert <stuart@stuartherbert.com>

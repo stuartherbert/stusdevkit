@@ -73,6 +73,14 @@ class Str
     ): bool;
 
     /**
+     * Counts how many UTF-8 characters are in `$input`.
+     */
+    public static function length(
+        string|null $input,
+        ?callable $transformer = null,
+    ): int;
+
+    /**
      * Strip the characters in `$trimChars` from one or both ends
      * of `$input`.
      */
@@ -154,6 +162,7 @@ individual method docblocks for the specifics.
 - [`::contains()`](contains.md) — searches one or more strings to see whether any of them contains the given needle
 - [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
 - [`::isEmpty()`](isEmpty.md) — checks whether the given input string is empty
+- [`::length()`](length.md) — counts how many UTF-8 characters are in a string
 - [`::trim()`](trim.md) — strips the characters in `$trimChars` from one or both ends of a string
 
 ## Here Be Dragons
@@ -183,6 +192,7 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::isEmpty() as a public method
  ✔ publishes ::contains() as a public method
  ✔ publishes ::identity() as a public method
+ ✔ publishes ::length() as a public method
  ✔ publishes ::TRIM_DEFAULT_CHARS as a public constant
  ✔ ::TRIM_DEFAULT_CHARS is the Unicode `White_Space` set plus NUL
 ```
@@ -201,6 +211,7 @@ _No tagged releases yet._
 - [`Str::contains()`](contains.md) — searches one or more strings for a needle
 - [`Str::identity()`](identity.md) — the no-op transformer
 - [`Str::isEmpty()`](isEmpty.md) — checks whether a string is empty
+- [`Str::length()`](length.md) — counts how many UTF-8 characters are in a string
 - [`Str::trim()`](trim.md) — strips trim-characters from one or both ends of a string
 
 ## Issues

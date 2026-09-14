@@ -248,6 +248,40 @@ class StrTest extends TestCase
         $this->assertContains('identity', $methodNames);
     }
 
+    #[TestDox('publishes ::length() as a public method')]
+    public function test_publishes_length(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // length() is part of Str's published API — the UTF-8 aware
+        // way to count a string's characters. This test catches
+        // accidental renames or scope changes that would silently
+        // break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('length', $methodNames);
+    }
+
     #[TestDox('publishes ::TRIM_DEFAULT_CHARS as a public constant')]
     public function test_publishes_TRIM_DEFAULT_CHARS(): void
     {
@@ -1379,6 +1413,333 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::isEmpty('', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — length()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::length() is declared public static')]
+    public function test_length_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // length() is consumed as a static utility — callers write
+        // `Str::length(...)`, never `(new Str)->length(...)`. Dropping
+        // `static` or narrowing visibility would break every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'length');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::length() takes parameters [input, transformer]')]
+    public function test_length_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // parameter names and order are part of the contract because
+        // callers can use PHP's named-argument syntax. Renaming or
+        // reordering breaks those call sites.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'length');
+        $expected = ['input', 'transformer'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::length() returns int')]
+    public function test_length_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the declared return type is part of the contract — callers
+        // rely on it for type inference and for PHPStan to validate
+        // their own code.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'length');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('int', $returnType->getName());
+    }
+
+    #[TestDox('::length() $transformer defaults to null')]
+    public function test_length_transformer_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default of `null` is the contract: with no transformer,
+        // length() counts the input exactly as given. Pin it so a
+        // future refactor cannot silently start transforming every
+        // input.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'length');
+        $parameters = $method->getParameters();
+        $transformerParam = $parameters[1];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $transformerParam->isDefaultValueAvailable();
+        $defaultValue = $transformerParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertNull($defaultValue);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — length() (no transformer)
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns 0 when input is null')]
+    public function test_length_null_returns_zero(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // length() accepts null for convenience, so callers do not have
+        // to guard their own null checks before calling. A null input
+        // has no characters to count, so its length is 0.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = null;
+        $expected = 0;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns 0 when input is a zero-length string')]
+    public function test_length_zero_length_returns_zero(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a zero-length string has zero characters regardless of any
+        // transformer — this is the fast-path that short-circuits
+        // before the transformer is ever called.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '';
+        $expected = 0;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('counts the characters in an ASCII string')]
+    public function test_length_counts_ascii_characters(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // for plain ASCII, one byte is one character, so length()
+        // returns the obvious count.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = 'hello';
+        $expected = 5;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('counts a multibyte character as a single codepoint, not its bytes')]
+    public function test_length_counts_multibyte_as_codepoints(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // length() is UTF-8 aware: each of these three CJK characters is
+        // three bytes in UTF-8, so a byte-level strlen() would report 9.
+        // length() counts codepoints, so it returns 3.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '日本語';
+        $expected = 3;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length($input);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — length() with a transformer
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('measures the transformed length when a trimming transformer is given')]
+    public function test_length_applies_transformer_before_counting(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a caller who wants the length of the meaningful content passes
+        // a trimming transformer; length() applies it first, then counts
+        // what is left. "  hello  " trims to "hello", so the length is
+        // 5, not 9.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $input = '  hello  ';
+        $expected = 5;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length($input, fn(string $v) => Str::trim($v));
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when input is null')]
+    public function test_length_skips_transformer_for_null(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // null short-circuits to 0 before transforming. We prove the
+        // transformer never runs by making it throw: if it fired, the
+        // exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = 0;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length(null, $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when input is already zero-length')]
+    public function test_length_skips_transformer_for_zero_length(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a zero-length string short-circuits to 0 before transforming.
+        // We prove the transformer never runs by making it throw: if it
+        // fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = 0;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::length('', $exploding);
 
         // ----------------------------------------------------------------
         // test the results
