@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::toUpper() ([325926f](https://github.com/stuartherbert/stusdevkit/commit/325926f)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::toUpper() ([72b8d33](https://github.com/stuartherbert/stusdevkit/commit/72b8d33)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toLower() ([7d35e0f](https://github.com/stuartherbert/stusdevkit/commit/7d35e0f)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([65456d0](https://github.com/stuartherbert/stusdevkit/commit/65456d0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([5b95ef0](https://github.com/stuartherbert/stusdevkit/commit/5b95ef0)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -219,25 +219,9 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
-#### ValidationsKit
-
-- switch over to Str::toLower() ([92c1b91](https://github.com/stuartherbert/stusdevkit/commit/92c1b91)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### AssertionsKit
-
-- switch over to Str::toLower() ([3d72ce4](https://github.com/stuartherbert/stusdevkit/commit/3d72ce4)) — Stuart Herbert <stuart@stuartherbert.com>
-- remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
-- remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
-- drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
-- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
-- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
-- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
-- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
-- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
-- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- switch to Str::toUpper() ([7694bdd](https://github.com/stuartherbert/stusdevkit/commit/7694bdd)) — Stuart Herbert <stuart@stuartherbert.com>
 - migrate to Str::length() ([3b76dc8](https://github.com/stuartherbert/stusdevkit/commit/3b76dc8)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve usability of ErrorFormatter ([6b049d7](https://github.com/stuartherbert/stusdevkit/commit/6b049d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - more work to make custom validators easier to create ([3b43d4d](https://github.com/stuartherbert/stusdevkit/commit/3b43d4d)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -271,6 +255,23 @@ This CHANGELOG is automatically compiled.
 - DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>
 - move validators for built-in PHP object types into their own namespace ([86941c7](https://github.com/stuartherbert/stusdevkit/commit/86941c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### ValidationsKit
+
+- switch over to Str::toLower() ([92c1b91](https://github.com/stuartherbert/stusdevkit/commit/92c1b91)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### AssertionsKit
+
+- switch over to Str::toLower() ([3d72ce4](https://github.com/stuartherbert/stusdevkit/commit/3d72ce4)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
+- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
+- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
+- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
 

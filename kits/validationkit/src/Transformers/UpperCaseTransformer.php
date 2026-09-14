@@ -41,11 +41,12 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
  * UpperCaseTransformer converts a string value to upper
- * case using mb_strtoupper for Unicode support.
+ * case using `Str::toUpper()` for UTF-8-safe folding.
  *
  * Usage:
  *
@@ -60,6 +61,6 @@ final class UpperCaseTransformer extends BaseTransformer
     ): mixed {
         assert(is_string($data));
 
-        return mb_strtoupper($data);
+        return Str::toUpper($data);
     }
 }
