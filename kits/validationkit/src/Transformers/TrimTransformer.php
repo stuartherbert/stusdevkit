@@ -41,11 +41,14 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
  * TrimTransformer trims leading and trailing whitespace
- * from a string value.
+ * from a string value, using `Str::trim()` so the full
+ * Unicode whitespace set (NBSP and friends) is stripped,
+ * not just ASCII whitespace.
  *
  * Usage:
  *
@@ -61,6 +64,6 @@ final class TrimTransformer extends BaseTransformer
     ): mixed {
         assert(is_string($data));
 
-        return trim($data);
+        return Str::trim($data);
     }
 }

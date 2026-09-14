@@ -200,4 +200,24 @@ class TrimTransformerTest extends TestCase
 
         $this->assertSame($expectedResult, $actualResult);
     }
+
+    /**
+     * TrimTransformer strips the full Unicode whitespace set, not
+     * just ASCII whitespace: an input padded with NO-BREAK SPACE
+     * (U+00A0) trims away entirely. A byte-level trim() would leave
+     * those NBSP bytes in place.
+     */
+    #[TestDox('->process() strips Unicode whitespace such as NBSP')]
+    public function test_strips_unicode_whitespace(): void
+    {
+        $nbsp = "\u{00A0}";
+        $unit = new TrimTransformer();
+
+        $actualResult = $unit->process(
+            data: $nbsp . 'hello' . $nbsp,
+            context: new ValidationContext(),
+        );
+
+        $this->assertSame('hello', $actualResult);
+    }
 }

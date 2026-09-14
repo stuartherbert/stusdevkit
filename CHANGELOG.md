@@ -220,19 +220,9 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
-#### CollectionsKit
-
-- switch to using Str::trim() ([c9b6703](https://github.com/stuartherbert/stusdevkit/commit/c9b6703)) — Stuart Herbert <stuart@stuartherbert.com>
-- first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
-- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
-- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
-- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
-- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
-- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
-- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- switch to using Str::trim() ([4c83c93](https://github.com/stuartherbert/stusdevkit/commit/4c83c93)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to Str::toUpper() ([5634475](https://github.com/stuartherbert/stusdevkit/commit/5634475)) — Stuart Herbert <stuart@stuartherbert.com>
 - migrate to Str::length() ([3b76dc8](https://github.com/stuartherbert/stusdevkit/commit/3b76dc8)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve usability of ErrorFormatter ([6b049d7](https://github.com/stuartherbert/stusdevkit/commit/6b049d7)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -267,6 +257,17 @@ This CHANGELOG is automatically compiled.
 - DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>
 - move validators for built-in PHP object types into their own namespace ([86941c7](https://github.com/stuartherbert/stusdevkit/commit/86941c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- switch to using Str::trim() ([63e407d](https://github.com/stuartherbert/stusdevkit/commit/63e407d)) — Stuart Herbert <stuart@stuartherbert.com>
+- first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
+- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
+- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
+- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidationsKit
 
