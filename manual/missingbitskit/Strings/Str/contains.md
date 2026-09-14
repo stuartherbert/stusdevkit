@@ -162,6 +162,7 @@ _No tagged releases yet._
 
 ## See Also
 
+- [`Str::containsIgnoreCase()`](containsIgnoreCase.md) — the case-insensitive companion (folds both sides before searching)
 - [`Str::startsWith()`](startsWith.md) — checks only the start of the haystack, not anywhere within it
 - [`Str::endsWith()`](endsWith.md) — checks only the end of the haystack, not anywhere within it
 - [`Str::isEmpty()`](isEmpty.md) — rejects an empty (or transformed-to-empty) needle before searching

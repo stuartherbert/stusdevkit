@@ -90,7 +90,7 @@ StusDevKit\MissingBitsKit\Strings\Str
 
 ## Source
 
-[`kits/missingbitskit/src/Strings/Str.php:771`](../../../../kits/missingbitskit/src/Strings/Str.php#L771)
+[`kits/missingbitskit/src/Strings/Str.php:898`](../../../../kits/missingbitskit/src/Strings/Str.php#L898)
 
 ## Changelog
 

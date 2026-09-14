@@ -22,6 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
+- added Str::containsIgnoreCase() ([6df5785](https://github.com/stuartherbert/stusdevkit/commit/6df5785)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::foldCase() ([2326087](https://github.com/stuartherbert/stusdevkit/commit/2326087)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::endsWith() ([896addb](https://github.com/stuartherbert/stusdevkit/commit/896addb)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::startsWith() ([7ac7e6b](https://github.com/stuartherbert/stusdevkit/commit/7ac7e6b)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -122,7 +123,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- use Str::foldCase() instead of Str::toLower() for comparisons ([f22ce9f](https://github.com/stuartherbert/stusdevkit/commit/f22ce9f)) — Stuart Herbert <stuart@stuartherbert.com>
+- use Str::foldCase() instead of Str::toLower() for comparisons ([48a3670](https://github.com/stuartherbert/stusdevkit/commit/48a3670)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve round-trip JSON Schema import and export ([c14fa32](https://github.com/stuartherbert/stusdevkit/commit/c14fa32)) — Stuart Herbert <stuart@stuartherbert.com>
 - $ref handling now matches JSON Schema Draft 2020-12 behaviour ([d45f497](https://github.com/stuartherbert/stusdevkit/commit/d45f497)) — Stuart Herbert <stuart@stuartherbert.com>
 - PHP associative array schemas can now be exported as JSON schema ([7c0bd28](https://github.com/stuartherbert/stusdevkit/commit/7c0bd28)) — Stuart Herbert <stuart@stuartherbert.com>

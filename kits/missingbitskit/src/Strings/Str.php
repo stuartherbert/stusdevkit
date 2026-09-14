@@ -279,6 +279,133 @@ class Str
     }
 
     /**
+     * Search the given haystack of string(s), to see if it contains
+     * the given `$needle`, ignoring differences of letter case.
+     *
+     * This is the case-insensitive companion to `Str::contains()`. It
+     * case-folds both the needle AND every haystack string (via
+     * `Str::foldCase()`) before searching, so "STRASSE" matches a
+     * haystack written with "ß", and "HELLO" matches "hello".
+     *
+     * By default it searches for `$needle` (case-folded) exactly as
+     * given. Pass a `$transformer` to transform `$needle` before the
+     * fold and search - for example, a trimming transformer
+     * (`fn($v) => Str::trim($v)`) strips surrounding whitespace so a
+     * padded `$needle` can still match.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * - **This DOES case-fold the haystack - unlike `contains()`.**
+     *   Case-insensitive matching is impossible without folding both
+     *   sides, so this is a deliberate exception to `contains()`'s
+     *   never-touch-the-haystack rule. The `$transformer` (if any)
+     *   still applies to the `$needle` only; the haystack is folded
+     *   for case but is otherwise never transformed.
+     * - **Folding is simple default case-folding, not canonical
+     *   normalisation.** It inherits every caveat of
+     *   `Str::foldCase()`: combining sequences are not normalised, and
+     *   locale-specific rules (Turkish dotless "ı"/"İ") fold the
+     *   default way. Normalise at your system boundary - see this
+     *   class's docblock - if you need that.
+     * - **Your `$transformer` is skipped when the haystack is
+     *   empty.** containsIgnoreCase() answers the empty-haystack case
+     *   before it transforms, so a transformer with side effects will
+     *   not fire for an empty `$haystack`.
+     * - **Empty `$needle` is always `false`.** An empty needle can
+     *   never be meaningfully "contained"; like `contains()`, this
+     *   reports `false` for it, so a trimming transformer that empties
+     *   the needle yields `false`.
+     * - **Keep transformers pure.** Your transformer may not get
+     *   called. Any transformer that has side effects will cause
+     *   subtle bugs.
+     * - **Your transformer's result is temporary.** If you want
+     *   access to the result of `$transformer($needle)`, call it
+     *   yourself first, and don't pass `$transformer` into
+     *   `containsIgnoreCase()` at all.
+     *
+     * @param string|string[] $haystack
+     *      the string(s) that we want to search
+     * @param string $needle
+     *      the string we want to look for inside `$haystack`,
+     *      ignoring letter case
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$needle` before the fold
+     *      and search (e.g. a trimming transformer). `$needle` is the
+     *      only value passed to it; the `$haystack` is case-folded but
+     *      otherwise never transformed.
+     * @return bool
+     * - `false` if `$haystack` is empty
+     * - `false` if `$needle` is empty (after transforming)
+     * - `true` if any string in `$haystack` contains `$needle` once
+     *   both are case-folded
+     * - `false` otherwise
+     */
+    public static function containsIgnoreCase(
+        string|array $haystack,
+        string $needle,
+        ?callable $transformer = null,
+    ): bool
+    {
+        // optimisation - is the haystack empty?
+        // no need to do any extra work if it is
+        //
+        // these are not load-bearing checks; the main loop
+        // will also return `false` if the haystack is empty
+        //
+        // however, these checks are cheaper than an empty
+        // haystack reaching the main loop
+        if (is_array($haystack) && count($haystack) === 0) {
+            return false;
+        }
+        if (is_string($haystack) && strlen($haystack) === 0) {
+            return false;
+        }
+
+        // (optionally) transform the string we are searching for.
+        // e.g. a trimming transformer strips surrounding whitespace
+        // from the needle. this happens before the case-fold.
+        if ($transformer !== null) {
+            $needle = $transformer($needle);
+        }
+
+        // special case - have we been left with an empty `$needle`?
+        // an empty needle can never be meaningfully "contained".
+        if (self::isEmpty($needle)) {
+            return false;
+        }
+
+        // case-fold the needle once, up front.
+        //
+        // correctness! case-INSENSITIVE search needs case-FOLDING of
+        // BOTH sides - folding only the needle would still miss a
+        // differently-cased haystack.
+        $foldedNeedle = self::foldCase($needle);
+
+        // from here on we treat the haystack as a list of strings, so
+        // a single-string haystack gets wrapped into a one-element
+        // array to give the search loop below a single code path.
+        if (is_string($haystack)) {
+            $haystack = [ $haystack ];
+        }
+
+        // let's go look for our needle, folding each haystack string
+        // to the same case as we go.
+        foreach ($haystack as $strToSearch) {
+            // str_contains() is safe to use on UTF-8 data:
+            //
+            // UTF-8 is self-synchronising; a byte match only
+            // lands on a character boundary
+            if (str_contains(self::foldCase($strToSearch), $foldedNeedle)) {
+                return true;
+            }
+        }
+
+        // not found
+        return false;
+    }
+
+    /**
      * Check whether the given haystack of string(s) ends with the
      * given `$needle`.
      *

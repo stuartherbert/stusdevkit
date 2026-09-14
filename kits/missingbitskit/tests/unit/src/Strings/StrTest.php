@@ -214,6 +214,40 @@ class StrTest extends TestCase
         $this->assertContains('contains', $methodNames);
     }
 
+    #[TestDox('publishes ::containsIgnoreCase() as a public method')]
+    public function test_publishes_containsIgnoreCase(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // containsIgnoreCase() is part of Str's published API — the
+        // UTF-8 aware, case-folding way to search for a substring. This
+        // test catches accidental renames or scope changes that would
+        // silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('containsIgnoreCase', $methodNames);
+    }
+
     #[TestDox('publishes ::identity() as a public method')]
     public function test_publishes_identity(): void
     {
@@ -4933,6 +4967,597 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::endsWith([], 'x', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — containsIgnoreCase()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::containsIgnoreCase() is declared public static')]
+    public function test_containsIgnoreCase_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // containsIgnoreCase() is consumed as a static utility — callers
+        // write `Str::containsIgnoreCase(...)`, never
+        // `(new Str)->containsIgnoreCase(...)`. Dropping `static` or
+        // narrowing visibility would break every call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'containsIgnoreCase');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::containsIgnoreCase() takes parameters [haystack, needle, transformer]')]
+    public function test_containsIgnoreCase_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // parameter names and order are part of the contract because
+        // callers can use PHP's named-argument syntax. Renaming or
+        // reordering breaks those call sites.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'containsIgnoreCase');
+        $expected = ['haystack', 'needle', 'transformer'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::containsIgnoreCase() returns bool')]
+    public function test_containsIgnoreCase_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the declared return type is part of the contract — callers
+        // rely on it for type inference and for PHPStan to validate
+        // their own code.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'containsIgnoreCase');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('bool', $returnType->getName());
+    }
+
+    #[TestDox('::containsIgnoreCase() $transformer defaults to null')]
+    public function test_containsIgnoreCase_transformer_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default of `null` is the contract: with no transformer,
+        // containsIgnoreCase() searches for the needle exactly as given
+        // (bar the case-fold both sides always get). Pin it so a future
+        // refactor cannot silently start transforming every needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'containsIgnoreCase');
+        $parameters = $method->getParameters();
+        $transformerParam = $parameters[2];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $transformerParam->isDefaultValueAvailable();
+        $defaultValue = $transformerParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertNull($defaultValue);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — containsIgnoreCase() with a string haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when the string haystack contains the needle in a different case')]
+    public function test_containsIgnoreCase_matches_across_case(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this is the whole point of the method, and what separates it
+        // from contains(): the haystack is folded too, so a needle in a
+        // different case still matches. contains() would report false
+        // here.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'Hello World';
+        $needle = 'WORLD';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns true when the string haystack contains the needle in the same case')]
+    public function test_containsIgnoreCase_matches_same_case(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // folding both sides must not break the ordinary same-case
+        // match: a needle that contains() would find is still found.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = 'o w';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the string haystack does not contain the needle in any case')]
+    public function test_containsIgnoreCase_string_haystack_not_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // case-insensitivity does not manufacture a match: a needle that
+        // is simply not present, in any case, reports false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'Hello World';
+        $needle = 'xyz';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('folds the German eszett on both sides before searching')]
+    public function test_containsIgnoreCase_folds_eszett(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // proper case-folding expands ß to "ss" on BOTH haystack and
+        // needle, so an all-caps "STRASSE" needle is found inside a
+        // haystack written with ß. A toLower-based search would miss it.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = "Die stra\u{00DF}e ist lang";
+        $needle = 'STRASSE';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — containsIgnoreCase() with an array haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when only a later element of the array haystack matches case-insensitively')]
+    public function test_containsIgnoreCase_array_haystack_found_in_later_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an array haystack is searched element by element, each folded
+        // in turn. Putting the match in a later element proves the
+        // search does not stop at the first element.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = ['Alpha', 'BETA'];
+        $needle = 'bet';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when no element of the array haystack matches in any case')]
+    public function test_containsIgnoreCase_array_haystack_not_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when no array element contains the needle in any case,
+        // containsIgnoreCase() must report false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = ['Alpha', 'Beta', 'Gamma'];
+        $needle = 'delta';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — containsIgnoreCase() with an empty haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when the haystack is an empty string')]
+    public function test_containsIgnoreCase_empty_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty string haystack contains nothing, so
+        // containsIgnoreCase() must report false for any needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '';
+        $needle = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the haystack is an empty array')]
+    public function test_containsIgnoreCase_empty_array_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty array haystack has no strings to search, so
+        // containsIgnoreCase() must report false for any needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = [];
+        $needle = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — containsIgnoreCase() with the falsy "0" haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when searching the string "0" for the needle "0"')]
+    public function test_containsIgnoreCase_zero_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // "0" is a valid, non-empty haystack, but PHP's empty() treats
+        // it as falsy. This test is the regression guard against an
+        // empty()-based emptiness check silently discarding it.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '0';
+        $needle = '0';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — containsIgnoreCase() empty / whitespace needle
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when the needle is an empty string')]
+    public function test_containsIgnoreCase_empty_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty needle can never be "contained" in any meaningful
+        // sense; like contains(), containsIgnoreCase() rejects it up
+        // front and reports false, regardless of the haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'Hello';
+        $needle = '';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — containsIgnoreCase() with a transformer
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('transforms the needle before folding and searching when a transformer is given')]
+    public function test_containsIgnoreCase_transforms_needle_when_asked(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a caller who passes a trimming transformer strips the needle's
+        // surrounding whitespace before the case-fold and search, so the
+        // padded, differently-cased needle now matches.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'Hello World';
+        $needle = '  WORLD  ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when a trimming transformer reduces the needle to empty')]
+    public function test_containsIgnoreCase_transformer_empties_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a whitespace-only needle reduces to nothing under a trimming
+        // transformer; an empty needle can never be "contained", so
+        // containsIgnoreCase() reports false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'A B C';
+        $needle = '   ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('applies the transformer to the needle only, though it still case-folds the haystack')]
+    public function test_containsIgnoreCase_transformer_does_not_touch_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the transformer is applied to the needle alone. Here a trimming
+        // transformer strips the needle's padding, but the haystack's own
+        // surrounding whitespace is left intact (it is only case-folded)
+        // — so the trimmed, folded needle is found inside the still-padded
+        // haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '   HELLO   ';
+        $needle = '  hello  ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when the string haystack is empty')]
+    public function test_containsIgnoreCase_skips_transformer_for_empty_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty haystack short-circuits to false before transforming.
+        // We prove the transformer never runs by making it throw: if it
+        // fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase('', 'x', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when the array haystack is empty')]
+    public function test_containsIgnoreCase_skips_transformer_for_empty_array_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty array haystack short-circuits to false before
+        // transforming. We prove the transformer never runs by making it
+        // throw: if it fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::containsIgnoreCase([], 'x', $exploding);
 
         // ----------------------------------------------------------------
         // test the results

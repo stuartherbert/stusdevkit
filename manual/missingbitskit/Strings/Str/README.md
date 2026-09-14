@@ -60,6 +60,16 @@ class Str
     ): bool;
 
     /**
+     * Search the given haystack of string(s), to see if it
+     * contains the given `$needle`, ignoring letter case.
+     */
+    public static function containsIgnoreCase(
+        string|array $haystack,
+        string $needle,
+        ?callable $transformer = null,
+    ): bool;
+
+    /**
      * Check whether the given haystack of string(s) ends with
      * the given `$needle`.
      */
@@ -198,6 +208,7 @@ individual method docblocks for the specifics.
 **From Str**
 
 - [`::contains()`](contains.md) — searches one or more strings to see whether any of them contains the given needle
+- [`::containsIgnoreCase()`](containsIgnoreCase.md) — searches one or more strings for the needle, ignoring letter case (folds both sides)
 - [`::endsWith()`](endsWith.md) — checks one or more strings to see whether any of them ends with the given needle
 - [`::foldCase()`](foldCase.md) — returns a string reduced to its Unicode default case-folded form, for caseless matching
 - [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
@@ -234,6 +245,7 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::trim() as a public method
  ✔ publishes ::isEmpty() as a public method
  ✔ publishes ::contains() as a public method
+ ✔ publishes ::containsIgnoreCase() as a public method
  ✔ publishes ::identity() as a public method
  ✔ publishes ::length() as a public method
  ✔ publishes ::startsWith() as a public method
@@ -257,6 +269,7 @@ _No tagged releases yet._
 
 - [`StrTrimLocation`](../StrTrimLocation/README.md) — the enum [`Str::trim()`](trim.md) takes to control which end(s) are trimmed
 - [`Str::contains()`](contains.md) — searches one or more strings for a needle
+- [`Str::containsIgnoreCase()`](containsIgnoreCase.md) — case-insensitive substring search (folds both sides)
 - [`Str::endsWith()`](endsWith.md) — checks whether one or more strings end with a needle
 - [`Str::foldCase()`](foldCase.md) — reduces a string to its Unicode case-folded form, for caseless matching
 - [`Str::identity()`](identity.md) — the no-op transformer
