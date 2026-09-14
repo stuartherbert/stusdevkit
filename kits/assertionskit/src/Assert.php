@@ -51,6 +51,7 @@ use StusDevKit\ExceptionsKit\Exceptions\InvalidArgumentException;
 use StusDevKit\ExceptionsKit\Exceptions\UnableToReadFileException;
 use StusDevKit\MissingBitsKit\Arrays\RequireArrayKey;
 use StusDevKit\MissingBitsKit\DataInspectors\GetNormalisedForComparison;
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\MissingBitsKit\TypeInspectors\IsClosedResource;
 use StusDevKit\MissingBitsKit\TypeInspectors\IsComparablePair;
 
@@ -1102,7 +1103,7 @@ class Assert implements AssertApi
         string $message = '',
     ): void {
         if (is_string($expected) && is_string($actual)) {
-            if (mb_strtolower($expected) === mb_strtolower($actual)) {
+            if (Str::toLower($expected) === Str::toLower($actual)) {
                 return;
             }
         } elseif ($expected == $actual) {
@@ -1206,7 +1207,7 @@ class Assert implements AssertApi
         string $message = '',
     ): void {
         if (is_string($expected) && is_string($actual)) {
-            if (mb_strtolower($expected) !== mb_strtolower($actual)) {
+            if (Str::toLower($expected) !== Str::toLower($actual)) {
                 return;
             }
         } elseif ($expected != $actual) {
@@ -1525,7 +1526,7 @@ class Assert implements AssertApi
         $expectedContents = self::readFileContents($expected);
         $actualContents = self::readFileContents($actual);
 
-        if (mb_strtolower($expectedContents) === mb_strtolower($actualContents)) {
+        if (Str::toLower($expectedContents) === Str::toLower($actualContents)) {
             return;
         }
 
@@ -1569,7 +1570,7 @@ class Assert implements AssertApi
         $expectedContents = self::readFileContents($expected);
         $actualContents = self::readFileContents($actual);
 
-        if (mb_strtolower($expectedContents) !== mb_strtolower($actualContents)) {
+        if (Str::toLower($expectedContents) !== Str::toLower($actualContents)) {
             return;
         }
 
@@ -1617,7 +1618,7 @@ class Assert implements AssertApi
     ): void {
         $expectedContents = self::readFileContents($expectedFile);
 
-        if (mb_strtolower($expectedContents) === mb_strtolower($actualString)) {
+        if (Str::toLower($expectedContents) === Str::toLower($actualString)) {
             return;
         }
 
@@ -1659,7 +1660,7 @@ class Assert implements AssertApi
     ): void {
         $expectedContents = self::readFileContents($expectedFile);
 
-        if (mb_strtolower($expectedContents) !== mb_strtolower($actualString)) {
+        if (Str::toLower($expectedContents) !== Str::toLower($actualString)) {
             return;
         }
 
