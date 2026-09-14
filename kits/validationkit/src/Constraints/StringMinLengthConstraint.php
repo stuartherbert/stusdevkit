@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -48,7 +49,8 @@ use StusDevKit\ValidationKit\ValidationIssue;
  * StringMinLengthConstraint validates that a string has
  * at least the specified number of characters.
  *
- * Uses mb_strlen() for multibyte-safe length checking.
+ * Uses `Str::length()` for multibyte-safe (UTF-8) character
+ * counting.
  *
  * Usage:
  *
@@ -133,7 +135,7 @@ final class StringMinLengthConstraint extends BaseConstraint
     ): mixed {
         assert(is_string($data));
 
-        if (mb_strlen($data) < $this->length) {
+        if (Str::length($data) < $this->length) {
             $issue = ($this->error)($data);
             $context->addExistingIssue(
                 $issue->withPath($context->path()),

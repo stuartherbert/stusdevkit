@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::identity() ([6b50e1c](https://github.com/stuartherbert/stusdevkit/commit/6b50e1c)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::identity() ([65456d0](https://github.com/stuartherbert/stusdevkit/commit/65456d0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::identity() ([5b95ef0](https://github.com/stuartherbert/stusdevkit/commit/5b95ef0)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::contains() ([00ad1e5](https://github.com/stuartherbert/stusdevkit/commit/00ad1e5)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::isEmpty() ([c0bcd15](https://github.com/stuartherbert/stusdevkit/commit/c0bcd15)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -217,38 +217,9 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
-#### MissingBitsKit
-
-- Str methods now take a transformer instead of explicit trimmer ([217d2d7](https://github.com/stuartherbert/stusdevkit/commit/217d2d7)) — Stuart Herbert <stuart@stuartherbert.com>
-- Str::contains() now uses the transformer approach ([e4491d4](https://github.com/stuartherbert/stusdevkit/commit/e4491d4)) — Stuart Herbert <stuart@stuartherbert.com>
-- Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([c8db9c5](https://github.com/stuartherbert/stusdevkit/commit/c8db9c5)) — Stuart Herbert <stuart@stuartherbert.com>
-- Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
-- move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### AssertionsKit
-
-- remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
-- remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
-- drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
-- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
-- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
-- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
-- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
-- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
-- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
-
-#### CollectionsKit
-
-- first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
-- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
-- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
-- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
-- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
-- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
-- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### ValidationKit
 
+- migrate to Str::length() ([1522806](https://github.com/stuartherbert/stusdevkit/commit/1522806)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve usability of ErrorFormatter ([6b049d7](https://github.com/stuartherbert/stusdevkit/commit/6b049d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - more work to make custom validators easier to create ([3b43d4d](https://github.com/stuartherbert/stusdevkit/commit/3b43d4d)) — Stuart Herbert <stuart@stuartherbert.com>
 - existing transformers now use BaseTransformer to simplify implementation ([0ede17e](https://github.com/stuartherbert/stusdevkit/commit/0ede17e)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -281,6 +252,36 @@ This CHANGELOG is automatically compiled.
 - DateTimeSchema is now DateTimeInterfaceSchema ([5207876](https://github.com/stuartherbert/stusdevkit/commit/5207876)) — Stuart Herbert <stuart@stuartherbert.com>
 - move validators for built-in PHP object types into their own namespace ([86941c7](https://github.com/stuartherbert/stusdevkit/commit/86941c7)) — Stuart Herbert <stuart@stuartherbert.com>
 - bring PHP builtins validators into a common namespace ([863da42](https://github.com/stuartherbert/stusdevkit/commit/863da42)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### MissingBitsKit
+
+- Str methods now take a transformer instead of explicit trimmer ([217d2d7](https://github.com/stuartherbert/stusdevkit/commit/217d2d7)) — Stuart Herbert <stuart@stuartherbert.com>
+- Str::contains() now uses the transformer approach ([e4491d4](https://github.com/stuartherbert/stusdevkit/commit/e4491d4)) — Stuart Herbert <stuart@stuartherbert.com>
+- Str::contains() now uses an optional transformer method; no longer hard-codes Str::trim() ([c8db9c5](https://github.com/stuartherbert/stusdevkit/commit/c8db9c5)) — Stuart Herbert <stuart@stuartherbert.com>
+- Json wrapper is now a static utility ([a7d68bc](https://github.com/stuartherbert/stusdevkit/commit/a7d68bc)) — Stuart Herbert <stuart@stuartherbert.com>
+- move Json into its own namespace ([27a402a](https://github.com/stuartherbert/stusdevkit/commit/27a402a)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### AssertionsKit
+
+- remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
+- remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>
+- canonical-type asserts streamlined, now uses GetNormalisedForComparision ([0747d68](https://github.com/stuartherbert/stusdevkit/commit/0747d68)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce strict typing ([0d1fd08](https://github.com/stuartherbert/stusdevkit/commit/0d1fd08)) — Stuart Herbert <stuart@stuartherbert.com>
+- file-based assertions now throw FileNotFoundException / UnableToReadFileException ([d65e0a5](https://github.com/stuartherbert/stusdevkit/commit/d65e0a5)) — Stuart Herbert <stuart@stuartherbert.com>
+- Assert interface is now AssertApi, to reduce confusion ([2a160b7](https://github.com/stuartherbert/stusdevkit/commit/2a160b7)) — Stuart Herbert <stuart@stuartherbert.com>
+- drop `assertThat()` - not really a public assert API ([ecda25e](https://github.com/stuartherbert/stusdevkit/commit/ecda25e)) — Stuart Herbert <stuart@stuartherbert.com>
+- now throws InvalidArgumentException where appopriate ([525b7b1](https://github.com/stuartherbert/stusdevkit/commit/525b7b1)) — Stuart Herbert <stuart@stuartherbert.com>
+
+#### CollectionsKit
+
+- first()/last() now throw EmptyCollectionException ([2ef2581](https://github.com/stuartherbert/stusdevkit/commit/2ef2581)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict / CollectionAsList now support normalisation for comparison ([abadcbf](https://github.com/stuartherbert/stusdevkit/commit/abadcbf)) — Stuart Herbert <stuart@stuartherbert.com>
+- dropped DictOfUuids::add() - duplicates existing ::set() method ([2c2efa8](https://github.com/stuartherbert/stusdevkit/commit/2c2efa8)) — Stuart Herbert <stuart@stuartherbert.com>
+- CollectionAsDict::get() now throws NoValueForKeyInCollectionException ([5d4b014](https://github.com/stuartherbert/stusdevkit/commit/5d4b014)) — Stuart Herbert <stuart@stuartherbert.com>
+- move AccessibleCollection::copy() to CollectionOfAnything::copy() ([c7ad3c3](https://github.com/stuartherbert/stusdevkit/commit/c7ad3c3)) — Stuart Herbert <stuart@stuartherbert.com>
+- moved Arrayable into MissingBitsKit ([f80dc1c](https://github.com/stuartherbert/stusdevkit/commit/f80dc1c)) — Stuart Herbert <stuart@stuartherbert.com>
+- introduce AccessibleCollection intermediate class ([565e5fe](https://github.com/stuartherbert/stusdevkit/commit/565e5fe)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### ValidatorKit
 
