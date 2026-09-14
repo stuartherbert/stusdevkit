@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### MissingBitsKit
 
-- added Str::endsWith() ([ffea0a4](https://github.com/stuartherbert/stusdevkit/commit/ffea0a4)) — Stuart Herbert <stuart@stuartherbert.com>
+- added Str::endsWith() ([896addb](https://github.com/stuartherbert/stusdevkit/commit/896addb)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::startsWith() ([7ac7e6b](https://github.com/stuartherbert/stusdevkit/commit/7ac7e6b)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toUpper() ([72b8d33](https://github.com/stuartherbert/stusdevkit/commit/72b8d33)) — Stuart Herbert <stuart@stuartherbert.com>
 - added Str::toLower() ([7d35e0f](https://github.com/stuartherbert/stusdevkit/commit/7d35e0f)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -224,6 +224,7 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
+- use Str::endsWith() internally ([03413bf](https://github.com/stuartherbert/stusdevkit/commit/03413bf)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to use Str::startsWith() internally ([32e54be](https://github.com/stuartherbert/stusdevkit/commit/32e54be)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch over to Str::toLower() ([3d72ce4](https://github.com/stuartherbert/stusdevkit/commit/3d72ce4)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>

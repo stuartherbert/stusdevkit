@@ -2933,7 +2933,7 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (str_ends_with($string, $suffix)) {
+        if (Str::endsWith($string, $suffix)) {
             return;
         }
 
@@ -2952,7 +2952,7 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (!str_ends_with($string, $suffix)) {
+        if (! Str::endsWith($string, $suffix)) {
             return;
         }
 
