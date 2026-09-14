@@ -751,6 +751,7 @@ $label = Validate::string()->withConstraint($notEmpty)->max(50);
 For reusable constraints with proper error type URIs, extend `SimpleConstraint`:
 
 ```php
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Constraints\SimpleConstraint;
 
 final class NoForbiddenWords extends SimpleConstraint
@@ -763,7 +764,7 @@ final class NoForbiddenWords extends SimpleConstraint
     protected function check(mixed $data): ?string
     {
         assert(is_string($data));
-        return str_contains($data, 'forbidden')
+        return Str::contains($data, 'forbidden')
             ? 'Contains forbidden words'
             : null;
     }
@@ -782,6 +783,7 @@ Two methods to implement:
 For constraints that need full control (multiple issues, custom type URIs per issue, access to the validation context):
 
 ```php
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Constraints\BaseConstraint;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
@@ -793,7 +795,7 @@ final class PasswordStrength extends BaseConstraint
     ): mixed {
         assert(is_string($data));
 
-        if (strlen($data) < 8) {
+        if (Str::length($data) < 8) {
             $context->addIssue(
                 type: 'https://example.com/errors/password-too-short',
                 input: $data,
@@ -819,8 +821,10 @@ final class PasswordStrength extends BaseConstraint
 For inline transforms:
 
 ```php
+use StusDevKit\MissingBitsKit\Strings\Str;
+
 $schema = Validate::string()->withCustomTransform(
-    fn(mixed $data) => strtoupper($data),
+    fn(mixed $data) => Str::toUpper($data),
 );
 ```
 

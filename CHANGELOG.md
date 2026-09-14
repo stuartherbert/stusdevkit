@@ -165,6 +165,13 @@ This CHANGELOG is automatically compiled.
 - added initial README.md ([054e3bc](https://github.com/stuartherbert/stusdevkit/commit/054e3bc)) — Stuart Herbert <stuart@stuartherbert.com>
 - explain phpstan template limitations on affected collection classes ([9604c11](https://github.com/stuartherbert/stusdevkit/commit/9604c11)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ValidationKit
+
+- update examples to use Str::length() ([01271a2](https://github.com/stuartherbert/stusdevkit/commit/01271a2)) — Stuart Herbert <stuart@stuartherbert.com>
+- make README more useful as a reference ([6521431](https://github.com/stuartherbert/stusdevkit/commit/6521431)) — Stuart Herbert <stuart@stuartherbert.com>
+- explain the individual steps of a validator ([8cb5ec5](https://github.com/stuartherbert/stusdevkit/commit/8cb5ec5)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial README ([421b82b](https://github.com/stuartherbert/stusdevkit/commit/421b82b)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - Str::isEmpty() docblock now explains transformer result is temporary ([4c4c28c](https://github.com/stuartherbert/stusdevkit/commit/4c4c28c)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -205,12 +212,6 @@ This CHANGELOG is automatically compiled.
 
 - improve docblocks ([6d21048](https://github.com/stuartherbert/stusdevkit/commit/6d21048)) — Stuart Herbert <stuart@stuartherbert.com>
 
-#### ValidationKit
-
-- make README more useful as a reference ([6521431](https://github.com/stuartherbert/stusdevkit/commit/6521431)) — Stuart Herbert <stuart@stuartherbert.com>
-- explain the individual steps of a validator ([8cb5ec5](https://github.com/stuartherbert/stusdevkit/commit/8cb5ec5)) — Stuart Herbert <stuart@stuartherbert.com>
-- added initial README ([421b82b](https://github.com/stuartherbert/stusdevkit/commit/421b82b)) — Stuart Herbert <stuart@stuartherbert.com>
-
 #### AssertionKit
 
 - add list of available methods ([7962911](https://github.com/stuartherbert/stusdevkit/commit/7962911)) — Stuart Herbert <stuart@stuartherbert.com>
@@ -221,7 +222,7 @@ This CHANGELOG is automatically compiled.
 
 #### ValidationKit
 
-- switch to Str::toUpper() ([7694bdd](https://github.com/stuartherbert/stusdevkit/commit/7694bdd)) — Stuart Herbert <stuart@stuartherbert.com>
+- switch to Str::toUpper() ([5634475](https://github.com/stuartherbert/stusdevkit/commit/5634475)) — Stuart Herbert <stuart@stuartherbert.com>
 - migrate to Str::length() ([3b76dc8](https://github.com/stuartherbert/stusdevkit/commit/3b76dc8)) — Stuart Herbert <stuart@stuartherbert.com>
 - improve usability of ErrorFormatter ([6b049d7](https://github.com/stuartherbert/stusdevkit/commit/6b049d7)) — Stuart Herbert <stuart@stuartherbert.com>
 - more work to make custom validators easier to create ([3b43d4d](https://github.com/stuartherbert/stusdevkit/commit/3b43d4d)) — Stuart Herbert <stuart@stuartherbert.com>
