@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Constraints;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 use StusDevKit\ValidationKit\ValidationIssue;
 
@@ -151,7 +152,19 @@ final class StringEndsWithConstraint extends BaseConstraint
     ): mixed {
         assert(is_string($data));
 
-        if (! str_ends_with($data, $this->suffix)) {
+        // special case - an empty suffix is satisfied by every
+        // string, so there is nothing to check.
+        //
+        // correctness! Str::endsWith() deliberately reports false
+        // for an empty needle (it treats "ends with nothing" as
+        // meaningless), so we must short-circuit the empty suffix
+        // here to preserve this constraint's contract that an empty
+        // suffix accepts every input.
+        if ($this->suffix === '') {
+            return $data;
+        }
+
+        if (! Str::endsWith($data, $this->suffix)) {
             $issue = ($this->error)($data);
             $context->addExistingIssue(
                 $issue->withPath($context->path()),

@@ -281,8 +281,9 @@ class StringEndsWithConstraintTest extends TestCase
 
     /**
      * Edge — an empty suffix is satisfied by every string,
-     * including the empty string (str_ends_with returns true
-     * for an empty needle).
+     * including the empty string. Str::endsWith() reports false
+     * for an empty needle, so the constraint short-circuits an
+     * empty suffix to preserve this "accepts everything" contract.
      */
     #[TestDox('->process() accepts any input when the configured suffix is empty')]
     public function test_process_accepts_any_input_when_suffix_empty(): void
@@ -297,9 +298,9 @@ class StringEndsWithConstraintTest extends TestCase
     }
 
     /**
-     * Multibyte — str_ends_with is byte-based but works
-     * correctly for any valid UTF-8 suffix that is itself a
-     * byte suffix of the input.
+     * Multibyte — Str::endsWith() is UTF-8 safe, so any valid
+     * UTF-8 suffix that closes the input is matched as whole
+     * codepoints.
      */
     #[TestDox('->process() accepts multibyte suffixes when the input ends with them')]
     public function test_process_accepts_multibyte_suffix(): void
