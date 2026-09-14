@@ -163,6 +163,7 @@ _No tagged releases yet._
 ## See Also
 
 - [`Str::startsWith()`](startsWith.md) — checks only the start of the haystack, not anywhere within it
+- [`Str::endsWith()`](endsWith.md) — checks only the end of the haystack, not anywhere within it
 - [`Str::isEmpty()`](isEmpty.md) — rejects an empty (or transformed-to-empty) needle before searching
 - [`Str::trim()`](trim.md) — the transform you typically pass to strip a needle's padding
 - [`Str::identity()`](identity.md) — the no-op transformer, for an explicit "no transformation"

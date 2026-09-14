@@ -60,6 +60,16 @@ class Str
     ): bool;
 
     /**
+     * Check whether the given haystack of string(s) ends with
+     * the given `$needle`.
+     */
+    public static function endsWith(
+        string|array $haystack,
+        string $needle,
+        ?callable $transformer = null,
+    ): bool;
+
+    /**
      * Returns its input unchanged; the no-op transformer.
      */
     public static function identity(string $input): string;
@@ -181,6 +191,7 @@ individual method docblocks for the specifics.
 **From Str**
 
 - [`::contains()`](contains.md) — searches one or more strings to see whether any of them contains the given needle
+- [`::endsWith()`](endsWith.md) — checks one or more strings to see whether any of them ends with the given needle
 - [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
 - [`::isEmpty()`](isEmpty.md) — checks whether the given input string is empty
 - [`::length()`](length.md) — counts how many UTF-8 characters are in a string
@@ -218,6 +229,7 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::identity() as a public method
  ✔ publishes ::length() as a public method
  ✔ publishes ::startsWith() as a public method
+ ✔ publishes ::endsWith() as a public method
  ✔ publishes ::toLower() as a public method
  ✔ publishes ::toUpper() as a public method
  ✔ publishes ::TRIM_DEFAULT_CHARS as a public constant
@@ -236,6 +248,7 @@ _No tagged releases yet._
 
 - [`StrTrimLocation`](../StrTrimLocation/README.md) — the enum [`Str::trim()`](trim.md) takes to control which end(s) are trimmed
 - [`Str::contains()`](contains.md) — searches one or more strings for a needle
+- [`Str::endsWith()`](endsWith.md) — checks whether one or more strings end with a needle
 - [`Str::identity()`](identity.md) — the no-op transformer
 - [`Str::isEmpty()`](isEmpty.md) — checks whether a string is empty
 - [`Str::length()`](length.md) — counts how many UTF-8 characters are in a string

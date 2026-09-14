@@ -2895,7 +2895,7 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (str_starts_with($string, $prefix)) {
+        if (Str::startsWith($string, $prefix)) {
             return;
         }
 
@@ -2914,7 +2914,7 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (!str_starts_with($string, $prefix)) {
+        if (! Str::startsWith($string, $prefix)) {
             return;
         }
 

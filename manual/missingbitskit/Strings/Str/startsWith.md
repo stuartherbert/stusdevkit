@@ -171,6 +171,7 @@ _No tagged releases yet._
 
 ## See Also
 
+- [`Str::endsWith()`](endsWith.md) — the mirror check for the end of the haystack
 - [`Str::contains()`](contains.md) — checks anywhere in the haystack, not just the start
 - [`Str::isEmpty()`](isEmpty.md) — rejects an empty (or transformed-to-empty) needle before checking
 - [`Str::trim()`](trim.md) — the transform you typically pass to strip a needle's padding
