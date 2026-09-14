@@ -41,11 +41,12 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Transformers;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Internals\ValidationContext;
 
 /**
  * LowerCaseTransformer converts a string value to lower
- * case using mb_strtolower for Unicode support.
+ * case using `Str::toLower()` for UTF-8-safe folding.
  *
  * Usage:
  *
@@ -60,6 +61,6 @@ final class LowerCaseTransformer extends BaseTransformer
     ): mixed {
         assert(is_string($data));
 
-        return mb_strtolower($data);
+        return Str::toLower($data);
     }
 }

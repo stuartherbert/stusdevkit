@@ -218,9 +218,13 @@ This CHANGELOG is automatically compiled.
 
 - NullValueNotAllowedException is now part of the ExceptionsKit ([db9e182](https://github.com/stuartherbert/stusdevkit/commit/db9e182)) — Stuart Herbert <stuart@stuartherbert.com>
 
+#### ValidationsKit
+
+- switch over to Str::toLower() ([dd72c61](https://github.com/stuartherbert/stusdevkit/commit/dd72c61)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### AssertionsKit
 
-- switch over to Str::toLower() ([5d4ebd0](https://github.com/stuartherbert/stusdevkit/commit/5d4ebd0)) — Stuart Herbert <stuart@stuartherbert.com>
+- switch over to Str::toLower() ([3d72ce4](https://github.com/stuartherbert/stusdevkit/commit/3d72ce4)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove assertNotFalse() ([984791e](https://github.com/stuartherbert/stusdevkit/commit/984791e)) — Stuart Herbert <stuart@stuartherbert.com>
 - remove assertNotTrue() ([6ddf707](https://github.com/stuartherbert/stusdevkit/commit/6ddf707)) — Stuart Herbert <stuart@stuartherbert.com>
 - drop format-string assertions (undocumented DSL) ([49f6990](https://github.com/stuartherbert/stusdevkit/commit/49f6990)) — Stuart Herbert <stuart@stuartherbert.com>

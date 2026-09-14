@@ -41,6 +41,7 @@ declare(strict_types=1);
 
 namespace StusDevKit\ValidationKit\Coercions;
 
+use StusDevKit\MissingBitsKit\Strings\Str;
 use StusDevKit\ValidationKit\Contracts\ValueCoercion;
 
 /**
@@ -106,7 +107,7 @@ final class CoerceToBoolean implements ValueCoercion
     public function coerce(mixed $data): mixed
     {
         if (is_string($data)) {
-            $lower = strtolower($data);
+            $lower = Str::toLower($data);
 
             return $this->lookup[$lower] ?? $data;
         }
