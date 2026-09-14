@@ -81,6 +81,16 @@ class Str
     ): int;
 
     /**
+     * Check whether the given haystack of string(s) starts with
+     * the given `$needle`.
+     */
+    public static function startsWith(
+        string|array $haystack,
+        string $needle,
+        ?callable $transformer = null,
+    ): bool;
+
+    /**
      * Returns `$input` folded to lowercase.
      */
     public static function toLower(string $input): string;
@@ -174,6 +184,7 @@ individual method docblocks for the specifics.
 - [`::identity()`](identity.md) — returns its input unchanged; the no-op transformer
 - [`::isEmpty()`](isEmpty.md) — checks whether the given input string is empty
 - [`::length()`](length.md) — counts how many UTF-8 characters are in a string
+- [`::startsWith()`](startsWith.md) — checks one or more strings to see whether any of them starts with the given needle
 - [`::toLower()`](toLower.md) — folds every cased character in a string to lowercase
 - [`::toUpper()`](toUpper.md) — folds every cased character in a string to uppercase
 - [`::trim()`](trim.md) — strips the characters in `$trimChars` from one or both ends of a string
@@ -206,6 +217,7 @@ StusDevKit\MissingBitsKit\Strings\Str
  ✔ publishes ::contains() as a public method
  ✔ publishes ::identity() as a public method
  ✔ publishes ::length() as a public method
+ ✔ publishes ::startsWith() as a public method
  ✔ publishes ::toLower() as a public method
  ✔ publishes ::toUpper() as a public method
  ✔ publishes ::TRIM_DEFAULT_CHARS as a public constant
@@ -227,6 +239,7 @@ _No tagged releases yet._
 - [`Str::identity()`](identity.md) — the no-op transformer
 - [`Str::isEmpty()`](isEmpty.md) — checks whether a string is empty
 - [`Str::length()`](length.md) — counts how many UTF-8 characters are in a string
+- [`Str::startsWith()`](startsWith.md) — checks whether one or more strings start with a needle
 - [`Str::toLower()`](toLower.md) — folds every cased character to lowercase
 - [`Str::toUpper()`](toUpper.md) — folds every cased character to uppercase
 - [`Str::trim()`](trim.md) — strips trim-characters from one or both ends of a string

@@ -282,6 +282,40 @@ class StrTest extends TestCase
         $this->assertContains('length', $methodNames);
     }
 
+    #[TestDox('publishes ::startsWith() as a public method')]
+    public function test_publishes_startsWith(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // startsWith() is part of Str's published API — the UTF-8 aware
+        // way to check whether a string begins with a needle. This test
+        // catches accidental renames or scope changes that would
+        // silently break callers.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $reflection = new ReflectionClass(Str::class);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $methodNames = [];
+        foreach (
+            $reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $m
+        ) {
+            if ($m->getDeclaringClass()->getName() === Str::class) {
+                $methodNames[] = $m->getName();
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertContains('startsWith', $methodNames);
+    }
+
     #[TestDox('publishes ::toLower() as a public method')]
     public function test_publishes_toLower(): void
     {
@@ -3144,6 +3178,718 @@ class StrTest extends TestCase
         // perform the change
 
         $actual = Str::contains([], 'x', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Shape — startsWith()
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('::startsWith() is declared public static')]
+    public function test_startsWith_is_public_static(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // startsWith() is consumed as a static utility — callers write
+        // `Str::startsWith(...)`, never `(new Str)->startsWith(...)`.
+        // Dropping `static` or narrowing visibility would break every
+        // call site.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'startsWith');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $isPublic = $method->isPublic();
+        $isStatic = $method->isStatic();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($isPublic);
+        $this->assertTrue($isStatic);
+    }
+
+    #[TestDox('::startsWith() takes parameters [haystack, needle, transformer]')]
+    public function test_startsWith_parameter_names(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // parameter names and order are part of the contract because
+        // callers can use PHP's named-argument syntax. Renaming or
+        // reordering breaks those call sites.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'startsWith');
+        $expected = ['haystack', 'needle', 'transformer'];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $paramNames = array_map(
+            fn(ReflectionParameter $p) => $p->getName(),
+            $method->getParameters(),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $paramNames);
+    }
+
+    #[TestDox('::startsWith() returns bool')]
+    public function test_startsWith_return_type(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the declared return type is part of the contract — callers
+        // rely on it for type inference and for PHPStan to validate
+        // their own code.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'startsWith');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $returnType = $method->getReturnType();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('bool', $returnType->getName());
+    }
+
+    #[TestDox('::startsWith() $transformer defaults to null')]
+    public function test_startsWith_transformer_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the default of `null` is the contract: with no transformer,
+        // startsWith() checks the needle exactly as given. Pin it so a
+        // future refactor cannot silently start transforming every
+        // needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $method = new ReflectionMethod(Str::class, 'startsWith');
+        $parameters = $method->getParameters();
+        $transformerParam = $parameters[2];
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $hasDefault = $transformerParam->isDefaultValueAvailable();
+        $defaultValue = $transformerParam->getDefaultValue();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue($hasDefault);
+        $this->assertNull($defaultValue);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() with a string haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when the string haystack starts with the needle')]
+    public function test_startsWith_string_haystack_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the simplest call shape: a single string haystack whose opening
+        // characters are the needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = 'hello';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the string haystack does not start with the needle')]
+    public function test_startsWith_string_haystack_not_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when the haystack's opening characters are not the needle,
+        // startsWith() must report false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = 'xyz';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the needle appears but not at the start')]
+    public function test_startsWith_needle_present_but_not_leading(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // this is the property that separates startsWith() from
+        // contains(): a needle that is a substring elsewhere in the
+        // haystack, but not at its very start, must report false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = 'world';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('is case-sensitive')]
+    public function test_startsWith_is_case_sensitive(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // startsWith() delegates to str_starts_with(), which is
+        // case-sensitive. A needle that differs only in case must not
+        // match.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'Hello World';
+        $needle = 'hello';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() with an array haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when only a later element of the array haystack starts with the needle')]
+    public function test_startsWith_array_haystack_found_in_later_element(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an array haystack is checked element by element. Putting the
+        // match in a later element proves startsWith() does not stop at
+        // the first element.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = ['alpha', 'beta'];
+        $needle = 'bet';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when no element of the array haystack starts with the needle')]
+    public function test_startsWith_array_haystack_not_found(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // when no array element opens with the needle, startsWith() must
+        // report false — even if an element contains the needle further
+        // in ("gamma" contains "amm", but does not start with it).
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = ['alpha', 'beta', 'gamma'];
+        $needle = 'amm';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() with an empty haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when the haystack is an empty string')]
+    public function test_startsWith_empty_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty string has no opening characters, so startsWith() must
+        // report false for any (non-empty) needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '';
+        $needle = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when the haystack is an empty array')]
+    public function test_startsWith_empty_array_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty array haystack has no strings to check, so
+        // startsWith() must report false for any needle.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = [];
+        $needle = 'x';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() with the falsy "0" haystack
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns true when checking the string "0" starts with the needle "0"')]
+    public function test_startsWith_zero_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // "0" is a valid, non-empty haystack, but PHP's empty() treats
+        // it as falsy. This test is the regression guard against an
+        // empty()-based emptiness check silently discarding it.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '0';
+        $needle = '0';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() with UTF-8 data
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('matches a multibyte needle at the start of the haystack')]
+    public function test_startsWith_finds_leading_multibyte_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a multibyte character (here é, U+00E9, two bytes in UTF-8) must
+        // be matched as a whole codepoint at the start of a UTF-8
+        // haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = "\u{00E9}clair";
+        $needle = "\u{00E9}";
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not match an ASCII needle against the bytes of a leading multibyte character')]
+    public function test_startsWith_ascii_needle_does_not_match_leading_multibyte_bytes(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // UTF-8 is self-synchronising: the bytes of a multibyte character
+        // (here ï, U+00EF) never overlap the ASCII range, so an ASCII
+        // needle ("i") cannot false-match against a leading ï. This is
+        // the property that makes byte-level str_starts_with() correct on
+        // UTF-8.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = "\u{00EF}sland";
+        $needle = 'i';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() empty / whitespace needle (no transformer)
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('returns false when the needle is an empty string')]
+    public function test_startsWith_empty_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // PHP's str_starts_with() reports true for an empty needle (every
+        // string "starts with" nothing). startsWith() deliberately
+        // diverges: like contains(), it rejects an empty needle up front
+        // and reports false, because "starts with nothing" is not a
+        // meaningful query.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello';
+        $needle = '';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('checks the needle verbatim when no transformer is given')]
+    public function test_startsWith_checks_needle_verbatim_by_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // with no transformer, surrounding whitespace is part of the
+        // needle. A padded needle is checked verbatim and does not match
+        // the start of the unpadded haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = ' hello';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('checks for a whitespace-only needle when no transformer is given')]
+    public function test_startsWith_whitespace_needle_checked_by_default(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // with no transformer, a whitespace-only needle is a legitimate
+        // needle, and matches when the haystack opens with that run of
+        // whitespace.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '   indented';
+        $needle = '   ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith($haystack, $needle);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    // ================================================================
+    //
+    // Behaviour — startsWith() with a transformer
+    //
+    // ----------------------------------------------------------------
+
+    #[TestDox('transforms the needle before checking when a transformer is given')]
+    public function test_startsWith_transforms_needle_when_asked(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a caller who passes a trimming transformer strips the needle's
+        // surrounding whitespace before the check, so the padded needle
+        // now matches the start of the unpadded haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = 'hello world';
+        $needle = '  hello  ';
+        $expected = true;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('returns false when a trimming transformer reduces the needle to empty')]
+    public function test_startsWith_transformer_empties_needle(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // a whitespace-only needle reduces to nothing under a trimming
+        // transformer; an empty needle is never a meaningful "starts
+        // with", so startsWith() reports false.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '   indented';
+        $needle = '   ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('applies the transformer to the needle only, never the haystack')]
+    public function test_startsWith_transformer_does_not_touch_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // the transformer is applied to the needle alone. Here a trimming
+        // transformer strips the needle's padding, but the haystack's own
+        // leading whitespace is left intact — so the trimmed needle does
+        // NOT match the start of the still-padded haystack.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $haystack = '   hello';
+        $needle = '  hello  ';
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith(
+            $haystack,
+            $needle,
+            fn(string $v) => Str::trim($v),
+        );
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when the string haystack is empty')]
+    public function test_startsWith_skips_transformer_for_empty_string_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty haystack short-circuits to false before transforming.
+        // We prove the transformer never runs by making it throw: if it
+        // fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith('', 'x', $exploding);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestDox('does not invoke the transformer when the array haystack is empty')]
+    public function test_startsWith_skips_transformer_for_empty_array_haystack(): void
+    {
+        // ----------------------------------------------------------------
+        // explain your test
+
+        // an empty array haystack short-circuits to false before
+        // transforming. We prove the transformer never runs by making it
+        // throw: if it fired, the exception would fail the test.
+
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $exploding = function (string $v): string {
+            throw new RuntimeException('transformer should not run');
+        };
+        $expected = false;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actual = Str::startsWith([], 'x', $exploding);
 
         // ----------------------------------------------------------------
         // test the results

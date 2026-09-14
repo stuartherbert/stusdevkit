@@ -455,6 +455,117 @@ class Str
     }
 
     /**
+     * Check whether the given haystack of string(s) starts with the
+     * given `$needle`.
+     *
+     * By default it checks for `$needle` exactly as given. Pass a
+     * `$transformer` to transform `$needle` before the check - for
+     * example, a trimming transformer (`fn($v) => Str::trim($v)`)
+     * strips surrounding whitespace so a padded `$needle` can still
+     * match. The transformer is applied to the `$needle` only; the
+     * `$haystack` is always checked exactly as given.
+     *
+     * Here Be Dragons
+     * ===============
+     *
+     * - **The transformer applies to the `$needle` only.** The
+     *   `$haystack` is never transformed. If you need the haystack
+     *   normalised, do it at your system boundary - see this
+     *   class's docblock.
+     * - **Your `$transformer` is skipped when the haystack is
+     *   empty.** startsWith() answers the empty-haystack case before
+     *   it transforms, so a transformer with side effects will not
+     *   fire for an empty `$haystack`.
+     * - **Empty `$needle` is always `false` - unlike
+     *   `str_starts_with()`.** PHP's `str_starts_with($h, '')` reports
+     *   `true` (every string "starts with" nothing); startsWith()
+     *   deliberately returns `false`, because "starts with nothing" is
+     *   not a meaningful query. This matches `Str::contains()`, and it
+     *   means a trimming transformer that empties the needle yields
+     *   `false`.
+     * - **Keep transformers pure.** Your transformer may not get
+     *   called. Any transformer that has side effects will cause
+     *   subtle bugs.
+     * - **Your transformer's result is temporary.** If you want
+     *   access to the result of `$transformer($needle)`, call it
+     *   yourself first, and don't pass `$transformer` into
+     *   `startsWith()` at all.
+     *
+     * @param string|string[] $haystack
+     *      the string(s) whose start we want to check
+     * @param string $needle
+     *      the string we want `$haystack` to start with
+     * @param (callable(string): string)|null $transformer
+     *      optional transform applied to `$needle` before the
+     *      check (e.g. a trimming transformer). `$needle` is the
+     *      only value passed to it; the `$haystack` is never
+     *      transformed.
+     * @return bool
+     * - `false` if `$haystack` is empty
+     * - `false` if `$needle` is empty (after transforming)
+     * - `true` if any string in `$haystack` starts with `$needle`
+     * - `false` otherwise
+     */
+    public static function startsWith(
+        string|array $haystack,
+        string $needle,
+        ?callable $transformer = null,
+    ): bool
+    {
+        // optimisation - is the haystack empty?
+        // no need to do any extra work if it is
+        //
+        // these are not load-bearing checks; the main loop
+        // will also return `false` if the haystack is empty
+        //
+        // however, these checks are cheaper than an empty
+        // haystack reaching the main loop
+        if (is_array($haystack) && count($haystack) === 0) {
+            return false;
+        }
+        if (is_string($haystack) && strlen($haystack) === 0) {
+            return false;
+        }
+
+        // (optionally) transform the string we are checking for.
+        // e.g. a trimming transformer strips surrounding whitespace
+        // from the needle.
+        if ($transformer !== null) {
+            $needle = $transformer($needle);
+        }
+
+        // special case - have we been left with an empty `$needle`?
+        //
+        // an empty needle is not a meaningful "starts with", so we
+        // reject it up front - deliberately diverging from
+        // str_starts_with(), which would report `true` here.
+        if (self::isEmpty($needle)) {
+            return false;
+        }
+
+        // from here on we treat the haystack as a list of strings, so
+        // a single-string haystack gets wrapped into a one-element
+        // array to give the check loop below a single code path.
+        if (is_string($haystack)) {
+            $haystack = [ $haystack ];
+        }
+
+        // let's see if any element starts with our needle
+        foreach ($haystack as $strToCheck) {
+            // str_starts_with() is safe to use on UTF-8 data:
+            //
+            // UTF-8 is self-synchronising; a byte match only
+            // lands on a character boundary
+            if (str_starts_with($strToCheck, $needle)) {
+                return true;
+            }
+        }
+
+        // not found
+        return false;
+    }
+
+    /**
      * `toLower()` returns `$input` with every cased character folded
      * to its lowercase form.
      *
