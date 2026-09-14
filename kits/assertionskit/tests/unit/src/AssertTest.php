@@ -6818,6 +6818,36 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertStringContainsStringIgnoringCase() folds the German eszett, so "STRASSE" is found inside a haystack written with ß')]
+    public function test_assertStringContainsStringIgnoringCase_folds_eszett(): void
+    {
+        // proper Unicode case-folding expands ß to "ss" on both sides,
+        // so an all-caps "STRASSE" needle is found inside a haystack
+        // written with ß. mb_stripos()'s simple lowercasing would miss
+        // it and wrongly raise.
+
+        Assert::assertStringContainsStringIgnoringCase(
+            needle: 'STRASSE',
+            haystack: "Die stra\u{00DF}e ist lang",
+        );
+        $this->addToAssertionCount(1);
+    }
+
+    #[TestDox('::assertStringContainsStringIgnoringCase() passes when the needle is empty')]
+    public function test_assertStringContainsStringIgnoringCase_passes_on_empty_needle(): void
+    {
+        // every string contains the empty string, matching the
+        // case-sensitive assertStringContainsString. Str::containsIgnoreCase()
+        // reports false for an empty needle, so the method short-circuits
+        // it to preserve this behaviour.
+
+        Assert::assertStringContainsStringIgnoringCase(
+            needle: '',
+            haystack: 'hello world',
+        );
+        $this->addToAssertionCount(1);
+    }
+
     // ================================================================
     //
     // ::assertStringNotContainsString() behaviour
@@ -6880,6 +6910,36 @@ class AssertTest extends TestCase
         $this->expectException(AssertionFailedException::class);
         Assert::assertStringNotContainsStringIgnoringCase(
             needle: 'WORLD',
+            haystack: 'hello world',
+        );
+    }
+
+    #[TestDox('::assertStringNotContainsStringIgnoringCase() throws when the German eszett folds "STRASSE" into a haystack written with ß')]
+    public function test_assertStringNotContainsStringIgnoringCase_throws_on_eszett_fold(): void
+    {
+        // proper case-folding expands ß to "ss" on both sides, so
+        // "STRASSE" IS contained in a haystack written with ß — the
+        // negated assertion must raise. mb_stripos()'s simple
+        // lowercasing would miss it and wrongly pass.
+
+        $this->expectException(AssertionFailedException::class);
+        Assert::assertStringNotContainsStringIgnoringCase(
+            needle: 'STRASSE',
+            haystack: "Die stra\u{00DF}e ist lang",
+        );
+    }
+
+    #[TestDox('::assertStringNotContainsStringIgnoringCase() throws when the needle is empty')]
+    public function test_assertStringNotContainsStringIgnoringCase_throws_on_empty_needle(): void
+    {
+        // every string contains the empty string, so the negated
+        // assertion must raise. Str::containsIgnoreCase() reports false
+        // for an empty needle, so the method short-circuits it to
+        // preserve this behaviour.
+
+        $this->expectException(AssertionFailedException::class);
+        Assert::assertStringNotContainsStringIgnoringCase(
+            needle: '',
             haystack: 'hello world',
         );
     }

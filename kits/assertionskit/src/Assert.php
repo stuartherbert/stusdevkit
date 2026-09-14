@@ -2858,7 +2858,18 @@ class Assert implements AssertApi
         string $haystack,
         string $message = '',
     ): void {
-        if (mb_stripos($haystack, $needle) !== false) {
+        // treat an empty needle as present: every string contains the
+        // empty string, matching the case-sensitive
+        // assertStringContainsString / str_contains(). Str::containsIgnoreCase()
+        // reports false for an empty needle, so we OR it in here.
+        //
+        // correctness! caseless search needs case-FOLDING, not
+        // mb_stripos()'s simple lowercasing - foldCase() folds ß to
+        // "ss", etc., so "STRASSE" matches a haystack written with "ß".
+        $present = $needle === ''
+            || Str::containsIgnoreCase($haystack, $needle);
+
+        if ($present) {
             return;
         }
 
@@ -2896,7 +2907,18 @@ class Assert implements AssertApi
         string $haystack,
         string $message = '',
     ): void {
-        if (mb_stripos($haystack, $needle) === false) {
+        // treat an empty needle as present: every string contains the
+        // empty string, matching the case-sensitive
+        // assertStringNotContainsString. Str::containsIgnoreCase()
+        // reports false for an empty needle, so we OR it in here.
+        //
+        // correctness! caseless search needs case-FOLDING, not
+        // mb_stripos()'s simple lowercasing - foldCase() folds ß to
+        // "ss", etc., so "STRASSE" matches a haystack written with "ß".
+        $present = $needle === ''
+            || Str::containsIgnoreCase($haystack, $needle);
+
+        if (! $present) {
             return;
         }
 
