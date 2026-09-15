@@ -3188,8 +3188,6 @@ interface AssertApi
     /**
      * Asserts that a string ends with a given suffix.
      *
-     * @param non-empty-string $suffix
-     *
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -3205,8 +3203,6 @@ interface AssertApi
 
     /**
      * Asserts that a string ends not with a given suffix.
-     *
-     * @param non-empty-string $suffix
      *
      * @param string                    $message
      *     optional error message

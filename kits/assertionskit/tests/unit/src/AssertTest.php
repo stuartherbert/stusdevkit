@@ -7089,6 +7089,21 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertStringEndsWith() passes when the suffix is empty')]
+    public function test_assertStringEndsWith_passes_on_empty_suffix(): void
+    {
+        // every string ends with the empty string, matching PHP's
+        // native str_ends_with(). Str::endsWith() reports false for an
+        // empty needle, so the method short-circuits it to preserve
+        // this behaviour.
+
+        Assert::assertStringEndsWith(
+            suffix: '',
+            string: 'hello world',
+        );
+        $this->addToAssertionCount(1);
+    }
+
     // ================================================================
     //
     // ::assertStringEndsNotWith() behaviour
@@ -7111,6 +7126,21 @@ class AssertTest extends TestCase
         $this->expectException(AssertionFailedException::class);
         Assert::assertStringEndsNotWith(
             suffix: 'world',
+            string: 'hello world',
+        );
+    }
+
+    #[TestDox('::assertStringEndsNotWith() throws when the suffix is empty')]
+    public function test_assertStringEndsNotWith_throws_on_empty_suffix(): void
+    {
+        // every string ends with the empty string, so the negated
+        // assertion must raise. Str::endsWith() reports false for an
+        // empty needle, so the method short-circuits it to preserve
+        // this behaviour.
+
+        $this->expectException(AssertionFailedException::class);
+        Assert::assertStringEndsNotWith(
+            suffix: '',
             string: 'hello world',
         );
     }

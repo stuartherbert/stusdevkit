@@ -3003,7 +3003,14 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (Str::endsWith($string, $suffix)) {
+        // treat an empty suffix as matching: every string ends with
+        // the empty string, matching PHP's native str_ends_with().
+        // Str::endsWith() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $matches = $suffix === ''
+            || Str::endsWith($string, $suffix);
+
+        if ($matches) {
             return;
         }
 
@@ -3022,7 +3029,14 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (! Str::endsWith($string, $suffix)) {
+        // treat an empty suffix as matching: every string ends with
+        // the empty string, matching PHP's native str_ends_with().
+        // Str::endsWith() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $matches = $suffix === ''
+            || Str::endsWith($string, $suffix);
+
+        if (! $matches) {
             return;
         }
 
