@@ -228,7 +228,8 @@ This CHANGELOG is automatically compiled.
 
 #### AssertionsKit
 
-- convert to Str::containsIgnoreCase() internally ([a610e7a](https://github.com/stuartherbert/stusdevkit/commit/a610e7a)) — Stuart Herbert <stuart@stuartherbert.com>
+- now uses Str::contains() internally ([6733025](https://github.com/stuartherbert/stusdevkit/commit/6733025)) — Stuart Herbert <stuart@stuartherbert.com>
+- convert to Str::containsIgnoreCase() internally ([76cf387](https://github.com/stuartherbert/stusdevkit/commit/76cf387)) — Stuart Herbert <stuart@stuartherbert.com>
 - use Str::endsWith() internally ([30b3296](https://github.com/stuartherbert/stusdevkit/commit/30b3296)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch to use Str::startsWith() internally ([32e54be](https://github.com/stuartherbert/stusdevkit/commit/32e54be)) — Stuart Herbert <stuart@stuartherbert.com>
 - switch over to Str::toLower() ([3d72ce4](https://github.com/stuartherbert/stusdevkit/commit/3d72ce4)) — Stuart Herbert <stuart@stuartherbert.com>

@@ -6792,6 +6792,20 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertStringContainsString() passes when the needle is empty')]
+    public function test_assertStringContainsString_passes_on_empty_needle(): void
+    {
+        // every string contains the empty string. Str::contains()
+        // reports false for an empty needle, so the method
+        // short-circuits it to preserve this behaviour.
+
+        Assert::assertStringContainsString(
+            needle: '',
+            haystack: 'hello world',
+        );
+        $this->addToAssertionCount(1);
+    }
+
     // ================================================================
     //
     // ::assertStringContainsStringIgnoringCase() behaviour
@@ -6886,6 +6900,21 @@ class AssertTest extends TestCase
             haystack: 'hello world',
         );
         $this->addToAssertionCount(1);
+    }
+
+    #[TestDox('::assertStringNotContainsString() throws when the needle is empty')]
+    public function test_assertStringNotContainsString_throws_on_empty_needle(): void
+    {
+        // every string contains the empty string, so the negated
+        // assertion must raise. Str::contains() reports false for an
+        // empty needle, so the method short-circuits it to preserve
+        // this behaviour.
+
+        $this->expectException(AssertionFailedException::class);
+        Assert::assertStringNotContainsString(
+            needle: '',
+            haystack: 'hello world',
+        );
     }
 
     // ================================================================
@@ -7097,6 +7126,20 @@ class AssertTest extends TestCase
             needle: 'xyz',
             haystack: "hello\r\nworld",
         );
+    }
+
+    #[TestDox('::assertStringContainsStringIgnoringLineEndings() passes when the needle is empty')]
+    public function test_assertStringContainsStringIgnoringLineEndings_passes_on_empty_needle(): void
+    {
+        // every string contains the empty string. Str::contains()
+        // reports false for an empty needle, so the method
+        // short-circuits it to preserve this behaviour.
+
+        Assert::assertStringContainsStringIgnoringLineEndings(
+            needle: '',
+            haystack: "hello\r\nworld",
+        );
+        $this->addToAssertionCount(1);
     }
 
     // ================================================================

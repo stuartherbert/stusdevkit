@@ -2839,7 +2839,14 @@ class Assert implements AssertApi
         string $haystack,
         string $message = '',
     ): void {
-        if (str_contains($haystack, $needle)) {
+        // treat an empty needle as present: every string contains the
+        // empty string, matching PHP's native str_contains().
+        // Str::contains() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $present = $needle === ''
+            || Str::contains($haystack, $needle);
+
+        if ($present) {
             return;
         }
 
@@ -2888,7 +2895,14 @@ class Assert implements AssertApi
         string $haystack,
         string $message = '',
     ): void {
-        if (!str_contains($haystack, $needle)) {
+        // treat an empty needle as present: every string contains the
+        // empty string, matching PHP's native str_contains().
+        // Str::contains() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $present = $needle === ''
+            || Str::contains($haystack, $needle);
+
+        if (! $present) {
             return;
         }
 
@@ -3016,7 +3030,15 @@ class Assert implements AssertApi
         $normalizedNeedle = self::normalizeLineEndings($needle);
         $normalizedHaystack = self::normalizeLineEndings($haystack);
 
-        if (str_contains($normalizedHaystack, $normalizedNeedle)) {
+        // treat an empty needle as present: every string contains the
+        // empty string, matching PHP's native str_contains(). Only ''
+        // normalises to '', so guarding the raw needle is equivalent.
+        // Str::contains() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $present = $needle === ''
+            || Str::contains($normalizedHaystack, $normalizedNeedle);
+
+        if ($present) {
             return;
         }
 
