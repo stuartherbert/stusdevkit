@@ -3090,8 +3090,6 @@ interface AssertApi
     /**
      * Asserts that a string starts with a given prefix.
      *
-     * @param non-empty-string $prefix
-     *
      * @param string                    $message
      *     optional error message
      *     will be included in any thrown exception
@@ -3107,8 +3105,6 @@ interface AssertApi
 
     /**
      * Asserts that a string starts not with a given prefix.
-     *
-     * @param non-empty-string $prefix
      *
      * @param string                    $message
      *     optional error message

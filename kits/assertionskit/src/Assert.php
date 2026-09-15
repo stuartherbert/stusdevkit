@@ -2951,7 +2951,14 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (Str::startsWith($string, $prefix)) {
+        // treat an empty prefix as matching: every string starts with
+        // the empty string, matching PHP's native str_starts_with().
+        // Str::startsWith() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $matches = $prefix === ''
+            || Str::startsWith($string, $prefix);
+
+        if ($matches) {
             return;
         }
 
@@ -2970,7 +2977,14 @@ class Assert implements AssertApi
         string $string,
         string $message = '',
     ): void {
-        if (! Str::startsWith($string, $prefix)) {
+        // treat an empty prefix as matching: every string starts with
+        // the empty string, matching PHP's native str_starts_with().
+        // Str::startsWith() reports false for an empty needle, so we OR
+        // it in here to preserve that behaviour.
+        $matches = $prefix === ''
+            || Str::startsWith($string, $prefix);
+
+        if (! $matches) {
             return;
         }
 

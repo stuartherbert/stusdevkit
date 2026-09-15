@@ -7003,6 +7003,21 @@ class AssertTest extends TestCase
         );
     }
 
+    #[TestDox('::assertStringStartsWith() passes when the prefix is empty')]
+    public function test_assertStringStartsWith_passes_on_empty_prefix(): void
+    {
+        // every string starts with the empty string, matching PHP's
+        // native str_starts_with(). Str::startsWith() reports false for
+        // an empty needle, so the method short-circuits it to preserve
+        // this behaviour.
+
+        Assert::assertStringStartsWith(
+            prefix: '',
+            string: 'hello world',
+        );
+        $this->addToAssertionCount(1);
+    }
+
     // ================================================================
     //
     // ::assertStringStartsNotWith() behaviour
@@ -7025,6 +7040,21 @@ class AssertTest extends TestCase
         $this->expectException(AssertionFailedException::class);
         Assert::assertStringStartsNotWith(
             prefix: 'hello',
+            string: 'hello world',
+        );
+    }
+
+    #[TestDox('::assertStringStartsNotWith() throws when the prefix is empty')]
+    public function test_assertStringStartsNotWith_throws_on_empty_prefix(): void
+    {
+        // every string starts with the empty string, so the negated
+        // assertion must raise. Str::startsWith() reports false for an
+        // empty needle, so the method short-circuits it to preserve
+        // this behaviour.
+
+        $this->expectException(AssertionFailedException::class);
+        Assert::assertStringStartsNotWith(
+            prefix: '',
             string: 'hello world',
         );
     }
