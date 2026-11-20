@@ -1,0 +1,36 @@
+ARG BASE_IMAGE=basephp
+
+FROM php:8.6-cli-alpine AS basephp
+
+RUN apk add \
+        linux-headers \
+        libpq-dev \
+        git \
+        zip \
+        libzip-dev \
+        icu-dev \
+        oniguruma-dev \
+        $PHPIZE_DEPS && \
+    docker-php-ext-install pcntl && \
+    docker-php-ext-enable pcntl && \
+    docker-php-ext-install intl && \
+    docker-php-ext-enable intl && \
+    docker-php-ext-install mbstring && \
+    docker-php-ext-enable mbstring && \
+    rm -rf /var/cache/apk/*
+
+# Copy Composer from the official image
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+FROM ${BASE_IMAGE} AS devphp
+
+# RUN --mount=type=bind,from=ghcr.io/php/pie:bin,source=/pie,target=/usr/local/bin/pie \
+#     export DEBIAN_FRONTEND="noninteractive"; \
+#     set -eux; \
+#     pie install xdebug/xdebug \
+#     && docker-php-ext-enable xdebug
+
+COPY ./docker/php-dev.ini /usr/local/etc/php/php.ini

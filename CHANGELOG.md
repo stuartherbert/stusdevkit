@@ -20,6 +20,10 @@ This CHANGELOG is automatically compiled.
 ### Features
 
 
+#### ALL
+
+- added initial PHP 8.6 support ([a90054f](https://github.com/stuartherbert/stusdevkit/commit/a90054f)) — Stuart Herbert <stuart@stuartherbert.com>
+
 #### MissingBitsKit
 
 - added Str::containsIgnoreCase() ([ffba59d](https://github.com/stuartherbert/stusdevkit/commit/ffba59d)) — Stuart Herbert <stuart@stuartherbert.com>

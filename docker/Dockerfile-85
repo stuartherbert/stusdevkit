@@ -12,7 +12,6 @@ RUN apk add \
         $PHPIZE_DEPS && \
     docker-php-ext-install pcntl && \
     docker-php-ext-install intl && \
-    pecl install && \
     docker-php-ext-enable pcntl && \
     docker-php-ext-enable intl && \
     rm -rf /var/cache/apk/*
@@ -24,9 +23,5 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 FROM ${BASE_IMAGE} AS devphp
-
-RUN apk add $PHP_DEPS \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
 
 COPY ./docker/php-dev.ini /usr/local/etc/php/php.ini

@@ -78,7 +78,11 @@ class UnknownKeyPolicyTest extends TestCase
         // format (JSON Schema import/export); a plain enum
         // would silently break that path.
         $reflection = new ReflectionEnum(UnknownKeyPolicy::class);
-        $this->assertTrue($reflection->isBacked());
+
+        // @phpstan-ignore method.impossibleType
+        $isBacked = $reflection->isBacked();
+
+        $this->assertTrue($isBacked);
     }
 
     #[TestDox('is backed by strings')]

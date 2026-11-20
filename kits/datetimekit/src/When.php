@@ -634,9 +634,6 @@ class When extends DateTimeImmutable
     public function modify(string $modifier): static
     {
         $result = parent::modify($modifier);
-        if (! $result) {
-            throw new InvalidArgumentException("{$modifier} is not a valid DateTime modifier");
-        }
 
         return static::from($result);
     }

@@ -6,3 +6,11 @@ services:
       target: devphp
     volumes:
       - .:/var/www/html
+
+  test-container-86:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-86
+      target: devphp
+    volumes:
+      - .:/var/www/html
