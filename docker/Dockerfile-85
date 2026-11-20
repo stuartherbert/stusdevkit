@@ -8,8 +8,7 @@ RUN apk add \
         git \
         zip \
         libzip-dev \
-        icu-dev \
-        $PHPIZE_DEPS && \
+        icu-dev && \
     docker-php-ext-install pcntl && \
     docker-php-ext-install intl && \
     docker-php-ext-enable pcntl && \

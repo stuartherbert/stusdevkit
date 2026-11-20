@@ -22,7 +22,7 @@ This CHANGELOG is automatically compiled.
 
 #### ALL
 
-- added initial PHP 8.6 support ([a90054f](https://github.com/stuartherbert/stusdevkit/commit/a90054f)) — Stuart Herbert <stuart@stuartherbert.com>
+- added initial PHP 8.6 support ([48750da](https://github.com/stuartherbert/stusdevkit/commit/48750da)) — Stuart Herbert <stuart@stuartherbert.com>
 
 #### MissingBitsKit
 
